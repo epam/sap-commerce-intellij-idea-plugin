@@ -38,6 +38,9 @@ public interface ImpExParameter extends PsiElement {
   @NotNull
   List<ImpExModifiers> getModifiersList();
 
+  @NotNull
+  List<ImpExPossibleMacroUsageDec> getPossibleMacroUsageDecList();
+
   @Nullable
   ImpExSubParameters getSubParameters();
 

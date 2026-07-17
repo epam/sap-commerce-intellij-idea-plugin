@@ -94,7 +94,7 @@ public class ImpExParser implements PsiParser, LightPsiParser {
   //   | BOOLEAN
   //   | DOUBLE_QUOTE
   //   | string
-  //   | macro_usage_dec
+  //   | macro_usage_dec_option
   // )+
   public static boolean any_attribute_value(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "any_attribute_value")) return false;
@@ -116,7 +116,7 @@ public class ImpExParser implements PsiParser, LightPsiParser {
   //   | BOOLEAN
   //   | DOUBLE_QUOTE
   //   | string
-  //   | macro_usage_dec
+  //   | macro_usage_dec_option
   private static boolean any_attribute_value_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "any_attribute_value_0")) return false;
     boolean r;
@@ -126,7 +126,7 @@ public class ImpExParser implements PsiParser, LightPsiParser {
     if (!r) r = consumeToken(b, BOOLEAN);
     if (!r) r = consumeToken(b, DOUBLE_QUOTE);
     if (!r) r = string(b, l + 1);
-    if (!r) r = macro_usage_dec(b, l + 1);
+    if (!r) r = macro_usage_dec_option(b, l + 1);
     return r;
   }
 
@@ -149,7 +149,7 @@ public class ImpExParser implements PsiParser, LightPsiParser {
   //   | (special_parameter | HEADER_PARAMETER_NAME special_parameter)
   //   | (
   //         HEADER_PARAMETER_NAME
-  //       | macro_usage_dec
+  //       | macro_usage_dec_option
   //       | FUNCTION
   //   )+
   public static boolean any_header_parameter_name(PsiBuilder b, int l) {
@@ -187,7 +187,7 @@ public class ImpExParser implements PsiParser, LightPsiParser {
 
   // (
   //         HEADER_PARAMETER_NAME
-  //       | macro_usage_dec
+  //       | macro_usage_dec_option
   //       | FUNCTION
   //   )+
   private static boolean any_header_parameter_name_2(PsiBuilder b, int l) {
@@ -205,13 +205,13 @@ public class ImpExParser implements PsiParser, LightPsiParser {
   }
 
   // HEADER_PARAMETER_NAME
-  //       | macro_usage_dec
+  //       | macro_usage_dec_option
   //       | FUNCTION
   private static boolean any_header_parameter_name_2_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "any_header_parameter_name_2_0")) return false;
     boolean r;
     r = consumeToken(b, HEADER_PARAMETER_NAME);
-    if (!r) r = macro_usage_dec(b, l + 1);
+    if (!r) r = macro_usage_dec_option(b, l + 1);
     if (!r) r = consumeToken(b, FUNCTION);
     return r;
   }
@@ -289,7 +289,7 @@ public class ImpExParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // macro_usage_dec
+  // macro_usage_dec_option
   //     | script_multiline
   //     | DOUBLE_QUOTE_ESCAPE
   //     | TAG_OPEN
@@ -306,7 +306,7 @@ public class ImpExParser implements PsiParser, LightPsiParser {
   static boolean double_quoted_string_content(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "double_quoted_string_content")) return false;
     boolean r;
-    r = macro_usage_dec(b, l + 1);
+    r = macro_usage_dec_option(b, l + 1);
     if (!r) r = script_multiline(b, l + 1);
     if (!r) r = consumeToken(b, DOUBLE_QUOTE_ESCAPE);
     if (!r) r = consumeToken(b, TAG_OPEN);
@@ -486,7 +486,7 @@ public class ImpExParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // (macro_usage_dec | HEADER_TYPE)+
+  // (macro_usage_dec_option | HEADER_TYPE)+
   public static boolean header_type_name(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "header_type_name")) return false;
     boolean r;
@@ -501,11 +501,11 @@ public class ImpExParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // macro_usage_dec | HEADER_TYPE
+  // macro_usage_dec_option | HEADER_TYPE
   private static boolean header_type_name_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "header_type_name_0")) return false;
     boolean r;
-    r = macro_usage_dec(b, l + 1);
+    r = macro_usage_dec_option(b, l + 1);
     if (!r) r = consumeToken(b, HEADER_TYPE);
     return r;
   }
@@ -584,6 +584,17 @@ public class ImpExParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
+  // macro_usage_dec | possible_macro_usage_dec
+  static boolean macro_usage_dec_option(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "macro_usage_dec_option")) return false;
+    if (!nextTokenIs(b, "", MACRO_USAGE, POSSIBLE_MACRO_USAGE)) return false;
+    boolean r;
+    r = macro_usage_dec(b, l + 1);
+    if (!r) r = possible_macro_usage_dec(b, l + 1);
+    return r;
+  }
+
+  /* ********************************************************** */
   // MACRO_VALUE
   public static boolean macro_value_dec(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "macro_value_dec")) return false;
@@ -600,7 +611,7 @@ public class ImpExParser implements PsiParser, LightPsiParser {
   //       macro_value_dec
   //     | SINGLE_QUOTE
   //     | DOUBLE_QUOTE
-  //     | macro_usage_dec
+  //     | macro_usage_dec_option
   //     | LEFT_ROUND_BRACKET
   //     | RIGHT_ROUND_BRACKET
   //     | LEFT_SQUARE_BRACKET
@@ -631,7 +642,7 @@ public class ImpExParser implements PsiParser, LightPsiParser {
   // macro_value_dec
   //     | SINGLE_QUOTE
   //     | DOUBLE_QUOTE
-  //     | macro_usage_dec
+  //     | macro_usage_dec_option
   //     | LEFT_ROUND_BRACKET
   //     | RIGHT_ROUND_BRACKET
   //     | LEFT_SQUARE_BRACKET
@@ -652,7 +663,7 @@ public class ImpExParser implements PsiParser, LightPsiParser {
     r = macro_value_dec(b, l + 1);
     if (!r) r = consumeToken(b, SINGLE_QUOTE);
     if (!r) r = consumeToken(b, DOUBLE_QUOTE);
-    if (!r) r = macro_usage_dec(b, l + 1);
+    if (!r) r = macro_usage_dec_option(b, l + 1);
     if (!r) r = consumeToken(b, LEFT_ROUND_BRACKET);
     if (!r) r = consumeToken(b, RIGHT_ROUND_BRACKET);
     if (!r) r = consumeToken(b, LEFT_SQUARE_BRACKET);
@@ -671,7 +682,7 @@ public class ImpExParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // LEFT_SQUARE_BRACKET ((attribute | macro_usage_dec) (ATTRIBUTE_SEPARATOR (attribute | macro_usage_dec))* ) RIGHT_SQUARE_BRACKET
+  // LEFT_SQUARE_BRACKET ((attribute | macro_usage_dec_option) (ATTRIBUTE_SEPARATOR (attribute | macro_usage_dec_option))* ) RIGHT_SQUARE_BRACKET
   public static boolean modifiers(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "modifiers")) return false;
     boolean r, p;
@@ -684,7 +695,7 @@ public class ImpExParser implements PsiParser, LightPsiParser {
     return r || p;
   }
 
-  // (attribute | macro_usage_dec) (ATTRIBUTE_SEPARATOR (attribute | macro_usage_dec))*
+  // (attribute | macro_usage_dec_option) (ATTRIBUTE_SEPARATOR (attribute | macro_usage_dec_option))*
   private static boolean modifiers_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "modifiers_1")) return false;
     boolean r;
@@ -695,16 +706,16 @@ public class ImpExParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // attribute | macro_usage_dec
+  // attribute | macro_usage_dec_option
   private static boolean modifiers_1_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "modifiers_1_0")) return false;
     boolean r;
     r = attribute(b, l + 1);
-    if (!r) r = macro_usage_dec(b, l + 1);
+    if (!r) r = macro_usage_dec_option(b, l + 1);
     return r;
   }
 
-  // (ATTRIBUTE_SEPARATOR (attribute | macro_usage_dec))*
+  // (ATTRIBUTE_SEPARATOR (attribute | macro_usage_dec_option))*
   private static boolean modifiers_1_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "modifiers_1_1")) return false;
     while (true) {
@@ -715,7 +726,7 @@ public class ImpExParser implements PsiParser, LightPsiParser {
     return true;
   }
 
-  // ATTRIBUTE_SEPARATOR (attribute | macro_usage_dec)
+  // ATTRIBUTE_SEPARATOR (attribute | macro_usage_dec_option)
   private static boolean modifiers_1_1_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "modifiers_1_1_0")) return false;
     boolean r;
@@ -726,12 +737,12 @@ public class ImpExParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // attribute | macro_usage_dec
+  // attribute | macro_usage_dec_option
   private static boolean modifiers_1_1_0_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "modifiers_1_1_0_1")) return false;
     boolean r;
     r = attribute(b, l + 1);
-    if (!r) r = macro_usage_dec(b, l + 1);
+    if (!r) r = macro_usage_dec_option(b, l + 1);
     return r;
   }
 
@@ -768,7 +779,7 @@ public class ImpExParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // (HEADER_PARAMETER_NAME DOT? FUNCTION? | macro_usage_dec | document_id_usage | FUNCTION) (sub_parameters | ((DOT)? macro_usage_dec) | (DOT? HEADER_PARAMETER_NAME))? modifiers*
+  // (HEADER_PARAMETER_NAME DOT? FUNCTION? | macro_usage_dec_option | document_id_usage | FUNCTION) (sub_parameters | ((DOT)? macro_usage_dec_option) | (DOT? HEADER_PARAMETER_NAME))? modifiers*
   public static boolean parameter(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "parameter")) return false;
     boolean r, p;
@@ -781,13 +792,13 @@ public class ImpExParser implements PsiParser, LightPsiParser {
     return r || p;
   }
 
-  // HEADER_PARAMETER_NAME DOT? FUNCTION? | macro_usage_dec | document_id_usage | FUNCTION
+  // HEADER_PARAMETER_NAME DOT? FUNCTION? | macro_usage_dec_option | document_id_usage | FUNCTION
   private static boolean parameter_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "parameter_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = parameter_0_0(b, l + 1);
-    if (!r) r = macro_usage_dec(b, l + 1);
+    if (!r) r = macro_usage_dec_option(b, l + 1);
     if (!r) r = document_id_usage(b, l + 1);
     if (!r) r = consumeToken(b, FUNCTION);
     exit_section_(b, m, null, r);
@@ -820,14 +831,14 @@ public class ImpExParser implements PsiParser, LightPsiParser {
     return true;
   }
 
-  // (sub_parameters | ((DOT)? macro_usage_dec) | (DOT? HEADER_PARAMETER_NAME))?
+  // (sub_parameters | ((DOT)? macro_usage_dec_option) | (DOT? HEADER_PARAMETER_NAME))?
   private static boolean parameter_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "parameter_1")) return false;
     parameter_1_0(b, l + 1);
     return true;
   }
 
-  // sub_parameters | ((DOT)? macro_usage_dec) | (DOT? HEADER_PARAMETER_NAME)
+  // sub_parameters | ((DOT)? macro_usage_dec_option) | (DOT? HEADER_PARAMETER_NAME)
   private static boolean parameter_1_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "parameter_1_0")) return false;
     boolean r;
@@ -839,13 +850,13 @@ public class ImpExParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // (DOT)? macro_usage_dec
+  // (DOT)? macro_usage_dec_option
   private static boolean parameter_1_0_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "parameter_1_0_1")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = parameter_1_0_1_0(b, l + 1);
-    r = r && macro_usage_dec(b, l + 1);
+    r = r && macro_usage_dec_option(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
@@ -946,6 +957,18 @@ public class ImpExParser implements PsiParser, LightPsiParser {
     boolean r;
     r = consumeToken(b, COMMA);
     if (!r) r = consumeToken(b, ALTERNATIVE_PATTERN);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // POSSIBLE_MACRO_USAGE
+  public static boolean possible_macro_usage_dec(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "possible_macro_usage_dec")) return false;
+    if (!nextTokenIs(b, POSSIBLE_MACRO_USAGE)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, POSSIBLE_MACRO_USAGE);
+    exit_section_(b, m, POSSIBLE_MACRO_USAGE_DEC, r);
     return r;
   }
 
@@ -1241,7 +1264,7 @@ public class ImpExParser implements PsiParser, LightPsiParser {
   /* ********************************************************** */
   // (SCRIPT_BODY_VALUE
   //     | DOUBLE_QUOTE_ESCAPE
-  //     | macro_usage_dec
+  //     | macro_usage_dec_option
   //     | string
   //     )*
   static boolean script_body_line(PsiBuilder b, int l) {
@@ -1256,14 +1279,14 @@ public class ImpExParser implements PsiParser, LightPsiParser {
 
   // SCRIPT_BODY_VALUE
   //     | DOUBLE_QUOTE_ESCAPE
-  //     | macro_usage_dec
+  //     | macro_usage_dec_option
   //     | string
   private static boolean script_body_line_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "script_body_line_0")) return false;
     boolean r;
     r = consumeToken(b, SCRIPT_BODY_VALUE);
     if (!r) r = consumeToken(b, DOUBLE_QUOTE_ESCAPE);
-    if (!r) r = macro_usage_dec(b, l + 1);
+    if (!r) r = macro_usage_dec_option(b, l + 1);
     if (!r) r = string(b, l + 1);
     return r;
   }
@@ -1271,7 +1294,7 @@ public class ImpExParser implements PsiParser, LightPsiParser {
   /* ********************************************************** */
   // (SCRIPT_BODY_VALUE
   //     | DOUBLE_QUOTE_ESCAPE
-  //     | macro_usage_dec
+  //     | macro_usage_dec_option
   //     | string
   //     | CRLF
   //     )*
@@ -1287,7 +1310,7 @@ public class ImpExParser implements PsiParser, LightPsiParser {
 
   // SCRIPT_BODY_VALUE
   //     | DOUBLE_QUOTE_ESCAPE
-  //     | macro_usage_dec
+  //     | macro_usage_dec_option
   //     | string
   //     | CRLF
   private static boolean script_body_multiline_0(PsiBuilder b, int l) {
@@ -1295,7 +1318,7 @@ public class ImpExParser implements PsiParser, LightPsiParser {
     boolean r;
     r = consumeToken(b, SCRIPT_BODY_VALUE);
     if (!r) r = consumeToken(b, DOUBLE_QUOTE_ESCAPE);
-    if (!r) r = macro_usage_dec(b, l + 1);
+    if (!r) r = macro_usage_dec_option(b, l + 1);
     if (!r) r = string(b, l + 1);
     if (!r) r = consumeToken(b, CRLF);
     return r;
@@ -1467,13 +1490,13 @@ public class ImpExParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // macro_usage_dec
+  // macro_usage_dec_option
   //     | SINGLE_QUOTE_ESCAPE
   //     | STRING_LITERAL
   static boolean single_quoted_string_content(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "single_quoted_string_content")) return false;
     boolean r;
-    r = macro_usage_dec(b, l + 1);
+    r = macro_usage_dec_option(b, l + 1);
     if (!r) r = consumeToken(b, SINGLE_QUOTE_ESCAPE);
     if (!r) r = consumeToken(b, STRING_LITERAL);
     return r;
@@ -1522,10 +1545,9 @@ public class ImpExParser implements PsiParser, LightPsiParser {
   /* ********************************************************** */
   // (
   //       SPECIAL_PARAMETER_VALUE
-  //     | macro_usage_dec)+
+  //     | macro_usage_dec_option)+
   static boolean special_parameter_value(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "special_parameter_value")) return false;
-    if (!nextTokenIs(b, "", MACRO_USAGE, SPECIAL_PARAMETER_VALUE)) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = special_parameter_value_0(b, l + 1);
@@ -1539,12 +1561,12 @@ public class ImpExParser implements PsiParser, LightPsiParser {
   }
 
   // SPECIAL_PARAMETER_VALUE
-  //     | macro_usage_dec
+  //     | macro_usage_dec_option
   private static boolean special_parameter_value_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "special_parameter_value_0")) return false;
     boolean r;
     r = consumeToken(b, SPECIAL_PARAMETER_VALUE);
-    if (!r) r = macro_usage_dec(b, l + 1);
+    if (!r) r = macro_usage_dec_option(b, l + 1);
     return r;
   }
 
@@ -2156,7 +2178,7 @@ public class ImpExParser implements PsiParser, LightPsiParser {
   //     | TAG_CLOSE
   //     | DOUBLE_QUOTE
   //     | SINGLE_QUOTE
-  //     | macro_usage_dec
+  //     | macro_usage_dec_option
   //     | FIELD_LIST_ITEM_SEPARATOR
   //     | DEFAULT_PATH_DELIMITER
   //     | DEFAULT_KEY_VALUE_DELIMITER
@@ -2181,7 +2203,7 @@ public class ImpExParser implements PsiParser, LightPsiParser {
     if (!r) r = consumeToken(b, TAG_CLOSE);
     if (!r) r = consumeToken(b, DOUBLE_QUOTE);
     if (!r) r = consumeToken(b, SINGLE_QUOTE);
-    if (!r) r = macro_usage_dec(b, l + 1);
+    if (!r) r = macro_usage_dec_option(b, l + 1);
     if (!r) r = consumeToken(b, FIELD_LIST_ITEM_SEPARATOR);
     if (!r) r = consumeToken(b, DEFAULT_PATH_DELIMITER);
     if (!r) r = consumeToken(b, DEFAULT_KEY_VALUE_DELIMITER);

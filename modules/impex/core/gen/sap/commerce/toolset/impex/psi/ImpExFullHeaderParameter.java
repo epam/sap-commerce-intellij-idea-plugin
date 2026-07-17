@@ -30,7 +30,6 @@ import com.intellij.psi.PsiReference;
 import kotlin.jvm.functions.Function0;
 import sap.commerce.toolset.impex.constants.modifier.AttributeModifier;
 import sap.commerce.toolset.impex.psi.impl.ImpExFullHeaderParameterMixin.ParametersContext;
-import sap.commerce.toolset.impex.psi.impl.ImpExFullHeaderParameterMixin.ParametersContext.Parameter;
 
 public interface ImpExFullHeaderParameter extends PsiElement {
 

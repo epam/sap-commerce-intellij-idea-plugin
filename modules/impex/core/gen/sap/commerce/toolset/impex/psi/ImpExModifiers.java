@@ -35,4 +35,7 @@ public interface ImpExModifiers extends PsiElement {
   @NotNull
   List<ImpExMacroUsageDec> getMacroUsageDecList();
 
+  @NotNull
+  List<ImpExPossibleMacroUsageDec> getPossibleMacroUsageDecList();
+
 }

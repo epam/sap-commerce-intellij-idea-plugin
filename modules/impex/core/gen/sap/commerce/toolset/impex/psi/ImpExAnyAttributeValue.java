@@ -33,6 +33,9 @@ public interface ImpExAnyAttributeValue extends PsiElement {
   List<ImpExMacroUsageDec> getMacroUsageDecList();
 
   @NotNull
+  List<ImpExPossibleMacroUsageDec> getPossibleMacroUsageDecList();
+
+  @NotNull
   List<ImpExString> getStringList();
 
   @Nullable ImpExAnyAttributeName getAnyAttributeName();

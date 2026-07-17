@@ -56,6 +56,7 @@ public interface ImpExTypes {
   IElementType MODIFIERS = new ImpExElementType("MODIFIERS");
   IElementType PARAMETER = new ImpExElementType("PARAMETER");
   IElementType PARAMETERS = new ImpExElementType("PARAMETERS");
+  IElementType POSSIBLE_MACRO_USAGE_DEC = new ImpExElementType("POSSIBLE_MACRO_USAGE_DEC");
   IElementType ROOT_MACRO_USAGE = new ImpExElementType("ROOT_MACRO_USAGE");
   IElementType SCRIPT_LINE = new ImpExElementType("SCRIPT_LINE");
   IElementType SCRIPT_MULTILINE = new ImpExElementType("SCRIPT_MULTILINE");
@@ -137,6 +138,7 @@ public interface ImpExTypes {
   IElementType PERMISSION = new ImpExTokenType("PERMISSION");
   IElementType PERMISSION_ALLOWED = new ImpExTokenType("PERMISSION_ALLOWED");
   IElementType PERMISSION_DENIED = new ImpExTokenType("PERMISSION_DENIED");
+  IElementType POSSIBLE_MACRO_USAGE = new ImpExTokenType("POSSIBLE_MACRO_USAGE");
   IElementType RIGHT_ROUND_BRACKET = new ImpExTokenType("RIGHT_ROUND_BRACKET");
   IElementType RIGHT_SQUARE_BRACKET = new ImpExTokenType("RIGHT_SQUARE_BRACKET");
   IElementType SCRIPT_ACTION_AFTEREACH = new ImpExTokenType("SCRIPT_ACTION_AFTEREACH");
@@ -240,6 +242,9 @@ public interface ImpExTypes {
       }
       else if (type == PARAMETERS) {
         return new ImpExParametersImpl(node);
+      }
+      else if (type == POSSIBLE_MACRO_USAGE_DEC) {
+        return new ImpExPossibleMacroUsageDecImpl(node);
       }
       else if (type == ROOT_MACRO_USAGE) {
         return new ImpExRootMacroUsageImpl(node);

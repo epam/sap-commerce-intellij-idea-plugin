@@ -1476,7 +1476,7 @@ class ImpExLexer implements FlexLexer {
 
       // 3. Completely undeclared — treat whole token as the caller's fallback type
       yybegin(returnState);
-      return fallbackType;
+      return ImpExTypes.POSSIBLE_MACRO_USAGE;
   }
 
 

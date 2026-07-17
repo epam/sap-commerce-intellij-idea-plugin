@@ -33,6 +33,9 @@ public interface ImpExBeanshellScriptBodyMultiline extends ImpExScriptBody {
   List<ImpExMacroUsageDec> getMacroUsageDecList();
 
   @NotNull
+  List<ImpExPossibleMacroUsageDec> getPossibleMacroUsageDecList();
+
+  @NotNull
   List<ImpExString> getStringList();
 
 }

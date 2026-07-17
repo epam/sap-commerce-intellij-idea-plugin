@@ -32,6 +32,9 @@ public interface ImpExHeaderTypeName extends PsiElement {
   @NotNull
   List<ImpExMacroUsageDec> getMacroUsageDecList();
 
+  @NotNull
+  List<ImpExPossibleMacroUsageDec> getPossibleMacroUsageDecList();
+
   @Nullable ImpExHeaderLine getHeaderLine();
 
 }

@@ -61,4 +61,10 @@ public class ImpExModifiersImpl extends ASTWrapperPsiElement implements ImpExMod
     return PsiTreeUtil.getChildrenOfTypeAsList(this, ImpExMacroUsageDec.class);
   }
 
+  @Override
+  @NotNull
+  public List<ImpExPossibleMacroUsageDec> getPossibleMacroUsageDecList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ImpExPossibleMacroUsageDec.class);
+  }
+
 }

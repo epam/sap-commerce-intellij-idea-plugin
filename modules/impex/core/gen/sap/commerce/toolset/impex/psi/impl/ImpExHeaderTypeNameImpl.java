@@ -55,6 +55,12 @@ public class ImpExHeaderTypeNameImpl extends ImpExHeaderTypeNameMixin implements
   }
 
   @Override
+  @NotNull
+  public List<ImpExPossibleMacroUsageDec> getPossibleMacroUsageDecList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ImpExPossibleMacroUsageDec.class);
+  }
+
+  @Override
   public @Nullable ImpExHeaderLine getHeaderLine() {
     return ImpExPsiUtil.getHeaderLine(this);
   }
