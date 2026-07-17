@@ -2,7 +2,7 @@
 
 <cite>Release contributors</code>
 - 7 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.15+author%3Amlytvyn+is%3Apr)
-- 8 PR(s) by [Eugeni Kalenchuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.15+author%3Aekalenchuk+is%3Apr)
+- 9 PR(s) by [Eugeni Kalenchuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.15+author%3Aekalenchuk+is%3Apr)
 
 ### `Project Import` enhancements
 - Preselect recursive modules on project import [#1951](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1951)
@@ -25,6 +25,7 @@
 
 ### `FlexibleSearch` enhancements
 - New action to `Introduce Bind Parameters` for query with exact values in the expressions [#1962](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1962)
+- Support `IN`, `BETWEEN`, `DATE` expressions in the `Introduce Bind Parameters` action [#1966](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1966)
 
 ### Other enhancements
 - Updated project libraries [#1955](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1955)
