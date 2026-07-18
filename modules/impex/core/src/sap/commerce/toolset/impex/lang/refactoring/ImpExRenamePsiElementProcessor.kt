@@ -152,7 +152,6 @@ class ImpExRenamePsiElementProcessor : RenamePsiElementProcessor() {
                 }
 
                 is ImpExValue -> {
-                    if (!renameElement.isDocIdValueCell()) return emptyArray()
                     val dec = renameElement.getDocIdDecForValue() ?: return emptyArray()
                     return dec.values[newText].orEmpty().toTypedArray()
                 }
