@@ -26,10 +26,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.util.*
 import com.intellij.util.asSafely
 import sap.commerce.toolset.impex.editor.ImpExSplitEditor
-import sap.commerce.toolset.impex.psi.ImpExMacroDeclaration
-import sap.commerce.toolset.impex.psi.ImpExMacroNameDec
-import sap.commerce.toolset.impex.psi.ImpExMacroUsageDec
-import sap.commerce.toolset.impex.psi.ImpExTypes
+import sap.commerce.toolset.impex.psi.*
 import sap.commerce.toolset.impex.psi.util.getKey
 import sap.commerce.toolset.impex.psi.util.setName
 import java.io.Serial
@@ -50,8 +47,7 @@ abstract class ImpExMacroNameDecMixin(node: ASTNode) : ASTWrapperPsiElement(node
                 ?: this.parent.findChild(ImpExTypes.MACRO_VALUES_DEC)
                     ?.childLeafs()
                     ?.map { psi ->
-                        psi
-                            .takeIf { it.elementType == ImpExTypes.MACRO_USAGE }
+                        psi.takeIf { it.elementType == ImpExTypes.MACRO_USAGE }
                             ?.parentOfType<ImpExMacroUsageDec>()
                             ?.takeUnless { evaluatedMacroUsages.contains(it) }
                             ?.let { macroUsage ->
@@ -62,6 +58,14 @@ abstract class ImpExMacroNameDecMixin(node: ASTNode) : ASTWrapperPsiElement(node
 
                                 resolveValue + ref.element.text.substringAfter(ref.canonicalText, "")
                             }
+                            ?: psi.takeIf { it.elementType == ImpExTypes.POSSIBLE_MACRO_USAGE }
+                                ?.parentOfType<ImpExPossibleMacroUsageDec>()
+                                ?.let { macroUsage ->
+                                    val ref = macroUsage.reference ?: return@let null
+                                    val resolveValue = macroUsage.resolveValue()
+
+                                    resolveValue + ref.element.text.substringAfter(ref.canonicalText, "")
+                                }
                             ?: psi.text
                     }
                     ?.joinToString("")
