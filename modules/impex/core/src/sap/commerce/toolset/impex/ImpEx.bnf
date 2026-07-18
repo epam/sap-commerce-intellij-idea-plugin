@@ -322,6 +322,7 @@ value ::= string
     | (FIELD_VALUE_IGNORE | FIELD_VALUE_NULL)
 {
     mixin="sap.commerce.toolset.impex.psi.impl.ImpExValueMixin"
+    implements="sap.commerce.toolset.impex.psi.ImpExPsiNamedElement"
     methods=[getValueGroup getFieldValue isImportable isNonImportable isQuotable isNotQuotable]
 }
 

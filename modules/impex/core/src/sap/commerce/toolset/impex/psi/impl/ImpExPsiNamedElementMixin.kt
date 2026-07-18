@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -21,16 +21,15 @@ package sap.commerce.toolset.impex.psi.impl
 import com.intellij.extapi.psi.ASTWrapperPsiElement
 import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiElement
+import sap.commerce.toolset.impex.lang.refactoring.ImpExPsiElementManipulator
 import sap.commerce.toolset.impex.psi.ImpExPsiNamedElement
-import sap.commerce.toolset.impex.psi.util.getKey
-import sap.commerce.toolset.impex.psi.util.setName
 import java.io.Serial
 
 open class ImpExPsiNamedElementMixin(node: ASTNode) : ASTWrapperPsiElement(node), ImpExPsiNamedElement {
 
-    override fun setName(newName: String): PsiElement = setName(this, newName)
-    override fun getNameIdentifier() = this
+    override fun setName(newName: String): PsiElement = ImpExPsiElementManipulator.setName(this, newName)
     override fun getName() = getKey(node)
+    override fun getNameIdentifier() = this
     override fun toString() = text
         ?: super.toString()
 

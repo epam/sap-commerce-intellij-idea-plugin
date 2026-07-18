@@ -27,7 +27,7 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface ImpExValue extends PsiElement {
+public interface ImpExValue extends ImpExPsiNamedElement {
 
   @NotNull
   List<ImpExMacroUsageDec> getMacroUsageDecList();
