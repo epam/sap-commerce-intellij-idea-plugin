@@ -21,13 +21,13 @@ package sap.commerce.toolset.impex.psi.impl
 import com.intellij.extapi.psi.ASTWrapperPsiElement
 import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiElement
+import sap.commerce.toolset.impex.lang.refactoring.ImpExPsiElementManipulator
 import sap.commerce.toolset.impex.psi.ImpExPsiNamedElement
-import sap.commerce.toolset.impex.psi.util.setName
 import java.io.Serial
 
 open class ImpExPsiNamedElementMixin(node: ASTNode) : ASTWrapperPsiElement(node), ImpExPsiNamedElement {
 
-    override fun setName(newName: String): PsiElement = setName(this, newName)
+    override fun setName(newName: String): PsiElement = ImpExPsiElementManipulator.setName(this, newName)
     override fun getName() = getKey(node)
     override fun getNameIdentifier() = this
     override fun toString() = text

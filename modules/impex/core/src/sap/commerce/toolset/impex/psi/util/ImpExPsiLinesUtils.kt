@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -21,7 +21,7 @@ package sap.commerce.toolset.impex.psi.util
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiElement
 
-fun PsiElement.getLineNumber(start: Boolean = true): Int {
+internal fun PsiElement.getLineNumber(start: Boolean = true): Int {
     val document = containingFile.viewProvider.document ?: PsiDocumentManager.getInstance(project).getDocument(containingFile)
     val index = if (start) this.textRange.startOffset else this.textRange.endOffset
     if (index > (document?.textLength ?: 0)) return 0

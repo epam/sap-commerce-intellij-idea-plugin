@@ -26,13 +26,13 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.util.*
 import com.intellij.util.asSafely
 import sap.commerce.toolset.impex.editor.ImpExSplitEditor
+import sap.commerce.toolset.impex.lang.refactoring.ImpExPsiElementManipulator
 import sap.commerce.toolset.impex.psi.*
-import sap.commerce.toolset.impex.psi.util.setName
 import java.io.Serial
 
 abstract class ImpExMacroNameDecMixin(node: ASTNode) : ASTWrapperPsiElement(node), ImpExMacroNameDec {
 
-    override fun setName(newName: String): PsiElement = setName(this, newName)
+    override fun setName(newName: String): PsiElement = ImpExPsiElementManipulator.setName(this, newName)
     override fun getNameIdentifier() = this
     override fun getName() = getKey(node)
     override fun toString() = text

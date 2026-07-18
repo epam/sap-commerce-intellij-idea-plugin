@@ -24,12 +24,12 @@ import com.intellij.openapi.util.Key
 import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
 import sap.commerce.toolset.impex.ImpExConstants
+import sap.commerce.toolset.impex.lang.refactoring.ImpExPsiElementManipulator
 import sap.commerce.toolset.impex.psi.ImpExMacroNameDec
 import sap.commerce.toolset.impex.psi.ImpExMacroUsageDec
 import sap.commerce.toolset.impex.psi.ImpExPsiNamedElement
 import sap.commerce.toolset.impex.psi.references.ImpExMacroReference
 import sap.commerce.toolset.impex.psi.references.ImpExPropertyReference
-import sap.commerce.toolset.impex.psi.util.setName
 import sap.commerce.toolset.psi.impl.ASTWrapperReferencePsiElement
 import java.io.Serial
 
@@ -43,7 +43,7 @@ abstract class ImpExMacroUsageDecMixin(node: ASTNode) : ASTWrapperReferencePsiEl
         null
     }
 
-    override fun setName(newName: String) = setName(this, newName)
+    override fun setName(newName: String) = ImpExPsiElementManipulator.setName(this, newName)
     override fun getName() = getKey(node)
     override fun getNameIdentifier() = this
 

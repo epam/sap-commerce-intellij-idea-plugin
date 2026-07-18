@@ -21,7 +21,7 @@ package sap.commerce.toolset.impex.lang.refactoring
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.AbstractElementManipulator
 import com.intellij.psi.PsiElement
-import sap.commerce.toolset.impex.psi.util.setName
+import sap.commerce.toolset.impex.psi.*
 
 class ImpExPsiElementManipulator : AbstractElementManipulator<PsiElement>() {
 
@@ -30,6 +30,31 @@ class ImpExPsiElementManipulator : AbstractElementManipulator<PsiElement>() {
         val text = element.text
         if (range.endOffset > text.length) return element
         return setName(element, range.replace(text, newName))
+    }
+
+    companion object {
+        fun setName(element: PsiElement, newName: String): PsiElement {
+            if (element is ImpExValue) {
+                val newElement = ImpExElementFactory.createValueElement(element.project, newName) ?: return element
+                element.node.treeParent?.replaceChild(element.node, newElement.node) ?: return element
+                return newElement
+            }
+
+            val keyNode = element.node.firstChildNode
+            if (keyNode != null) {
+                val property = when (element) {
+                    is ImpExMacroNameDec -> ImpExElementFactory.createMacrosDecElement(element.project, newName)
+                    is ImpExMacroUsageDec -> ImpExElementFactory.createMacrosUsageElement(element.project, newName)
+                    is ImpExDocumentIdDec -> ImpExElementFactory.createDocumentIdDecElement(element.project, newName)
+                    is ImpExDocumentIdUsage -> ImpExElementFactory.createDocumentIdUsageElement(element.project, newName)
+                    else -> null
+                }
+                val newKeyNode = if (property == null) return element else property.node
+                element.node.replaceChild(keyNode, newKeyNode!!)
+            }
+            return element
+        }
+
     }
 
 }
