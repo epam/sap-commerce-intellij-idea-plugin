@@ -189,6 +189,7 @@ object HybrisIcons {
         val COLUMN_UNIQUE = getIcon("/icons/impex/uniqueColumn.svg")
         val DOC_ID_MODE_COUNTER = getIcon("/icons/impex/docIdCounterMode.svg")
         val DOC_ID_MODE_COLUMNS = getIcon("/icons/impex/docIdColumnsMode.svg")
+        val DOC_ID_LINK = getIcon("/icons/impex/docIdLink.svg")
 
         object Actions {
             val VALIDATE = getIcon("/icons/impex/validate.svg")
