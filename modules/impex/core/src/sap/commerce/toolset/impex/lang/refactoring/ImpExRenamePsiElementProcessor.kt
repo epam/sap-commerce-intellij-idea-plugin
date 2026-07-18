@@ -164,9 +164,7 @@ class ImpExRenamePsiElementProcessor : RenamePsiElementProcessor() {
         }
         ?: emptyArray()
 
-    private fun ImpExValue.isDocIdValueCell(): Boolean = this
-        .valueGroup?.fullHeaderParameter?.anyHeaderParameterName?.documentIdDec != null
-
+    private fun ImpExValue.isDocIdValueCell(): Boolean = this.getDocIdDecForValue() != null
     private fun ImpExValue.getDocIdDecForValue(): ImpExDocumentIdDec? = this
         .valueGroup?.fullHeaderParameter?.anyHeaderParameterName?.documentIdDec
 
