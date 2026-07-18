@@ -24,10 +24,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.refactoring.rename.RenameInputValidator
 import com.intellij.util.ProcessingContext
 import sap.commerce.toolset.impex.ImpExConstants
-import sap.commerce.toolset.impex.psi.ImpExDocumentIdDec
-import sap.commerce.toolset.impex.psi.ImpExDocumentIdUsage
-import sap.commerce.toolset.impex.psi.ImpExMacroNameDec
-import sap.commerce.toolset.impex.psi.ImpExMacroUsageDec
+import sap.commerce.toolset.impex.psi.*
 
 class ImpExRenameInputValidator : RenameInputValidator {
 
@@ -37,6 +34,7 @@ class ImpExRenameInputValidator : RenameInputValidator {
             PlatformPatterns.psiElement(ImpExDocumentIdUsage::class.java),
             PlatformPatterns.psiElement(ImpExMacroNameDec::class.java),
             PlatformPatterns.psiElement(ImpExMacroUsageDec::class.java),
+            PlatformPatterns.psiElement(ImpExValue::class.java),
         )
     }
 
@@ -46,6 +44,8 @@ class ImpExRenameInputValidator : RenameInputValidator {
 
         is ImpExMacroNameDec,
         is ImpExMacroUsageDec -> newName.startsWith(ImpExConstants.MACRO_MARKER)
+
+        is ImpExValue -> newName.isNotBlank()
 
         else -> false
     }

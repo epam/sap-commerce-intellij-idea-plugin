@@ -1,7 +1,7 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -19,22 +19,23 @@
 
 package sap.commerce.toolset.impex.psi.util
 
-import com.intellij.lang.ASTNode
-import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiFileFactory
-import com.jetbrains.rd.util.firstOrNull
-import sap.commerce.toolset.impex.file.ImpExFileType
 import sap.commerce.toolset.impex.psi.*
 
 fun setName(element: PsiElement, newName: String): PsiElement {
+    if (element is ImpExValue) {
+        val newElement = ImpExElementFactory.createValueElement(element.project, newName) ?: return element
+        element.node.treeParent?.replaceChild(element.node, newElement.node) ?: return element
+        return newElement
+    }
+
     val keyNode = element.node.firstChildNode
     if (keyNode != null) {
         val property = when (element) {
-            is ImpExMacroNameDec -> createMacrosDecElement(element.project, newName)
-            is ImpExMacroUsageDec -> createMacrosUsageElement(element.project, newName)
-            is ImpExDocumentIdDec -> createDocumentIdDecElement(element.project, newName)
-            is ImpExDocumentIdUsage -> createDocumentIdUsageElement(element.project, newName)
+            is ImpExMacroNameDec -> ImpExElementFactory.createMacrosDecElement(element.project, newName)
+            is ImpExMacroUsageDec -> ImpExElementFactory.createMacrosUsageElement(element.project, newName)
+            is ImpExDocumentIdDec -> ImpExElementFactory.createDocumentIdDecElement(element.project, newName)
+            is ImpExDocumentIdUsage -> ImpExElementFactory.createDocumentIdUsageElement(element.project, newName)
             else -> null
         }
         val newKeyNode = if (property == null) return element else property.node
@@ -42,59 +43,3 @@ fun setName(element: PsiElement, newName: String): PsiElement {
     }
     return element
 }
-
-fun getKey(node: ASTNode) = node.findChildByType(ImpExTypes.VALUE)
-    ?.text
-    // IMPORTANT: Convert embedded escaped spaces to simple spaces
-    ?.replace("\\\\ ", " ")
-    ?: node.text
-
-fun createFile(project: Project, text: String): ImpExFile {
-    val name = "dummy.impex"
-    return PsiFileFactory.getInstance(project)
-        .createFileFromText(name, ImpExFileType, text) as ImpExFile
-}
-
-fun createMacrosUsageElement(project: Project, text: String): PsiElement? {
-    val impexFile = createFile(project, "\$dummy = $text")
-    return impexFile.lastChild.lastChild
-}
-
-fun createMacrosDecElement(project: Project, text: String): PsiElement? {
-    val impexFile = createFile(project, "$text = \$dummy")
-    return impexFile.firstChild.firstChild
-}
-
-fun createDocumentIdDecElement(project: Project, text: String): PsiElement? {
-    val impexFile = createFile(
-        project, """
-        INSERT Cart; $text
-    """.trimIndent()
-    )
-    return impexFile.getHeaderLines().firstOrNull()
-        ?.key
-        ?.fullHeaderParameterList
-        ?.firstOrNull()
-        ?.anyHeaderParameterName
-        ?.documentIdDec
-}
-
-
-fun createDocumentIdUsageElement(project: Project, text: String): PsiElement? {
-    val impexFile = createFile(
-        project, """
-        INSERT Address; owner($text)
-    """.trimIndent()
-    )
-    return impexFile.getHeaderLines().firstOrNull()
-        ?.key
-        ?.fullHeaderParameterList
-        ?.firstOrNull()
-        ?.parametersList
-        ?.firstOrNull()
-        ?.parameterList
-        ?.firstOrNull()
-        ?.documentIdUsage
-}
-
-

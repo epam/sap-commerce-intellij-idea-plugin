@@ -27,7 +27,6 @@ import com.intellij.psi.util.*
 import com.intellij.util.asSafely
 import sap.commerce.toolset.impex.editor.ImpExSplitEditor
 import sap.commerce.toolset.impex.psi.*
-import sap.commerce.toolset.impex.psi.util.getKey
 import sap.commerce.toolset.impex.psi.util.setName
 import java.io.Serial
 

@@ -214,7 +214,7 @@ public class ImpExVisitor extends PsiElementVisitor {
   }
 
   public void visitValue(@NotNull ImpExValue o) {
-    visitPsiElement(o);
+    visitPsiNamedElement(o);
   }
 
   public void visitValueGroup(@NotNull ImpExValueGroup o) {

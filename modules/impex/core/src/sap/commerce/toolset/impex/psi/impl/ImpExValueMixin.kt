@@ -28,19 +28,25 @@ import com.intellij.psi.PsiReference
 import com.intellij.psi.util.*
 import com.intellij.util.asSafely
 import sap.commerce.toolset.impex.psi.ImpExHeaderParameterTSContext
+import sap.commerce.toolset.impex.psi.ImpExPsiNamedElement
 import sap.commerce.toolset.impex.psi.ImpExTypes
 import sap.commerce.toolset.impex.psi.ImpExValue
+import sap.commerce.toolset.impex.psi.util.setName
 import sap.commerce.toolset.spring.SpringFallbackScope
 import sap.commerce.toolset.spring.psi.reference.SpringReference
 import sap.commerce.toolset.typeSystem.meta.TSModificationTracker
 import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaItem
 import java.io.Serial
 
-abstract class ImpExValueMixin(node: ASTNode) : ASTWrapperPsiElement(node), PsiLanguageInjectionHost, ImpExValue {
+abstract class ImpExValueMixin(node: ASTNode) : ASTWrapperPsiElement(node), PsiLanguageInjectionHost, ImpExValue, ImpExPsiNamedElement {
 
     override fun isValidHost() = true
     override fun updateText(text: String) = this
     override fun createLiteralTextEscaper() = LiteralTextEscaper.createSimple(this)
+
+    override fun setName(newName: String): PsiElement = setName(this, newName)
+    override fun getNameIdentifier() = this
+    override fun getName() = getKey(node)
 
     override fun getFieldValue(index: Int): PsiElement? = getFieldValues()
         .getOrNull(index)

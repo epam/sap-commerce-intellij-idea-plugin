@@ -19,6 +19,7 @@
 package sap.commerce.toolset.impex.psi
 
 import com.intellij.openapi.project.Project
+import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFileFactory
 import com.intellij.psi.util.childrenOfType
 import sap.commerce.toolset.impex.constants.HeaderMode
@@ -74,6 +75,34 @@ object ImpExElementFactory {
         .lastOrNull()
         ?.fullHeaderParameterList
         ?.firstOrNull()
+
+    fun createMacrosDecElement(project: Project, text: String): PsiElement? = createFile(project, "$text = \$dummy")
+        .firstChild.firstChild
+
+    fun createMacrosUsageElement(project: Project, text: String): PsiElement? = createFile(project, "\$dummy = $text")
+        .lastChild.lastChild
+
+    fun createDocumentIdDecElement(project: Project, text: String): ImpExDocumentIdDec? = createFile(project, "INSERT Cart; $text")
+        .childrenOfType<ImpExHeaderLine>()
+        .firstOrNull()
+        ?.fullHeaderParameterList
+        ?.firstOrNull()
+        ?.anyHeaderParameterName
+        ?.documentIdDec
+
+    fun createValueElement(project: Project, text: String): ImpExValue? = createValueGroup(project, text)
+        ?.value
+
+    fun createDocumentIdUsageElement(project: Project, text: String): ImpExDocumentIdUsage? = createFile(project, "INSERT Address; owner($text)")
+        .childrenOfType<ImpExHeaderLine>()
+        .firstOrNull()
+        ?.fullHeaderParameterList
+        ?.firstOrNull()
+        ?.parametersList
+        ?.firstOrNull()
+        ?.parameterList
+        ?.firstOrNull()
+        ?.documentIdUsage
 
     fun createFile(project: Project, text: String): ImpExFile = PsiFileFactory.getInstance(project)
         .createFileFromText("dummy.impex", ImpExFileType, text) as ImpExFile

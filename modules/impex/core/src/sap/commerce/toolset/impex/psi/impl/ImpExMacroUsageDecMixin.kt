@@ -29,7 +29,6 @@ import sap.commerce.toolset.impex.psi.ImpExMacroUsageDec
 import sap.commerce.toolset.impex.psi.ImpExPsiNamedElement
 import sap.commerce.toolset.impex.psi.references.ImpExMacroReference
 import sap.commerce.toolset.impex.psi.references.ImpExPropertyReference
-import sap.commerce.toolset.impex.psi.util.getKey
 import sap.commerce.toolset.impex.psi.util.setName
 import sap.commerce.toolset.psi.impl.ASTWrapperReferencePsiElement
 import java.io.Serial
