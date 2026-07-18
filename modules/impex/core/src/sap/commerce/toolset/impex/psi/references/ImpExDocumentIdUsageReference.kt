@@ -28,6 +28,7 @@ import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.util.*
 import com.intellij.util.asSafely
+import sap.commerce.toolset.impex.codeInsight.lookup.ImpExLookupElementFactory
 import sap.commerce.toolset.impex.lang.refactoring.ImpExPsiElementManipulator
 import sap.commerce.toolset.impex.psi.ImpExDocumentIdDec
 import sap.commerce.toolset.impex.psi.ImpExDocumentIdUsage
@@ -80,13 +81,7 @@ open class ImpExDocumentIdUsageReference private constructor(
                         ?.text
                         ?.let { TSMetaModelAccess.getInstance(project).findMetaClassifierByName(it) }
 
-                    LookupElementBuilder.createWithSmartPointer(idDec.text, idDec).also { builder ->
-                        if (meta != null) {
-                            return@map builder
-                                .withTypeIconRightAligned(true)
-                                .withTypeText(meta.name, meta.icon, true)
-                        }
-                    }
+                    ImpExLookupElementFactory.buildDocIdUsage(idDec, meta)
                 }
                 ?.toList()
                 ?.toTypedArray()

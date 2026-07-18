@@ -1,7 +1,7 @@
 ## [2026.0.15]
 
 <cite>Release contributors</code>
-- 12 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.15+author%3Amlytvyn+is%3Apr)
+- 13 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.15+author%3Amlytvyn+is%3Apr)
 - 8 PR(s) by [Eugeni Kalenchuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.15+author%3Aekalenchuk+is%3Apr)
 
 ### `Project Import` enhancements
@@ -27,6 +27,7 @@
 - Show resolved value of the possible external macro as folded region [#1968](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1968)
 - Show resolved value of the possible external macro in the data cell inlay hint [#1969](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1969)
 - Recursively resolve possible external macro used in the locally defined macro [#1971](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1971)
+- Added new icon for docId usages [#1972](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1972)
 
 ### `FlexibleSearch` enhancements
 - New action to `Introduce Bind Parameters` for query with exact values in the expressions [#1962](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1962)

@@ -24,6 +24,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.source.tree.LeafPsiElement
 import com.intellij.psi.util.childrenOfType
 import com.intellij.psi.util.parentOfType
+import com.intellij.util.xml.DomElement
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.codeInsight.completion.AutoPopupInsertHandler
 import sap.commerce.toolset.impex.constants.modifier.AttributeModifier
@@ -32,7 +33,9 @@ import sap.commerce.toolset.impex.constants.modifier.InterceptorProvider
 import sap.commerce.toolset.impex.constants.modifier.TypeModifier
 import sap.commerce.toolset.impex.psi.ImpExAttribute
 import sap.commerce.toolset.impex.psi.ImpExTypes
+import sap.commerce.toolset.impex.psi.ImpExValue
 import sap.commerce.toolset.settings.state.ImpExCompletionSettingsState
+import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaClassifier
 
 object ImpExLookupElementFactory {
 
@@ -54,6 +57,20 @@ object ImpExLookupElementFactory {
         modifier: AttributeModifier,
         completionSettings: ImpExCompletionSettingsState
     ) = modifier.build(element, completionSettings)
+
+    fun buildDocIdUsage(
+        idDec: ImpExValue,
+        meta: TSGlobalMetaClassifier<out DomElement>?
+    ) = LookupElementBuilder
+        .createWithSmartPointer(idDec.text, idDec)
+        .withIcon(HybrisIcons.ImpEx.DOC_ID_LINK)
+        .also { builder ->
+            if (meta != null) {
+                return builder
+                    .withTypeIconRightAligned(true)
+                    .withTypeText(meta.name, meta.icon, true)
+            }
+        }
 
     fun buildModifierValue(lookupElement: String) = LookupElementBuilder.create(lookupElement)
 
