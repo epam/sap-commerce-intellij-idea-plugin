@@ -28,6 +28,7 @@ import java.io.Serial
 open class ImpExPsiNamedElementMixin(node: ASTNode) : ASTWrapperPsiElement(node), ImpExPsiNamedElement {
 
     override fun setName(newName: String): PsiElement = setName(this, newName)
+    override fun getName() = getKey(node)
     override fun getNameIdentifier() = this
     override fun toString() = text
         ?: super.toString()
