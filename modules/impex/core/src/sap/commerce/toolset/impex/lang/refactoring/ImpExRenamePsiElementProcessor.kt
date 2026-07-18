@@ -60,9 +60,15 @@ class ImpExRenamePsiElementProcessor : RenamePsiElementProcessor() {
         val namedElement = element as? ImpExPsiNamedElement ?: return
 
         namedElement.setName(newName)
-// mySmartPointer -> "psi:range=(1705,1717),type=Identikit(class='sap.commerce.toolset.impex.psi.impl.ImpExValueImpl', elementType=VALUE, fileLanguage='ImpEx')"
 
         if (namedElement is ImpExValue) {
+            /*
+            # We have to rename the whole ImpExValue for all included in the rename action references in it. Example: NEW-underrename
+            INSERT_UPDATE product ; &refId                 ; code[unique = true]
+            VariantProduct        ; NEW-underrename         ; standard-net
+            UPDATE BaseStore; uid[unique = true]; deliveryModes(&refId)
+                            ; $storeUid         ; premiumtest,NEW-underrename,premium-gross,standard-gross,free-standard-shipping, NEW-underrename
+             */
             usages
                 .groupBy { it.smartPointer.element }
                 .mapNotNull { (element, infos) ->
