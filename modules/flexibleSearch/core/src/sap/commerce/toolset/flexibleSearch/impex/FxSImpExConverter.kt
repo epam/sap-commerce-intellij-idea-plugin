@@ -29,10 +29,14 @@ object FxSImpExConverter {
     /**
      * Builds the complete ImpEx text for a single type.
      *
+     * Unique columns (`[unique=true]`) — including JOIN-unique synthetic columns — are placed
+     * first in both the header and every value row so that ImpEx can locate existing items
+     * before applying the remaining attribute values.
+     *
      * Layout:
      * ```
-     * INSERT_UPDATE TypeName; param1; param2; joinUniqueParam1
-     * ; value1; value2; joinUniqueConstant1
+     * INSERT_UPDATE TypeName; uniqueCol1[unique=true]; joinUniqueCol(key)[unique=true]; regularCol
+     * ; uniqueVal1; joinUniqueConst; regularVal
      * ```
      *
      * @param typeName          ImpEx type name (e.g. `Product`).
@@ -53,22 +57,32 @@ object FxSImpExConverter {
             .mapIndexedNotNull { idx, col -> if (!col.isPk) idx else null }
             .zip(params)
 
+        // Unique columns first, non-unique after — preserving relative order within each group
+        val (uniqueWithIdx, nonUniqueWithIdx) = paramWithSourceIdx
+            .partition { (_, param) -> "unique=true" in param.modifiers }
+
         return buildString {
-            // Header line: SELECT columns + synthetic JOIN-unique columns appended at the end
+            // Header: unique SELECT cols → JOIN-unique synthetic cols → non-unique SELECT cols
             append("INSERT_UPDATE $typeName")
-            params.forEach { param -> append("; ${param.render()}") }
+            uniqueWithIdx.forEach { (_, param) -> append("; ${param.render()}") }
             joinUniqueParams.forEach { param -> append("; ${param.render()}") }
+            nonUniqueWithIdx.forEach { (_, param) -> append("; ${param.render()}") }
             appendLine()
 
-            // Value rows: regular column values, then JOIN-unique constant values
+            // Rows: same order as header
             rows.forEach { row ->
-                paramWithSourceIdx.forEach { (srcIdx, param) ->
+                uniqueWithIdx.forEach { (srcIdx, param) ->
                     val cell = row.getOrNull(srcIdx) ?: ""
                     val value = if (cell == "null") "" else cell
                     append("; ${param.formatValue(value)}")
                 }
                 queryInfo.joinUniqueColumns.forEach { joinCol ->
                     append("; ${joinCol.constantValue ?: ""}")
+                }
+                nonUniqueWithIdx.forEach { (srcIdx, param) ->
+                    val cell = row.getOrNull(srcIdx) ?: ""
+                    val value = if (cell == "null") "" else cell
+                    append("; ${param.formatValue(value)}")
                 }
                 appendLine()
             }

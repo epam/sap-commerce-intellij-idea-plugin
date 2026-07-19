@@ -412,4 +412,83 @@ class FxSImpExConverterTest {
 
         assertEquals("INSERT_UPDATE Product; code[unique=true]; name\n; \"myCode\"; \n", result)
     }
+
+    // -------------------------------------------------------------------------
+    // Unique columns reordered to the front
+    // -------------------------------------------------------------------------
+
+    /**
+     * When unique columns appear after non-unique ones in the SELECT list, they must still be
+     * emitted first in the ImpEx header and every value row.
+     *
+     * SELECT {pk},{name},{description},{code} FROM {Product} WHERE {code}=?code
+     *   → header: code[unique=true]; name; description
+     *   → row:    "myCode"; "My Product"; "Some description"
+     */
+    @Test
+    fun buildImpEx_uniqueColumnsMovedToFront() {
+        val queryInfo = FxSQueryInfo(
+            primaryType = "Product",
+            columns = listOf(
+                FxSColumn(resultHeaderName = "pk", attributeName = "pk", isPk = true),
+                FxSColumn(resultHeaderName = "name", attributeName = "name", isPk = false),
+                FxSColumn(resultHeaderName = "description", attributeName = "description", isPk = false),
+                FxSColumn(resultHeaderName = "code", attributeName = "code", isPk = false),
+            ),
+            uniqueAttributeNames = setOf("code"),
+        )
+        val params = listOf(
+            atomicParam("name"),
+            atomicParam("description"),
+            atomicParam("code", unique = true),
+        )
+        val rows = listOf(listOf("pk1", "My Product", "Some description", "myCode"))
+
+        val result = FxSImpExConverter.buildImpEx("Product", params, emptyList(), queryInfo, rows)
+
+        assertEquals(
+            "INSERT_UPDATE Product; code[unique=true]; name; description\n" +
+                "; \"myCode\"; \"My Product\"; \"Some description\"\n",
+            result
+        )
+    }
+
+    /**
+     * Mixed: first SELECT column is unique, middle is non-unique, last two are unique.
+     * All three unique columns must be grouped at the front.
+     */
+    @Test
+    fun buildImpEx_multipleUniqueColumnsInterleavedWithNonUnique() {
+        val queryInfo = FxSQueryInfo(
+            primaryType = "Product",
+            columns = listOf(
+                FxSColumn(resultHeaderName = "pk", attributeName = "pk", isPk = true),
+                FxSColumn(resultHeaderName = "code", attributeName = "code", isPk = false),
+                FxSColumn(resultHeaderName = "name", attributeName = "name", isPk = false),
+                FxSColumn(resultHeaderName = "catalogVersion", attributeName = "catalogVersion", isPk = false),
+                FxSColumn(resultHeaderName = "description", attributeName = "description", isPk = false),
+            ),
+            uniqueAttributeNames = setOf("code", "catalogVersion"),
+        )
+        val params = listOf(
+            atomicParam("code", unique = true),
+            atomicParam("name"),
+            FxSImpExParam(
+                attributeName = "catalogVersion",
+                nestedPath = "catalog(id),version",
+                modifiers = listOf("unique=true"),
+                metaType = FxSAttributeMetaType.ITEM,
+            ),
+            atomicParam("description"),
+        )
+        val rows = listOf(listOf("pk1", "myCode", "My Product", "Default:Staged", "Desc"))
+
+        val result = FxSImpExConverter.buildImpEx("Product", params, emptyList(), queryInfo, rows)
+
+        assertEquals(
+            "INSERT_UPDATE Product; code[unique=true]; catalogVersion(catalog(id),version)[unique=true]; name; description\n" +
+                "; \"myCode\"; Default:Staged; \"My Product\"; \"Desc\"\n",
+            result
+        )
+    }
 }
