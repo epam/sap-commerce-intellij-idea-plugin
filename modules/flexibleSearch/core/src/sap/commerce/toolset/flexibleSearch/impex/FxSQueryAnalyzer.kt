@@ -129,11 +129,17 @@ object FxSQueryAnalyzer {
      * Correlates HAC result headers with PSI result columns.
      *
      * HAC returns headers in the same order as the SELECT list. When the counts match, we zip them.
-     * If they differ (e.g. `SELECT *`), we fall back to using header names directly.
+     * If headers are absent (query not yet executed), columns are derived from PSI alone.
+     * If counts differ (e.g. `SELECT *`), we fall back to using header names directly.
      */
     private fun correlateColumns(headers: List<String>, psiColumns: List<FlexibleSearchResultColumn>): List<FxSColumn> {
+        if (headers.isEmpty() && psiColumns.isNotEmpty()) {
+            // No execution result yet — derive columns from PSI without header correlation
+            return psiColumns.map { analyzeColumn("", it) }
+        }
+
         if (psiColumns.isEmpty() || psiColumns.size != headers.size) {
-            // Fallback: no PSI info, create bare columns from header names
+            // Size mismatch (e.g. SELECT *): fall back to bare header names
             return headers.map { header ->
                 FxSColumn(
                     resultHeaderName = header,

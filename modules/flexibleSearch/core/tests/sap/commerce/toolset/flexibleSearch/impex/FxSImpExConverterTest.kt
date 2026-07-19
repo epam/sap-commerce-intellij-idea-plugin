@@ -118,6 +118,88 @@ class FxSImpExConverterTest {
     }
 
     // -------------------------------------------------------------------------
+    // Header-only export (no rows)
+    // -------------------------------------------------------------------------
+
+    /**
+     * Query not yet executed — no result rows, but columns are known from PSI.
+     *
+     * All SELECT columns must appear in the header even when [rows] is empty.
+     *
+     * Expected:
+     * ```
+     * INSERT_UPDATE Product; code[unique=true]; name
+     * ```
+     */
+    @Test
+    fun buildImpEx_noRows_allSelectColumnsInHeader() {
+        val queryInfo = FxSQueryInfo(
+            primaryType = "Product",
+            columns = listOf(
+                FxSColumn(resultHeaderName = "", attributeName = "pk", isPk = true),
+                FxSColumn(resultHeaderName = "", attributeName = "code", isPk = false),
+                FxSColumn(resultHeaderName = "", attributeName = "name", isPk = false),
+            ),
+            uniqueAttributeNames = setOf("code"),
+        )
+        val params = listOf(
+            atomicParam("code", unique = true),
+            atomicParam("name"),
+        )
+
+        val result = FxSImpExConverter.buildImpEx("Product", params, emptyList(), queryInfo, emptyList())
+
+        assertEquals("INSERT_UPDATE Product; code[unique=true]; name\n", result)
+    }
+
+    /**
+     * No rows, with JOIN-unique synthetic columns — all SELECT columns plus join-unique must appear.
+     *
+     * Expected:
+     * ```
+     * INSERT_UPDATE Product; catalogVersion(catalog(id),version)[unique=true]; code; name
+     * ```
+     */
+    @Test
+    fun buildImpEx_noRows_withJoinUniqueColumns_allColumnsInHeader() {
+        val queryInfo = FxSQueryInfo(
+            primaryType = "Product",
+            columns = listOf(
+                FxSColumn(resultHeaderName = "", attributeName = "pk", isPk = true),
+                FxSColumn(resultHeaderName = "", attributeName = "code", isPk = false),
+                FxSColumn(resultHeaderName = "", attributeName = "name", isPk = false),
+            ),
+            uniqueAttributeNames = emptySet(),
+            joinUniqueColumns = listOf(
+                FxSJoinUniqueColumn(
+                    fkAttributeName = "catalogVersion",
+                    naturalKeyAttr = "catalog(id),version",
+                    constantValue = "productCatalog:Staged",
+                )
+            ),
+        )
+        val params = listOf(
+            atomicParam("code"),
+            atomicParam("name"),
+        )
+        val joinUniqueParams = listOf(
+            FxSImpExParam(
+                attributeName = "catalogVersion",
+                nestedPath = "catalog(id),version",
+                modifiers = listOf("unique=true"),
+                metaType = FxSAttributeMetaType.ITEM,
+            )
+        )
+
+        val result = FxSImpExConverter.buildImpEx("Product", params, joinUniqueParams, queryInfo, emptyList())
+
+        assertEquals(
+            "INSERT_UPDATE Product; catalogVersion(catalog(id),version)[unique=true]; code; name\n",
+            result
+        )
+    }
+
+    // -------------------------------------------------------------------------
     // NULL cell handling
     // -------------------------------------------------------------------------
 
