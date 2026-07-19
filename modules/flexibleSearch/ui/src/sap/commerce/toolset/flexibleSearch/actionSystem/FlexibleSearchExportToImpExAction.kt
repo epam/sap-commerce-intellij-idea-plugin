@@ -23,8 +23,8 @@ import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
-import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.ide.CopyPasteManager
+import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.popup.*
 import com.intellij.ui.AnimatedIcon
@@ -92,7 +92,7 @@ class FlexibleSearchExportToImpExAction : AnAction() {
                     .bindSelected({ includeData }, { includeData = it })
                     .enabled(hasData)
                     .comment(
-                        if (hasData) i18n("hybris.fxs.actions.export_to_impex.dialog.include_data.has_result")
+                        if (hasData) i18n("hybris.fxs.actions.export_to_impex.dialog.include_data.has_result", rows.size)
                         else i18n("hybris.fxs.actions.export_to_impex.dialog.include_data.no_result")
                     )
             }
