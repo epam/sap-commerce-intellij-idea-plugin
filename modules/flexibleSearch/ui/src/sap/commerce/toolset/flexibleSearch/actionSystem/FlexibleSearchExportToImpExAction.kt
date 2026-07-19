@@ -29,6 +29,8 @@ import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.Notifications
 import sap.commerce.toolset.flexibleSearch.editor.flexibleSearchSplitEditor
 import sap.commerce.toolset.flexibleSearch.impex.FxSColumn
+import sap.commerce.toolset.flexibleSearch.impex.FxSImpExHeaderBuilder
+import sap.commerce.toolset.flexibleSearch.impex.FxSImpExParam
 import sap.commerce.toolset.flexibleSearch.impex.FxSQueryAnalyzer
 import sap.commerce.toolset.flexibleSearch.impex.FxSQueryInfo
 import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchPsiFile
@@ -62,7 +64,8 @@ class FlexibleSearchExportToImpExAction : DumbAwareAction() {
                 uniqueAttributeNames = emptySet(),
             )
 
-        val impexContent = buildImpEx(queryInfo, rows)
+        val params = FxSImpExHeaderBuilder.buildParams(queryInfo, project)
+        val impexContent = buildImpEx(queryInfo.primaryType, params, queryInfo, rows)
 
         CopyPasteManager.getInstance().setContents(StringSelection(impexContent))
 
@@ -78,40 +81,32 @@ class FlexibleSearchExportToImpExAction : DumbAwareAction() {
             .notify(project)
     }
 
-    private fun buildImpEx(queryInfo: FxSQueryInfo, rows: List<List<String>>): String {
-        // Filter out PK-only columns and build the visible column list
-        val visibleColumns = queryInfo.columns.filterNot { it.isPk }
+    private fun buildImpEx(
+        typeName: String,
+        params: List<FxSImpExParam>,
+        queryInfo: FxSQueryInfo,
+        rows: List<List<String>>,
+    ): String {
+        // Map result column indices (excluding PK) to their param indices
+        val columnIndexMap = queryInfo.columns
+            .mapIndexedNotNull { idx, col -> if (!col.isPk) idx else null }
 
         return buildString {
-            // Header line: INSERT_UPDATE TypeName; col1[unique=true]; col2; ...
-            append("INSERT_UPDATE ${queryInfo.primaryType}")
-            visibleColumns.forEach { col ->
-                val modifiers = buildColumnModifiers(col, queryInfo.uniqueAttributeNames)
-                append("; ${col.attributeName}$modifiers")
-            }
+            // Header line
+            append("INSERT_UPDATE $typeName")
+            params.forEach { param -> append("; ${param.render()}") }
             appendLine()
 
-            // Value rows
-            val visibleIndices = queryInfo.columns
-                .mapIndexedNotNull { idx, col -> if (!col.isPk) idx else null }
-
+            // Value rows — only emit values for visible (non-PK) columns
             rows.forEach { row ->
                 append("")
-                visibleIndices.forEach { idx ->
-                    val cell = row.getOrNull(idx) ?: ""
+                columnIndexMap.forEach { srcIdx ->
+                    val cell = row.getOrNull(srcIdx) ?: ""
                     val value = if (cell == "null") "" else cell
                     append("; $value")
                 }
                 appendLine()
             }
         }
-    }
-
-    private fun buildColumnModifiers(col: FxSColumn, uniqueAttributeNames: Set<String>): String {
-        val modifiers = buildList {
-            if (col.attributeName in uniqueAttributeNames) add("unique=true")
-            if (col.isLocalized && col.langCode != null) add("lang=${col.langCode}")
-        }
-        return if (modifiers.isEmpty()) "" else "[${modifiers.joinToString(",")}]"
     }
 }
