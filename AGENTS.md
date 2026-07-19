@@ -53,10 +53,11 @@ See `TECH_NOTES.md` for: action invocation, background-thread patterns, dialog s
 
 ## Workflow
 1. Identify affected area.
-2. Implement focused change.
-3. Run relevant tests.
-4. Review modified files — remove unrelated changes, no formatting noise.
-5. Final commit message matches repository style.
+2. Create a feature branch: `git checkout -b feature/<short-topic>`.
+3. Implement focused change; commit iterative progress as you work — don't accumulate all changes into one diff.
+4. Run relevant tests.
+5. Review modified files — remove unrelated changes, no formatting noise.
+6. Commit message matches repository style (see `skills/github.md`).
 
 Because PRs are squash merged: intermediate commits are for convenience; do not create artificial micro-commits.
 
