@@ -89,3 +89,4 @@ Because PRs are squash merged: intermediate commits are for convenience; do not 
 - No hand-editing `gen/` files.
 - Avoid unnecessary generated-file commits.
 - Small, focused, reviewable, easy-to-revert changes.
+- New/changed logic: cover with atomic unit tests (single behavior per test) in the relevant module's own test source set — required before merge, not necessarily written first. TDD encouraged for `core`/pure logic; test-after acceptable for `exec` (remote IO) and `ui` (Swing glue).

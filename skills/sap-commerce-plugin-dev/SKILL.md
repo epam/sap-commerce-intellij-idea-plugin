@@ -1,13 +1,12 @@
 ---
 name: sap-commerce-plugin-dev
 description: >-
-  Kotlin code-style, file-organization, package, and IntelliJ Platform SDK-safety conventions for
-  the SAP Commerce Developers Toolset plugin — the single source of truth for writing code in this
-  repo. Use for any add/modify/review of Kotlin source: classes, DTOs, services, MCP tools,
-  inspections, actions, extensions, settings, exec clients, UI dialogs, new modules — and as the
-  final self-check before considering a Kotlin change finished. Trigger on "which package", "one
-  class per file", "column style", "can I use this IntelliJ API", "ApiStatus.Internal", "verify
-  conventions", "check code style".
+  Kotlin style, file/package organization, and IntelliJ Platform SDK safety for this plugin —
+  single source of truth for writing code here. Use for any Kotlin add/modify/review: classes,
+  DTOs, services, MCP tools, inspections, actions, extensions, settings, exec clients, UI dialogs,
+  new modules — and as final self-check before finishing a Kotlin change. Trigger on "which
+  package", "one class per file", "column style", "can I use this IntelliJ API",
+  "ApiStatus.Internal", "verify conventions", "check code style".
 ---
 
 # SAP Commerce Developers Toolset — plugin dev conventions
@@ -111,19 +110,17 @@ base) — no `.editorconfig`.
   `reportProgressScope`/`reportSequentialProgress` — never manual `ProgressIndicator`.
   `coroutineToIndicator` only where a legacy indicator-based API is unavoidable (see
   ApiStatus.Internal section); `runBlockingCancellable` unused in this codebase.
-- **Scope read actions to the bare data retrieval, not the whole method.** Push each
-  `readAction { }` (or any scoped read-lock) down next to the individual call needing the lock,
-  assign its raw result to a value, and do all filtering/mapping/assembly afterwards as a single
-  pipeline on that value — never chain post-processing (not even a `.filter`) onto the block
-  expression. Keeps the lock boundary explicit and confines locked work to the fetch.
-- Read actions are side-effect-free: return nullable, do `?: error(...)`/assembly *after* the
-  block returns — never `error(...)`/throw inside.
+- Scope read actions to bare data retrieval, not whole method: `readAction { }` next to each
+  locked call, assign raw result, filter/map/assemble after — never chain post-processing onto
+  the block.
+- Read actions side-effect-free: nullable return, `?: error(...)`/assembly after block returns —
+  never throw inside.
 - Guard `if (project.isDisposed) return@launch` at the top of launched blocks touching the project.
 
 ## Exec layer (remote SAP Commerce execution)
 
-New "run on remote instance" feature = `modules/<feature>/exec` module, four pieces (base classes
-in `exec/core/.../exec/`); exemplar: `groovy/exec/`.
+New remote-execution feature = `modules/<feature>/exec` module, four pieces (base classes in
+`exec/core/.../exec/`); exemplar `groovy/exec/`.
 
 1. **`XxxExecContext`** — immutable `data class : ExecContext`: `connection`, `content`,
    `timeout`, overrides `executionTitle`, `params()`, nested `Settings`/`Settings.Mutable`,
@@ -155,8 +152,8 @@ replica routing, SSL trust, timeouts. Pass `context.timeout`/`context.replicaCon
   `@SerialName("x")`.
 - Derive computed fields in the DTO itself (defaulted constructor property referencing earlier
   params, ordered after its dependency) — callers construct DTOs with only real inputs.
-- Error handling: no try/catch in tools — `error(...)`/`require(...)` (message surfaces to the MCP
-  client), or model domain failure as DTO fields (`success = false`, `error`, `errorDetail`).
+- No try/catch in tools — `error(...)`/`require(...)` (surfaces to MCP client), or model failure
+  as DTO fields (`success = false`, `error`, `errorDetail`).
 - Exemplar: `groovy/mcp/` (`GroovyMcpToolset.kt`, `GroovyMcpService.kt`, `dto/GroovyResult.kt`).
 
 ## Actions & UI
@@ -259,10 +256,8 @@ internal `DaemonCodeAnalyzerImpl`/`HighlightingSessionImpl` for headless highlig
 
 ## Verify before finishing
 
-A clean compile proves correctness, not convention compliance. Re-read the diff against every
-heading above that the change touches — house style (header, formatting, one-class-per-file,
-column style) always applies; then the area-specific section(s); then confirm any
-unfamiliar/internal-looking platform API was actually checked, not assumed. Finally:
+Compile ≠ convention compliance. Re-check diff against every touched heading above (house style
+always; then area-specific); confirm unfamiliar/internal-looking APIs were checked, not assumed.
 
 ```
 ./gradlew :<module>:compileKotlin
