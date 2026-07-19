@@ -20,23 +20,18 @@ package sap.commerce.toolset.flexibleSearch.actionSystem
 
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.actionSystem.ActionUpdateThread
+import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.ide.CopyPasteManager
-import com.intellij.openapi.project.DumbAwareAction
 import com.intellij.openapi.project.Project
 import com.intellij.util.asSafely
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.Notifications
 import sap.commerce.toolset.flexibleSearch.editor.flexibleSearchSplitEditor
-import sap.commerce.toolset.flexibleSearch.exec.FlexibleSearchExecClient
-import sap.commerce.toolset.flexibleSearch.exec.FlexibleSearchExecConstants
-import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecContext
-import sap.commerce.toolset.flexibleSearch.exec.context.QueryMode
+import sap.commerce.toolset.flexibleSearch.exec.FxSImpExExecService
 import sap.commerce.toolset.flexibleSearch.impex.FxSColumn
-import sap.commerce.toolset.flexibleSearch.impex.FxSImpExConverter
 import sap.commerce.toolset.flexibleSearch.impex.FxSImpExHeaderBuilder
-import sap.commerce.toolset.flexibleSearch.impex.FxSImpExParam
 import sap.commerce.toolset.flexibleSearch.impex.FxSQueryAnalyzer
 import sap.commerce.toolset.flexibleSearch.impex.FxSQueryInfo
 import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchPsiFile
@@ -46,7 +41,7 @@ import sap.commerce.toolset.ifNotFromSearchPopup
 import sap.commerce.toolset.scratch.createScratchFile
 import java.awt.datatransfer.StringSelection
 
-class FlexibleSearchExportToImpExAction : DumbAwareAction() {
+class FlexibleSearchExportToImpExAction : AnAction() {
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
@@ -73,75 +68,17 @@ class FlexibleSearchExportToImpExAction : DumbAwareAction() {
 
         val params = FxSImpExHeaderBuilder.buildParams(queryInfo, project)
         val joinUniqueParams = FxSImpExHeaderBuilder.buildJoinUniqueParams(queryInfo, project)
-        val enumSourceIndicesByType = FxSImpExHeaderBuilder.enumSourceIndicesByType(queryInfo, params)
-        val fkSourceIndicesByResolutionInfo = FxSImpExHeaderBuilder.fkSourceIndicesByResolutionInfo(queryInfo, params)
-
-        if (enumSourceIndicesByType.isEmpty() && fkSourceIndicesByResolutionInfo.isEmpty()) {
-            val impexContent = buildImpEx(queryInfo.primaryType, params, joinUniqueParams, queryInfo, rows)
-            notifyExportDone(project, queryInfo.primaryType, rows.size, impexContent)
-            return
-        }
-
-        // Run follow-up queries to resolve enum PKs → codes and FK PKs → natural keys, then build ImpEx.
-        // Enum and FK contexts are combined into a single execute() call; results are split by offset.
         val connection = HacExecConnectionService.getInstance(project).activeConnection
-        val enumContexts = enumSourceIndicesByType.values.distinct().map { enumType ->
-            FlexibleSearchExecContext(
-                connection = connection,
-                content = "SELECT {pk}, {code} FROM {$enumType}",
-                queryMode = QueryMode.FlexibleSearch,
-                maxCount = 10_000,
-                locale = FlexibleSearchExecConstants.Defaults.LOCALE,
-                dataSource = FlexibleSearchExecConstants.Defaults.DATA_SOURCE,
-                user = null,
-                timeout = connection.timeout,
-            )
-        }
-        val fkContexts = fkSourceIndicesByResolutionInfo.values.distinctBy { it.fxsLookupQuery }.map { fkInfo ->
-            FlexibleSearchExecContext(
-                connection = connection,
-                content = fkInfo.fxsLookupQuery,
-                queryMode = QueryMode.FlexibleSearch,
-                maxCount = 10_000,
-                locale = FlexibleSearchExecConstants.Defaults.LOCALE,
-                dataSource = FlexibleSearchExecConstants.Defaults.DATA_SOURCE,
-                user = null,
-                timeout = connection.timeout,
-            )
-        }
-        val allContexts = enumContexts + fkContexts
-        FlexibleSearchExecClient.getInstance(project).execute(
-            contexts = allContexts,
-            afterCallback = { _, allResults ->
-                val enumResults = allResults.take(enumContexts.size)
-                val fkResults = allResults.drop(enumContexts.size)
 
-                val pkToCode = enumResults
-                    .flatMap { r -> r.rows ?: emptyList() }
-                    .mapNotNull { row ->
-                        val pk = row.getOrNull(0)?.takeIf { it.isNotBlank() } ?: return@mapNotNull null
-                        val code = row.getOrNull(1)?.takeIf { it.isNotBlank() } ?: return@mapNotNull null
-                        pk to code
-                    }
-                    .toMap()
-                // Each FK lookup row: [pk, key_part_1, key_part_2, ...]
-                // Natural key = key parts joined by ":" (ImpEx path delimiter)
-                val pkToNaturalKey = fkResults
-                    .flatMap { r -> r.rows ?: emptyList() }
-                    .mapNotNull { row ->
-                        val pk = row.getOrNull(0)?.takeIf { it.isNotBlank() } ?: return@mapNotNull null
-                        val keyParts = row.drop(1).filter { it.isNotBlank() }
-                        if (keyParts.isEmpty()) return@mapNotNull null
-                        pk to keyParts.joinToString(":")
-                    }
-                    .toMap()
-
-                val resolvedRows = FxSImpExHeaderBuilder.resolveEnumPks(rows, enumSourceIndicesByType.keys, pkToCode)
-                val finalRows = FxSImpExHeaderBuilder.resolveFkPks(resolvedRows, fkSourceIndicesByResolutionInfo.keys, pkToNaturalKey)
-                val impexContent = buildImpEx(queryInfo.primaryType, params, joinUniqueParams, queryInfo, finalRows)
-                notifyExportDone(project, queryInfo.primaryType, finalRows.size, impexContent)
-            }
-        )
+        FxSImpExExecService.getInstance(project).exportToImpEx(
+            queryInfo = queryInfo,
+            params = params,
+            joinUniqueParams = joinUniqueParams,
+            rows = rows,
+            connection = connection,
+        ) { impexContent ->
+            notifyExportDone(project, queryInfo.primaryType, rows.size, impexContent)
+        }
     }
 
     private fun notifyExportDone(project: Project, typeName: String, rowCount: Int, impexContent: String) {
@@ -158,12 +95,4 @@ class FlexibleSearchExportToImpExAction : DumbAwareAction() {
             }
             .notify(project)
     }
-
-    private fun buildImpEx(
-        typeName: String,
-        params: List<FxSImpExParam>,
-        joinUniqueParams: List<FxSImpExParam>,
-        queryInfo: FxSQueryInfo,
-        rows: List<List<String>>,
-    ): String = FxSImpExConverter.buildImpEx(typeName, params, joinUniqueParams, queryInfo, rows)
 }
