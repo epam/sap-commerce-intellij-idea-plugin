@@ -23,6 +23,7 @@ import com.intellij.mcpserver.annotations.McpDescription
 import com.intellij.mcpserver.annotations.McpTool
 import com.intellij.mcpserver.project
 import com.intellij.openapi.application.readAction
+import com.intellij.openapi.project.Project
 import kotlinx.coroutines.currentCoroutineContext
 import org.apache.http.HttpStatus
 import sap.commerce.toolset.ai.mcp.map
@@ -37,6 +38,7 @@ import sap.commerce.toolset.flexibleSearch.impex.FxSQueryAnalyzer
 import sap.commerce.toolset.flexibleSearch.impex.FxSQueryInfo
 import sap.commerce.toolset.flexibleSearch.mcp.dto.FxSImpExResult
 import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchElementFactory
+import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
 import sap.commerce.toolset.hac.mcp.HacMcpService
 
 class FxSToImpExMcpToolset : McpToolset {
@@ -46,6 +48,7 @@ class FxSToImpExMcpToolset : McpToolset {
         """Executes a FlexibleSearch query on a SAP Commerce server and converts the results into an ImpEx INSERT_UPDATE script.
         |The generated ImpEx uses the type system to resolve correct attribute types, nested FK paths (e.g. catalogVersion(catalog(id),version)),
         |localized attributes (lang=xx), collection delimiters, and [unique=true] modifiers derived from WHERE clause equality conditions.
+        |Enum attribute values are resolved from their runtime PKs to their codes via follow-up queries.
         |Returns the ImpEx text along with metadata (primary type, column count, row count).
         |Requires a configured and authenticated HAC connection."""
     )
@@ -113,7 +116,11 @@ class FxSToImpExMcpToolset : McpToolset {
         }
 
         val params = FxSImpExHeaderBuilder.buildParams(queryInfo, project)
-        val impexContent = buildImpEx(queryInfo, params, rows)
+
+        // Resolve enum PKs → codes via follow-up queries (one per distinct enum type)
+        val resolvedRows = resolveEnumRows(rows, queryInfo, params, connection, project, locale, dataSource, user)
+
+        val impexContent = buildImpEx(queryInfo, params, resolvedRows)
 
         return mapper.map(
             FxSImpExResult(
@@ -121,10 +128,48 @@ class FxSToImpExMcpToolset : McpToolset {
                 success = true,
                 primaryType = queryInfo.primaryType,
                 columnCount = params.size,
-                rowCount = rows.size,
+                rowCount = resolvedRows.size,
                 impex = impexContent,
             )
         )
+    }
+
+    private suspend fun resolveEnumRows(
+        rows: List<List<String>>,
+        queryInfo: FxSQueryInfo,
+        params: List<FxSImpExParam>,
+        connection: HacConnectionSettingsState,
+        project: Project,
+        locale: String,
+        dataSource: String,
+        user: String?,
+    ): List<List<String>> {
+        val enumSourceIndicesByType = FxSImpExHeaderBuilder.enumSourceIndicesByType(queryInfo, params)
+        if (enumSourceIndicesByType.isEmpty()) return rows
+
+        val pkToCode = enumSourceIndicesByType.values.distinct()
+            .flatMap { enumType ->
+                val enumContext = FlexibleSearchExecContext(
+                    connection = connection,
+                    content = "SELECT {pk}, {code} FROM {$enumType}",
+                    queryMode = QueryMode.FlexibleSearch,
+                    maxCount = 10_000,
+                    locale = locale,
+                    dataSource = dataSource,
+                    user = user,
+                    timeout = connection.timeout,
+                )
+                val enumResult = FlexibleSearchExecClient.getInstance(project).execute(enumContext)
+                enumResult.rows ?: emptyList()
+            }
+            .mapNotNull { row ->
+                val pk = row.getOrNull(0)?.takeIf { it.isNotBlank() } ?: return@mapNotNull null
+                val code = row.getOrNull(1)?.takeIf { it.isNotBlank() } ?: return@mapNotNull null
+                pk to code
+            }
+            .toMap()
+
+        return FxSImpExHeaderBuilder.resolveEnumPks(rows, enumSourceIndicesByType.keys, pkToCode)
     }
 
     private fun buildImpEx(
