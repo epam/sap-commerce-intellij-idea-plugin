@@ -19,14 +19,13 @@
 package sap.commerce.toolset.flexibleSearch.impex
 
 import com.intellij.psi.util.PsiTreeUtil
-import com.intellij.psi.util.childrenOfType
 import com.intellij.util.asSafely
 import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchColumnRefExpression
 import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchColumnRefYExpression
 import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchDefinedTableName
 import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchEquivalenceExpression
 import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchFromClause
-import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchFromClauseSelect
+import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchFromClauseSimple
 import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchOrExpression
 import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchPsiFile
 import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchResultColumn
@@ -191,36 +190,45 @@ object FxSQueryAnalyzer {
     /**
      * Builds a map of JOIN table alias → root-type FK attribute name by parsing ON conditions.
      *
-     * For `JOIN SolrIndexedType AS t0 ON {t0.pk} = {t.solrIndexedType}` produces `"t0" → "solrIndexedType"`.
-     * Used by [collectUniqueAttributes] to resolve `{t0.identifier}` → unique attr `solrIndexedType`.
+     * Hybris FlexibleSearch wraps the entire FROM clause (including JOINs) inside `{...}` braces,
+     * making it a [FlexibleSearchFromClauseSimple] node — not a [FlexibleSearchFromClauseSelect].
+     *
+     * For `{SolrIndexedProperty AS t JOIN SolrIndexedType AS t0 ON {t0.pk} = {t.solrIndexedType}}`
+     * produces `"t0" → "solrIndexedType"`.
      */
     private fun buildJoinAliasMap(fromClause: FlexibleSearchFromClause?): Map<String, String> {
         if (fromClause == null) return emptyMap()
+        val simple = PsiTreeUtil.findChildOfType(fromClause, FlexibleSearchFromClauseSimple::class.java)
+            ?: return emptyMap()
+
+        val tables = simple.tableOrSubqueryList
+        val constraints = simple.joinConstraintList
+        if (tables.size < 2 || constraints.isEmpty()) return emptyMap()
+
         val result = mutableMapOf<String, String>()
 
-        fromClause.fromClauseExprList
-            .filterIsInstance<FlexibleSearchFromClauseSelect>()
-            .forEach { joinExpr ->
-                val joinAlias = joinExpr.tableAliasName?.text ?: return@forEach
-                val onExpr = joinExpr.joinConstraint?.expression
-                    ?.asSafely<FlexibleSearchEquivalenceExpression>() ?: return@forEach
-                val exprs = onExpr.expressionList
-                if (exprs.size != 2) return@forEach
+        // tables[0] is the root table; tables[i+1] is the i-th JOIN table with constraints[i]
+        constraints.forEachIndexed { idx, constraint ->
+            val joinAlias = tables.getOrNull(idx + 1)?.fromTable?.tableAliasName?.text ?: return@forEachIndexed
+            val onExpr = constraint.expression
+                ?.asSafely<FlexibleSearchEquivalenceExpression>() ?: return@forEachIndexed
+            val exprs = onExpr.expressionList
+            if (exprs.size != 2) return@forEachIndexed
 
-                val col0 = exprs[0].asSafely<FlexibleSearchColumnRefExpression>() ?: return@forEach
-                val col1 = exprs[1].asSafely<FlexibleSearchColumnRefExpression>() ?: return@forEach
+            val col0 = exprs[0].asSafely<FlexibleSearchColumnRefExpression>() ?: return@forEachIndexed
+            val col1 = exprs[1].asSafely<FlexibleSearchColumnRefExpression>() ?: return@forEachIndexed
 
-                // Identify which side is {joinAlias.pk} and which is {rootAlias.fkAttr}
-                val fkCol = when {
-                    col0.selectedTableName?.text == joinAlias
-                        && col0.columnName?.name.equals("pk", ignoreCase = true) -> col1
-                    col1.selectedTableName?.text == joinAlias
-                        && col1.columnName?.name.equals("pk", ignoreCase = true) -> col0
-                    else -> return@forEach
-                }
-                val fkAttr = fkCol.columnName?.name ?: return@forEach
-                result[joinAlias] = fkAttr
+            // Identify which side is {joinAlias.pk} and which is {rootAlias.fkAttr}
+            val fkCol = when {
+                col0.selectedTableName?.text == joinAlias
+                    && col0.columnName?.name.equals("pk", ignoreCase = true) -> col1
+                col1.selectedTableName?.text == joinAlias
+                    && col1.columnName?.name.equals("pk", ignoreCase = true) -> col0
+                else -> return@forEachIndexed
             }
+            val fkAttr = fkCol.columnName?.name ?: return@forEachIndexed
+            result[joinAlias] = fkAttr
+        }
 
         return result
     }
