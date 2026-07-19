@@ -37,6 +37,7 @@ sourceSets {
 dependencies {
     implementation(project(":shared-core"))
     implementation(project(":hac-exec"))
+    implementation(project(":flexibleSearch-core"))
     implementation(project(":flexibleSearch-exec"))
     implementation(project(":exec-core"))
     implementation(project(":ai-mcp"))

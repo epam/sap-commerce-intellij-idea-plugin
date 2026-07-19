@@ -20,6 +20,7 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <mcpServer.mcpToolset implementation="sap.commerce.toolset.flexibleSearch.mcp.FlexibleSearchMcpToolset"/>
+        <mcpServer.mcpToolset implementation="sap.commerce.toolset.flexibleSearch.mcp.FxSToImpExMcpToolset"/>
     </extensions>
 
 </idea-plugin>
