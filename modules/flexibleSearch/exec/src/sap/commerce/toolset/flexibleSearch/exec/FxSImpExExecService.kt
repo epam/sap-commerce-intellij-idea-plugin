@@ -79,7 +79,7 @@ class FxSImpExExecService(
         val enumSourceIndicesByType = FxSImpExHeaderBuilder.enumSourceIndicesByType(queryInfo, params)
         val fkSourceIndicesByResolutionInfo = FxSImpExHeaderBuilder.fkSourceIndicesByResolutionInfo(queryInfo, params)
 
-        if (enumSourceIndicesByType.isEmpty() && fkSourceIndicesByResolutionInfo.isEmpty()) {
+        if (rows.isEmpty() || enumSourceIndicesByType.isEmpty() && fkSourceIndicesByResolutionInfo.isEmpty()) {
             onComplete(FxSImpExConverter.buildImpEx(queryInfo.primaryType, params, joinUniqueParams, queryInfo, rows))
             return
         }
@@ -110,7 +110,7 @@ class FxSImpExExecService(
         val enumSourceIndicesByType = FxSImpExHeaderBuilder.enumSourceIndicesByType(queryInfo, params)
         val fkSourceIndicesByResolutionInfo = FxSImpExHeaderBuilder.fkSourceIndicesByResolutionInfo(queryInfo, params)
 
-        if (enumSourceIndicesByType.isEmpty() && fkSourceIndicesByResolutionInfo.isEmpty()) {
+        if (rows.isEmpty() || enumSourceIndicesByType.isEmpty() && fkSourceIndicesByResolutionInfo.isEmpty()) {
             return FxSImpExConverter.buildImpEx(queryInfo.primaryType, params, joinUniqueParams, queryInfo, rows)
         }
 

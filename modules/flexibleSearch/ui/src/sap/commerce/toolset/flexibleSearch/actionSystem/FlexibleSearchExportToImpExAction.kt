@@ -74,10 +74,15 @@ class FlexibleSearchExportToImpExAction : AnAction() {
         val connection = HacExecConnectionService.getInstance(project).activeConnection
         val inputEvent = e.inputEvent ?: return
 
+        var includeData = true
         var includeTypeSystemUnique = true
         lateinit var myPopup: JBPopup
 
         val exportPanel = panel {
+            row {
+                checkBox(i18n("hybris.fxs.actions.export_to_impex.dialog.include_data"))
+                    .bindSelected({ includeData }, { includeData = it })
+            }
             row {
                 checkBox(i18n("hybris.fxs.actions.export_to_impex.dialog.include_type_unique"))
                     .bindSelected({ includeTypeSystemUnique }, { includeTypeSystemUnique = it })
@@ -110,7 +115,7 @@ class FlexibleSearchExportToImpExAction : AnAction() {
                     override fun onClosed(event: LightweightWindowEvent) {
                         if (!event.isOk) return
                         exportPanel.apply()
-                        doExport(project, baseQueryInfo, rows, connection, includeTypeSystemUnique)
+                        doExport(project, baseQueryInfo, rows, connection, includeData, includeTypeSystemUnique)
                     }
                 })
                 popup.showUnderneathOf(inputEvent.component)
@@ -122,6 +127,7 @@ class FlexibleSearchExportToImpExAction : AnAction() {
         baseQueryInfo: FxSQueryInfo,
         rows: List<List<String>>,
         connection: HacConnectionSettingsState,
+        includeData: Boolean,
         includeTypeSystemUnique: Boolean,
     ) {
         val queryInfo = if (includeTypeSystemUnique) {
@@ -133,15 +139,16 @@ class FlexibleSearchExportToImpExAction : AnAction() {
 
         val params = FxSImpExHeaderBuilder.buildParams(queryInfo, project)
         val joinUniqueParams = FxSImpExHeaderBuilder.buildJoinUniqueParams(queryInfo, project)
+        val exportRows = if (includeData) rows else emptyList()
 
         FxSImpExExecService.getInstance(project).exportToImpEx(
             queryInfo = queryInfo,
             params = params,
             joinUniqueParams = joinUniqueParams,
-            rows = rows,
+            rows = exportRows,
             connection = connection,
         ) { impexContent ->
-            notifyExportDone(project, queryInfo.primaryType, rows.size, impexContent)
+            notifyExportDone(project, queryInfo.primaryType, exportRows.size, impexContent)
         }
     }
 
