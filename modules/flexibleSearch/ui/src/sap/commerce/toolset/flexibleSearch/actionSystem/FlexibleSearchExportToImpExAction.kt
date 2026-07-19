@@ -34,6 +34,7 @@ import sap.commerce.toolset.flexibleSearch.exec.FlexibleSearchExecConstants
 import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecContext
 import sap.commerce.toolset.flexibleSearch.exec.context.QueryMode
 import sap.commerce.toolset.flexibleSearch.impex.FxSColumn
+import sap.commerce.toolset.flexibleSearch.impex.FxSImpExConverter
 import sap.commerce.toolset.flexibleSearch.impex.FxSImpExHeaderBuilder
 import sap.commerce.toolset.flexibleSearch.impex.FxSImpExParam
 import sap.commerce.toolset.flexibleSearch.impex.FxSQueryAnalyzer
@@ -133,32 +134,5 @@ class FlexibleSearchExportToImpExAction : DumbAwareAction() {
         joinUniqueParams: List<FxSImpExParam>,
         queryInfo: FxSQueryInfo,
         rows: List<List<String>>,
-    ): String {
-        // Pair each param with its source column index in the result row (non-PK columns in order)
-        val paramWithSourceIdx = queryInfo.columns
-            .mapIndexedNotNull { idx, col -> if (!col.isPk) idx else null }
-            .zip(params)
-
-        return buildString {
-            // Header line: regular SELECT columns + synthetic JOIN-unique columns at the end
-            append("INSERT_UPDATE $typeName")
-            params.forEach { param -> append("; ${param.render()}") }
-            joinUniqueParams.forEach { param -> append("; ${param.render()}") }
-            appendLine()
-
-            // Value rows — regular column values followed by JOIN-unique constant values
-            rows.forEach { row ->
-                append("")
-                paramWithSourceIdx.forEach { (srcIdx, param) ->
-                    val cell = row.getOrNull(srcIdx) ?: ""
-                    val value = if (cell == "null") "" else cell
-                    append("; ${param.formatValue(value)}")
-                }
-                queryInfo.joinUniqueColumns.forEach { joinCol ->
-                    append("; ${joinCol.constantValue ?: ""}")
-                }
-                appendLine()
-            }
-        }
-    }
+    ): String = FxSImpExConverter.buildImpEx(typeName, params, joinUniqueParams, queryInfo, rows)
 }
