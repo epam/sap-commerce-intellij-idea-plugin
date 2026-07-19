@@ -118,6 +118,34 @@ object FxSImpExHeaderBuilder {
     }
 
     /**
+     * Builds ImpEx params for JOIN-resolved unique attributes that are absent from the SELECT list.
+     *
+     * Each [FxSJoinUniqueColumn] becomes a param with `[unique=true]` and the nested path set to
+     * the [FxSJoinUniqueColumn.naturalKeyAttr] specified in the WHERE condition.
+     */
+    fun buildJoinUniqueParams(queryInfo: FxSQueryInfo, project: Project): List<FxSImpExParam> {
+        if (queryInfo.joinUniqueColumns.isEmpty()) return emptyList()
+        val tsAccess = TSMetaModelAccess.getInstance(project)
+        val primaryMeta = tsAccess.findMetaItemByName(queryInfo.primaryType)
+
+        return queryInfo.joinUniqueColumns.map { joinCol ->
+            val attrType = primaryMeta?.allAttributes?.get(joinCol.fkAttributeName)?.type
+                ?: primaryMeta?.allRelationEnds
+                    ?.firstOrNull { it.qualifier == joinCol.fkAttributeName && it.cardinality == Cardinality.ONE }
+                    ?.type
+            val metaType = if (attrType != null && tsAccess.findMetaClassifierByName(attrType) is TSGlobalMetaItem)
+                FxSAttributeMetaType.ITEM else FxSAttributeMetaType.UNKNOWN
+            FxSImpExParam(
+                attributeName = joinCol.fkAttributeName,
+                nestedPath = joinCol.naturalKeyAttr,
+                modifiers = listOf("unique=true"),
+                attributeType = attrType,
+                metaType = metaType,
+            )
+        }
+    }
+
+    /**
      * Returns a map of result-row column index → enum type name for all ENUM-typed params.
      *
      * The returned indices correspond to positions in the raw HAC result rows (matching

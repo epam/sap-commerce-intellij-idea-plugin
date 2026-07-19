@@ -52,16 +52,35 @@ data class FxSColumn(
 )
 
 /**
+ * A JOIN-resolved unique attribute that is NOT present in the SELECT list.
+ *
+ * Produced when a WHERE clause has `{joinAlias.naturalKeyAttr} = 'value'` and the
+ * JOIN's ON condition maps `joinAlias` → `fkAttributeName` on the root type.
+ *
+ * @param fkAttributeName   The FK attribute on the root type (e.g. `solrIndexedType`).
+ * @param naturalKeyAttr    The attribute on the joined type used in the WHERE equality (e.g. `identifier`).
+ * @param constantValue     Literal string value from the WHERE clause, or null for bind-parameter queries.
+ */
+data class FxSJoinUniqueColumn(
+    val fkAttributeName: String,
+    val naturalKeyAttr: String,
+    val constantValue: String?,
+)
+
+/**
  * Analyzed result of a FlexibleSearch query for ImpEx conversion.
  *
  * @param primaryType            The primary item type from the FROM clause.
  * @param columns                Ordered list of columns matching the HAC result headers.
  * @param uniqueAttributeNames   Attribute names that appear in equality conditions in the WHERE clause.
+ * @param joinUniqueColumns      JOIN-resolved unique attributes absent from the SELECT list — must be
+ *                               appended as synthetic columns in the ImpEx output.
  */
 data class FxSQueryInfo(
     val primaryType: String,
     val columns: List<FxSColumn>,
     val uniqueAttributeNames: Set<String>,
+    val joinUniqueColumns: List<FxSJoinUniqueColumn> = emptyList(),
 )
 
 /**
@@ -90,10 +109,18 @@ object FxSQueryAnalyzer {
             ?.let { collectUniqueAttributes(it, joinAliasMap) }
             ?: emptySet()
 
+        // Collect JOIN-unique columns that are NOT already in the SELECT list
+        val selectedAttrNames = columns.filterNot { it.isPk }.map { it.attributeName }.toSet()
+        val joinUniqueColumns = if (joinAliasMap.isEmpty()) emptyList()
+            else selectCore?.whereClause
+                ?.let { collectJoinUniqueColumns(it, joinAliasMap, selectedAttrNames) }
+                ?: emptyList()
+
         return FxSQueryInfo(
             primaryType = primaryType,
             columns = columns,
             uniqueAttributeNames = uniqueAttributeNames,
+            joinUniqueColumns = joinUniqueColumns,
         )
     }
 
@@ -237,5 +264,57 @@ object FxSQueryAnalyzer {
         }
 
         return uniqueNames
+    }
+
+    /**
+     * Collects JOIN-resolved unique attributes whose values come from WHERE clause literal equality
+     * conditions but whose FK column is NOT in the SELECT list.
+     *
+     * Example: `{t0.identifier} = 'mcProductType'` with `t0 → solrIndexedType` in [joinAliasMap]
+     * produces `FxSJoinUniqueColumn(fkAttributeName="solrIndexedType", naturalKeyAttr="identifier", constantValue="mcProductType")`.
+     *
+     * Only top-level AND conditions are considered (OR conditions are skipped).
+     * Each FK attribute is recorded at most once (first occurrence wins).
+     * Attributes already present in [excludeAttrNames] (i.e. already in SELECT) are skipped.
+     */
+    private fun collectJoinUniqueColumns(
+        whereClause: com.intellij.psi.PsiElement,
+        joinAliasMap: Map<String, String>,
+        excludeAttrNames: Set<String>,
+    ): List<FxSJoinUniqueColumn> {
+        val result = mutableListOf<FxSJoinUniqueColumn>()
+        val seenFkAttrs = mutableSetOf<String>()
+
+        PsiTreeUtil.findChildrenOfType(whereClause, FlexibleSearchEquivalenceExpression::class.java).forEach { eq ->
+            if (PsiTreeUtil.getParentOfType(eq, FlexibleSearchOrExpression::class.java) != null) return@forEach
+            val exprs = eq.expressionList
+            if (exprs.size != 2) return@forEach
+
+            for (i in 0..1) {
+                val colRef = exprs[i].asSafely<FlexibleSearchColumnRefExpression>() ?: continue
+                val alias = colRef.selectedTableName?.text ?: continue
+                val fkAttr = joinAliasMap[alias] ?: continue
+                val naturalKeyAttr = colRef.columnName?.name ?: continue
+
+                if (fkAttr in excludeAttrNames || fkAttr in seenFkAttrs) break
+                seenFkAttrs += fkAttr
+
+                val otherText = exprs[1 - i].text.trim()
+                val constantValue = when {
+                    otherText.startsWith("'") && otherText.endsWith("'") -> otherText.removeSurrounding("'")
+                    otherText.startsWith("?") -> null  // bind parameter
+                    otherText.startsWith("{") -> null  // column ref — value not known statically
+                    else -> otherText                  // numeric or unquoted literal
+                }
+
+                result += FxSJoinUniqueColumn(
+                    fkAttributeName = fkAttr,
+                    naturalKeyAttr = naturalKeyAttr,
+                    constantValue = constantValue,
+                )
+                break
+            }
+        }
+        return result
     }
 }

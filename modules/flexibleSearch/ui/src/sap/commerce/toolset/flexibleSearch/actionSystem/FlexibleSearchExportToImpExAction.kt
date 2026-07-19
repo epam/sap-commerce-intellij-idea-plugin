@@ -71,10 +71,11 @@ class FlexibleSearchExportToImpExAction : DumbAwareAction() {
             )
 
         val params = FxSImpExHeaderBuilder.buildParams(queryInfo, project)
+        val joinUniqueParams = FxSImpExHeaderBuilder.buildJoinUniqueParams(queryInfo, project)
         val enumSourceIndicesByType = FxSImpExHeaderBuilder.enumSourceIndicesByType(queryInfo, params)
 
         if (enumSourceIndicesByType.isEmpty()) {
-            val impexContent = buildImpEx(queryInfo.primaryType, params, queryInfo, rows)
+            val impexContent = buildImpEx(queryInfo.primaryType, params, joinUniqueParams, queryInfo, rows)
             notifyExportDone(project, queryInfo.primaryType, rows.size, impexContent)
             return
         }
@@ -105,7 +106,7 @@ class FlexibleSearchExportToImpExAction : DumbAwareAction() {
                     }
                     .toMap()
                 val resolvedRows = FxSImpExHeaderBuilder.resolveEnumPks(rows, enumSourceIndicesByType.keys, pkToCode)
-                val impexContent = buildImpEx(queryInfo.primaryType, params, queryInfo, resolvedRows)
+                val impexContent = buildImpEx(queryInfo.primaryType, params, joinUniqueParams, queryInfo, resolvedRows)
                 notifyExportDone(project, queryInfo.primaryType, resolvedRows.size, impexContent)
             }
         )
@@ -129,6 +130,7 @@ class FlexibleSearchExportToImpExAction : DumbAwareAction() {
     private fun buildImpEx(
         typeName: String,
         params: List<FxSImpExParam>,
+        joinUniqueParams: List<FxSImpExParam>,
         queryInfo: FxSQueryInfo,
         rows: List<List<String>>,
     ): String {
@@ -138,18 +140,22 @@ class FlexibleSearchExportToImpExAction : DumbAwareAction() {
             .zip(params)
 
         return buildString {
-            // Header line
+            // Header line: regular SELECT columns + synthetic JOIN-unique columns at the end
             append("INSERT_UPDATE $typeName")
             params.forEach { param -> append("; ${param.render()}") }
+            joinUniqueParams.forEach { param -> append("; ${param.render()}") }
             appendLine()
 
-            // Value rows — only emit values for visible (non-PK) columns
+            // Value rows — regular column values followed by JOIN-unique constant values
             rows.forEach { row ->
                 append("")
                 paramWithSourceIdx.forEach { (srcIdx, param) ->
                     val cell = row.getOrNull(srcIdx) ?: ""
                     val value = if (cell == "null") "" else cell
                     append("; ${param.formatValue(value)}")
+                }
+                queryInfo.joinUniqueColumns.forEach { joinCol ->
+                    append("; ${joinCol.constantValue ?: ""}")
                 }
                 appendLine()
             }
