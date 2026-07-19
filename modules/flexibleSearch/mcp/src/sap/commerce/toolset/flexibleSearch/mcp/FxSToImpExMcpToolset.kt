@@ -31,8 +31,8 @@ import sap.commerce.toolset.flexibleSearch.exec.FlexibleSearchExecClient
 import sap.commerce.toolset.flexibleSearch.exec.FlexibleSearchExecConstants
 import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecContext
 import sap.commerce.toolset.flexibleSearch.exec.context.QueryMode
-import sap.commerce.toolset.flexibleSearch.impex.FxSColumn
 import sap.commerce.toolset.flexibleSearch.impex.FxSImpExHeaderBuilder
+import sap.commerce.toolset.flexibleSearch.impex.FxSImpExParam
 import sap.commerce.toolset.flexibleSearch.impex.FxSQueryAnalyzer
 import sap.commerce.toolset.flexibleSearch.impex.FxSQueryInfo
 import sap.commerce.toolset.flexibleSearch.mcp.dto.FxSImpExResult
@@ -129,11 +129,12 @@ class FxSToImpExMcpToolset : McpToolset {
 
     private fun buildImpEx(
         queryInfo: FxSQueryInfo,
-        params: List<sap.commerce.toolset.flexibleSearch.impex.FxSImpExParam>,
+        params: List<FxSImpExParam>,
         rows: List<List<String>>,
     ): String {
-        val columnIndexMap = queryInfo.columns
+        val paramWithSourceIdx = queryInfo.columns
             .mapIndexedNotNull { idx, col -> if (!col.isPk) idx else null }
+            .zip(params)
 
         return buildString {
             append("INSERT_UPDATE ${queryInfo.primaryType}")
@@ -142,10 +143,10 @@ class FxSToImpExMcpToolset : McpToolset {
 
             rows.forEach { row ->
                 append("")
-                columnIndexMap.forEach { srcIdx ->
+                paramWithSourceIdx.forEach { (srcIdx, param) ->
                     val cell = row.getOrNull(srcIdx) ?: ""
                     val value = if (cell == "null") "" else cell
-                    append("; $value")
+                    append("; ${param.formatValue(value)}")
                 }
                 appendLine()
             }

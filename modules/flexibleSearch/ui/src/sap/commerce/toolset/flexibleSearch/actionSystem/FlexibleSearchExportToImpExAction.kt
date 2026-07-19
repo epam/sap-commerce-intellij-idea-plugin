@@ -87,9 +87,10 @@ class FlexibleSearchExportToImpExAction : DumbAwareAction() {
         queryInfo: FxSQueryInfo,
         rows: List<List<String>>,
     ): String {
-        // Map result column indices (excluding PK) to their param indices
-        val columnIndexMap = queryInfo.columns
+        // Pair each param with its source column index in the result row (non-PK columns in order)
+        val paramWithSourceIdx = queryInfo.columns
             .mapIndexedNotNull { idx, col -> if (!col.isPk) idx else null }
+            .zip(params)
 
         return buildString {
             // Header line
@@ -100,10 +101,10 @@ class FlexibleSearchExportToImpExAction : DumbAwareAction() {
             // Value rows — only emit values for visible (non-PK) columns
             rows.forEach { row ->
                 append("")
-                columnIndexMap.forEach { srcIdx ->
+                paramWithSourceIdx.forEach { (srcIdx, param) ->
                     val cell = row.getOrNull(srcIdx) ?: ""
                     val value = if (cell == "null") "" else cell
-                    append("; $value")
+                    append("; ${param.formatValue(value)}")
                 }
                 appendLine()
             }

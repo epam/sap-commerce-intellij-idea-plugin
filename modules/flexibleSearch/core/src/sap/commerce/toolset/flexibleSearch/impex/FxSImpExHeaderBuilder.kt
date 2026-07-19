@@ -32,17 +32,38 @@ import sap.commerce.toolset.typeSystem.model.PersistenceType
  * @param attributeName  The base attribute name as it appears in the ImpEx header.
  * @param nestedPath     Optional nested resolution path (e.g., `catalog(id),version` for CatalogVersion).
  * @param modifiers      Ordered list of `key=value` modifier strings.
+ * @param attributeType  Resolved SAP Commerce type name (e.g. `java.lang.String`, `java.lang.Integer`,
+ *                       `CatalogVersion`). Null when the type could not be determined.
  */
 data class FxSImpExParam(
     val attributeName: String,
     val nestedPath: String? = null,
     val modifiers: List<String> = emptyList(),
+    val attributeType: String? = null,
 ) {
     /** Renders the full ImpEx column definition, e.g. `catalogVersion(catalog(id),version)[unique=true]`. */
     fun render(): String = buildString {
         append(attributeName)
         if (!nestedPath.isNullOrBlank()) append("($nestedPath)")
         if (modifiers.isNotEmpty()) append("[${modifiers.joinToString(",")}]")
+    }
+
+    /**
+     * Formats [value] for use in an ImpEx data row.
+     *
+     * - String-typed attributes: wraps the value in double-quotes and escapes any embedded `"` as `""`.
+     * - All other / unknown types: returns the value unchanged.
+     * - Empty values are always returned unchanged.
+     */
+    fun formatValue(value: String): String = when {
+        value.isEmpty() -> value
+        attributeType in STRING_ATTRIBUTE_TYPES -> "\"${value.replace("\"", "\"\"")}\""
+        else -> value
+    }
+
+    companion object {
+        /** SAP Commerce atomic type names whose values require double-quote wrapping in ImpEx. */
+        val STRING_ATTRIBUTE_TYPES = setOf("java.lang.String", "localizableString")
     }
 }
 
@@ -89,7 +110,7 @@ object FxSImpExHeaderBuilder {
 
         val attrType = attr?.type
         if (attrType == null) {
-            // Unknown attribute — fall back to plain parameter
+            // Unknown attribute — fall back to plain parameter, type not determinable
             return FxSImpExParam(col.attributeName, modifiers = modifiers)
         }
 
@@ -97,23 +118,23 @@ object FxSImpExHeaderBuilder {
             is TSGlobalMetaItem -> {
                 // FK to another ComposedType — resolve natural key path
                 val naturalPath = FxSNaturalKeyResolver.resolve(meta, tsAccess)
-                FxSImpExParam(col.attributeName, nestedPath = naturalPath, modifiers = modifiers)
+                FxSImpExParam(col.attributeName, nestedPath = naturalPath, modifiers = modifiers, attributeType = attrType)
             }
 
             is TSGlobalMetaCollection -> {
                 // Collection type — add collection-delimiter modifier
                 modifiers += "collection-delimiter=,"
-                FxSImpExParam(col.attributeName, modifiers = modifiers)
+                FxSImpExParam(col.attributeName, modifiers = modifiers, attributeType = attrType)
             }
 
             is TSGlobalMetaEnum -> {
                 // Enum — plain parameter, values are string codes
-                FxSImpExParam(col.attributeName, modifiers = modifiers)
+                FxSImpExParam(col.attributeName, modifiers = modifiers, attributeType = attrType)
             }
 
             else -> {
                 // Primitive, atomic, map, or unknown — plain parameter
-                FxSImpExParam(col.attributeName, modifiers = modifiers)
+                FxSImpExParam(col.attributeName, modifiers = modifiers, attributeType = attrType)
             }
         }
     }
