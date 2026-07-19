@@ -48,6 +48,7 @@ import sap.commerce.toolset.scratch.createScratchFile
 import sap.commerce.toolset.typeSystem.TSConstants
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
 import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaItem
+import sap.commerce.toolset.typeSystem.model.Cardinality
 import sap.commerce.toolset.typeSystem.model.PersistenceType
 import java.awt.datatransfer.StringSelection
 import java.util.function.Supplier
@@ -181,6 +182,12 @@ class ImpExToFlexibleSearchLineMarkerProvider : LineMarkerProvider {
             .filter { it.persistence.type == PersistenceType.PROPERTY }
             .filterNot { it.isLocalized }
             .map { it.name }
+            .distinct()
+            .forEach { add(it) }
+        allRelationEnds
+            .asSequence()
+            .filter { it.cardinality == Cardinality.ONE }
+            .mapNotNull { it.qualifier }
             .distinct()
             .forEach { add(it) }
     }
