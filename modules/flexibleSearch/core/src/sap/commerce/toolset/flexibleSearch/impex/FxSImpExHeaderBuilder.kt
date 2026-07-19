@@ -72,7 +72,7 @@ data class FxSImpExParam(
  *
  * Resolution strategy per attribute meta-type:
  * - Primitive / java.lang.* / String / Boolean → plain parameter
- * - Enum  → plain parameter (enum codes are strings)
+ * - Enum  → `attrName(code)` so ImpEx resolves the enum value by its code attribute
  * - Collection → plain parameter with `[collection-delimiter=,]`
  * - ComposedType (item FK) → `attrName(naturalKeyPath)` resolved by [FxSNaturalKeyResolver]
  * - Localized → adds `lang=xx` modifier
@@ -128,8 +128,8 @@ object FxSImpExHeaderBuilder {
             }
 
             is TSGlobalMetaEnum -> {
-                // Enum — plain parameter, values are string codes
-                FxSImpExParam(col.attributeName, modifiers = modifiers, attributeType = attrType)
+                // Enum — reference by code: attrName(code) so ImpEx resolves the enum value by its code
+                FxSImpExParam(col.attributeName, nestedPath = "code", modifiers = modifiers, attributeType = attrType)
             }
 
             else -> {
