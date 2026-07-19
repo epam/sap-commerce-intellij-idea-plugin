@@ -171,6 +171,11 @@ class FlexibleSearchSplitEditorEx(override val textEditor: TextEditor, private v
         }
     }
 
+    fun clearExecutionResult() {
+        lastExecResult = null
+        inEditorResultsView = null
+    }
+
     fun showLoader(context: FlexibleSearchExecContext) {
         inEditorResultsView = FlexibleSearchInEditorResultsView.getInstance(project).executingView(context.executionTitle)
     }

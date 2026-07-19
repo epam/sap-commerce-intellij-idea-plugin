@@ -65,7 +65,8 @@ class FlexibleSearchExportToImpExAction : AnAction() {
         val project = e.project ?: return
         if (FxSImpExExecService.getInstance(project).isExporting) return
 
-        val result = e.flexibleSearchSplitEditor()?.lastExecResult
+        val editor = e.flexibleSearchSplitEditor()
+        val result = editor?.lastExecResult
         val hasData = result?.hasDataRows == true
         val headers = result?.headers ?: emptyList()
         val rows = result?.rows ?: emptyList()
@@ -94,6 +95,12 @@ class FlexibleSearchExportToImpExAction : AnAction() {
                     )
             }
             row {
+                if (hasData) {
+                    button(i18n("hybris.fxs.actions.export_to_impex.dialog.clear_data")) {
+                        editor?.clearExecutionResult()
+                        myPopup.cancel()
+                    }
+                }
                 button(i18n("hybris.fxs.actions.export_to_impex.dialog.generate")) {
                     myPopup.closeOk(null)
                 }.align(AlignX.RIGHT)
