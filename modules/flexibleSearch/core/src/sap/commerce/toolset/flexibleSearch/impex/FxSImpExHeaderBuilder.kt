@@ -132,7 +132,8 @@ data class FxSImpExParam(
  * - Primitive / java.lang.* / String / Boolean → plain parameter
  * - Enum  → `attrName(code)` so ImpEx resolves the enum value by its code attribute
  * - Collection → `attrName(pk)` (HAC values cleaned from serialization artifacts; each element resolved by pk)
- * - ComposedType (item FK) → `attrName(naturalKeyPath)` resolved by [FxSNaturalKeyResolver]
+ * - ComposedType (item FK), unique → `attrName(naturalKeyPath)` resolved by [FxSNaturalKeyResolver]; PK resolved via follow-up query
+ * - ComposedType (item FK), non-unique → `attrName(pk)` (raw HAC PK value; no follow-up needed)
  * - Localized → adds `lang=xx` modifier
  * - Dynamic attribute → skipped (cannot be imported via ImpEx)
  */
@@ -373,12 +374,19 @@ object FxSImpExHeaderBuilder {
 
         return when (val meta = tsAccess.findMetaClassifierByName(attrType)) {
             is TSGlobalMetaItem -> {
-                // FK to another ComposedType — resolve natural key path and pre-build lookup query
-                val naturalPath = FxSNaturalKeyResolver.resolve(meta, tsAccess)
-                val fkAttrTypes = FxSNaturalKeyResolver.buildAttrTypes(meta)
-                val fkResolutionInfo = buildFkLookupQuery(attrType, naturalPath, fkAttrTypes)
-                    ?.let { FkResolutionInfo(attrType, it) }
-                FxSImpExParam(col.attributeName, nestedPath = naturalPath, modifiers = modifiers, attributeType = attrType, metaType = FxSAttributeMetaType.ITEM, fkResolutionInfo = fkResolutionInfo)
+                if ("unique=true" in modifiers) {
+                    // Unique FK column: resolve full natural key path and pre-build lookup query for
+                    // PK → natural key resolution (needed for cross-environment import correctness).
+                    val naturalPath = FxSNaturalKeyResolver.resolve(meta, tsAccess)
+                    val fkAttrTypes = FxSNaturalKeyResolver.buildAttrTypes(meta)
+                    val fkResolutionInfo = buildFkLookupQuery(attrType, naturalPath, fkAttrTypes)
+                        ?.let { FkResolutionInfo(attrType, it) }
+                    FxSImpExParam(col.attributeName, nestedPath = naturalPath, modifiers = modifiers, attributeType = attrType, metaType = FxSAttributeMetaType.ITEM, fkResolutionInfo = fkResolutionInfo)
+                } else {
+                    // Non-unique FK column: the HAC result contains a raw PK.
+                    // Use attrName(pk) — ImpEx resolves it directly; no follow-up query needed.
+                    FxSImpExParam(col.attributeName, nestedPath = "pk", modifiers = modifiers, attributeType = attrType, metaType = FxSAttributeMetaType.ITEM)
+                }
             }
 
             is TSGlobalMetaCollection -> {

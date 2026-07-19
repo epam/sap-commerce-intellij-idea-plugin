@@ -214,6 +214,45 @@ class FxSImpExConverterTest {
     }
 
     // -------------------------------------------------------------------------
+    // Non-unique FK column → attrName(pk), no natural key resolution
+    // -------------------------------------------------------------------------
+
+    /**
+     * `thumbnail` is a FK (ComposedType) but NOT in the WHERE clause, so it is NOT unique.
+     * The header must use `thumbnail(pk)` and the raw PK value from HAC passes through unchanged.
+     * No follow-up lookup query is issued for non-unique FK columns.
+     */
+    @Test
+    fun buildImpEx_nonUniqueFkColumn_renderedWithPkNestedPath() {
+        val queryInfo = FxSQueryInfo(
+            primaryType = "Product",
+            columns = listOf(
+                FxSColumn(resultHeaderName = "pk", attributeName = "pk", isPk = true),
+                FxSColumn(resultHeaderName = "code", attributeName = "code", isPk = false),
+                FxSColumn(resultHeaderName = "thumbnail", attributeName = "thumbnail", isPk = false),
+            ),
+            uniqueAttributeNames = setOf("code"),
+        )
+        val params = listOf(
+            atomicParam("code", unique = true),
+            FxSImpExParam(
+                attributeName = "thumbnail",
+                nestedPath = "pk",
+                attributeType = "Media",
+                metaType = FxSAttributeMetaType.ITEM,
+            ),
+        )
+        val rows = listOf(listOf("pk1", "637227", "8796218130462"))
+
+        val result = FxSImpExConverter.buildImpEx("Product", params, emptyList(), queryInfo, rows)
+
+        assertEquals(
+            "INSERT_UPDATE Product; code[unique=true]; thumbnail(pk)\n; \"637227\"; 8796218130462\n",
+            result
+        )
+    }
+
+    // -------------------------------------------------------------------------
     // Collection attribute → attrName(pk)
     // -------------------------------------------------------------------------
 
