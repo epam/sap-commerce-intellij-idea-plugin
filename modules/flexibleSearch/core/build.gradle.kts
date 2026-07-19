@@ -44,6 +44,8 @@ dependencies {
     implementation(project(":typeSystem-core"))
     implementation(project(":project-core"))
 
+    testImplementation(kotlin("test"))
+
     intellijPlatform {
         intellijIdea(properties("intellij.version")) {
             useInstaller = false
