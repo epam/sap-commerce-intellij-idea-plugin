@@ -147,4 +147,48 @@ class FxSImpExParamTest {
         )
         assertEquals("approved", param.formatValue("approved"))
     }
+
+    @Test
+    fun formatValue_collection_stripsHacMarkerAndLeadingTrailingDelimiters() {
+        val param = FxSImpExParam(
+            attributeName = "others",
+            modifiers = listOf("collection-delimiter=,"),
+            metaType = FxSAttributeMetaType.COLLECTION,
+        )
+        // HAC raw value: ,#1,8796163833886,8796245262366,8796272525342,
+        assertEquals(
+            "8796163833886,8796245262366,8796272525342",
+            param.formatValue(",#1,8796163833886,8796245262366,8796272525342,")
+        )
+    }
+
+    @Test
+    fun formatValue_collection_cleanValuePassThrough() {
+        val param = FxSImpExParam(
+            attributeName = "others",
+            modifiers = listOf("collection-delimiter=,"),
+            metaType = FxSAttributeMetaType.COLLECTION,
+        )
+        assertEquals("8796163833886,8796245262366", param.formatValue("8796163833886,8796245262366"))
+    }
+
+    @Test
+    fun formatValue_collection_emptyValue_passThrough() {
+        val param = FxSImpExParam(
+            attributeName = "others",
+            modifiers = listOf("collection-delimiter=,"),
+            metaType = FxSAttributeMetaType.COLLECTION,
+        )
+        assertEquals("", param.formatValue(""))
+    }
+
+    @Test
+    fun formatValue_collection_onlyMarkersAndDelimiters_producesEmpty() {
+        val param = FxSImpExParam(
+            attributeName = "others",
+            modifiers = listOf("collection-delimiter=,"),
+            metaType = FxSAttributeMetaType.COLLECTION,
+        )
+        assertEquals("", param.formatValue(",#1,,"))
+    }
 }

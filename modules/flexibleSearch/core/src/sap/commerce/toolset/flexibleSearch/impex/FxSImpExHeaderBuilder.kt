@@ -72,18 +72,41 @@ data class FxSImpExParam(
      * Formats [value] for use in an ImpEx data row.
      *
      * - String-typed attributes: wraps the value in double-quotes and escapes any embedded `"` as `""`.
+     * - Collection attributes: strips HAC's internal serialization artifacts (leading/trailing
+     *   delimiter tokens, `#N` internal markers) leaving only the comma-separated PK values.
      * - All other / unknown types: returns the value unchanged.
      * - Empty values are always returned unchanged.
      */
     fun formatValue(value: String): String = when {
         value.isEmpty() -> value
+        metaType == FxSAttributeMetaType.COLLECTION -> cleanCollectionValue(value)
         attributeType in STRING_ATTRIBUTE_TYPES -> "\"${value.replace("\"", "\"\"")}\""
         else -> value
+    }
+
+    /**
+     * Strips HAC collection serialization artifacts from [value].
+     *
+     * HAC returns collection attributes in a format like `,#1,8796163833886,8796245262366,` where:
+     * - Leading/trailing delimiters produce empty tokens
+     * - `#N` tokens are internal SAP Commerce markers (not item references)
+     *
+     * Returns only the meaningful tokens joined by the configured collection delimiter.
+     */
+    private fun cleanCollectionValue(value: String): String {
+        val delimiter = modifiers.firstOrNull { it.startsWith("collection-delimiter=") }
+            ?.substringAfter("collection-delimiter=") ?: ","
+        return value.split(delimiter)
+            .filter { token -> token.isNotEmpty() && !token.matches(HAC_INTERNAL_MARKER) }
+            .joinToString(delimiter)
     }
 
     companion object {
         /** SAP Commerce atomic type names whose values require double-quote wrapping in ImpEx. */
         val STRING_ATTRIBUTE_TYPES = setOf("java.lang.String", "localizableString")
+
+        /** Matches HAC internal collection markers like `#1`, `#42`. */
+        private val HAC_INTERNAL_MARKER = Regex("#\\d+")
     }
 }
 
