@@ -21,12 +21,15 @@ package sap.commerce.toolset.flexibleSearch.exec
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
+import com.intellij.platform.ide.progress.withBackgroundProgress
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.supervisorScope
 import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecContext
 import sap.commerce.toolset.flexibleSearch.exec.context.QueryMode
+import sap.commerce.toolset.flexibleSearch.impex.FkResolutionInfo
 import sap.commerce.toolset.flexibleSearch.impex.FxSImpExConverter
 import sap.commerce.toolset.flexibleSearch.impex.FxSImpExHeaderBuilder
 import sap.commerce.toolset.flexibleSearch.impex.FxSImpExParam
@@ -38,6 +41,10 @@ import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
  *
  * When enum or FK columns are present, issues follow-up queries via [FlexibleSearchExecClient]
  * to resolve raw PKs to their natural key strings, then delegates to [FxSImpExConverter].
+ *
+ * Progress of each follow-up query is shown in the IDE background progress indicator.
+ * [isExporting] is set to `true` for the duration of any async resolution so callers
+ * (e.g. toolbar actions) can disable themselves while the export is in flight.
  */
 @Service(Service.Level.PROJECT)
 class FxSImpExExecService(
@@ -46,10 +53,20 @@ class FxSImpExExecService(
 ) {
 
     /**
-     * Builds an ImpEx string from the given [queryInfo], [params], and raw result [rows].
-     * Follow-up queries are executed via [FlexibleSearchExecClient] when enum or FK columns
-     * are detected; [onComplete] is called with the final ImpEx text once all resolution
-     * is done (possibly asynchronously).
+     * `true` while a follow-up resolution is in progress.
+     * Read from BGT (action `update()`), written from the service coroutine.
+     */
+    @Volatile
+    var isExporting: Boolean = false
+        private set
+
+    /**
+     * Callback-based entry point for action handlers.
+     *
+     * If no enum or FK resolution is needed the ImpEx is built synchronously and [onComplete]
+     * is called before this function returns.  Otherwise [isExporting] is set to `true`,
+     * follow-up queries are issued concurrently (each with its own progress indicator), and
+     * [onComplete] is called from the service coroutine once all resolution is done.
      */
     fun exportToImpEx(
         queryInfo: FxSQueryInfo,
@@ -67,8 +84,54 @@ class FxSImpExExecService(
             return
         }
 
-        val enumContexts = enumSourceIndicesByType.values.distinct().map { enumType ->
-            FlexibleSearchExecContext(
+        isExporting = true
+        coroutineScope.launch {
+            try {
+                onComplete(resolveAndBuild(queryInfo, params, joinUniqueParams, rows, connection, enumSourceIndicesByType, fkSourceIndicesByResolutionInfo))
+            } finally {
+                isExporting = false
+            }
+        }
+    }
+
+    /**
+     * Suspend overload for coroutine callers (e.g. MCP tools).
+     *
+     * Behaves identically to the callback overload but returns the ImpEx string directly
+     * and does not manage [isExporting].
+     */
+    suspend fun exportToImpEx(
+        queryInfo: FxSQueryInfo,
+        params: List<FxSImpExParam>,
+        joinUniqueParams: List<FxSImpExParam>,
+        rows: List<List<String>>,
+        connection: HacConnectionSettingsState,
+    ): String {
+        val enumSourceIndicesByType = FxSImpExHeaderBuilder.enumSourceIndicesByType(queryInfo, params)
+        val fkSourceIndicesByResolutionInfo = FxSImpExHeaderBuilder.fkSourceIndicesByResolutionInfo(queryInfo, params)
+
+        if (enumSourceIndicesByType.isEmpty() && fkSourceIndicesByResolutionInfo.isEmpty()) {
+            return FxSImpExConverter.buildImpEx(queryInfo.primaryType, params, joinUniqueParams, queryInfo, rows)
+        }
+
+        return resolveAndBuild(queryInfo, params, joinUniqueParams, rows, connection, enumSourceIndicesByType, fkSourceIndicesByResolutionInfo)
+    }
+
+    /**
+     * Issues all follow-up queries concurrently (each under its own background progress indicator),
+     * resolves enum codes and FK natural keys, then builds the final ImpEx text.
+     */
+    private suspend fun resolveAndBuild(
+        queryInfo: FxSQueryInfo,
+        params: List<FxSImpExParam>,
+        joinUniqueParams: List<FxSImpExParam>,
+        rows: List<List<String>>,
+        connection: HacConnectionSettingsState,
+        enumSourceIndicesByType: Map<Int, String>,
+        fkSourceIndicesByResolutionInfo: Map<Int, FkResolutionInfo>,
+    ): String {
+        val enumContextsWithLabel = enumSourceIndicesByType.values.distinct().map { enumType ->
+            "Getting values for $enumType" to FlexibleSearchExecContext(
                 connection = connection,
                 content = "SELECT {pk}, {code} FROM {$enumType}",
                 queryMode = QueryMode.FlexibleSearch,
@@ -79,49 +142,54 @@ class FxSImpExExecService(
                 timeout = connection.timeout,
             )
         }
-        val fkContexts = fkSourceIndicesByResolutionInfo.values.distinctBy { it.fxsLookupQuery }.map { fkInfo ->
-            FlexibleSearchExecContext(
-                connection = connection,
-                content = fkInfo.fxsLookupQuery,
-                queryMode = QueryMode.FlexibleSearch,
-                maxCount = 10_000,
-                locale = FlexibleSearchExecConstants.Defaults.LOCALE,
-                dataSource = FlexibleSearchExecConstants.Defaults.DATA_SOURCE,
-                user = null,
-                timeout = connection.timeout,
-            )
+        val fkContextsWithLabel = fkSourceIndicesByResolutionInfo.values
+            .distinctBy { it.fxsLookupQuery }
+            .map { fkInfo ->
+                "Getting natural key for ${fkInfo.typeName}" to FlexibleSearchExecContext(
+                    connection = connection,
+                    content = fkInfo.fxsLookupQuery,
+                    queryMode = QueryMode.FlexibleSearch,
+                    maxCount = 10_000,
+                    locale = FlexibleSearchExecConstants.Defaults.LOCALE,
+                    dataSource = FlexibleSearchExecConstants.Defaults.DATA_SOURCE,
+                    user = null,
+                    timeout = connection.timeout,
+                )
+            }
+
+        val allLabeledContexts = enumContextsWithLabel + fkContextsWithLabel
+
+        val client = FlexibleSearchExecClient.getInstance(project)
+        val allResults = supervisorScope {
+            allLabeledContexts.map { (label, ctx) ->
+                async { withBackgroundProgress(project, label, true) { client.execute(ctx) } }
+            }.awaitAll()
         }
 
-        val allContexts = enumContexts + fkContexts
-        coroutineScope.launch {
-            val client = FlexibleSearchExecClient.getInstance(project)
-            val allResults = allContexts.map { ctx -> async { client.execute(ctx) } }.awaitAll()
+        val enumResults = allResults.take(enumContextsWithLabel.size)
+        val fkResults = allResults.drop(enumContextsWithLabel.size)
 
-            val enumResults = allResults.take(enumContexts.size)
-            val fkResults = allResults.drop(enumContexts.size)
+        val pkToCode = enumResults
+            .flatMap { r -> r.rows ?: emptyList() }
+            .mapNotNull { row ->
+                val pk = row.getOrNull(0)?.takeIf { it.isNotBlank() } ?: return@mapNotNull null
+                val code = row.getOrNull(1)?.takeIf { it.isNotBlank() } ?: return@mapNotNull null
+                pk to code
+            }
+            .toMap()
+        val pkToNaturalKey = fkResults
+            .flatMap { r -> r.rows ?: emptyList() }
+            .mapNotNull { row ->
+                val pk = row.getOrNull(0)?.takeIf { it.isNotBlank() } ?: return@mapNotNull null
+                val keyParts = row.drop(1).filter { it.isNotBlank() }
+                if (keyParts.isEmpty()) return@mapNotNull null
+                pk to keyParts.joinToString(":")
+            }
+            .toMap()
 
-            val pkToCode = enumResults
-                .flatMap { r -> r.rows ?: emptyList() }
-                .mapNotNull { row ->
-                    val pk = row.getOrNull(0)?.takeIf { it.isNotBlank() } ?: return@mapNotNull null
-                    val code = row.getOrNull(1)?.takeIf { it.isNotBlank() } ?: return@mapNotNull null
-                    pk to code
-                }
-                .toMap()
-            val pkToNaturalKey = fkResults
-                .flatMap { r -> r.rows ?: emptyList() }
-                .mapNotNull { row ->
-                    val pk = row.getOrNull(0)?.takeIf { it.isNotBlank() } ?: return@mapNotNull null
-                    val keyParts = row.drop(1).filter { it.isNotBlank() }
-                    if (keyParts.isEmpty()) return@mapNotNull null
-                    pk to keyParts.joinToString(":")
-                }
-                .toMap()
-
-            val resolvedRows = FxSImpExHeaderBuilder.resolveEnumPks(rows, enumSourceIndicesByType.keys, pkToCode)
-            val finalRows = FxSImpExHeaderBuilder.resolveFkPks(resolvedRows, fkSourceIndicesByResolutionInfo.keys, pkToNaturalKey)
-            onComplete(FxSImpExConverter.buildImpEx(queryInfo.primaryType, params, joinUniqueParams, queryInfo, finalRows))
-        }
+        val resolvedRows = FxSImpExHeaderBuilder.resolveEnumPks(rows, enumSourceIndicesByType.keys, pkToCode)
+        val finalRows = FxSImpExHeaderBuilder.resolveFkPks(resolvedRows, fkSourceIndicesByResolutionInfo.keys, pkToNaturalKey)
+        return FxSImpExConverter.buildImpEx(queryInfo.primaryType, params, joinUniqueParams, queryInfo, finalRows)
     }
 
     companion object {

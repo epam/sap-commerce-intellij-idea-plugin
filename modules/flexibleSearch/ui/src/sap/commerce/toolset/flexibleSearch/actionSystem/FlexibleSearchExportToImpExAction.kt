@@ -49,11 +49,14 @@ class FlexibleSearchExportToImpExAction : AnAction() {
         e.presentation.text = i18n("hybris.fxs.actions.export_to_impex")
         e.presentation.description = i18n("hybris.fxs.actions.export_to_impex.description")
         e.presentation.icon = HybrisIcons.ImpEx.FILE
-        e.presentation.isEnabled = e.flexibleSearchSplitEditor()?.lastExecResult?.hasDataRows == true
+        val hasData = e.flexibleSearchSplitEditor()?.lastExecResult?.hasDataRows == true
+        val notExporting = e.project?.let { !FxSImpExExecService.getInstance(it).isExporting } ?: false
+        e.presentation.isEnabled = hasData && notExporting
     }
 
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
+        if (FxSImpExExecService.getInstance(project).isExporting) return
         val result = e.flexibleSearchSplitEditor()?.lastExecResult ?: return
         val headers = result.headers ?: return
         val rows = result.rows ?: return
