@@ -33,7 +33,6 @@ import sap.commerce.toolset.impex.lang.refactoring.ImpExPsiElementManipulator
 import sap.commerce.toolset.impex.psi.ImpExDocumentIdDec
 import sap.commerce.toolset.impex.psi.ImpExDocumentIdUsage
 import sap.commerce.toolset.impex.psi.ImpExFullHeaderParameter
-import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
 
 open class ImpExDocumentIdUsageReference private constructor(
     private val fullHeaderParameter: ImpExFullHeaderParameter,
@@ -73,13 +72,7 @@ open class ImpExDocumentIdUsageReference private constructor(
                 ?.flatten()
                 ?.distinctBy { it.text }
                 ?.map { idDec ->
-                    val meta = idDec.valueGroup
-                        ?.fullHeaderParameter
-                        ?.headerLine
-                        ?.fullHeaderType
-                        ?.headerTypeName
-                        ?.text
-                        ?.let { TSMetaModelAccess.getInstance(project).findMetaClassifierByName(it) }
+                    val meta = idDec.valueGroup?.getValueLineMetaType()
 
                     ImpExLookupElementFactory.buildDocIdUsage(idDec, meta)
                 }
