@@ -88,7 +88,10 @@ class FlexibleSearchExportToImpExAction : AnAction() {
                 checkBox(i18n("hybris.fxs.actions.export_to_impex.dialog.include_data"))
                     .bindSelected({ includeData }, { includeData = it })
                     .enabled(hasData)
-                    .also { if (!hasData) it.comment(i18n("hybris.fxs.actions.export_to_impex.dialog.include_data.no_result")) }
+                    .comment(
+                        if (hasData) i18n("hybris.fxs.actions.export_to_impex.dialog.include_data.has_result")
+                        else i18n("hybris.fxs.actions.export_to_impex.dialog.include_data.no_result")
+                    )
             }
             row {
                 button(i18n("hybris.fxs.actions.export_to_impex.dialog.generate")) {
