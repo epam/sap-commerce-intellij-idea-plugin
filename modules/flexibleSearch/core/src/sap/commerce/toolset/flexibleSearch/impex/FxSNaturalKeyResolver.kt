@@ -172,14 +172,16 @@ object FxSNaturalKeyResolver {
 
         // No explicit unique index — fall back to attributes/relation-ends declared with unique=true modifier.
         // This only captures single-attribute uniqueness; composite keys require an index declaration.
+        // Relation-end (FK) attrs are added first — they typically precede scalar attrs in composite
+        // SAP Commerce natural keys (e.g. catalogVersion: catalog first, then version).
         val fromModifiers = mutableListOf<String>()
-        meta.allAttributes.entries
-            .filter { (_, attr) -> attr.modifiers.isUnique }
-            .mapTo(fromModifiers) { (name, _) -> name }
         meta.allRelationEnds
             .filter { it.cardinality == Cardinality.ONE && it.modifiers.isUnique }
             .mapNotNull { it.qualifier }
             .forEach { fromModifiers.add(it) }
+        meta.allAttributes.entries
+            .filter { (_, attr) -> attr.modifiers.isUnique }
+            .mapTo(fromModifiers) { (name, _) -> name }
         return fromModifiers
     }
 }
