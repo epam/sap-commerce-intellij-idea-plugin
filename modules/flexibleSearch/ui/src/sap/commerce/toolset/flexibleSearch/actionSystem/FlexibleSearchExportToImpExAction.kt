@@ -23,6 +23,7 @@ import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
+import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.ide.CopyPasteManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.popup.*
@@ -57,8 +58,9 @@ class FlexibleSearchExportToImpExAction : AnAction() {
         e.presentation.description = i18n("hybris.fxs.actions.export_to_impex.description")
         val hasPsiFile = e.getData(CommonDataKeys.PSI_FILE) is FlexibleSearchPsiFile
         val exporting = e.project?.let { FxSImpExExecService.getInstance(it).isExporting } ?: false
+        val isDumb = e.project?.let { DumbService.isDumb(it) } ?: false
         e.presentation.icon = if (exporting) AnimatedIcon.Default.INSTANCE else HybrisIcons.ImpEx.FILE
-        e.presentation.isEnabled = hasPsiFile && !exporting
+        e.presentation.isEnabled = hasPsiFile && !exporting && !isDumb
     }
 
     override fun actionPerformed(e: AnActionEvent) {
