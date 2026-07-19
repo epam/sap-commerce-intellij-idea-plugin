@@ -214,6 +214,45 @@ class FxSImpExConverterTest {
     }
 
     // -------------------------------------------------------------------------
+    // Collection attribute → attrName(pk)
+    // -------------------------------------------------------------------------
+
+    /**
+     * A `Collection`-typed attribute must render as `attrName(pk)` in the header.
+     * HAC returns a comma-separated list of PKs; ImpEx resolves each element by PK.
+     */
+    @Test
+    fun buildImpEx_collectionColumn_renderedWithPkNestedPath() {
+        val queryInfo = FxSQueryInfo(
+            primaryType = "Product",
+            columns = listOf(
+                FxSColumn(resultHeaderName = "pk", attributeName = "pk", isPk = true),
+                FxSColumn(resultHeaderName = "code", attributeName = "code", isPk = false),
+                FxSColumn(resultHeaderName = "supercategories", attributeName = "supercategories", isPk = false),
+            ),
+            uniqueAttributeNames = setOf("code"),
+        )
+        val params = listOf(
+            atomicParam("code", unique = true),
+            FxSImpExParam(
+                attributeName = "supercategories",
+                nestedPath = "pk",
+                attributeType = "CategoryCollection",
+                metaType = FxSAttributeMetaType.COLLECTION,
+            ),
+        )
+        val rows = listOf(listOf("pk1", "myProduct", "8796163833886,8796245262366"))
+
+        val result = FxSImpExConverter.buildImpEx("Product", params, emptyList(), queryInfo, rows)
+
+        assertEquals(
+            "INSERT_UPDATE Product; code[unique=true]; supercategories(pk)\n" +
+                "; \"myProduct\"; 8796163833886,8796245262366\n",
+            result
+        )
+    }
+
+    // -------------------------------------------------------------------------
     // JOIN-unique columns (main fix: absent-from-SELECT WHERE condition columns)
     // -------------------------------------------------------------------------
 

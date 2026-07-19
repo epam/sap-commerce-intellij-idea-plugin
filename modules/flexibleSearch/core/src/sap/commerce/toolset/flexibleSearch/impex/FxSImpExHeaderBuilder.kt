@@ -131,7 +131,7 @@ data class FxSImpExParam(
  * Resolution strategy per attribute meta-type:
  * - Primitive / java.lang.* / String / Boolean → plain parameter
  * - Enum  → `attrName(code)` so ImpEx resolves the enum value by its code attribute
- * - Collection → plain parameter (values cleaned from HAC serialization artifacts)
+ * - Collection → `attrName(pk)` (HAC values cleaned from serialization artifacts; each element resolved by pk)
  * - ComposedType (item FK) → `attrName(naturalKeyPath)` resolved by [FxSNaturalKeyResolver]
  * - Localized → adds `lang=xx` modifier
  * - Dynamic attribute → skipped (cannot be imported via ImpEx)
@@ -382,7 +382,8 @@ object FxSImpExHeaderBuilder {
             }
 
             is TSGlobalMetaCollection -> {
-                FxSImpExParam(col.attributeName, modifiers = modifiers, attributeType = attrType, metaType = FxSAttributeMetaType.COLLECTION)
+                // Collection — attrName(pk): each element is resolved by PK
+                FxSImpExParam(col.attributeName, nestedPath = "pk", modifiers = modifiers, attributeType = attrType, metaType = FxSAttributeMetaType.COLLECTION)
             }
 
             is TSGlobalMetaEnum -> {
