@@ -181,7 +181,8 @@ class FxSImpExExecService(
             .flatMap { r -> r.rows ?: emptyList() }
             .mapNotNull { row ->
                 val pk = row.getOrNull(0)?.takeIf { it.isNotBlank() } ?: return@mapNotNull null
-                val keyParts = row.drop(1).filter { it.isNotBlank() }
+                @Suppress("SENSELESS_COMPARISON")
+                val keyParts = row.drop(1).filter { it != null && it.isNotBlank() }
                 if (keyParts.isEmpty()) return@mapNotNull null
                 pk to keyParts.joinToString(":")
             }
