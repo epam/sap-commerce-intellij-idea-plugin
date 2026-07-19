@@ -55,37 +55,40 @@ class FlexibleSearchExportToImpExAction : AnAction() {
     override fun update(e: AnActionEvent) = e.ifNotFromSearchPopup {
         e.presentation.text = i18n("hybris.fxs.actions.export_to_impex")
         e.presentation.description = i18n("hybris.fxs.actions.export_to_impex.description")
-        val hasData = e.flexibleSearchSplitEditor()?.lastExecResult?.hasDataRows == true
         val hasPsiFile = e.getData(CommonDataKeys.PSI_FILE) is FlexibleSearchPsiFile
         val exporting = e.project?.let { FxSImpExExecService.getInstance(it).isExporting } ?: false
         e.presentation.icon = if (exporting) AnimatedIcon.Default.INSTANCE else HybrisIcons.ImpEx.FILE
-        e.presentation.isEnabled = hasData && hasPsiFile && !exporting
+        e.presentation.isEnabled = hasPsiFile && !exporting
     }
 
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
         if (FxSImpExExecService.getInstance(project).isExporting) return
-        val result = e.flexibleSearchSplitEditor()?.lastExecResult ?: return
-        val headers = result.headers ?: return
-        val rows = result.rows ?: return
+
+        val result = e.flexibleSearchSplitEditor()?.lastExecResult
+        val hasData = result?.hasDataRows == true
+        val headers = result?.headers ?: emptyList()
+        val rows = result?.rows ?: emptyList()
 
         val psiFile = e.getData(CommonDataKeys.PSI_FILE)?.asSafely<FlexibleSearchPsiFile>() ?: return
         val baseQueryInfo = FxSQueryAnalyzer.analyze(psiFile, headers)
         val connection = HacExecConnectionService.getInstance(project).activeConnection
         val inputEvent = e.inputEvent ?: return
 
-        var includeData = true
         var includeTypeSystemUnique = true
+        var includeData = hasData
         lateinit var myPopup: JBPopup
 
         val exportPanel = panel {
             row {
-                checkBox(i18n("hybris.fxs.actions.export_to_impex.dialog.include_data"))
-                    .bindSelected({ includeData }, { includeData = it })
-            }
-            row {
                 checkBox(i18n("hybris.fxs.actions.export_to_impex.dialog.include_type_unique"))
                     .bindSelected({ includeTypeSystemUnique }, { includeTypeSystemUnique = it })
+            }
+            row {
+                checkBox(i18n("hybris.fxs.actions.export_to_impex.dialog.include_data"))
+                    .bindSelected({ includeData }, { includeData = it })
+                    .enabled(hasData)
+                    .also { if (!hasData) it.comment(i18n("hybris.fxs.actions.export_to_impex.dialog.include_data.no_result")) }
             }
             row {
                 button(i18n("hybris.fxs.actions.export_to_impex.dialog.generate")) {
