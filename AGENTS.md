@@ -48,6 +48,7 @@ All versions in `gradle/libs.versions.toml` (use `libs.*` references).
 
 ### Code conventions
 Read `skills/sap-commerce-plugin-dev/SKILL.md` before modifying Kotlin source.
+Read `skills/sap-cc-github/SKILL.md` before committing or opening a PR.
 See `TECH_NOTES.md` for: action invocation, background-thread patterns, dialog sizing, GotItTooltip.
 
 ## Git & PR
