@@ -25,6 +25,8 @@ import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchColumnRefExpression
 import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchColumnRefYExpression
 import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchDefinedTableName
 import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchEquivalenceExpression
+import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchFromClause
+import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchFromClauseSelect
 import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchOrExpression
 import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchPsiFile
 import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchResultColumn
@@ -82,8 +84,10 @@ object FxSQueryAnalyzer {
 
         val columns = correlateColumns(resultHeaders, psiColumns)
 
+        val joinAliasMap = buildJoinAliasMap(selectCore?.fromClause)
+
         val uniqueAttributeNames = selectCore?.whereClause
-            ?.let { collectUniqueAttributes(it) }
+            ?.let { collectUniqueAttributes(it, joinAliasMap) }
             ?: emptySet()
 
         return FxSQueryInfo(
@@ -158,12 +162,55 @@ object FxSQueryAnalyzer {
     }
 
     /**
+     * Builds a map of JOIN table alias → root-type FK attribute name by parsing ON conditions.
+     *
+     * For `JOIN SolrIndexedType AS t0 ON {t0.pk} = {t.solrIndexedType}` produces `"t0" → "solrIndexedType"`.
+     * Used by [collectUniqueAttributes] to resolve `{t0.identifier}` → unique attr `solrIndexedType`.
+     */
+    private fun buildJoinAliasMap(fromClause: FlexibleSearchFromClause?): Map<String, String> {
+        if (fromClause == null) return emptyMap()
+        val result = mutableMapOf<String, String>()
+
+        fromClause.fromClauseExprList
+            .filterIsInstance<FlexibleSearchFromClauseSelect>()
+            .forEach { joinExpr ->
+                val joinAlias = joinExpr.tableAliasName?.text ?: return@forEach
+                val onExpr = joinExpr.joinConstraint?.expression
+                    ?.asSafely<FlexibleSearchEquivalenceExpression>() ?: return@forEach
+                val exprs = onExpr.expressionList
+                if (exprs.size != 2) return@forEach
+
+                val col0 = exprs[0].asSafely<FlexibleSearchColumnRefExpression>() ?: return@forEach
+                val col1 = exprs[1].asSafely<FlexibleSearchColumnRefExpression>() ?: return@forEach
+
+                // Identify which side is {joinAlias.pk} and which is {rootAlias.fkAttr}
+                val fkCol = when {
+                    col0.selectedTableName?.text == joinAlias
+                        && col0.columnName?.name.equals("pk", ignoreCase = true) -> col1
+                    col1.selectedTableName?.text == joinAlias
+                        && col1.columnName?.name.equals("pk", ignoreCase = true) -> col0
+                    else -> return@forEach
+                }
+                val fkAttr = fkCol.columnName?.name ?: return@forEach
+                result[joinAlias] = fkAttr
+            }
+
+        return result
+    }
+
+    /**
      * Collects attribute names used in top-level equality conditions in the WHERE clause.
      *
      * Skips equality expressions nested inside OR clauses since they cannot guarantee uniqueness.
      * Handles both plain `{col} = ?x` and Y-column `{alias:col} = ?x` patterns.
+     *
+     * When [joinAliasMap] is non-empty, aliased columns from JOIN tables (e.g. `{t0.identifier}`)
+     * are resolved back to the root-type FK attribute (e.g. `solrIndexedType`) via the map.
      */
-    private fun collectUniqueAttributes(whereClause: com.intellij.psi.PsiElement): Set<String> {
+    private fun collectUniqueAttributes(
+        whereClause: com.intellij.psi.PsiElement,
+        joinAliasMap: Map<String, String> = emptyMap(),
+    ): Set<String> {
         val uniqueNames = mutableSetOf<String>()
 
         PsiTreeUtil.findChildrenOfType(whereClause, FlexibleSearchEquivalenceExpression::class.java).forEach { eq ->
@@ -173,7 +220,13 @@ object FxSQueryAnalyzer {
             eq.expressionList.forEach { expr ->
                 val colRef = expr.asSafely<FlexibleSearchColumnRefExpression>()
                 if (colRef != null) {
-                    colRef.columnName?.name?.let { uniqueNames += it }
+                    val alias = colRef.selectedTableName?.text
+                    val attrName = colRef.columnName?.name
+                    if (attrName != null) {
+                        // Resolve JOIN alias to the root-type FK attribute
+                        val resolved = if (alias != null) joinAliasMap[alias] ?: attrName else attrName
+                        uniqueNames += resolved
+                    }
                     return@forEach
                 }
                 val yColRef = expr.asSafely<FlexibleSearchColumnRefYExpression>()
