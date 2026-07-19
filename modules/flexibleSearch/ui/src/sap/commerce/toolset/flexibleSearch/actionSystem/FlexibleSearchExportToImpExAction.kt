@@ -25,20 +25,31 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.ide.CopyPasteManager
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.ui.popup.ActiveIcon
+import com.intellij.openapi.ui.popup.JBPopup
+import com.intellij.openapi.ui.popup.JBPopupFactory
+import com.intellij.openapi.ui.popup.JBPopupListener
+import com.intellij.openapi.ui.popup.LightweightWindowEvent
 import com.intellij.ui.AnimatedIcon
+import com.intellij.ui.dsl.builder.AlignX
+import com.intellij.ui.dsl.builder.panel
 import com.intellij.util.asSafely
+import com.intellij.util.ui.JBUI
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.Notifications
 import sap.commerce.toolset.flexibleSearch.editor.flexibleSearchSplitEditor
 import sap.commerce.toolset.flexibleSearch.exec.FxSImpExExecService
 import sap.commerce.toolset.flexibleSearch.impex.FxSImpExHeaderBuilder
 import sap.commerce.toolset.flexibleSearch.impex.FxSQueryAnalyzer
+import sap.commerce.toolset.flexibleSearch.impex.FxSQueryInfo
 import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchPsiFile
 import sap.commerce.toolset.hac.exec.HacExecConnectionService
+import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.ifNotFromSearchPopup
 import sap.commerce.toolset.scratch.createScratchFile
 import java.awt.datatransfer.StringSelection
+import java.awt.event.KeyEvent
 
 class FlexibleSearchExportToImpExAction : AnAction() {
 
@@ -63,11 +74,60 @@ class FlexibleSearchExportToImpExAction : AnAction() {
 
         val psiFile = e.getData(CommonDataKeys.PSI_FILE)?.asSafely<FlexibleSearchPsiFile>() ?: return
         val baseQueryInfo = FxSQueryAnalyzer.analyze(psiFile, headers)
+        val connection = HacExecConnectionService.getInstance(project).activeConnection
+        val inputEvent = e.inputEvent ?: return
 
-        val dialog = FxSImpExExportDialog(project)
-        if (!dialog.showAndGet()) return
+        var includeTypeSystemUnique = true
+        lateinit var myPopup: JBPopup
 
-        val queryInfo = if (dialog.includeTypeSystemUnique) {
+        val exportPanel = panel {
+            row {
+                checkBox(i18n("hybris.fxs.actions.export_to_impex.dialog.include_type_unique"))
+                    .bindSelected({ includeTypeSystemUnique }, { includeTypeSystemUnique = it })
+            }
+            row {
+                button(i18n("hybris.fxs.actions.export_to_impex.dialog.generate")) {
+                    myPopup.closeOk(null)
+                }.align(AlignX.RIGHT)
+            }
+        }.apply {
+            border = JBUI.Borders.empty(8, 16)
+        }
+
+        JBPopupFactory.getInstance()
+            .createComponentPopupBuilder(exportPanel, exportPanel.preferredFocusedComponent)
+            .setMovable(false)
+            .setResizable(false)
+            .setRequestFocus(true)
+            .setTitle(i18n("hybris.fxs.actions.export_to_impex.dialog.title"))
+            .setTitleIcon(ActiveIcon(HybrisIcons.ImpEx.FILE))
+            .setKeyEventHandler {
+                val enterKey = it.keyCode == KeyEvent.VK_ENTER
+                if (enterKey) myPopup.closeOk(it)
+                enterKey
+            }
+            .createPopup()
+            .also { popup ->
+                myPopup = popup
+                popup.addListener(object : JBPopupListener {
+                    override fun onClosed(event: LightweightWindowEvent) {
+                        if (!event.isOk) return
+                        exportPanel.apply()
+                        doExport(project, baseQueryInfo, rows, connection, includeTypeSystemUnique)
+                    }
+                })
+                popup.showUnderneathOf(inputEvent.component)
+            }
+    }
+
+    private fun doExport(
+        project: Project,
+        baseQueryInfo: FxSQueryInfo,
+        rows: List<List<String>>,
+        connection: HacConnectionSettingsState,
+        includeTypeSystemUnique: Boolean,
+    ) {
+        val queryInfo = if (includeTypeSystemUnique) {
             val tsUniqueAttrs = FxSImpExHeaderBuilder.typeSystemUniqueAttributeNames(baseQueryInfo.primaryType, project)
             baseQueryInfo.copy(uniqueAttributeNames = baseQueryInfo.uniqueAttributeNames + tsUniqueAttrs)
         } else {
@@ -76,7 +136,6 @@ class FlexibleSearchExportToImpExAction : AnAction() {
 
         val params = FxSImpExHeaderBuilder.buildParams(queryInfo, project)
         val joinUniqueParams = FxSImpExHeaderBuilder.buildJoinUniqueParams(queryInfo, project)
-        val connection = HacExecConnectionService.getInstance(project).activeConnection
 
         FxSImpExExecService.getInstance(project).exportToImpEx(
             queryInfo = queryInfo,
