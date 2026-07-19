@@ -137,7 +137,7 @@ object FxSNaturalKeyResolver {
         )
     }
 
-    private fun buildAttrTypes(meta: TSGlobalMetaItem): Map<String, String> {
+    internal fun buildAttrTypes(meta: TSGlobalMetaItem): Map<String, String> {
         val result = mutableMapOf<String, String>()
         meta.allAttributes.forEach { (name, attr) ->
             val type = attr.type ?: return@forEach

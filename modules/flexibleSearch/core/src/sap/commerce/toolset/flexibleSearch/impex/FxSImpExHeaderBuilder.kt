@@ -375,7 +375,7 @@ object FxSImpExHeaderBuilder {
             is TSGlobalMetaItem -> {
                 // FK to another ComposedType — resolve natural key path and pre-build lookup query
                 val naturalPath = FxSNaturalKeyResolver.resolve(meta, tsAccess)
-                val fkAttrTypes = buildFkAttrTypes(meta)
+                val fkAttrTypes = FxSNaturalKeyResolver.buildAttrTypes(meta)
                 val fkResolutionInfo = buildFkLookupQuery(attrType, naturalPath, fkAttrTypes)
                     ?.let { FkResolutionInfo(attrType, it) }
                 FxSImpExParam(col.attributeName, nestedPath = naturalPath, modifiers = modifiers, attributeType = attrType, metaType = FxSAttributeMetaType.ITEM, fkResolutionInfo = fkResolutionInfo)
@@ -400,23 +400,4 @@ object FxSImpExHeaderBuilder {
         }
     }
 
-    /**
-     * Builds a lowercase attribute-name → type-name map for FK-type resolution in [buildFkLookupQuery].
-     *
-     * Mirrors the same logic in [FxSNaturalKeyResolver] to keep the two resolvers consistent.
-     */
-    private fun buildFkAttrTypes(meta: TSGlobalMetaItem): Map<String, String> {
-        val result = mutableMapOf<String, String>()
-        meta.allAttributes.forEach { (name, attr) ->
-            val type = attr.type ?: return@forEach
-            result[name.lowercase()] = type
-        }
-        meta.allRelationEnds
-            .filter { it.cardinality == Cardinality.ONE }
-            .forEach { end ->
-                val qualifier = end.qualifier?.lowercase() ?: return@forEach
-                result.putIfAbsent(qualifier, end.type)
-            }
-        return result
-    }
 }
