@@ -346,6 +346,40 @@ object FxSImpExHeaderBuilder {
     }
 
     // -------------------------------------------------------------------------
+    // Type-system unique attribute discovery
+    // -------------------------------------------------------------------------
+
+    /**
+     * Returns the lowercase attribute names that are declared `unique=true` in the type system
+     * for [typeName] — independently of what appears in the FlexibleSearch WHERE clause.
+     *
+     * Sources (all are checked):
+     * - `allAttributes` with `modifiers.isUnique == true` (excludes dynamic attrs)
+     * - `allRelationEnds` with `modifiers.isUnique == true` and `cardinality == ONE`
+     * - `allIndexes` with `isUnique == true` → all keys in those indexes
+     */
+    fun typeSystemUniqueAttributeNames(typeName: String, project: Project): Set<String> {
+        val tsAccess = TSMetaModelAccess.getInstance(project)
+        val meta = tsAccess.findMetaItemByName(typeName) ?: return emptySet()
+
+        val result = mutableSetOf<String>()
+
+        meta.allAttributes.values
+            .filter { it.modifiers.isUnique }
+            .mapNotNullTo(result) { it.name.lowercase() }
+
+        meta.allRelationEnds
+            .filter { it.modifiers.isUnique && it.cardinality == Cardinality.ONE }
+            .mapNotNullTo(result) { it.qualifier?.lowercase() }
+
+        meta.allIndexes
+            .filter { it.isUnique }
+            .flatMapTo(result) { idx -> idx.keys.map { it.lowercase() } }
+
+        return result
+    }
+
+    // -------------------------------------------------------------------------
     // Private helpers
     // -------------------------------------------------------------------------
 

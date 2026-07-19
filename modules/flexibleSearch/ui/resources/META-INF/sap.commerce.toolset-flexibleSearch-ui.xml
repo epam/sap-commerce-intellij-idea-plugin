@@ -49,7 +49,7 @@
         <action id="hybris.fxs.toggleParameters" class="sap.commerce.toolset.flexibleSearch.actionSystem.FlexibleSearchToggleInEditorParametersAction"/>
         <action id="hybris.fxs.toggleInEditorResults" class="sap.commerce.toolset.flexibleSearch.actionSystem.FlexibleSearchToggleInEditorResultsAction"/>
         <action id="hybris.fxs.copyToClipboard" class="sap.commerce.toolset.flexibleSearch.actionSystem.FlexibleSearchCopyToClipboardAction"/>
-        <action id="hybris.fxs.exportToImpEx" class="sap.commerce.toolset.flexibleSearch.actionSystem.FlexibleSearchExportToImpExAction"/>
+        <action id="hybris.fxs.exportToImpEx" class="sap.commerce.toolset.flexibleSearch.actionSystem.FlexibleSearchExportToImpExAction" searchable="false"/>
         <action id="hybris.fxs.introduceBindParameters" class="sap.commerce.toolset.flexibleSearch.actionSystem.FlexibleSearchIntroduceBindParametersAction"/>
         <action id="hybris.fxs.showRestrictions" class="sap.commerce.toolset.flexibleSearch.actionSystem.FlexibleSearchShowRestrictionsAction"/>
         <action id="hybris.fxs.executionContextSettings" class="sap.commerce.toolset.flexibleSearch.actionSystem.FlexibleSearchExecutionContextSettingsAction"/>

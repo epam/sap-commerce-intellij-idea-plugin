@@ -62,7 +62,17 @@ class FlexibleSearchExportToImpExAction : AnAction() {
         val rows = result.rows ?: return
 
         val psiFile = e.getData(CommonDataKeys.PSI_FILE)?.asSafely<FlexibleSearchPsiFile>() ?: return
-        val queryInfo = FxSQueryAnalyzer.analyze(psiFile, headers)
+        val baseQueryInfo = FxSQueryAnalyzer.analyze(psiFile, headers)
+
+        val dialog = FxSImpExExportDialog(project)
+        if (!dialog.showAndGet()) return
+
+        val queryInfo = if (dialog.includeTypeSystemUnique) {
+            val tsUniqueAttrs = FxSImpExHeaderBuilder.typeSystemUniqueAttributeNames(baseQueryInfo.primaryType, project)
+            baseQueryInfo.copy(uniqueAttributeNames = baseQueryInfo.uniqueAttributeNames + tsUniqueAttrs)
+        } else {
+            baseQueryInfo
+        }
 
         val params = FxSImpExHeaderBuilder.buildParams(queryInfo, project)
         val joinUniqueParams = FxSImpExHeaderBuilder.buildJoinUniqueParams(queryInfo, project)
