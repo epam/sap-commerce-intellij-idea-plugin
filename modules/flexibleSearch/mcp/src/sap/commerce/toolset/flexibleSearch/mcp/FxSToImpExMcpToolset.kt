@@ -23,22 +23,19 @@ import com.intellij.mcpserver.annotations.McpDescription
 import com.intellij.mcpserver.annotations.McpTool
 import com.intellij.mcpserver.project
 import com.intellij.openapi.application.readAction
-import com.intellij.openapi.project.Project
 import kotlinx.coroutines.currentCoroutineContext
 import org.apache.http.HttpStatus
 import sap.commerce.toolset.ai.mcp.map
 import sap.commerce.toolset.ai.mcp.resolveMapper
 import sap.commerce.toolset.flexibleSearch.exec.FlexibleSearchExecClient
 import sap.commerce.toolset.flexibleSearch.exec.FlexibleSearchExecConstants
+import sap.commerce.toolset.flexibleSearch.exec.FxSImpExExecService
 import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecContext
 import sap.commerce.toolset.flexibleSearch.exec.context.QueryMode
 import sap.commerce.toolset.flexibleSearch.impex.FxSImpExHeaderBuilder
-import sap.commerce.toolset.flexibleSearch.impex.FxSImpExParam
 import sap.commerce.toolset.flexibleSearch.impex.FxSQueryAnalyzer
-import sap.commerce.toolset.flexibleSearch.impex.FxSQueryInfo
 import sap.commerce.toolset.flexibleSearch.mcp.dto.FxSImpExResult
 import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchElementFactory
-import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
 import sap.commerce.toolset.hac.mcp.HacMcpService
 
 class FxSToImpExMcpToolset : McpToolset {
@@ -49,6 +46,7 @@ class FxSToImpExMcpToolset : McpToolset {
         |The generated ImpEx uses the type system to resolve correct attribute types, nested FK paths (e.g. catalogVersion(catalog(id),version)),
         |localized attributes (lang=xx), collection delimiters, and [unique=true] modifiers derived from WHERE clause equality conditions.
         |Enum attribute values are resolved from their runtime PKs to their codes via follow-up queries.
+        |FK attribute values are resolved from their runtime PKs to their natural key strings via follow-up queries.
         |Returns the ImpEx text along with metadata (primary type, column count, row count).
         |Requires a configured and authenticated HAC connection."""
     )
@@ -109,18 +107,16 @@ class FxSToImpExMcpToolset : McpToolset {
             )
         }
 
-        // Parse query PSI in a read action to extract column metadata
         val queryInfo = readAction {
             val psiFile = FlexibleSearchElementFactory.createFile(project, query)
             FxSQueryAnalyzer.analyze(psiFile, headers)
         }
 
         val params = FxSImpExHeaderBuilder.buildParams(queryInfo, project)
+        val joinUniqueParams = FxSImpExHeaderBuilder.buildJoinUniqueParams(queryInfo, project)
 
-        // Resolve enum PKs → codes via follow-up queries (one per distinct enum type)
-        val resolvedRows = resolveEnumRows(rows, queryInfo, params, connection, project, locale, dataSource, user)
-
-        val impexContent = buildImpEx(queryInfo, params, resolvedRows)
+        val impexContent = FxSImpExExecService.getInstance(project)
+            .exportToImpEx(queryInfo, params, joinUniqueParams, rows, connection)
 
         return mapper.map(
             FxSImpExResult(
@@ -128,73 +124,9 @@ class FxSToImpExMcpToolset : McpToolset {
                 success = true,
                 primaryType = queryInfo.primaryType,
                 columnCount = params.size,
-                rowCount = resolvedRows.size,
+                rowCount = rows.size,
                 impex = impexContent,
             )
         )
-    }
-
-    private suspend fun resolveEnumRows(
-        rows: List<List<String>>,
-        queryInfo: FxSQueryInfo,
-        params: List<FxSImpExParam>,
-        connection: HacConnectionSettingsState,
-        project: Project,
-        locale: String,
-        dataSource: String,
-        user: String?,
-    ): List<List<String>> {
-        val enumSourceIndicesByType = FxSImpExHeaderBuilder.enumSourceIndicesByType(queryInfo, params)
-        if (enumSourceIndicesByType.isEmpty()) return rows
-
-        val pkToCode = enumSourceIndicesByType.values.distinct()
-            .flatMap { enumType ->
-                val enumContext = FlexibleSearchExecContext(
-                    connection = connection,
-                    content = "SELECT {pk}, {code} FROM {$enumType}",
-                    queryMode = QueryMode.FlexibleSearch,
-                    maxCount = 10_000,
-                    locale = locale,
-                    dataSource = dataSource,
-                    user = user,
-                    timeout = connection.timeout,
-                )
-                val enumResult = FlexibleSearchExecClient.getInstance(project).execute(enumContext)
-                enumResult.rows ?: emptyList()
-            }
-            .mapNotNull { row ->
-                val pk = row.getOrNull(0)?.takeIf { it.isNotBlank() } ?: return@mapNotNull null
-                val code = row.getOrNull(1)?.takeIf { it.isNotBlank() } ?: return@mapNotNull null
-                pk to code
-            }
-            .toMap()
-
-        return FxSImpExHeaderBuilder.resolveEnumPks(rows, enumSourceIndicesByType.keys, pkToCode)
-    }
-
-    private fun buildImpEx(
-        queryInfo: FxSQueryInfo,
-        params: List<FxSImpExParam>,
-        rows: List<List<String>>,
-    ): String {
-        val paramWithSourceIdx = queryInfo.columns
-            .mapIndexedNotNull { idx, col -> if (!col.isPk) idx else null }
-            .zip(params)
-
-        return buildString {
-            append("INSERT_UPDATE ${queryInfo.primaryType}")
-            params.forEach { param -> append("; ${param.render()}") }
-            appendLine()
-
-            rows.forEach { row ->
-                append("")
-                paramWithSourceIdx.forEach { (srcIdx, param) ->
-                    val cell = row.getOrNull(srcIdx) ?: ""
-                    val value = if (cell == "null") "" else cell
-                    append("; ${param.formatValue(value)}")
-                }
-                appendLine()
-            }
-        }
     }
 }
