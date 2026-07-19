@@ -31,10 +31,8 @@ import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.Notifications
 import sap.commerce.toolset.flexibleSearch.editor.flexibleSearchSplitEditor
 import sap.commerce.toolset.flexibleSearch.exec.FxSImpExExecService
-import sap.commerce.toolset.flexibleSearch.impex.FxSColumn
 import sap.commerce.toolset.flexibleSearch.impex.FxSImpExHeaderBuilder
 import sap.commerce.toolset.flexibleSearch.impex.FxSQueryAnalyzer
-import sap.commerce.toolset.flexibleSearch.impex.FxSQueryInfo
 import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchPsiFile
 import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import sap.commerce.toolset.i18n
@@ -50,9 +48,10 @@ class FlexibleSearchExportToImpExAction : AnAction() {
         e.presentation.text = i18n("hybris.fxs.actions.export_to_impex")
         e.presentation.description = i18n("hybris.fxs.actions.export_to_impex.description")
         val hasData = e.flexibleSearchSplitEditor()?.lastExecResult?.hasDataRows == true
+        val hasPsiFile = e.getData(CommonDataKeys.PSI_FILE) is FlexibleSearchPsiFile
         val exporting = e.project?.let { FxSImpExExecService.getInstance(it).isExporting } ?: false
         e.presentation.icon = if (exporting) AnimatedIcon.Default.INSTANCE else HybrisIcons.ImpEx.FILE
-        e.presentation.isEnabled = hasData && !exporting
+        e.presentation.isEnabled = hasData && hasPsiFile && !exporting
     }
 
     override fun actionPerformed(e: AnActionEvent) {
@@ -62,13 +61,8 @@ class FlexibleSearchExportToImpExAction : AnAction() {
         val headers = result.headers ?: return
         val rows = result.rows ?: return
 
-        val psiFile = e.getData(CommonDataKeys.PSI_FILE)?.asSafely<FlexibleSearchPsiFile>()
-        val queryInfo = psiFile?.let { FxSQueryAnalyzer.analyze(it, headers) }
-            ?: FxSQueryInfo(
-                primaryType = "UnknownType",
-                columns = headers.map { h -> FxSColumn(resultHeaderName = h, attributeName = h, isPk = h.equals("pk", ignoreCase = true)) },
-                uniqueAttributeNames = emptySet(),
-            )
+        val psiFile = e.getData(CommonDataKeys.PSI_FILE)?.asSafely<FlexibleSearchPsiFile>() ?: return
+        val queryInfo = FxSQueryAnalyzer.analyze(psiFile, headers)
 
         val params = FxSImpExHeaderBuilder.buildParams(queryInfo, project)
         val joinUniqueParams = FxSImpExHeaderBuilder.buildJoinUniqueParams(queryInfo, project)
