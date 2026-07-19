@@ -91,15 +91,12 @@ data class FxSImpExParam(
      * - Leading/trailing delimiters produce empty tokens
      * - `#N` tokens are internal SAP Commerce markers (not item references)
      *
-     * Returns only the meaningful tokens joined by the configured collection delimiter.
+     * Returns only the meaningful tokens joined by `,`.
      */
-    private fun cleanCollectionValue(value: String): String {
-        val delimiter = modifiers.firstOrNull { it.startsWith("collection-delimiter=") }
-            ?.substringAfter("collection-delimiter=") ?: ","
-        return value.split(delimiter)
+    private fun cleanCollectionValue(value: String): String =
+        value.split(",")
             .filter { token -> token.isNotEmpty() && !token.matches(HAC_INTERNAL_MARKER) }
-            .joinToString(delimiter)
-    }
+            .joinToString(",")
 
     companion object {
         /** SAP Commerce atomic type names whose values require double-quote wrapping in ImpEx. */
@@ -116,7 +113,7 @@ data class FxSImpExParam(
  * Resolution strategy per attribute meta-type:
  * - Primitive / java.lang.* / String / Boolean → plain parameter
  * - Enum  → `attrName(code)` so ImpEx resolves the enum value by its code attribute
- * - Collection → plain parameter with `[collection-delimiter=,]`
+ * - Collection → plain parameter (values cleaned from HAC serialization artifacts)
  * - ComposedType (item FK) → `attrName(naturalKeyPath)` resolved by [FxSNaturalKeyResolver]
  * - Localized → adds `lang=xx` modifier
  * - Dynamic attribute → skipped (cannot be imported via ImpEx)
@@ -233,8 +230,6 @@ object FxSImpExHeaderBuilder {
             }
 
             is TSGlobalMetaCollection -> {
-                // Collection type — add collection-delimiter modifier
-                modifiers += "collection-delimiter=,"
                 FxSImpExParam(col.attributeName, modifiers = modifiers, attributeType = attrType, metaType = FxSAttributeMetaType.COLLECTION)
             }
 
