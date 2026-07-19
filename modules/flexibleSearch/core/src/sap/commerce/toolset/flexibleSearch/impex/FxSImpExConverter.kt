@@ -77,7 +77,7 @@ object FxSImpExConverter {
             rows.forEach { row ->
                 uniqueWithIdx.forEach { (srcIdx, param) ->
                     val cell = row.getOrNull(srcIdx) ?: ""
-                    val value = if (cell == "null") "" else cell
+                    val value = if (cell == "null" || cell == IMPEX_IGNORE) "" else cell
                     append("; ${param.formatValue(value).ifEmpty { IMPEX_IGNORE }}")
                 }
                 queryInfo.joinUniqueColumns.forEach { joinCol ->
@@ -86,7 +86,7 @@ object FxSImpExConverter {
                 }
                 nonUniqueWithIdx.forEach { (srcIdx, param) ->
                     val cell = row.getOrNull(srcIdx) ?: ""
-                    val value = if (cell == "null") "" else cell
+                    val value = if (cell == "null" || cell == IMPEX_IGNORE) "" else cell
                     append("; ${param.formatValue(value).ifEmpty { IMPEX_IGNORE }}")
                 }
                 appendLine()

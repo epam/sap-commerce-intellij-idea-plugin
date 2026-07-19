@@ -296,46 +296,195 @@ class FxSImpExConverterTest {
     }
 
     /**
-     * `solrIndexedType` is a unique FK whose type (`SolrIndexedType`) has a composite type-system
-     * key (`identifier,indexname`), but the query's WHERE clause only uses `{t0.identifier}` to
-     * JOIN to it. The analyzer captures this via `joinNaturalKeyByAttr` and the builder uses just
-     * `identifier` as the nested path — producing an importable header and a single-part data value.
+     * Full-fidelity test for:
+     * ```
+     * SELECT {t.pk}, {t.sortableType}, {t.valueProviderParameter}, {t.type},
+     *        {t.includeInResponse}, {t.ftsFuzzyQueryFuzziness}, {t.ftsWildcardQueryMinTermLength},
+     *        {t.ftsQueryBoost}, {t.ftsWildcardQuery}, {t.rangeSet}, {t.customFacetSortProvider},
+     *        {t.visible}, {t.ftsFuzzyQueryMinTermLength}, {t.sealed}, {t.priority},
+     *        {t.categoryField}, {t.classAttributeAssignment}, {t.ftsQuery}, {t.ftsWildcardQueryType},
+     *        {t.name}, {t.topValuesProvider}, {t.facetSort}, {t.ftsPhraseQuery}, {t.localized},
+     *        {t.valueProviderParameters}, {t.ftsFuzzyQuery}, {t.useForAutocomplete},
+     *        {t.ftsWildcardQueryBoost}, {t.useForSpellchecking}, {t.ftsPhraseQuerySlop},
+     *        {t.fieldValueProvider}, {t.currency}, {t.ftsFuzzyQueryBoost}, {t.facetType},
+     *        {t.facetDisplayNameProvider}, {t.ftsPhraseQueryBoost}, {t.multiValue},
+     *        {t.useForHighlighting}, {t.exportId}, {t.facet}, {t.ftsQueryMinTermLength},
+     *        {t.solrIndexedType}
+     * FROM { SolrIndexedProperty AS t JOIN SolrIndexedType AS t0 ON {t0.pk} = {t.solrIndexedType} }
+     * WHERE {t0.identifier} = 'mcProductType' AND {t.name} = 'feature-powersupply'
+     * ```
      *
-     * This test verifies the fix for the "identifier,indexname does not provide enough values"
-     * import error caused by emitting the full composite key when only one part is available.
+     * Key assertion: `{t.solrIndexedType}` is unique (resolved via JOIN t0 → t.solrIndexedType)
+     * and `SolrIndexedType` has a composite type-system key `identifier,indexname`. However the
+     * WHERE clause only constrains `t0.identifier`, so `joinNaturalKeyByAttr` maps
+     * `"solrindexedtype" → "identifier"` and the header must emit
+     * `solrIndexedType(identifier)[unique=true]` — NOT `(identifier,indexname)` — to avoid the
+     * ImpEx import error "does not provide enough values".
      */
     @Test
-    fun buildImpEx_joinConstrainedFkInSelect_usesJoinNaturalKeyNotFullCompositeKey() {
+    fun buildImpEx_solrIndexedPropertyQuery_joinFkUsesWhereNaturalKeyNotFullCompositeKey() {
+        // FxSQueryAnalyzer.analyze() would produce this FxSQueryInfo for the query above:
+        // - uniqueAttributeNames from WHERE: {name} (direct) + {solrIndexedType} (via t0 alias)
+        // - joinNaturalKeyByAttr: {"solrindexedtype" → "identifier"} (from {t0.identifier} = '…')
+        // - joinUniqueColumns: [] (solrIndexedType IS in SELECT → no synthetic column needed)
         val queryInfo = FxSQueryInfo(
             primaryType = "SolrIndexedProperty",
             columns = listOf(
-                FxSColumn(resultHeaderName = "pk", attributeName = "pk", isPk = true),
-                FxSColumn(resultHeaderName = "name", attributeName = "name", isPk = false),
-                FxSColumn(resultHeaderName = "solrIndexedType", attributeName = "solrIndexedType", isPk = false),
+                FxSColumn(resultHeaderName = "pk",                       attributeName = "pk",                       isPk = true),
+                FxSColumn(resultHeaderName = "sortableType",             attributeName = "sortableType",             isPk = false),
+                FxSColumn(resultHeaderName = "valueProviderParameter",   attributeName = "valueProviderParameter",   isPk = false),
+                FxSColumn(resultHeaderName = "type",                     attributeName = "type",                     isPk = false),
+                FxSColumn(resultHeaderName = "includeInResponse",        attributeName = "includeInResponse",        isPk = false),
+                FxSColumn(resultHeaderName = "ftsFuzzyQueryFuzziness",   attributeName = "ftsFuzzyQueryFuzziness",   isPk = false),
+                FxSColumn(resultHeaderName = "ftsWildcardQueryMinTermLength", attributeName = "ftsWildcardQueryMinTermLength", isPk = false),
+                FxSColumn(resultHeaderName = "ftsQueryBoost",            attributeName = "ftsQueryBoost",            isPk = false),
+                FxSColumn(resultHeaderName = "ftsWildcardQuery",         attributeName = "ftsWildcardQuery",         isPk = false),
+                FxSColumn(resultHeaderName = "rangeSet",                 attributeName = "rangeSet",                 isPk = false),
+                FxSColumn(resultHeaderName = "customFacetSortProvider",  attributeName = "customFacetSortProvider",  isPk = false),
+                FxSColumn(resultHeaderName = "visible",                  attributeName = "visible",                  isPk = false),
+                FxSColumn(resultHeaderName = "ftsFuzzyQueryMinTermLength", attributeName = "ftsFuzzyQueryMinTermLength", isPk = false),
+                FxSColumn(resultHeaderName = "sealed",                   attributeName = "sealed",                   isPk = false),
+                FxSColumn(resultHeaderName = "priority",                 attributeName = "priority",                 isPk = false),
+                FxSColumn(resultHeaderName = "categoryField",            attributeName = "categoryField",            isPk = false),
+                FxSColumn(resultHeaderName = "classAttributeAssignment", attributeName = "classAttributeAssignment", isPk = false),
+                FxSColumn(resultHeaderName = "ftsQuery",                 attributeName = "ftsQuery",                 isPk = false),
+                FxSColumn(resultHeaderName = "ftsWildcardQueryType",     attributeName = "ftsWildcardQueryType",     isPk = false),
+                FxSColumn(resultHeaderName = "name",                     attributeName = "name",                     isPk = false),
+                FxSColumn(resultHeaderName = "topValuesProvider",        attributeName = "topValuesProvider",        isPk = false),
+                FxSColumn(resultHeaderName = "facetSort",                attributeName = "facetSort",                isPk = false),
+                FxSColumn(resultHeaderName = "ftsPhraseQuery",           attributeName = "ftsPhraseQuery",           isPk = false),
+                FxSColumn(resultHeaderName = "localized",                attributeName = "localized",                isPk = false),
+                FxSColumn(resultHeaderName = "valueProviderParameters",  attributeName = "valueProviderParameters",  isPk = false),
+                FxSColumn(resultHeaderName = "ftsFuzzyQuery",            attributeName = "ftsFuzzyQuery",            isPk = false),
+                FxSColumn(resultHeaderName = "useForAutocomplete",       attributeName = "useForAutocomplete",       isPk = false),
+                FxSColumn(resultHeaderName = "ftsWildcardQueryBoost",    attributeName = "ftsWildcardQueryBoost",    isPk = false),
+                FxSColumn(resultHeaderName = "useForSpellchecking",      attributeName = "useForSpellchecking",      isPk = false),
+                FxSColumn(resultHeaderName = "ftsPhraseQuerySlop",       attributeName = "ftsPhraseQuerySlop",       isPk = false),
+                FxSColumn(resultHeaderName = "fieldValueProvider",       attributeName = "fieldValueProvider",       isPk = false),
+                FxSColumn(resultHeaderName = "currency",                 attributeName = "currency",                 isPk = false),
+                FxSColumn(resultHeaderName = "ftsFuzzyQueryBoost",       attributeName = "ftsFuzzyQueryBoost",       isPk = false),
+                FxSColumn(resultHeaderName = "facetType",                attributeName = "facetType",                isPk = false),
+                FxSColumn(resultHeaderName = "facetDisplayNameProvider", attributeName = "facetDisplayNameProvider", isPk = false),
+                FxSColumn(resultHeaderName = "ftsPhraseQueryBoost",      attributeName = "ftsPhraseQueryBoost",      isPk = false),
+                FxSColumn(resultHeaderName = "multiValue",               attributeName = "multiValue",               isPk = false),
+                FxSColumn(resultHeaderName = "useForHighlighting",       attributeName = "useForHighlighting",       isPk = false),
+                FxSColumn(resultHeaderName = "exportId",                 attributeName = "exportId",                 isPk = false),
+                FxSColumn(resultHeaderName = "facet",                    attributeName = "facet",                    isPk = false),
+                FxSColumn(resultHeaderName = "ftsQueryMinTermLength",    attributeName = "ftsQueryMinTermLength",    isPk = false),
+                FxSColumn(resultHeaderName = "solrIndexedType",          attributeName = "solrIndexedType",          isPk = false),
             ),
             uniqueAttributeNames = setOf("name", "solrindexedtype"),
+            joinNaturalKeyByAttr = mapOf("solrindexedtype" to "identifier"),
+        )
+        // Params produced by FxSImpExHeaderBuilder.buildParams() for the queryInfo above.
+        // solrIndexedType: unique=true, nestedPath from joinNaturalKeyByAttr = "identifier"
+        //                  (NOT the full type-system composite key "identifier,indexname")
+        val solrIndexedTypeParam = FxSImpExParam(
+            attributeName = "solrIndexedType",
+            nestedPath = "identifier",
+            attributeType = "SolrIndexedType",
+            metaType = FxSAttributeMetaType.ITEM,
+            modifiers = listOf("unique=true"),
         )
         val params = listOf(
+            atomicParam("sortableType"),
+            atomicParam("valueProviderParameter"),
+            atomicParam("type"),
+            atomicParam("includeInResponse"),
+            atomicParam("ftsFuzzyQueryFuzziness"),
+            atomicParam("ftsWildcardQueryMinTermLength"),
+            atomicParam("ftsQueryBoost"),
+            atomicParam("ftsWildcardQuery"),
+            atomicParam("rangeSet"),
+            atomicParam("customFacetSortProvider"),
+            atomicParam("visible"),
+            atomicParam("ftsFuzzyQueryMinTermLength"),
+            atomicParam("sealed"),
+            atomicParam("priority"),
+            atomicParam("categoryField"),
+            atomicParam("classAttributeAssignment"),
+            atomicParam("ftsQuery"),
+            atomicParam("ftsWildcardQueryType"),
             atomicParam("name", unique = true),
-            // nestedPath driven by joinNaturalKeyByAttr["solrindexedtype"] = "identifier",
-            // NOT by the full type-system key "identifier,indexname"
-            FxSImpExParam(
-                attributeName = "solrIndexedType",
-                nestedPath = "identifier",
-                attributeType = "SolrIndexedType",
-                metaType = FxSAttributeMetaType.ITEM,
-                modifiers = listOf("unique=true"),
-            ),
+            atomicParam("topValuesProvider"),
+            atomicParam("facetSort"),
+            atomicParam("ftsPhraseQuery"),
+            atomicParam("localized"),
+            atomicParam("valueProviderParameters"),
+            atomicParam("ftsFuzzyQuery"),
+            atomicParam("useForAutocomplete"),
+            atomicParam("ftsWildcardQueryBoost"),
+            atomicParam("useForSpellchecking"),
+            atomicParam("ftsPhraseQuerySlop"),
+            atomicParam("fieldValueProvider"),
+            atomicParam("currency"),
+            atomicParam("ftsFuzzyQueryBoost"),
+            atomicParam("facetType"),
+            atomicParam("facetDisplayNameProvider"),
+            atomicParam("ftsPhraseQueryBoost"),
+            atomicParam("multiValue"),
+            atomicParam("useForHighlighting"),
+            atomicParam("exportId"),
+            atomicParam("facet"),
+            atomicParam("ftsQueryMinTermLength"),
+            solrIndexedTypeParam,
         )
-        val rows = listOf(listOf("pk1", "feature-powersupply", "mcProductType"))
+        val rows = listOf(
+            listOf(
+                "8796095447642",   // pk (skipped)
+                "<ignore>",        // sortableType
+                "<ignore>",        // valueProviderParameter
+                "text",            // type
+                "true",            // includeInResponse
+                "<ignore>",        // ftsFuzzyQueryFuzziness
+                "0",               // ftsWildcardQueryMinTermLength
+                "<ignore>",        // ftsQueryBoost
+                "false",           // ftsWildcardQuery
+                "<ignore>",        // rangeSet
+                "<ignore>",        // customFacetSortProvider
+                "true",            // visible
+                "0",               // ftsFuzzyQueryMinTermLength (duplicate col)
+                "<ignore>",        // sealed
+                "0",               // priority
+                "false",           // categoryField
+                "8796095447650",   // classAttributeAssignment (raw pk — non-unique FK)
+                "false",           // ftsQuery
+                "POSTFIX",         // ftsWildcardQueryType
+                "feature-powersupply", // name
+                "<ignore>",        // topValuesProvider
+                "<ignore>",        // facetSort
+                "<ignore>",        // ftsPhraseQuery
+                "false",           // localized
+                "<ignore>",        // valueProviderParameters
+                "false",           // ftsFuzzyQuery
+                "false",           // useForAutocomplete
+                "<ignore>",        // ftsWildcardQueryBoost
+                "false",           // useForSpellchecking
+                "<ignore>",        // ftsPhraseQuerySlop
+                "commerceClassificationPropertyValueProvider", // fieldValueProvider
+                "false",           // currency
+                "<ignore>",        // ftsFuzzyQueryBoost
+                "<ignore>",        // facetType
+                "<ignore>",        // facetDisplayNameProvider
+                "<ignore>",        // ftsPhraseQueryBoost
+                "false",           // multiValue
+                "false",           // useForHighlighting
+                "<ignore>",        // exportId
+                "false",           // facet
+                "0",               // ftsQueryMinTermLength
+                "mcProductType",   // solrIndexedType (resolved from PK via identifier lookup)
+            )
+        )
 
         val result = FxSImpExConverter.buildImpEx("SolrIndexedProperty", params, emptyList(), queryInfo, rows)
 
-        assertEquals(
-            "INSERT_UPDATE SolrIndexedProperty; name[unique=true]; solrIndexedType(identifier)[unique=true]\n" +
-                "; \"feature-powersupply\"; mcProductType\n",
-            result
-        )
+        // unique columns first: name, solrIndexedType(identifier) — then all non-unique in SELECT order
+        val expected = """
+            INSERT_UPDATE SolrIndexedProperty; name[unique=true]; solrIndexedType(identifier)[unique=true]; sortableType; valueProviderParameter; type; includeInResponse; ftsFuzzyQueryFuzziness; ftsWildcardQueryMinTermLength; ftsQueryBoost; ftsWildcardQuery; rangeSet; customFacetSortProvider; visible; ftsFuzzyQueryMinTermLength; sealed; priority; categoryField; classAttributeAssignment; ftsQuery; ftsWildcardQueryType; topValuesProvider; facetSort; ftsPhraseQuery; localized; valueProviderParameters; ftsFuzzyQuery; useForAutocomplete; ftsWildcardQueryBoost; useForSpellchecking; ftsPhraseQuerySlop; fieldValueProvider; currency; ftsFuzzyQueryBoost; facetType; facetDisplayNameProvider; ftsPhraseQueryBoost; multiValue; useForHighlighting; exportId; facet; ftsQueryMinTermLength
+            ; "feature-powersupply"; mcProductType; <ignore>; <ignore>; "text"; "true"; <ignore>; "0"; <ignore>; "false"; <ignore>; <ignore>; "true"; "0"; <ignore>; "0"; "false"; "8796095447650"; "false"; "POSTFIX"; <ignore>; <ignore>; <ignore>; "false"; <ignore>; "false"; "false"; <ignore>; "false"; <ignore>; "commerceClassificationPropertyValueProvider"; "false"; <ignore>; <ignore>; <ignore>; <ignore>; "false"; "false"; <ignore>; "false"; "0"
+        """.trimIndent() + "\n"
+
+        assertEquals(expected, result)
     }
 
     // -------------------------------------------------------------------------
