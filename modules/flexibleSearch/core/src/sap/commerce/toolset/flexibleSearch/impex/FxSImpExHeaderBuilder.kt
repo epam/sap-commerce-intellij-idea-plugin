@@ -19,12 +19,11 @@
 package sap.commerce.toolset.flexibleSearch.impex
 
 import com.intellij.openapi.project.Project
-import sap.commerce.toolset.flexibleSearch.impex.FxSImpExHeaderBuilder.resolveEnumPks
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
 import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaCollection
 import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaEnum
 import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaItem
-import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaItem.TSGlobalMetaItemAttribute
+import sap.commerce.toolset.typeSystem.model.Cardinality
 import sap.commerce.toolset.typeSystem.model.PersistenceType
 
 /** Classifies the resolved SAP Commerce meta-type of an ImpEx parameter column. */
@@ -108,8 +107,13 @@ object FxSImpExHeaderBuilder {
         return queryInfo.columns
             .filterNot { it.isPk }
             .map { col ->
-                val attr = primaryMeta?.allAttributes?.get(col.attributeName)
-                resolveParam(col, attr, tsAccess, queryInfo.uniqueAttributeNames)
+                val regularAttr = primaryMeta?.allAttributes?.get(col.attributeName)
+                val attrType = regularAttr?.type
+                    ?: primaryMeta?.allRelationEnds
+                        ?.firstOrNull { it.qualifier == col.attributeName && it.cardinality == Cardinality.ONE }
+                        ?.type
+                val isDynamic = regularAttr?.persistence?.type == PersistenceType.DYNAMIC
+                resolveParam(col, attrType, isDynamic, tsAccess, queryInfo.uniqueAttributeNames)
             }
     }
 
@@ -149,7 +153,8 @@ object FxSImpExHeaderBuilder {
 
     private fun resolveParam(
         col: FxSColumn,
-        attr: TSGlobalMetaItemAttribute?,
+        attrType: String?,
+        isDynamic: Boolean,
         tsAccess: TSMetaModelAccess,
         uniqueAttributeNames: Set<String>,
     ): FxSImpExParam {
@@ -158,12 +163,11 @@ object FxSImpExHeaderBuilder {
         if (col.isLocalized && col.langCode != null) modifiers += "lang=${col.langCode}"
 
         // Dynamic attributes cannot be imported — mark them as virtual
-        if (attr?.persistence?.type == PersistenceType.DYNAMIC) {
+        if (isDynamic) {
             modifiers += "virtual=true"
             return FxSImpExParam(col.attributeName, modifiers = modifiers, metaType = FxSAttributeMetaType.UNKNOWN)
         }
 
-        val attrType = attr?.type
         if (attrType == null) {
             // Unknown attribute — fall back to plain parameter, type not determinable
             return FxSImpExParam(col.attributeName, modifiers = modifiers, metaType = FxSAttributeMetaType.UNKNOWN)
