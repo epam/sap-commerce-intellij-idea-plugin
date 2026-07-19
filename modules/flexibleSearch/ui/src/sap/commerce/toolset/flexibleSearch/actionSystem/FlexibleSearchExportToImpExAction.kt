@@ -25,6 +25,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.ide.CopyPasteManager
 import com.intellij.openapi.project.Project
+import com.intellij.ui.AnimatedIcon
 import com.intellij.util.asSafely
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.Notifications
@@ -48,10 +49,10 @@ class FlexibleSearchExportToImpExAction : AnAction() {
     override fun update(e: AnActionEvent) = e.ifNotFromSearchPopup {
         e.presentation.text = i18n("hybris.fxs.actions.export_to_impex")
         e.presentation.description = i18n("hybris.fxs.actions.export_to_impex.description")
-        e.presentation.icon = HybrisIcons.ImpEx.FILE
         val hasData = e.flexibleSearchSplitEditor()?.lastExecResult?.hasDataRows == true
-        val notExporting = e.project?.let { !FxSImpExExecService.getInstance(it).isExporting } ?: false
-        e.presentation.isEnabled = hasData && notExporting
+        val exporting = e.project?.let { FxSImpExExecService.getInstance(it).isExporting } ?: false
+        e.presentation.icon = if (exporting) AnimatedIcon.Default.INSTANCE else HybrisIcons.ImpEx.FILE
+        e.presentation.isEnabled = hasData && !exporting
     }
 
     override fun actionPerformed(e: AnActionEvent) {
