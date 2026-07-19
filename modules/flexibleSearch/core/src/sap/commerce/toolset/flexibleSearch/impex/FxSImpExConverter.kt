@@ -26,6 +26,10 @@ package sap.commerce.toolset.flexibleSearch.impex
  */
 object FxSImpExConverter {
 
+    /** ImpEx special value that instructs the import engine to leave the attribute unchanged. */
+    const val IMPEX_IGNORE = "<ignore>"
+
+
     /**
      * Builds the complete ImpEx text for a single type.
      *
@@ -74,15 +78,16 @@ object FxSImpExConverter {
                 uniqueWithIdx.forEach { (srcIdx, param) ->
                     val cell = row.getOrNull(srcIdx) ?: ""
                     val value = if (cell == "null") "" else cell
-                    append("; ${param.formatValue(value)}")
+                    append("; ${param.formatValue(value).ifEmpty { IMPEX_IGNORE }}")
                 }
                 queryInfo.joinUniqueColumns.forEach { joinCol ->
-                    append("; ${joinCol.constantValue ?: ""}")
+                    val v = joinCol.constantValue?.takeIf { it.isNotEmpty() } ?: IMPEX_IGNORE
+                    append("; $v")
                 }
                 nonUniqueWithIdx.forEach { (srcIdx, param) ->
                     val cell = row.getOrNull(srcIdx) ?: ""
                     val value = if (cell == "null") "" else cell
-                    append("; ${param.formatValue(value)}")
+                    append("; ${param.formatValue(value).ifEmpty { IMPEX_IGNORE }}")
                 }
                 appendLine()
             }

@@ -122,7 +122,7 @@ class FxSImpExConverterTest {
     // -------------------------------------------------------------------------
 
     @Test
-    fun buildImpEx_nullCellValue_renderedAsEmpty() {
+    fun buildImpEx_nullCellValue_renderedAsIgnore() {
         val queryInfo = FxSQueryInfo(
             primaryType = "Product",
             columns = listOf(
@@ -137,8 +137,8 @@ class FxSImpExConverterTest {
 
         val result = FxSImpExConverter.buildImpEx("Product", params, emptyList(), queryInfo, rows)
 
-        // "null" string → empty → formatValue("") → ""
-        assertEquals("INSERT_UPDATE Product; name\n; \n", result)
+        // "null" string → empty value → rendered as <ignore>
+        assertEquals("INSERT_UPDATE Product; name\n; <ignore>\n", result)
     }
 
     // -------------------------------------------------------------------------
@@ -268,7 +268,7 @@ class FxSImpExConverterTest {
     }
 
     @Test
-    fun buildImpEx_joinUniqueColumn_nullConstantValue_renderedAsEmpty() {
+    fun buildImpEx_joinUniqueColumn_nullConstantValue_renderedAsIgnore() {
         val joinUniqueCol = FxSJoinUniqueColumn(
             fkAttributeName = "solrIndexedType",
             naturalKeyAttr = "identifier",
@@ -300,7 +300,7 @@ class FxSImpExConverterTest {
 
         assertEquals(
             "INSERT_UPDATE SolrIndexedProperty; name[unique=true]; solrIndexedType(identifier)[unique=true]\n" +
-                "; \"propertyName\"; \n",
+                "; \"propertyName\"; <ignore>\n",
             result
         )
     }
@@ -391,7 +391,7 @@ class FxSImpExConverterTest {
     // -------------------------------------------------------------------------
 
     @Test
-    fun buildImpEx_rowShorterThanColumns_missingCellsRenderedAsEmpty() {
+    fun buildImpEx_rowShorterThanColumns_missingCellsRenderedAsIgnore() {
         val queryInfo = FxSQueryInfo(
             primaryType = "Product",
             columns = listOf(
@@ -410,7 +410,7 @@ class FxSImpExConverterTest {
 
         val result = FxSImpExConverter.buildImpEx("Product", params, emptyList(), queryInfo, rows)
 
-        assertEquals("INSERT_UPDATE Product; code[unique=true]; name\n; \"myCode\"; \n", result)
+        assertEquals("INSERT_UPDATE Product; code[unique=true]; name\n; \"myCode\"; <ignore>\n", result)
     }
 
     // -------------------------------------------------------------------------
