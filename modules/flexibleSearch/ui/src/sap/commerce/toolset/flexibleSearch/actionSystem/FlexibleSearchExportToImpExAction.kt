@@ -74,14 +74,16 @@ class FlexibleSearchExportToImpExAction : DumbAwareAction() {
         val params = FxSImpExHeaderBuilder.buildParams(queryInfo, project)
         val joinUniqueParams = FxSImpExHeaderBuilder.buildJoinUniqueParams(queryInfo, project)
         val enumSourceIndicesByType = FxSImpExHeaderBuilder.enumSourceIndicesByType(queryInfo, params)
+        val fkSourceIndicesByResolutionInfo = FxSImpExHeaderBuilder.fkSourceIndicesByResolutionInfo(queryInfo, params)
 
-        if (enumSourceIndicesByType.isEmpty()) {
+        if (enumSourceIndicesByType.isEmpty() && fkSourceIndicesByResolutionInfo.isEmpty()) {
             val impexContent = buildImpEx(queryInfo.primaryType, params, joinUniqueParams, queryInfo, rows)
             notifyExportDone(project, queryInfo.primaryType, rows.size, impexContent)
             return
         }
 
-        // Run follow-up queries to resolve enum PKs → codes, then build ImpEx
+        // Run follow-up queries to resolve enum PKs → codes and FK PKs → natural keys, then build ImpEx.
+        // Enum and FK contexts are combined into a single execute() call; results are split by offset.
         val connection = HacExecConnectionService.getInstance(project).activeConnection
         val enumContexts = enumSourceIndicesByType.values.distinct().map { enumType ->
             FlexibleSearchExecContext(
@@ -95,9 +97,25 @@ class FlexibleSearchExportToImpExAction : DumbAwareAction() {
                 timeout = connection.timeout,
             )
         }
+        val fkContexts = fkSourceIndicesByResolutionInfo.values.distinctBy { it.fxsLookupQuery }.map { fkInfo ->
+            FlexibleSearchExecContext(
+                connection = connection,
+                content = fkInfo.fxsLookupQuery,
+                queryMode = QueryMode.FlexibleSearch,
+                maxCount = 10_000,
+                locale = FlexibleSearchExecConstants.Defaults.LOCALE,
+                dataSource = FlexibleSearchExecConstants.Defaults.DATA_SOURCE,
+                user = null,
+                timeout = connection.timeout,
+            )
+        }
+        val allContexts = enumContexts + fkContexts
         FlexibleSearchExecClient.getInstance(project).execute(
-            contexts = enumContexts,
-            afterCallback = { _, enumResults ->
+            contexts = allContexts,
+            afterCallback = { _, allResults ->
+                val enumResults = allResults.take(enumContexts.size)
+                val fkResults = allResults.drop(enumContexts.size)
+
                 val pkToCode = enumResults
                     .flatMap { r -> r.rows ?: emptyList() }
                     .mapNotNull { row ->
@@ -106,9 +124,22 @@ class FlexibleSearchExportToImpExAction : DumbAwareAction() {
                         pk to code
                     }
                     .toMap()
+                // Each FK lookup row: [pk, key_part_1, key_part_2, ...]
+                // Natural key = key parts joined by ":" (ImpEx path delimiter)
+                val pkToNaturalKey = fkResults
+                    .flatMap { r -> r.rows ?: emptyList() }
+                    .mapNotNull { row ->
+                        val pk = row.getOrNull(0)?.takeIf { it.isNotBlank() } ?: return@mapNotNull null
+                        val keyParts = row.drop(1).filter { it.isNotBlank() }
+                        if (keyParts.isEmpty()) return@mapNotNull null
+                        pk to keyParts.joinToString(":")
+                    }
+                    .toMap()
+
                 val resolvedRows = FxSImpExHeaderBuilder.resolveEnumPks(rows, enumSourceIndicesByType.keys, pkToCode)
-                val impexContent = buildImpEx(queryInfo.primaryType, params, joinUniqueParams, queryInfo, resolvedRows)
-                notifyExportDone(project, queryInfo.primaryType, resolvedRows.size, impexContent)
+                val finalRows = FxSImpExHeaderBuilder.resolveFkPks(resolvedRows, fkSourceIndicesByResolutionInfo.keys, pkToNaturalKey)
+                val impexContent = buildImpEx(queryInfo.primaryType, params, joinUniqueParams, queryInfo, finalRows)
+                notifyExportDone(project, queryInfo.primaryType, finalRows.size, impexContent)
             }
         )
     }

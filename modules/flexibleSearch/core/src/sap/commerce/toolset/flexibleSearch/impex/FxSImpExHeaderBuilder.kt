@@ -45,14 +45,31 @@ enum class FxSAttributeMetaType {
 }
 
 /**
+ * Describes a follow-up FlexibleSearch query needed to resolve FK PK values to their natural key strings.
+ *
+ * The [fxsLookupQuery] returns rows where column 0 is the PK and columns 1..N are the natural key
+ * component values. These components are joined with `:` (the ImpEx path delimiter) to form the
+ * final importable string, e.g. `mcProductCatalog:Staged` for a CatalogVersion reference.
+ *
+ * @param typeName       SAP Commerce type name of the FK attribute (e.g. `CatalogVersion`).
+ * @param fxsLookupQuery Pre-built FxS SELECT query (e.g.
+ *                       `SELECT {root.pk}, {j0.id}, {root.version} FROM {CatalogVersion AS root JOIN Catalog AS j0 ON {j0.pk} = {root.catalog}}`).
+ */
+data class FkResolutionInfo(
+    val typeName: String,
+    val fxsLookupQuery: String,
+)
+
+/**
  * Describes a resolved ImpEx header parameter with its modifiers and optional nested path.
  *
- * @param attributeName  The base attribute name as it appears in the ImpEx header.
- * @param nestedPath     Optional nested resolution path (e.g., `catalog(id),version` for CatalogVersion).
- * @param modifiers      Ordered list of `key=value` modifier strings.
- * @param attributeType  Resolved SAP Commerce type name (e.g. `java.lang.String`, `java.lang.Integer`,
- *                       `CatalogVersion`). Null when the type could not be determined.
- * @param metaType       Classified meta-type of the attribute.
+ * @param attributeName    The base attribute name as it appears in the ImpEx header.
+ * @param nestedPath       Optional nested resolution path (e.g., `catalog(id),version` for CatalogVersion).
+ * @param modifiers        Ordered list of `key=value` modifier strings.
+ * @param attributeType    Resolved SAP Commerce type name (e.g. `java.lang.String`, `java.lang.Integer`,
+ *                         `CatalogVersion`). Null when the type could not be determined.
+ * @param metaType         Classified meta-type of the attribute.
+ * @param fkResolutionInfo Follow-up query info for ITEM-typed params; null for all other meta-types.
  */
 data class FxSImpExParam(
     val attributeName: String,
@@ -60,6 +77,7 @@ data class FxSImpExParam(
     val modifiers: List<String> = emptyList(),
     val attributeType: String? = null,
     val metaType: FxSAttributeMetaType = FxSAttributeMetaType.UNKNOWN,
+    val fkResolutionInfo: FkResolutionInfo? = null,
 ) {
     /** Renders the full ImpEx column definition, e.g. `catalogVersion(catalog(id),version)[unique=true]`. */
     fun render(): String = buildString {
@@ -199,6 +217,137 @@ object FxSImpExHeaderBuilder {
         }
     }
 
+    /**
+     * Returns a map of result-row column index → [FkResolutionInfo] for all ITEM-typed params
+     * that have a resolvable natural key path (i.e. not bare `pk`).
+     *
+     * Callers use this to build follow-up FxS queries that convert FK PK values to natural key
+     * strings and then pass the result to [resolveFkPks].
+     */
+    fun fkSourceIndicesByResolutionInfo(queryInfo: FxSQueryInfo, params: List<FxSImpExParam>): Map<Int, FkResolutionInfo> =
+        queryInfo.columns
+            .mapIndexedNotNull { idx, col -> if (!col.isPk) idx else null }
+            .zip(params)
+            .filter { (_, param) -> param.metaType == FxSAttributeMetaType.ITEM && param.fkResolutionInfo != null }
+            .associate { (srcIdx, param) -> srcIdx to param.fkResolutionInfo!! }
+
+    /**
+     * Replaces FK PK values in [rows] with their corresponding natural key strings from [pkToNaturalKey].
+     *
+     * Only cells at column indices listed in [fkColIndices] are touched; all other cells are
+     * passed through unchanged. If a PK has no entry in [pkToNaturalKey] the original value is
+     * kept so the output remains usable (user can fix it manually).
+     */
+    fun resolveFkPks(
+        rows: List<List<String>>,
+        fkColIndices: Set<Int>,
+        pkToNaturalKey: Map<String, String>,
+    ): List<List<String>> {
+        if (fkColIndices.isEmpty()) return rows
+        return rows.map { row ->
+            row.mapIndexed { idx, cell ->
+                if (idx in fkColIndices) pkToNaturalKey.getOrDefault(cell, cell) else cell
+            }
+        }
+    }
+
+    // -------------------------------------------------------------------------
+    // FK lookup query builder (testable, no IntelliJ platform types)
+    // -------------------------------------------------------------------------
+
+    /**
+     * Builds a FlexibleSearch SELECT query that, when executed, returns rows of the form
+     * `[pk, key_component_1, key_component_2, ...]` for [typeName].
+     *
+     * The natural key string for a resolved row is `key_component_1:key_component_2:...`
+     * (colon = default ImpEx path-delimiter).
+     *
+     * Returns `null` when [nestedPath] is `"pk"` (no meaningful natural key to resolve).
+     *
+     * [attrTypes] maps lowercase FK attribute names of [typeName] to their SAP Commerce type names.
+     * Only FK attributes that have parens in [nestedPath] need entries; scalar attributes are
+     * emitted directly. An absent entry causes the FK attribute to be treated as a scalar.
+     *
+     * ### Examples
+     * - `("Language", "isocode", {})` → `"SELECT {pk}, {isocode} FROM {Language}"`
+     * - `("CatalogVersion", "catalog(id),version", {"catalog" → "Catalog"})` →
+     *   `"SELECT {root.pk}, {j0.id}, {root.version} FROM {CatalogVersion AS root JOIN Catalog AS j0 ON {j0.pk} = {root.catalog}}"`
+     */
+    internal fun buildFkLookupQuery(
+        typeName: String,
+        nestedPath: String,
+        attrTypes: Map<String, String>,
+    ): String? {
+        if (nestedPath == "pk") return null
+        val tokens = splitTopLevel(nestedPath)
+        val hasJoins = tokens.any { '(' in it }
+
+        if (!hasJoins) {
+            val selectCols = tokens.joinToString(", ") { "{$it}" }
+            return "SELECT {pk}, $selectCols FROM {$typeName}"
+        }
+
+        // Build query with JOIN clauses for FK tokens
+        val selectParts = mutableListOf<String>()
+        val joinParts = mutableListOf<String>()
+        var joinCount = 0
+
+        tokens.forEach { token ->
+            val parenIdx = token.indexOf('(')
+            if (parenIdx < 0) {
+                // Scalar attribute directly on the root type
+                selectParts += "{root.$token}"
+            } else {
+                val fkAttr = token.substring(0, parenIdx)
+                val innerPath = token.substring(parenIdx + 1, token.length - 1)
+                val joinTypeName = attrTypes[fkAttr.lowercase()]
+                if (joinTypeName == null) {
+                    // Type unknown — emit as scalar (best-effort fallback)
+                    selectParts += "{root.$fkAttr}"
+                } else {
+                    val alias = "j${joinCount++}"
+                    joinParts += "$joinTypeName AS $alias ON {$alias.pk} = {root.$fkAttr}"
+                    // Depth-1 only: inner path tokens are all scalars on the join alias
+                    splitTopLevel(innerPath).forEach { inner -> selectParts += "{$alias.$inner}" }
+                }
+            }
+        }
+
+        val fromClause = buildString {
+            append("$typeName AS root")
+            joinParts.forEach { append(" JOIN $it") }
+        }
+        val allSelectCols = (listOf("{root.pk}") + selectParts).joinToString(", ")
+        return "SELECT $allSelectCols FROM {$fromClause}"
+    }
+
+    /**
+     * Splits [s] at top-level commas (commas not nested inside parentheses).
+     *
+     * e.g. `"catalog(id),version"` → `["catalog(id)", "version"]`
+     */
+    internal fun splitTopLevel(s: String): List<String> {
+        val tokens = mutableListOf<String>()
+        var depth = 0
+        var start = 0
+        for (i in s.indices) {
+            when (s[i]) {
+                '(' -> depth++
+                ')' -> depth--
+                ',' -> if (depth == 0) {
+                    tokens += s.substring(start, i).trim()
+                    start = i + 1
+                }
+            }
+        }
+        tokens += s.substring(start).trim()
+        return tokens
+    }
+
+    // -------------------------------------------------------------------------
+    // Private helpers
+    // -------------------------------------------------------------------------
+
     private fun resolveParam(
         col: FxSColumn,
         attrType: String?,
@@ -224,9 +373,12 @@ object FxSImpExHeaderBuilder {
 
         return when (val meta = tsAccess.findMetaClassifierByName(attrType)) {
             is TSGlobalMetaItem -> {
-                // FK to another ComposedType — resolve natural key path
+                // FK to another ComposedType — resolve natural key path and pre-build lookup query
                 val naturalPath = FxSNaturalKeyResolver.resolve(meta, tsAccess)
-                FxSImpExParam(col.attributeName, nestedPath = naturalPath, modifiers = modifiers, attributeType = attrType, metaType = FxSAttributeMetaType.ITEM)
+                val fkAttrTypes = buildFkAttrTypes(meta)
+                val fkResolutionInfo = buildFkLookupQuery(attrType, naturalPath, fkAttrTypes)
+                    ?.let { FkResolutionInfo(attrType, it) }
+                FxSImpExParam(col.attributeName, nestedPath = naturalPath, modifiers = modifiers, attributeType = attrType, metaType = FxSAttributeMetaType.ITEM, fkResolutionInfo = fkResolutionInfo)
             }
 
             is TSGlobalMetaCollection -> {
@@ -245,5 +397,25 @@ object FxSImpExHeaderBuilder {
                 FxSImpExParam(col.attributeName, modifiers = modifiers, attributeType = attrType, metaType = FxSAttributeMetaType.ATOMIC)
             }
         }
+    }
+
+    /**
+     * Builds a lowercase attribute-name → type-name map for FK-type resolution in [buildFkLookupQuery].
+     *
+     * Mirrors the same logic in [FxSNaturalKeyResolver] to keep the two resolvers consistent.
+     */
+    private fun buildFkAttrTypes(meta: TSGlobalMetaItem): Map<String, String> {
+        val result = mutableMapOf<String, String>()
+        meta.allAttributes.forEach { (name, attr) ->
+            val type = attr.type ?: return@forEach
+            result[name.lowercase()] = type
+        }
+        meta.allRelationEnds
+            .filter { it.cardinality == Cardinality.ONE }
+            .forEach { end ->
+                val qualifier = end.qualifier?.lowercase() ?: return@forEach
+                result.putIfAbsent(qualifier, end.type)
+            }
+        return result
     }
 }

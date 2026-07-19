@@ -20,6 +20,7 @@ package sap.commerce.toolset.flexibleSearch.impex
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNull
 
 class FxSImpExHeaderBuilderTest {
 
@@ -170,5 +171,206 @@ class FxSImpExHeaderBuilderTest {
         val result = FxSImpExHeaderBuilder.enumSourceIndicesByType(queryInfo, params)
 
         assertEquals(mapOf(1 to "DeliveryMode", 2 to "PaymentMode"), result)
+    }
+
+    // -------------------------------------------------------------------------
+    // splitTopLevel()
+    // -------------------------------------------------------------------------
+
+    @Test
+    fun splitTopLevel_singleToken_returnsSingleElement() {
+        assertEquals(listOf("isocode"), FxSImpExHeaderBuilder.splitTopLevel("isocode"))
+    }
+
+    @Test
+    fun splitTopLevel_twoScalars_splitsByComma() {
+        assertEquals(listOf("catalog", "version"), FxSImpExHeaderBuilder.splitTopLevel("catalog,version"))
+    }
+
+    @Test
+    fun splitTopLevel_fkTokenWithInnerComma_notSplitInside() {
+        // "catalog(id),version" — the comma inside "catalog(id)" is depth 1, not split
+        assertEquals(listOf("catalog(id)", "version"), FxSImpExHeaderBuilder.splitTopLevel("catalog(id),version"))
+    }
+
+    @Test
+    fun splitTopLevel_deeplyNested_splitOnlyAtTopLevel() {
+        // "a(b(c,d),e),f"
+        assertEquals(listOf("a(b(c,d),e)", "f"), FxSImpExHeaderBuilder.splitTopLevel("a(b(c,d),e),f"))
+    }
+
+    // -------------------------------------------------------------------------
+    // buildFkLookupQuery()
+    // -------------------------------------------------------------------------
+
+    @Test
+    fun buildFkLookupQuery_pkPath_returnsNull() {
+        assertNull(FxSImpExHeaderBuilder.buildFkLookupQuery("Language", "pk", emptyMap()))
+    }
+
+    @Test
+    fun buildFkLookupQuery_simpleScalar_noJoin() {
+        val query = FxSImpExHeaderBuilder.buildFkLookupQuery("Language", "isocode", emptyMap())
+        assertEquals("SELECT {pk}, {isocode} FROM {Language}", query)
+    }
+
+    @Test
+    fun buildFkLookupQuery_multipleScalars_noJoin() {
+        val query = FxSImpExHeaderBuilder.buildFkLookupQuery("Catalog", "id", emptyMap())
+        assertEquals("SELECT {pk}, {id} FROM {Catalog}", query)
+    }
+
+    @Test
+    fun buildFkLookupQuery_catalogVersion_withCatalogJoin() {
+        val attrTypes = mapOf("catalog" to "Catalog", "version" to "java.lang.String")
+        val query = FxSImpExHeaderBuilder.buildFkLookupQuery("CatalogVersion", "catalog(id),version", attrTypes)
+        assertEquals(
+            "SELECT {root.pk}, {j0.id}, {root.version} FROM {CatalogVersion AS root JOIN Catalog AS j0 ON {j0.pk} = {root.catalog}}",
+            query,
+        )
+    }
+
+    @Test
+    fun buildFkLookupQuery_unknownFkType_fallsBackToScalar() {
+        // "catalog" has parens but its type is absent from attrTypes → emitted as scalar
+        val query = FxSImpExHeaderBuilder.buildFkLookupQuery("CatalogVersion", "catalog(id),version", emptyMap())
+        assertEquals(
+            "SELECT {root.pk}, {root.catalog}, {root.version} FROM {CatalogVersion AS root}",
+            query,
+        )
+    }
+
+    @Test
+    fun buildFkLookupQuery_multipleScalarPaths_noJoin() {
+        val query = FxSImpExHeaderBuilder.buildFkLookupQuery("Product", "catalogVersion,code", emptyMap())
+        assertEquals("SELECT {pk}, {catalogVersion}, {code} FROM {Product}", query)
+    }
+
+    // -------------------------------------------------------------------------
+    // fkSourceIndicesByResolutionInfo()
+    // -------------------------------------------------------------------------
+
+    @Test
+    fun fkSourceIndicesByResolutionInfo_returnsIndexForItemColumnWithFkInfo() {
+        val fkInfo = FkResolutionInfo("CatalogVersion", "SELECT {pk}, {isocode} FROM {Language}")
+        val queryInfo = FxSQueryInfo(
+            primaryType = "Product",
+            columns = listOf(
+                FxSColumn(resultHeaderName = "pk", attributeName = "pk", isPk = true),
+                FxSColumn(resultHeaderName = "catalogVersion", attributeName = "catalogVersion", isPk = false),
+                FxSColumn(resultHeaderName = "code", attributeName = "code", isPk = false),
+            ),
+            uniqueAttributeNames = setOf("code"),
+        )
+        val params = listOf(
+            FxSImpExParam(attributeName = "catalogVersion", attributeType = "CatalogVersion", metaType = FxSAttributeMetaType.ITEM, fkResolutionInfo = fkInfo),
+            FxSImpExParam(attributeName = "code", attributeType = "java.lang.String", metaType = FxSAttributeMetaType.ATOMIC),
+        )
+
+        val result = FxSImpExHeaderBuilder.fkSourceIndicesByResolutionInfo(queryInfo, params)
+
+        assertEquals(mapOf(1 to fkInfo), result)
+    }
+
+    @Test
+    fun fkSourceIndicesByResolutionInfo_skipsItemColumnWithNullFkInfo() {
+        val queryInfo = FxSQueryInfo(
+            primaryType = "Product",
+            columns = listOf(
+                FxSColumn(resultHeaderName = "pk", attributeName = "pk", isPk = true),
+                FxSColumn(resultHeaderName = "catalogVersion", attributeName = "catalogVersion", isPk = false),
+            ),
+            uniqueAttributeNames = emptySet(),
+        )
+        val params = listOf(
+            // ITEM but no fkResolutionInfo (e.g. natural key is just "pk")
+            FxSImpExParam(attributeName = "catalogVersion", attributeType = "CatalogVersion", metaType = FxSAttributeMetaType.ITEM, fkResolutionInfo = null),
+        )
+
+        val result = FxSImpExHeaderBuilder.fkSourceIndicesByResolutionInfo(queryInfo, params)
+
+        assertEquals(emptyMap(), result)
+    }
+
+    @Test
+    fun fkSourceIndicesByResolutionInfo_skipsNonItemColumns() {
+        val queryInfo = FxSQueryInfo(
+            primaryType = "Order",
+            columns = listOf(
+                FxSColumn(resultHeaderName = "pk", attributeName = "pk", isPk = true),
+                FxSColumn(resultHeaderName = "status", attributeName = "status", isPk = false),
+                FxSColumn(resultHeaderName = "code", attributeName = "code", isPk = false),
+            ),
+            uniqueAttributeNames = emptySet(),
+        )
+        val params = listOf(
+            FxSImpExParam(attributeName = "status", attributeType = "OrderStatus", metaType = FxSAttributeMetaType.ENUM),
+            FxSImpExParam(attributeName = "code", attributeType = "java.lang.String", metaType = FxSAttributeMetaType.ATOMIC),
+        )
+
+        val result = FxSImpExHeaderBuilder.fkSourceIndicesByResolutionInfo(queryInfo, params)
+
+        assertEquals(emptyMap(), result)
+    }
+
+    // -------------------------------------------------------------------------
+    // resolveFkPks()
+    // -------------------------------------------------------------------------
+
+    @Test
+    fun resolveFkPks_replacesKnownFkPks() {
+        val rows = listOf(listOf("rowPk", "8796125987417", "637227"))
+        val fkColIndices = setOf(1)
+        val pkToNaturalKey = mapOf("8796125987417" to "mcProductCatalog:Staged")
+
+        val result = FxSImpExHeaderBuilder.resolveFkPks(rows, fkColIndices, pkToNaturalKey)
+
+        assertEquals(listOf(listOf("rowPk", "mcProductCatalog:Staged", "637227")), result)
+    }
+
+    @Test
+    fun resolveFkPks_keepsOriginalValueForUnknownPk() {
+        val rows = listOf(listOf("rowPk", "9999999999999"))
+        val fkColIndices = setOf(1)
+        val pkToNaturalKey = mapOf("8796125987417" to "mcProductCatalog:Staged")
+
+        val result = FxSImpExHeaderBuilder.resolveFkPks(rows, fkColIndices, pkToNaturalKey)
+
+        assertEquals(listOf(listOf("rowPk", "9999999999999")), result)
+    }
+
+    @Test
+    fun resolveFkPks_emptyIndices_returnsRowsUnchanged() {
+        val rows = listOf(listOf("rowPk", "8796125987417"))
+        val pkToNaturalKey = mapOf("8796125987417" to "mcProductCatalog:Staged")
+
+        val result = FxSImpExHeaderBuilder.resolveFkPks(rows, emptySet(), pkToNaturalKey)
+
+        assertEquals(rows, result)
+    }
+
+    @Test
+    fun resolveFkPks_multipleFkColumns_replacesAll() {
+        val rows = listOf(listOf("rowPk", "fk1Pk", "scalar", "fk2Pk"))
+        val fkColIndices = setOf(1, 3)
+        val pkToNaturalKey = mapOf("fk1Pk" to "mcProductCatalog:Staged", "fk2Pk" to "en")
+
+        val result = FxSImpExHeaderBuilder.resolveFkPks(rows, fkColIndices, pkToNaturalKey)
+
+        assertEquals(listOf(listOf("rowPk", "mcProductCatalog:Staged", "scalar", "en")), result)
+    }
+
+    @Test
+    fun resolveFkPks_multipleRows_replacesInAllRows() {
+        val rows = listOf(
+            listOf("pk1", "fkPk1"),
+            listOf("pk2", "fkPk2"),
+        )
+        val fkColIndices = setOf(1)
+        val pkToNaturalKey = mapOf("fkPk1" to "catalogA:Online", "fkPk2" to "catalogB:Staged")
+
+        val result = FxSImpExHeaderBuilder.resolveFkPks(rows, fkColIndices, pkToNaturalKey)
+
+        assertEquals(listOf(listOf("pk1", "catalogA:Online"), listOf("pk2", "catalogB:Staged")), result)
     }
 }
