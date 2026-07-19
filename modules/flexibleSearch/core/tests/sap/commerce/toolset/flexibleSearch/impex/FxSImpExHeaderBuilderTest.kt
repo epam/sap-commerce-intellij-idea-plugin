@@ -246,6 +246,19 @@ class FxSImpExHeaderBuilderTest {
         assertEquals("SELECT {pk}, {catalogVersion}, {code} FROM {Product}", query)
     }
 
+    /**
+     * When a JOIN-constrained FK has a composite type-system key (e.g. `identifier,indexname`)
+     * but the WHERE clause only uses one attribute (e.g. `identifier`), the lookup query must
+     * only SELECT that one attribute — otherwise the resolved natural key string would contain
+     * more parts than the ImpEx header declares, causing an import error.
+     */
+    @Test
+    fun buildFkLookupQuery_singleAttrOverride_producesSimpleSelectWithoutJoin() {
+        // joinNaturalKey override = "identifier"; full type-system key would be "identifier,indexname"
+        val query = FxSImpExHeaderBuilder.buildFkLookupQuery("SolrIndexedType", "identifier", emptyMap())
+        assertEquals("SELECT {pk}, {identifier} FROM {SolrIndexedType}", query)
+    }
+
     // -------------------------------------------------------------------------
     // fkSourceIndicesByResolutionInfo()
     // -------------------------------------------------------------------------

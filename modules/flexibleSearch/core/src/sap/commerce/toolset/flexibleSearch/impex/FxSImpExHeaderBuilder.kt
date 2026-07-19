@@ -152,7 +152,8 @@ object FxSImpExHeaderBuilder {
                         ?.firstOrNull { it.qualifier == col.attributeName && it.cardinality == Cardinality.ONE }
                         ?.type
                 val isDynamic = regularAttr?.persistence?.type == PersistenceType.DYNAMIC
-                resolveParam(col, attrType, isDynamic, tsAccess, queryInfo.uniqueAttributeNames)
+                val joinNaturalKey = queryInfo.joinNaturalKeyByAttr[col.attributeName.lowercase()]
+                resolveParam(col, attrType, isDynamic, tsAccess, queryInfo.uniqueAttributeNames, joinNaturalKey)
             }
     }
 
@@ -389,6 +390,7 @@ object FxSImpExHeaderBuilder {
         isDynamic: Boolean,
         tsAccess: TSMetaModelAccess,
         uniqueAttributeNames: Set<String>,
+        joinNaturalKey: String? = null,
     ): FxSImpExParam {
         val modifiers = mutableListOf<String>()
         // uniqueAttributeNames is stored lowercase; compare case-insensitively
@@ -409,10 +411,11 @@ object FxSImpExHeaderBuilder {
         return when (val meta = tsAccess.findMetaClassifierByName(attrType)) {
             is TSGlobalMetaItem -> {
                 if ("unique=true" in modifiers) {
-                    // Unique FK column: resolve full natural key path and pre-build lookup query for
-                    // PK → natural key resolution (needed for cross-environment import correctness).
-                    val naturalPath = FxSNaturalKeyResolver.resolve(meta, tsAccess)
-                    val fkAttrTypes = FxSNaturalKeyResolver.buildAttrTypes(meta)
+                    // Prefer the natural key attr(s) from the WHERE JOIN condition when available —
+                    // the query only constrains those attrs, so they uniquely identify the item in
+                    // this context. Fall back to the full type-system composite key otherwise.
+                    val naturalPath = joinNaturalKey ?: FxSNaturalKeyResolver.resolve(meta, tsAccess)
+                    val fkAttrTypes = if (joinNaturalKey == null) FxSNaturalKeyResolver.buildAttrTypes(meta) else emptyMap()
                     val fkResolutionInfo = buildFkLookupQuery(attrType, naturalPath, fkAttrTypes)
                         ?.let { FkResolutionInfo(attrType, it) }
                     FxSImpExParam(col.attributeName, nestedPath = naturalPath, modifiers = modifiers, attributeType = attrType, metaType = FxSAttributeMetaType.ITEM, fkResolutionInfo = fkResolutionInfo)

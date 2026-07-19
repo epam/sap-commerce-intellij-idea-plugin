@@ -74,12 +74,17 @@ data class FxSJoinUniqueColumn(
  * @param uniqueAttributeNames   Attribute names that appear in equality conditions in the WHERE clause.
  * @param joinUniqueColumns      JOIN-resolved unique attributes absent from the SELECT list — must be
  *                               appended as synthetic columns in the ImpEx output.
+ * @param joinNaturalKeyByAttr   Maps root-type FK attribute name (lowercase) → the comma-joined natural
+ *                               key attribute(s) used in WHERE JOIN equality conditions.
+ *                               Used to override the type-system-derived composite key when the query
+ *                               only constrains a subset of the FK type's unique attributes.
  */
 data class FxSQueryInfo(
     val primaryType: String,
     val columns: List<FxSColumn>,
     val uniqueAttributeNames: Set<String>,
     val joinUniqueColumns: List<FxSJoinUniqueColumn> = emptyList(),
+    val joinNaturalKeyByAttr: Map<String, String> = emptyMap(),
 )
 
 /**
@@ -117,11 +122,20 @@ object FxSQueryAnalyzer {
                 ?.let { collectJoinUniqueColumns(it, joinAliasMap, selectedAttrNames) }
                 ?: emptyList()
 
+        // Collect the natural key attribute(s) used per JOIN FK attr across ALL WHERE conditions,
+        // including those whose FK is already in SELECT. This allows buildParams to use just the
+        // queried attribute(s) instead of the full type-system composite key.
+        val joinNaturalKeyByAttr = if (joinAliasMap.isEmpty()) emptyMap()
+            else selectCore?.whereClause
+                ?.let { collectJoinNaturalKeys(it, joinAliasMap) }
+                ?: emptyMap()
+
         return FxSQueryInfo(
             primaryType = primaryType,
             columns = columns,
             uniqueAttributeNames = uniqueAttributeNames,
             joinUniqueColumns = joinUniqueColumns,
+            joinNaturalKeyByAttr = joinNaturalKeyByAttr,
         )
     }
 
@@ -317,6 +331,40 @@ object FxSQueryAnalyzer {
         }
 
         return uniqueNames
+    }
+
+    /**
+     * Collects the natural key attribute(s) used per JOIN FK attribute across all top-level
+     * WHERE equality conditions, regardless of whether the FK appears in the SELECT list.
+     *
+     * Returns a map of root-type FK attribute name (lowercase) → comma-joined natural key attrs
+     * in the order they first appear in the WHERE clause.
+     *
+     * Example: `{t0.identifier} = 'x'` with `t0 → solrIndexedType` produces
+     * `{"solrindexedtype" → "identifier"}`.
+     */
+    internal fun collectJoinNaturalKeys(
+        whereClause: com.intellij.psi.PsiElement,
+        joinAliasMap: Map<String, String>,
+    ): Map<String, String> {
+        val attrsByFk = mutableMapOf<String, MutableList<String>>()
+
+        PsiTreeUtil.findChildrenOfType(whereClause, FlexibleSearchEquivalenceExpression::class.java).forEach { eq ->
+            if (PsiTreeUtil.getParentOfType(eq, FlexibleSearchOrExpression::class.java) != null) return@forEach
+            val exprs = eq.expressionList
+            if (exprs.size != 2) return@forEach
+
+            for (i in 0..1) {
+                val colRef = exprs[i].asSafely<FlexibleSearchColumnRefYExpression>() ?: continue
+                val alias = colRef.selectedTableName?.text ?: continue
+                val fkAttr = joinAliasMap[alias] ?: continue
+                val naturalKeyAttr = colRef.yColumnName?.text ?: continue
+                attrsByFk.getOrPut(fkAttr.lowercase()) { mutableListOf() } += naturalKeyAttr
+                break
+            }
+        }
+
+        return attrsByFk.mapValues { (_, attrs) -> attrs.joinToString(",") }
     }
 
     /**

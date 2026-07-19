@@ -295,6 +295,49 @@ class FxSImpExConverterTest {
         )
     }
 
+    /**
+     * `solrIndexedType` is a unique FK whose type (`SolrIndexedType`) has a composite type-system
+     * key (`identifier,indexname`), but the query's WHERE clause only uses `{t0.identifier}` to
+     * JOIN to it. The analyzer captures this via `joinNaturalKeyByAttr` and the builder uses just
+     * `identifier` as the nested path — producing an importable header and a single-part data value.
+     *
+     * This test verifies the fix for the "identifier,indexname does not provide enough values"
+     * import error caused by emitting the full composite key when only one part is available.
+     */
+    @Test
+    fun buildImpEx_joinConstrainedFkInSelect_usesJoinNaturalKeyNotFullCompositeKey() {
+        val queryInfo = FxSQueryInfo(
+            primaryType = "SolrIndexedProperty",
+            columns = listOf(
+                FxSColumn(resultHeaderName = "pk", attributeName = "pk", isPk = true),
+                FxSColumn(resultHeaderName = "name", attributeName = "name", isPk = false),
+                FxSColumn(resultHeaderName = "solrIndexedType", attributeName = "solrIndexedType", isPk = false),
+            ),
+            uniqueAttributeNames = setOf("name", "solrindexedtype"),
+        )
+        val params = listOf(
+            atomicParam("name", unique = true),
+            // nestedPath driven by joinNaturalKeyByAttr["solrindexedtype"] = "identifier",
+            // NOT by the full type-system key "identifier,indexname"
+            FxSImpExParam(
+                attributeName = "solrIndexedType",
+                nestedPath = "identifier",
+                attributeType = "SolrIndexedType",
+                metaType = FxSAttributeMetaType.ITEM,
+                modifiers = listOf("unique=true"),
+            ),
+        )
+        val rows = listOf(listOf("pk1", "feature-powersupply", "mcProductType"))
+
+        val result = FxSImpExConverter.buildImpEx("SolrIndexedProperty", params, emptyList(), queryInfo, rows)
+
+        assertEquals(
+            "INSERT_UPDATE SolrIndexedProperty; name[unique=true]; solrIndexedType(identifier)[unique=true]\n" +
+                "; \"feature-powersupply\"; mcProductType\n",
+            result
+        )
+    }
+
     // -------------------------------------------------------------------------
     // Non-unique FK column → attrName(pk), no natural key resolution
     // -------------------------------------------------------------------------
