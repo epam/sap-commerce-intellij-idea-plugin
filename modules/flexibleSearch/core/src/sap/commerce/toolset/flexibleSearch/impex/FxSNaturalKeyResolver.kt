@@ -20,6 +20,7 @@ package sap.commerce.toolset.flexibleSearch.impex
 
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
 import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaItem
+import sap.commerce.toolset.typeSystem.model.Cardinality
 
 /**
  * Resolves the natural key path for a [TSGlobalMetaItem] for use as ImpEx nested parameters.
@@ -58,8 +59,12 @@ object FxSNaturalKeyResolver {
         }
 
         return uniqueKeys.joinToString(",") { keyAttrName ->
-            val attr = meta.allAttributes[keyAttrName]
-            val attrType = attr?.type
+            // Relation-declared FK attrs (e.g. CatalogVersion.catalog) live in allRelationEnds,
+            // not allAttributes — check both to get the FK target type for recursion.
+            val attrType = meta.allAttributes[keyAttrName]?.type
+                ?: meta.allRelationEnds
+                    .firstOrNull { it.qualifier?.equals(keyAttrName, ignoreCase = true) == true && it.cardinality == Cardinality.ONE }
+                    ?.type
 
             if (attrType != null) {
                 val attrMeta = tsAccess.findMetaItemByName(attrType)
@@ -78,14 +83,30 @@ object FxSNaturalKeyResolver {
 
     /**
      * Returns the ordered keys of the first unique index on [meta] that contains at least
-     * one non-pk attribute. Searches own indexes first, then inherited ones.
+     * one non-pk attribute.
+     *
+     * Primary strategy: explicit `<index unique="true">` declarations (captures composite keys).
+     * Fallback: individual unique-modifier attributes and ONE-cardinality relation ends (best-effort
+     * for types without explicit index declarations).
      */
     private fun findUniqueIndexKeys(meta: TSGlobalMetaItem): List<String> {
-        return meta.allIndexes
+        val fromIndexes = meta.allIndexes
             .filter { it.isUnique }
             .map { it.keys.filterNot { key -> key.equals(ATTR_PK, ignoreCase = true) }.toList() }
             .filter { it.isNotEmpty() }
             .minByOrNull { it.size }  // prefer the smallest unique key
-            ?: emptyList()
+        if (fromIndexes != null) return fromIndexes
+
+        // No explicit unique index — fall back to attributes/relation-ends declared with unique=true modifier.
+        // This only captures single-attribute uniqueness; composite keys require an index declaration.
+        val fromModifiers = mutableListOf<String>()
+        meta.allAttributes.entries
+            .filter { (_, attr) -> attr.modifiers.isUnique }
+            .mapTo(fromModifiers) { (name, _) -> name }
+        meta.allRelationEnds
+            .filter { it.cardinality == Cardinality.ONE && it.modifiers.isUnique }
+            .mapNotNull { it.qualifier }
+            .forEach { fromModifiers.add(it) }
+        return fromModifiers
     }
 }
