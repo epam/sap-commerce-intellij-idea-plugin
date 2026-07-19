@@ -63,6 +63,7 @@ class FlexibleSearchSplitEditorEx(override val textEditor: TextEditor, private v
         private const val serialVersionUID: Long = -3770395176190649196L
         private val KEY_PARAMETERS = Key.create<Map<String, FlexibleSearchVirtualParameter>>("flexibleSearch.parameters.key")
         private val KEY_IN_EDITOR_RESULTS = Key.create<Boolean>("flexibleSearch.in_editor_results.key")
+        private val KEY_LAST_EXEC_RESULT = Key.create<FlexibleSearchExecResult>("flexibleSearch.last_exec_result.key")
     }
 
     override var inEditorParameters: Boolean
@@ -98,6 +99,10 @@ class FlexibleSearchSplitEditorEx(override val textEditor: TextEditor, private v
                 return@let updatedContent
             }
             ?: getText()
+
+    var lastExecResult: FlexibleSearchExecResult?
+        get() = getUserData(KEY_LAST_EXEC_RESULT)
+        set(value) = putUserData(KEY_LAST_EXEC_RESULT, value)
 
     override var inEditorResults: Boolean
         get() = getOrCreateUserData(KEY_IN_EDITOR_RESULTS) { true }
@@ -155,10 +160,13 @@ class FlexibleSearchSplitEditorEx(override val textEditor: TextEditor, private v
         }
     }
 
-    fun renderExecutionResult(result: FlexibleSearchExecResult) = FlexibleSearchInEditorResultsView.getInstance(project).resultView(this, result) { coroutineScope, view ->
-        coroutineScope.launch {
-            edtWriteAction {
-                inEditorResultsView = view
+    fun renderExecutionResult(result: FlexibleSearchExecResult) {
+        lastExecResult = result
+        FlexibleSearchInEditorResultsView.getInstance(project).resultView(this, result) { coroutineScope, view ->
+            coroutineScope.launch {
+                edtWriteAction {
+                    inEditorResultsView = view
+                }
             }
         }
     }
