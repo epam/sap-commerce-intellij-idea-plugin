@@ -19,14 +19,9 @@
 package sap.commerce.toolset.impex.psi
 
 import com.intellij.util.xml.DomElement
-import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaItem
 import sap.commerce.toolset.typeSystem.meta.model.TSMetaClassifier
 
 data class ImpExHeaderParameterTSContext(
     val meta: TSMetaClassifier<out DomElement>,
     val attributeType: String
-) {
-    val attributeOwnerType: String?
-        get() = if (meta is TSGlobalMetaItem.TSGlobalMetaItemAttribute) meta.owner.name
-        else meta.name
-}
+)

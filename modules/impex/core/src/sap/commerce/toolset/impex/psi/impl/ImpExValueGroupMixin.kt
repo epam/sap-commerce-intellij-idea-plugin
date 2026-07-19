@@ -24,8 +24,14 @@ import com.intellij.openapi.util.Condition
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.util.*
+import com.intellij.util.asSafely
+import com.intellij.util.xml.DomElement
 import sap.commerce.toolset.impex.psi.*
+import sap.commerce.toolset.impex.psi.references.ImpExTSSubTypeItemReference
 import sap.commerce.toolset.impex.utils.ImpExPsiUtils
+import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
+import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaClassifier
+import sap.commerce.toolset.typeSystem.psi.reference.result.ItemResolveResult
 import java.io.Serial
 
 abstract class ImpExValueGroupMixin(node: ASTNode) : ASTWrapperPsiElement(node), ImpExValueGroup {
@@ -107,6 +113,24 @@ abstract class ImpExValueGroupMixin(node: ASTNode) : ASTWrapperPsiElement(node),
             this,
         )
     }, false)
+
+    override fun getValueLineMetaType(): TSGlobalMetaClassifier<out DomElement>? {
+        val metaName = valueLine
+            ?.subTypeName
+            ?.reference
+            ?.asSafely<ImpExTSSubTypeItemReference>()
+            ?.multiResolve(false)
+            ?.firstOrNull()
+            ?.asSafely<ItemResolveResult>()
+            ?.meta
+            ?.name
+            ?: fullHeaderParameter
+                ?.headerLine
+                ?.fullHeaderType
+                ?.headerTypeName
+                ?.text
+        return TSMetaModelAccess.getInstance(project).findMetaClassifierByName(metaName)
+    }
 
     companion object {
         val CACHE_KEY_VALUE_LINE = Key.create<CachedValue<ImpExValueLine?>>("SAP_CX_IMPEX_VALUE_LINE")
