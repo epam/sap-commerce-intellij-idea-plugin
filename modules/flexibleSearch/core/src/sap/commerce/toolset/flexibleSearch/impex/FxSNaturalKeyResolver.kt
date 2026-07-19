@@ -31,15 +31,41 @@ import sap.commerce.toolset.typeSystem.model.Cardinality
  * ### Resolution strategy
  * 1. Find the type's unique index (first index where `isUnique=true` and has non-pk keys).
  * 2. For each key attribute in that index:
- *    - If the attribute type is itself a `ComposedType`, recurse (up to [MAX_DEPTH]).
+ *    - If the attribute type is itself a `ComposedType`, recurse (up to [FxSTypeSnapshot.MAX_DEPTH]).
  *    - Otherwise, use the key name directly.
- * 3. If no unique index is found, fall back to `code` (SAP Commerce convention) or `pk`.
+ * 3. If no unique index is found, fall back to unique-modifier attributes/relation-ends,
+ *    then `code` (SAP Commerce convention), then `pk`.
  */
 object FxSNaturalKeyResolver {
 
-    private const val MAX_DEPTH = 3
     private const val ATTR_PK = "pk"
     private const val ATTR_CODE = "code"
+
+    /**
+     * Minimal type-system snapshot needed for natural key resolution — no IntelliJ
+     * platform types, fully unit-testable.
+     *
+     * @param hasCodeAttr     True if the type declares a `code` attribute.
+     * @param uniqueIndexKeys Ordered unique-index key attribute names (excluding `pk`).
+     *                        Empty if no suitable `<index unique="true">` is declared.
+     * @param attrTypes       Map of lower-case attribute/relation-end name → SAP Commerce type name
+     *                        for every attribute whose type is potentially a `ComposedType` FK.
+     *                        Scalar attributes may be omitted; missing entries cause the key name
+     *                        to be emitted as-is without recursion.
+     */
+    internal data class FxSTypeSnapshot(
+        val hasCodeAttr: Boolean,
+        val uniqueIndexKeys: List<String>,
+        val attrTypes: Map<String, String>,
+    ) {
+        companion object {
+            internal const val MAX_DEPTH = 3
+        }
+    }
+
+    // -------------------------------------------------------------------------
+    // Public API
+    // -------------------------------------------------------------------------
 
     /**
      * Resolves the natural key path for [meta].
@@ -47,30 +73,47 @@ object FxSNaturalKeyResolver {
      * e.g. `catalog(id),version`.
      */
     fun resolve(meta: TSGlobalMetaItem, tsAccess: TSMetaModelAccess): String =
-        resolveInternal(meta, tsAccess, depth = 0)
+        resolve(buildSnapshot(meta)) { name -> tsAccess.findMetaItemByName(name)?.let { buildSnapshot(it) } }
 
-    private fun resolveInternal(meta: TSGlobalMetaItem, tsAccess: TSMetaModelAccess, depth: Int): String {
-        if (depth >= MAX_DEPTH) return ATTR_PK
+    // -------------------------------------------------------------------------
+    // Internal testable API
+    // -------------------------------------------------------------------------
 
-        val uniqueKeys = findUniqueIndexKeys(meta)
+    /**
+     * Resolves the natural key path from a plain [FxSTypeSnapshot].
+     *
+     * [lookupSnapshot] is called for each FK attribute type to obtain the nested type's snapshot
+     * for recursive resolution. Return `null` to use the attribute name as-is (no nesting).
+     *
+     * This overload has no IntelliJ platform dependencies and is used by unit tests.
+     */
+    internal fun resolve(
+        snapshot: FxSTypeSnapshot,
+        lookupSnapshot: (typeName: String) -> FxSTypeSnapshot?,
+    ): String = resolveInternal(snapshot, lookupSnapshot, depth = 0)
+
+    // -------------------------------------------------------------------------
+    // Core algorithm
+    // -------------------------------------------------------------------------
+
+    private fun resolveInternal(
+        snapshot: FxSTypeSnapshot,
+        lookupSnapshot: (String) -> FxSTypeSnapshot?,
+        depth: Int,
+    ): String {
+        if (depth >= FxSTypeSnapshot.MAX_DEPTH) return ATTR_PK
+
+        val uniqueKeys = snapshot.uniqueIndexKeys
         if (uniqueKeys.isEmpty()) {
-            // Fall back to `code` if it exists as a simple attribute, otherwise `pk`
-            return if (meta.allAttributes.containsKey(ATTR_CODE)) ATTR_CODE else ATTR_PK
+            return if (snapshot.hasCodeAttr) ATTR_CODE else ATTR_PK
         }
 
         return uniqueKeys.joinToString(",") { keyAttrName ->
-            // Relation-declared FK attrs (e.g. CatalogVersion.catalog) live in allRelationEnds,
-            // not allAttributes — check both to get the FK target type for recursion.
-            val attrType = meta.allAttributes[keyAttrName]?.type
-                ?: meta.allRelationEnds
-                    .firstOrNull { it.qualifier?.equals(keyAttrName, ignoreCase = true) == true && it.cardinality == Cardinality.ONE }
-                    ?.type
-
+            val attrType = snapshot.attrTypes[keyAttrName.lowercase()]
             if (attrType != null) {
-                val attrMeta = tsAccess.findMetaItemByName(attrType)
-                if (attrMeta != null) {
-                    // Recursively resolve the FK's natural key
-                    val subPath = resolveInternal(attrMeta, tsAccess, depth + 1)
+                val childSnapshot = lookupSnapshot(attrType)
+                if (childSnapshot != null) {
+                    val subPath = resolveInternal(childSnapshot, lookupSnapshot, depth + 1)
                     "$keyAttrName($subPath)"
                 } else {
                     keyAttrName
@@ -79,6 +122,36 @@ object FxSNaturalKeyResolver {
                 keyAttrName
             }
         }
+    }
+
+    // -------------------------------------------------------------------------
+    // Snapshot builder (platform-facing)
+    // -------------------------------------------------------------------------
+
+    private fun buildSnapshot(meta: TSGlobalMetaItem): FxSTypeSnapshot {
+        val uniqueIndexKeys = findUniqueIndexKeys(meta)
+        return FxSTypeSnapshot(
+            hasCodeAttr = meta.allAttributes.containsKey(ATTR_CODE),
+            uniqueIndexKeys = uniqueIndexKeys,
+            attrTypes = buildAttrTypes(meta),
+        )
+    }
+
+    private fun buildAttrTypes(meta: TSGlobalMetaItem): Map<String, String> {
+        val result = mutableMapOf<String, String>()
+        meta.allAttributes.forEach { (name, attr) ->
+            val type = attr.type ?: return@forEach
+            result[name.lowercase()] = type
+        }
+        // Relation-declared FK attrs (e.g. CatalogVersion.catalog) live in allRelationEnds,
+        // not allAttributes — add them if not already present.
+        meta.allRelationEnds
+            .filter { it.cardinality == Cardinality.ONE }
+            .forEach { end ->
+                val qualifier = end.qualifier?.lowercase() ?: return@forEach
+                result.putIfAbsent(qualifier, end.type)
+            }
+        return result
     }
 
     /**
@@ -94,7 +167,7 @@ object FxSNaturalKeyResolver {
             .filter { it.isUnique }
             .map { it.keys.filterNot { key -> key.equals(ATTR_PK, ignoreCase = true) }.toList() }
             .filter { it.isNotEmpty() }
-            .minByOrNull { it.size }  // prefer the smallest unique key
+            .minByOrNull { it.size }
         if (fromIndexes != null) return fromIndexes
 
         // No explicit unique index — fall back to attributes/relation-ends declared with unique=true modifier.
