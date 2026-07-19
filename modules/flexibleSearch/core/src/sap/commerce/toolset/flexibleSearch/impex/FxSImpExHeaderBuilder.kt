@@ -187,7 +187,8 @@ object FxSImpExHeaderBuilder {
         uniqueAttributeNames: Set<String>,
     ): FxSImpExParam {
         val modifiers = mutableListOf<String>()
-        if (col.attributeName in uniqueAttributeNames) modifiers += "unique=true"
+        // uniqueAttributeNames is stored lowercase; compare case-insensitively
+        if (col.attributeName.lowercase() in uniqueAttributeNames) modifiers += "unique=true"
         if (col.isLocalized && col.langCode != null) modifiers += "lang=${col.langCode}"
 
         // Dynamic attributes cannot be imported — mark them as virtual

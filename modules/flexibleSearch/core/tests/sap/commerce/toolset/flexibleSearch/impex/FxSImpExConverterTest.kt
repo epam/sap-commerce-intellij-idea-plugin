@@ -414,6 +414,71 @@ class FxSImpExConverterTest {
     }
 
     // -------------------------------------------------------------------------
+    // Multi-level JOIN: FK in SELECT, no spurious synthetic columns
+    // -------------------------------------------------------------------------
+
+    /**
+     * Simulates:
+     * ```sql
+     * SELECT {t.pk},{t.code},{t.name},{t.catalogVersion}
+     * FROM {Product AS t
+     *        JOIN CatalogVersion AS t0 ON {t0.pk} = {t.catalogversion}
+     *        JOIN Catalog        AS t1 ON {t1.pk} = {t0.catalog}}
+     * WHERE {t.code} = '637227' AND {t1.id} = 'mcProductCatalog' AND {t0.version} = 'Staged'
+     * ```
+     *
+     * Both `t0` and `t1` resolve to the same root FK `catalogversion` after multi-level chain
+     * traversal. `catalogVersion` IS in SELECT so no synthetic join-unique column is created.
+     * The analyzer produces `uniqueAttributeNames = {"code", "catalogversion"}` (lowercase).
+     * `resolveParam` matches `"catalogVersion".lowercase() == "catalogversion"` → `[unique=true]`.
+     *
+     * Expected header (unique first):
+     *   `INSERT_UPDATE Product; code[unique=true]; catalogVersion(catalog(id),version)[unique=true]; name`
+     */
+    @Test
+    fun buildImpEx_catalogVersionFkInSelect_multilevelJoin_noSyntheticColumn() {
+        // uniqueAttributeNames as produced by the fixed analyzer: lowercase keys
+        val queryInfo = FxSQueryInfo(
+            primaryType = "Product",
+            columns = listOf(
+                FxSColumn(resultHeaderName = "pk", attributeName = "pk", isPk = true),
+                FxSColumn(resultHeaderName = "code", attributeName = "code", isPk = false),
+                FxSColumn(resultHeaderName = "name", attributeName = "name", isPk = false),
+                FxSColumn(resultHeaderName = "catalogVersion", attributeName = "catalogVersion", isPk = false),
+            ),
+            // Lowercase, as collectUniqueAttributes now emits. Both t0 and t1 resolve to
+            // "catalogversion" so it appears only once in the set.
+            uniqueAttributeNames = setOf("code", "catalogversion"),
+            // No synthetic columns — catalogVersion IS in SELECT (excluded by fixed analyzer)
+            joinUniqueColumns = emptyList(),
+        )
+        // params order must match non-pk columns order: code(1), name(2), catalogVersion(3)
+        val params = listOf(
+            // resolveParam sets unique=true: "code" matches "code" in uniqueAttributeNames
+            atomicParam("code", unique = true),
+            // name is not unique
+            atomicParam("name"),
+            // resolveParam sets unique=true: "catalogVersion".lowercase() matches "catalogversion"
+            FxSImpExParam(
+                attributeName = "catalogVersion",
+                nestedPath = "catalog(id),version",
+                modifiers = listOf("unique=true"),
+                metaType = FxSAttributeMetaType.ITEM,
+            ),
+        )
+        // row order: pk(0), code(1), name(2), catalogVersion(3)
+        val rows = listOf(listOf("pk1", "637227", "My Product", "8796125987417"))
+
+        val result = FxSImpExConverter.buildImpEx("Product", params, emptyList(), queryInfo, rows)
+
+        assertEquals(
+            "INSERT_UPDATE Product; code[unique=true]; catalogVersion(catalog(id),version)[unique=true]; name\n" +
+                "; \"637227\"; 8796125987417; \"My Product\"\n",
+            result
+        )
+    }
+
+    // -------------------------------------------------------------------------
     // Unique columns reordered to the front
     // -------------------------------------------------------------------------
 

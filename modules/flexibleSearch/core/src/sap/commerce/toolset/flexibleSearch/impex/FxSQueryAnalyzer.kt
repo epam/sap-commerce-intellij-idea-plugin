@@ -108,8 +108,10 @@ object FxSQueryAnalyzer {
             ?.let { collectUniqueAttributes(it, joinAliasMap) }
             ?: emptySet()
 
-        // Collect JOIN-unique columns that are NOT already in the SELECT list
-        val selectedAttrNames = columns.filterNot { it.isPk }.map { it.attributeName }.toSet()
+        // Collect JOIN-unique columns that are NOT already in the SELECT list.
+        // Use lowercase keys so that ON-condition casing (e.g. `catalogversion`) matches SELECT
+        // casing (e.g. `catalogVersion`) — FlexibleSearch column names are case-insensitive.
+        val selectedAttrNames = columns.filterNot { it.isPk }.map { it.attributeName.lowercase() }.toSet()
         val joinUniqueColumns = if (joinAliasMap.isEmpty()) emptyList()
             else selectCore?.whereClause
                 ?.let { collectJoinUniqueColumns(it, joinAliasMap, selectedAttrNames) }
@@ -188,13 +190,22 @@ object FxSQueryAnalyzer {
     }
 
     /**
-     * Builds a map of JOIN table alias → root-type FK attribute name by parsing ON conditions.
+     * Builds a map of JOIN table alias → **root-type** FK attribute name by parsing ON conditions.
      *
-     * Hybris FlexibleSearch wraps the entire FROM clause (including JOINs) inside `{...}` braces,
-     * making it a [FlexibleSearchFromClauseSimple] node — not a [FlexibleSearchFromClauseSelect].
+     * Handles multi-level JOIN chains. For example:
+     * ```
+     * Product AS t
+     *   JOIN CatalogVersion AS t0 ON {t0.pk} = {t.catalogversion}
+     *   JOIN Catalog        AS t1 ON {t1.pk} = {t0.catalog}
+     * ```
+     * produces `"t0" → "catalogversion"` **and** `"t1" → "catalogversion"` — because `t1` is
+     * reachable from root via `t0`, and the root-level FK for that entire chain is `catalogversion`.
      *
-     * For `{SolrIndexedProperty AS t JOIN SolrIndexedType AS t0 ON {t0.pk} = {t.solrIndexedType}}`
-     * produces `"t0" → "solrIndexedType"`.
+     * Algorithm:
+     * 1. First pass — build a raw chain: `joinAlias → (parentAlias, attrOnParent)`.
+     * 2. Second pass — for each join alias, walk up the chain until the parent is NOT itself
+     *    a join target (i.e., it is the root or an external alias). The last `attrOnParent`
+     *    encountered before reaching root is the FK attribute on the root type.
      */
     private fun buildJoinAliasMap(fromClause: FlexibleSearchFromClause?): Map<String, String> {
         if (fromClause == null) return emptyMap()
@@ -205,9 +216,8 @@ object FxSQueryAnalyzer {
         val constraints = simple.joinConstraintList
         if (tables.size < 2 || constraints.isEmpty()) return emptyMap()
 
-        val result = mutableMapOf<String, String>()
-
-        // tables[0] is the root table; tables[i+1] is the i-th JOIN table with constraints[i]
+        // --- Pass 1: raw chain joinAlias → (parentAlias, attrOnParent) ---
+        val rawChain = mutableMapOf<String, Pair<String, String>>()
         constraints.forEachIndexed { idx, constraint ->
             val joinAlias = tables.getOrNull(idx + 1)?.fromTable?.tableAliasName?.text ?: return@forEachIndexed
             val onExpr = constraint.expression
@@ -218,7 +228,7 @@ object FxSQueryAnalyzer {
             val col0 = exprs[0].asSafely<FlexibleSearchColumnRefYExpression>() ?: return@forEachIndexed
             val col1 = exprs[1].asSafely<FlexibleSearchColumnRefYExpression>() ?: return@forEachIndexed
 
-            // Identify which side is {joinAlias.pk} and which is {rootAlias.fkAttr}
+            // Identify {joinAlias.pk} and {someAlias.fkAttr}
             val fkCol = when {
                 col0.selectedTableName?.text == joinAlias
                     && col0.yColumnName?.text.equals("pk", ignoreCase = true) -> col1
@@ -226,10 +236,29 @@ object FxSQueryAnalyzer {
                     && col1.yColumnName?.text.equals("pk", ignoreCase = true) -> col0
                 else -> return@forEachIndexed
             }
-            val fkAttr = fkCol.yColumnName?.text ?: return@forEachIndexed
-            result[joinAlias] = fkAttr
+            val parentAlias = fkCol.selectedTableName?.text ?: return@forEachIndexed
+            val attrOnParent = fkCol.yColumnName?.text ?: return@forEachIndexed
+            rawChain[joinAlias] = parentAlias to attrOnParent
         }
 
+        if (rawChain.isEmpty()) return emptyMap()
+
+        // --- Pass 2: resolve each alias to its root-level FK attr ---
+        // Walk up the chain until the parent is NOT itself a join target (= it is root).
+        val result = mutableMapOf<String, String>()
+        for (joinAlias in rawChain.keys) {
+            var current = joinAlias
+            val visited = mutableSetOf<String>()
+            while (visited.add(current)) {
+                val (parentAlias, attrOnParent) = rawChain[current] ?: break
+                if (parentAlias !in rawChain) {
+                    // parentAlias is the root → attrOnParent is the FK on root
+                    result[joinAlias] = attrOnParent
+                    break
+                }
+                current = parentAlias
+            }
+        }
         return result
     }
 
@@ -241,6 +270,9 @@ object FxSQueryAnalyzer {
      *
      * When [joinAliasMap] is non-empty, aliased columns from JOIN tables (e.g. `{t0.identifier}`)
      * are resolved back to the root-type FK attribute (e.g. `solrIndexedType`) via the map.
+     *
+     * All returned names are **lowercase** — FlexibleSearch attribute names are case-insensitive
+     * and ON-condition text may use different casing than the SELECT list.
      */
     private fun collectUniqueAttributes(
         whereClause: com.intellij.psi.PsiElement,
@@ -259,9 +291,9 @@ object FxSQueryAnalyzer {
                     val alias = yColRef.selectedTableName?.text
                     val attrName = yColRef.yColumnName?.text
                     if (attrName != null) {
-                        // Resolve JOIN alias to the root-type FK attribute
+                        // Resolve JOIN alias to the root-type FK attribute; normalize to lowercase
                         val resolved = if (alias != null) joinAliasMap[alias] ?: attrName else attrName
-                        uniqueNames += resolved
+                        uniqueNames += resolved.lowercase()
                     }
                     return@forEach
                 }
@@ -272,7 +304,7 @@ object FxSQueryAnalyzer {
                     val attrName = colRef.columnName?.name
                     if (attrName != null) {
                         val resolved = if (alias != null) joinAliasMap[alias] ?: attrName else attrName
-                        uniqueNames += resolved
+                        uniqueNames += resolved.lowercase()
                     }
                 }
             }
@@ -311,8 +343,9 @@ object FxSQueryAnalyzer {
                 val fkAttr = joinAliasMap[alias] ?: continue
                 val naturalKeyAttr = colRef.yColumnName?.text ?: continue
 
-                if (fkAttr in excludeAttrNames || fkAttr in seenFkAttrs) break
-                seenFkAttrs += fkAttr
+                // Both excludeAttrNames and seenFkAttrs are lowercase; compare case-insensitively
+                if (fkAttr.lowercase() in excludeAttrNames || fkAttr.lowercase() in seenFkAttrs) break
+                seenFkAttrs += fkAttr.lowercase()
 
                 val otherText = exprs[1 - i].text.trim()
                 val constantValue = when {
