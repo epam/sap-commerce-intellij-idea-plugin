@@ -24,12 +24,13 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.ide.CopyPasteManager
 import com.intellij.openapi.project.DumbAwareAction
-import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.util.asSafely
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.Notifications
 import sap.commerce.toolset.flexibleSearch.editor.flexibleSearchSplitEditor
-import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchDefinedTableName
+import sap.commerce.toolset.flexibleSearch.impex.FxSColumn
+import sap.commerce.toolset.flexibleSearch.impex.FxSQueryAnalyzer
+import sap.commerce.toolset.flexibleSearch.impex.FxSQueryInfo
 import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchPsiFile
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.ifNotFromSearchPopup
@@ -53,19 +54,22 @@ class FlexibleSearchExportToImpExAction : DumbAwareAction() {
         val headers = result.headers ?: return
         val rows = result.rows ?: return
 
-        val primaryType = e.getData(CommonDataKeys.PSI_FILE)
-            ?.asSafely<FlexibleSearchPsiFile>()
-            ?.let { PsiTreeUtil.findChildOfType(it, FlexibleSearchDefinedTableName::class.java)?.text }
-            ?: "UnknownType"
+        val psiFile = e.getData(CommonDataKeys.PSI_FILE)?.asSafely<FlexibleSearchPsiFile>()
+        val queryInfo = psiFile?.let { FxSQueryAnalyzer.analyze(it, headers) }
+            ?: FxSQueryInfo(
+                primaryType = "UnknownType",
+                columns = headers.map { h -> FxSColumn(resultHeaderName = h, attributeName = h, isPk = h.equals("pk", ignoreCase = true)) },
+                uniqueAttributeNames = emptySet(),
+            )
 
-        val impexContent = buildBasicImpEx(primaryType, headers, rows)
+        val impexContent = buildImpEx(queryInfo, rows)
 
         CopyPasteManager.getInstance().setContents(StringSelection(impexContent))
 
         Notifications.create(
             NotificationType.INFORMATION,
             i18n("hybris.fxs.actions.export_to_impex.notification.title"),
-            "$primaryType (${rows.size} ${i18n("hybris.fxs.actions.export_to_impex.notification.rows")})"
+            "${queryInfo.primaryType} (${rows.size} ${i18n("hybris.fxs.actions.export_to_impex.notification.rows")})"
         )
             .hideAfter(10)
             .addAction(i18n("hybris.fxs.actions.export_to_impex.notification.open_scratch")) { _, _ ->
@@ -74,18 +78,40 @@ class FlexibleSearchExportToImpExAction : DumbAwareAction() {
             .notify(project)
     }
 
-    private fun buildBasicImpEx(typeName: String, headers: List<String>, rows: List<List<String>>): String = buildString {
-        append("INSERT_UPDATE $typeName")
-        headers.forEach { col -> append("; $col") }
-        appendLine()
+    private fun buildImpEx(queryInfo: FxSQueryInfo, rows: List<List<String>>): String {
+        // Filter out PK-only columns and build the visible column list
+        val visibleColumns = queryInfo.columns.filterNot { it.isPk }
 
-        rows.forEach { row ->
-            append("")
-            row.forEachIndexed { idx, cell ->
-                val value = if (cell == "null") "" else cell
-                append(if (idx < headers.size) "; $value" else "")
+        return buildString {
+            // Header line: INSERT_UPDATE TypeName; col1[unique=true]; col2; ...
+            append("INSERT_UPDATE ${queryInfo.primaryType}")
+            visibleColumns.forEach { col ->
+                val modifiers = buildColumnModifiers(col, queryInfo.uniqueAttributeNames)
+                append("; ${col.attributeName}$modifiers")
             }
             appendLine()
+
+            // Value rows
+            val visibleIndices = queryInfo.columns
+                .mapIndexedNotNull { idx, col -> if (!col.isPk) idx else null }
+
+            rows.forEach { row ->
+                append("")
+                visibleIndices.forEach { idx ->
+                    val cell = row.getOrNull(idx) ?: ""
+                    val value = if (cell == "null") "" else cell
+                    append("; $value")
+                }
+                appendLine()
+            }
         }
+    }
+
+    private fun buildColumnModifiers(col: FxSColumn, uniqueAttributeNames: Set<String>): String {
+        val modifiers = buildList {
+            if (col.attributeName in uniqueAttributeNames) add("unique=true")
+            if (col.isLocalized && col.langCode != null) add("lang=${col.langCode}")
+        }
+        return if (modifiers.isEmpty()) "" else "[${modifiers.joinToString(",")}]"
     }
 }
