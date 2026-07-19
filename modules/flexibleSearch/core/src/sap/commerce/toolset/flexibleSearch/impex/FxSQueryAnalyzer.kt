@@ -215,18 +215,18 @@ object FxSQueryAnalyzer {
             val exprs = onExpr.expressionList
             if (exprs.size != 2) return@forEachIndexed
 
-            val col0 = exprs[0].asSafely<FlexibleSearchColumnRefExpression>() ?: return@forEachIndexed
-            val col1 = exprs[1].asSafely<FlexibleSearchColumnRefExpression>() ?: return@forEachIndexed
+            val col0 = exprs[0].asSafely<FlexibleSearchColumnRefYExpression>() ?: return@forEachIndexed
+            val col1 = exprs[1].asSafely<FlexibleSearchColumnRefYExpression>() ?: return@forEachIndexed
 
             // Identify which side is {joinAlias.pk} and which is {rootAlias.fkAttr}
             val fkCol = when {
                 col0.selectedTableName?.text == joinAlias
-                    && col0.columnName?.name.equals("pk", ignoreCase = true) -> col1
+                    && col0.yColumnName?.text.equals("pk", ignoreCase = true) -> col1
                 col1.selectedTableName?.text == joinAlias
-                    && col1.columnName?.name.equals("pk", ignoreCase = true) -> col0
+                    && col1.yColumnName?.text.equals("pk", ignoreCase = true) -> col0
                 else -> return@forEachIndexed
             }
-            val fkAttr = fkCol.columnName?.name ?: return@forEachIndexed
+            val fkAttr = fkCol.yColumnName?.text ?: return@forEachIndexed
             result[joinAlias] = fkAttr
         }
 
@@ -253,10 +253,11 @@ object FxSQueryAnalyzer {
             if (PsiTreeUtil.getParentOfType(eq, FlexibleSearchOrExpression::class.java) != null) return@forEach
 
             eq.expressionList.forEach { expr ->
-                val colRef = expr.asSafely<FlexibleSearchColumnRefExpression>()
-                if (colRef != null) {
-                    val alias = colRef.selectedTableName?.text
-                    val attrName = colRef.columnName?.name
+                // All {alias.col} and {alias:col} refs inside braces are FlexibleSearchColumnRefYExpression
+                val yColRef = expr.asSafely<FlexibleSearchColumnRefYExpression>()
+                if (yColRef != null) {
+                    val alias = yColRef.selectedTableName?.text
+                    val attrName = yColRef.yColumnName?.text
                     if (attrName != null) {
                         // Resolve JOIN alias to the root-type FK attribute
                         val resolved = if (alias != null) joinAliasMap[alias] ?: attrName else attrName
@@ -264,9 +265,15 @@ object FxSQueryAnalyzer {
                     }
                     return@forEach
                 }
-                val yColRef = expr.asSafely<FlexibleSearchColumnRefYExpression>()
-                if (yColRef != null) {
-                    yColRef.yColumnName?.text?.let { uniqueNames += it }
+                // Bare col or alias.col without braces (rare in FlexibleSearch)
+                val colRef = expr.asSafely<FlexibleSearchColumnRefExpression>()
+                if (colRef != null) {
+                    val alias = colRef.selectedTableName?.text
+                    val attrName = colRef.columnName?.name
+                    if (attrName != null) {
+                        val resolved = if (alias != null) joinAliasMap[alias] ?: attrName else attrName
+                        uniqueNames += resolved
+                    }
                 }
             }
         }
@@ -299,10 +306,10 @@ object FxSQueryAnalyzer {
             if (exprs.size != 2) return@forEach
 
             for (i in 0..1) {
-                val colRef = exprs[i].asSafely<FlexibleSearchColumnRefExpression>() ?: continue
+                val colRef = exprs[i].asSafely<FlexibleSearchColumnRefYExpression>() ?: continue
                 val alias = colRef.selectedTableName?.text ?: continue
                 val fkAttr = joinAliasMap[alias] ?: continue
-                val naturalKeyAttr = colRef.columnName?.name ?: continue
+                val naturalKeyAttr = colRef.yColumnName?.text ?: continue
 
                 if (fkAttr in excludeAttrNames || fkAttr in seenFkAttrs) break
                 seenFkAttrs += fkAttr
