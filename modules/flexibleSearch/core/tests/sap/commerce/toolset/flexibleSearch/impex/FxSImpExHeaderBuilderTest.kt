@@ -259,6 +259,53 @@ class FxSImpExHeaderBuilderTest {
         assertEquals("SELECT {pk}, {identifier} FROM {SolrIndexedType}", query)
     }
 
+    /**
+     * Multi-level nested path — `baseProduct(code,catalogVersion(catalog(id),version))` style.
+     * The nested `catalog(id)` token lives on `CatalogVersion`, so its type must come from
+     * the `attrTypesLookup` callback and produce a second-level JOIN off the first join alias.
+     *
+     * SELECT column order is depth-first — matching the `:`-joined natural key value order
+     * ImpEx expects for the nested header path.
+     */
+    @Test
+    fun buildFkLookupQuery_multiLevelNestedPath_producesChainedJoins() {
+        val rootAttrTypes = mapOf("catalogversion" to "CatalogVersion")
+        val query = FxSImpExHeaderBuilder.buildFkLookupQuery(
+            "Product",
+            "code,catalogVersion(catalog(id),version)",
+            rootAttrTypes,
+        ) { typeName -> if (typeName == "CatalogVersion") mapOf("catalog" to "Catalog") else emptyMap() }
+
+        assertEquals(
+            "SELECT {root.pk}, {root.code}, {j1.id}, {j0.version} " +
+                "FROM {Product AS root " +
+                "JOIN CatalogVersion AS j0 ON {j0.pk} = {root.catalogVersion} " +
+                "JOIN Catalog AS j1 ON {j1.pk} = {j0.catalog}}",
+            query,
+        )
+    }
+
+    /**
+     * Without an `attrTypesLookup`, a second-level FK token (`catalog(id)`) degrades to a scalar
+     * on the first join alias — best-effort fallback, same as the depth-1 unknown-type case.
+     */
+    @Test
+    fun buildFkLookupQuery_multiLevelNestedPath_withoutLookup_innerFkFallsBackToScalar() {
+        val rootAttrTypes = mapOf("catalogversion" to "CatalogVersion")
+        val query = FxSImpExHeaderBuilder.buildFkLookupQuery(
+            "Product",
+            "code,catalogVersion(catalog(id),version)",
+            rootAttrTypes,
+        )
+
+        assertEquals(
+            "SELECT {root.pk}, {root.code}, {j0.catalog}, {j0.version} " +
+                "FROM {Product AS root " +
+                "JOIN CatalogVersion AS j0 ON {j0.pk} = {root.catalogVersion}}",
+            query,
+        )
+    }
+
     // -------------------------------------------------------------------------
     // fkSourceIndicesByResolutionInfo()
     // -------------------------------------------------------------------------

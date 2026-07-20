@@ -262,23 +262,30 @@ object FxSImpExHeaderBuilder {
      * `[pk, key_component_1, key_component_2, ...]` for [typeName].
      *
      * The natural key string for a resolved row is `key_component_1:key_component_2:...`
-     * (colon = default ImpEx path-delimiter).
+     * (colon = default ImpEx path-delimiter). Components appear in depth-first order of the
+     * nested path — matching how ImpEx distributes a `:`-delimited value across nested leaves.
      *
      * Returns `null` when [nestedPath] is `"pk"` (no meaningful natural key to resolve).
      *
      * [attrTypes] maps lowercase FK attribute names of [typeName] to their SAP Commerce type names.
      * Only FK attributes that have parens in [nestedPath] need entries; scalar attributes are
      * emitted directly. An absent entry causes the FK attribute to be treated as a scalar.
+     * [attrTypesLookup] provides the same map for nested types, enabling multi-level paths
+     * (e.g. `catalogVersion(catalog(id),version)` on `Product`); when it returns an empty map,
+     * deeper FK tokens fall back to scalars.
      *
      * ### Examples
      * - `("Language", "isocode", {})` → `"SELECT {pk}, {isocode} FROM {Language}"`
      * - `("CatalogVersion", "catalog(id),version", {"catalog" → "Catalog"})` →
      *   `"SELECT {root.pk}, {j0.id}, {root.version} FROM {CatalogVersion AS root JOIN Catalog AS j0 ON {j0.pk} = {root.catalog}}"`
+     * - `("Product", "code,catalogVersion(catalog(id),version)", {"catalogversion" → "CatalogVersion"}, lookup)` →
+     *   `"SELECT {root.pk}, {root.code}, {j1.id}, {j0.version} FROM {Product AS root JOIN CatalogVersion AS j0 ON {j0.pk} = {root.catalogVersion} JOIN Catalog AS j1 ON {j1.pk} = {j0.catalog}}"`
      */
     internal fun buildFkLookupQuery(
         typeName: String,
         nestedPath: String,
         attrTypes: Map<String, String>,
+        attrTypesLookup: (String) -> Map<String, String> = { emptyMap() },
     ): String? {
         if (nestedPath == "pk") return null
         val tokens = splitTopLevel(nestedPath)
@@ -289,31 +296,33 @@ object FxSImpExHeaderBuilder {
             return "SELECT {pk}, $selectCols FROM {$typeName}"
         }
 
-        // Build query with JOIN clauses for FK tokens
+        // Build query with JOIN clauses for FK tokens, recursing into nested paths
         val selectParts = mutableListOf<String>()
         val joinParts = mutableListOf<String>()
         var joinCount = 0
 
-        tokens.forEach { token ->
-            val parenIdx = token.indexOf('(')
-            if (parenIdx < 0) {
-                // Scalar attribute directly on the root type
-                selectParts += "{root.$token}"
-            } else {
-                val fkAttr = token.substring(0, parenIdx)
-                val innerPath = token.substring(parenIdx + 1, token.length - 1)
-                val joinTypeName = attrTypes[fkAttr.lowercase()]
-                if (joinTypeName == null) {
-                    // Type unknown — emit as scalar (best-effort fallback)
-                    selectParts += "{root.$fkAttr}"
+        fun emit(tokens: List<String>, ownerAlias: String, ownerAttrTypes: Map<String, String>) {
+            tokens.forEach { token ->
+                val parenIdx = token.indexOf('(')
+                if (parenIdx < 0) {
+                    // Scalar attribute directly on the owning type
+                    selectParts += "{$ownerAlias.$token}"
                 } else {
-                    val alias = "j${joinCount++}"
-                    joinParts += "$joinTypeName AS $alias ON {$alias.pk} = {root.$fkAttr}"
-                    // Depth-1 only: inner path tokens are all scalars on the join alias
-                    splitTopLevel(innerPath).forEach { inner -> selectParts += "{$alias.$inner}" }
+                    val fkAttr = token.substring(0, parenIdx)
+                    val innerPath = token.substring(parenIdx + 1, token.length - 1)
+                    val joinTypeName = ownerAttrTypes[fkAttr.lowercase()]
+                    if (joinTypeName == null) {
+                        // Type unknown — emit as scalar (best-effort fallback)
+                        selectParts += "{$ownerAlias.$fkAttr}"
+                    } else {
+                        val alias = "j${joinCount++}"
+                        joinParts += "$joinTypeName AS $alias ON {$alias.pk} = {$ownerAlias.$fkAttr}"
+                        emit(splitTopLevel(innerPath), alias, attrTypesLookup(joinTypeName))
+                    }
                 }
             }
         }
+        emit(tokens, "root", attrTypes)
 
         val fromClause = buildString {
             append("$typeName AS root")
@@ -414,9 +423,15 @@ object FxSImpExHeaderBuilder {
                     // Prefer the natural key attr(s) from the WHERE JOIN condition when available —
                     // the query only constrains those attrs, so they uniquely identify the item in
                     // this context. Fall back to the full type-system composite key otherwise.
+                    // Attr types are always needed: a JOIN-derived path may itself contain nested
+                    // FK tokens (e.g. `catalog(id),version` from a multi-level JOIN chain).
                     val naturalPath = joinNaturalKey ?: FxSNaturalKeyResolver.resolve(meta, tsAccess)
-                    val fkAttrTypes = if (joinNaturalKey == null) FxSNaturalKeyResolver.buildAttrTypes(meta) else emptyMap()
-                    val fkResolutionInfo = buildFkLookupQuery(attrType, naturalPath, fkAttrTypes)
+                    val fkAttrTypes = FxSNaturalKeyResolver.buildAttrTypes(meta)
+                    val fkResolutionInfo = buildFkLookupQuery(attrType, naturalPath, fkAttrTypes) { nestedTypeName ->
+                        tsAccess.findMetaItemByName(nestedTypeName)
+                            ?.let(FxSNaturalKeyResolver::buildAttrTypes)
+                            ?: emptyMap()
+                    }
                         ?.let { FkResolutionInfo(attrType, it) }
                     FxSImpExParam(col.attributeName, nestedPath = naturalPath, modifiers = modifiers, attributeType = attrType, metaType = FxSAttributeMetaType.ITEM, fkResolutionInfo = fkResolutionInfo)
                 } else {
