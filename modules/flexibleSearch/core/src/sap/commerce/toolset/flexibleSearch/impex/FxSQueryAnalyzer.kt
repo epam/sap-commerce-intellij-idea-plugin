@@ -57,8 +57,10 @@ data class FxSColumn(
  * JOIN's ON condition maps `joinAlias` → `fkAttributeName` on the root type.
  *
  * @param fkAttributeName   The FK attribute on the root type (e.g. `solrIndexedType`).
- * @param naturalKeyAttr    The attribute on the joined type used in the WHERE equality (e.g. `identifier`).
- * @param constantValue     Literal string value from the WHERE clause, or null for bind-parameter queries.
+ * @param naturalKeyAttr    Nested natural key path merged from all WHERE equalities on the FK's
+ *                          JOIN chain (e.g. `identifier` or `catalog(id),version`).
+ * @param constantValue     `:`-joined literal values from the WHERE clause in the path's depth-first
+ *                          leaf order, or null when any value is not statically known (bind parameter).
  */
 data class FxSJoinUniqueColumn(
     val fkAttributeName: String,
@@ -74,8 +76,9 @@ data class FxSJoinUniqueColumn(
  * @param uniqueAttributeNames   Attribute names that appear in equality conditions in the WHERE clause.
  * @param joinUniqueColumns      JOIN-resolved unique attributes absent from the SELECT list — must be
  *                               appended as synthetic columns in the ImpEx output.
- * @param joinNaturalKeyByAttr   Maps root-type FK attribute name (lowercase) → the comma-joined natural
- *                               key attribute(s) used in WHERE JOIN equality conditions.
+ * @param joinNaturalKeyByAttr   Maps root-type FK attribute name (lowercase) → the nested natural
+ *                               key path merged from all WHERE JOIN equality conditions on that FK's
+ *                               chain (e.g. `catalog(id),version` for a two-level JOIN).
  *                               Used to override the type-system-derived composite key when the query
  *                               only constrains a subset of the FK type's unique attributes.
  */
@@ -210,7 +213,21 @@ object FxSQueryAnalyzer {
     }
 
     /**
-     * Builds a map of JOIN table alias → **root-type** FK attribute name by parsing ON conditions.
+     * Resolution of a JOIN table alias against the root type's FK attribute it hangs off.
+     *
+     * @param rootFkAttr The FK attribute on the root type that starts the JOIN chain.
+     * @param pathFromFk Attribute segments traversed *below* the FK type down to this alias,
+     *                   in order (empty for a direct join). E.g. for
+     *                   `t JOIN CatalogVersion t0 ON {t0.pk}={t.catalogversion} JOIN Catalog t1 ON {t1.pk}={t0.catalog}`,
+     *                   alias `t1` has `rootFkAttr=catalogversion`, `pathFromFk=[catalog]`.
+     */
+    internal data class JoinAliasInfo(
+        val rootFkAttr: String,
+        val pathFromFk: List<String>,
+    )
+
+    /**
+     * Builds a map of JOIN table alias → [JoinAliasInfo] by parsing ON conditions.
      *
      * Handles multi-level JOIN chains. For example:
      * ```
@@ -218,16 +235,18 @@ object FxSQueryAnalyzer {
      *   JOIN CatalogVersion AS t0 ON {t0.pk} = {t.catalogversion}
      *   JOIN Catalog        AS t1 ON {t1.pk} = {t0.catalog}
      * ```
-     * produces `"t0" → "catalogversion"` **and** `"t1" → "catalogversion"` — because `t1` is
-     * reachable from root via `t0`, and the root-level FK for that entire chain is `catalogversion`.
+     * produces `"t0" → (catalogversion, [])` **and** `"t1" → (catalogversion, [catalog])` — `t1` is
+     * reachable from root via `t0`, so the root-level FK for the chain is `catalogversion` and the
+     * path below the FK type is `catalog`.
      *
      * Algorithm:
      * 1. First pass — build a raw chain: `joinAlias → (parentAlias, attrOnParent)`.
      * 2. Second pass — for each join alias, walk up the chain until the parent is NOT itself
      *    a join target (i.e., it is the root or an external alias). The last `attrOnParent`
-     *    encountered before reaching root is the FK attribute on the root type.
+     *    encountered before reaching root is the FK attribute on the root type; the earlier
+     *    ones (reversed) form the path below the FK type.
      */
-    private fun buildJoinAliasMap(fromClause: FlexibleSearchFromClause?): Map<String, String> {
+    private fun buildJoinAliasMap(fromClause: FlexibleSearchFromClause?): Map<String, JoinAliasInfo> {
         if (fromClause == null) return emptyMap()
         val simple = PsiTreeUtil.findChildOfType(fromClause, FlexibleSearchFromClauseSimple::class.java)
             ?: return emptyMap()
@@ -263,19 +282,22 @@ object FxSQueryAnalyzer {
 
         if (rawChain.isEmpty()) return emptyMap()
 
-        // --- Pass 2: resolve each alias to its root-level FK attr ---
+        // --- Pass 2: resolve each alias to its root-level FK attr + path below the FK ---
         // Walk up the chain until the parent is NOT itself a join target (= it is root).
-        val result = mutableMapOf<String, String>()
+        val result = mutableMapOf<String, JoinAliasInfo>()
         for (joinAlias in rawChain.keys) {
             var current = joinAlias
+            val segmentsBottomUp = mutableListOf<String>()
             val visited = mutableSetOf<String>()
             while (visited.add(current)) {
                 val (parentAlias, attrOnParent) = rawChain[current] ?: break
                 if (parentAlias !in rawChain) {
-                    // parentAlias is the root → attrOnParent is the FK on root
-                    result[joinAlias] = attrOnParent
+                    // parentAlias is the root → attrOnParent is the FK on root; the segments
+                    // collected on the way up (reversed) are the path below the FK type
+                    result[joinAlias] = JoinAliasInfo(attrOnParent, segmentsBottomUp.reversed())
                     break
                 }
+                segmentsBottomUp += attrOnParent
                 current = parentAlias
             }
         }
@@ -296,7 +318,7 @@ object FxSQueryAnalyzer {
      */
     private fun collectUniqueAttributes(
         whereClause: com.intellij.psi.PsiElement,
-        joinAliasMap: Map<String, String> = emptyMap(),
+        joinAliasMap: Map<String, JoinAliasInfo> = emptyMap(),
     ): Set<String> {
         val uniqueNames = mutableSetOf<String>()
 
@@ -312,7 +334,7 @@ object FxSQueryAnalyzer {
                     val attrName = yColRef.yColumnName?.text
                     if (attrName != null) {
                         // Resolve JOIN alias to the root-type FK attribute; normalize to lowercase
-                        val resolved = if (alias != null) joinAliasMap[alias] ?: attrName else attrName
+                        val resolved = if (alias != null) joinAliasMap[alias]?.rootFkAttr ?: attrName else attrName
                         uniqueNames += resolved.lowercase()
                     }
                     return@forEach
@@ -323,7 +345,7 @@ object FxSQueryAnalyzer {
                     val alias = colRef.selectedTableName?.text
                     val attrName = colRef.columnName?.name
                     if (attrName != null) {
-                        val resolved = if (alias != null) joinAliasMap[alias] ?: attrName else attrName
+                        val resolved = if (alias != null) joinAliasMap[alias]?.rootFkAttr ?: attrName else attrName
                         uniqueNames += resolved.lowercase()
                     }
                 }
@@ -334,20 +356,22 @@ object FxSQueryAnalyzer {
     }
 
     /**
-     * Collects the natural key attribute(s) used per JOIN FK attribute across all top-level
+     * Collects the natural key path used per JOIN FK attribute across all top-level
      * WHERE equality conditions, regardless of whether the FK appears in the SELECT list.
      *
-     * Returns a map of root-type FK attribute name (lowercase) → comma-joined natural key attrs
-     * in the order they first appear in the WHERE clause.
+     * Returns a map of root-type FK attribute name (lowercase) → nested natural key path.
+     * Conditions on aliases deeper in the JOIN chain contribute *nested* segments relative to
+     * the FK type, and sibling paths are merged.
      *
-     * Example: `{t0.identifier} = 'x'` with `t0 → solrIndexedType` produces
-     * `{"solrindexedtype" → "identifier"}`.
+     * Example: with `t0 → CatalogVersion` (`{t.catalogversion}`) and `t1 → Catalog`
+     * (`{t0.catalog}`), the conditions `{t1.id} = 'x'` and `{t0.version} = 'y'` produce
+     * `{"catalogversion" → "catalog(id),version"}`.
      */
     internal fun collectJoinNaturalKeys(
         whereClause: com.intellij.psi.PsiElement,
-        joinAliasMap: Map<String, String>,
+        joinAliasMap: Map<String, JoinAliasInfo>,
     ): Map<String, String> {
-        val attrsByFk = mutableMapOf<String, MutableList<String>>()
+        val pathsByFk = mutableMapOf<String, MutableList<List<String>>>()
 
         PsiTreeUtil.findChildrenOfType(whereClause, FlexibleSearchEquivalenceExpression::class.java).forEach { eq ->
             if (PsiTreeUtil.getParentOfType(eq, FlexibleSearchOrExpression::class.java) != null) return@forEach
@@ -357,34 +381,66 @@ object FxSQueryAnalyzer {
             for (i in 0..1) {
                 val colRef = exprs[i].asSafely<FlexibleSearchColumnRefYExpression>() ?: continue
                 val alias = colRef.selectedTableName?.text ?: continue
-                val fkAttr = joinAliasMap[alias] ?: continue
+                val info = joinAliasMap[alias] ?: continue
                 val naturalKeyAttr = colRef.yColumnName?.text ?: continue
-                attrsByFk.getOrPut(fkAttr.lowercase()) { mutableListOf() } += naturalKeyAttr
+                pathsByFk.getOrPut(info.rootFkAttr.lowercase()) { mutableListOf() } += info.pathFromFk + naturalKeyAttr
                 break
             }
         }
 
-        return attrsByFk.mapValues { (_, attrs) -> attrs.joinToString(",") }
+        return pathsByFk.mapValues { (_, paths) -> mergeNaturalKeyPaths(paths) }
+    }
+
+    /**
+     * Merges attribute [paths] (each a list of segments relative to the FK type, leaf last)
+     * into a single nested ImpEx parameter path, preserving first-appearance order.
+     *
+     * Example: `[[catalog, id], [version]]` → `"catalog(id),version"`.
+     */
+    internal fun mergeNaturalKeyPaths(paths: List<List<String>>): String {
+        val root = PathNode()
+        paths.forEach { segments ->
+            var node = root
+            segments.forEach { node = node.children.getOrPut(it) { PathNode() } }
+        }
+        return root.render()
+    }
+
+    /** Mutable trie of natural key path segments; leaves may carry a WHERE constant value. */
+    private class PathNode {
+        val children = LinkedHashMap<String, PathNode>()
+        var constantValue: String? = null
+
+        fun render(): String = children.entries.joinToString(",") { (name, child) ->
+            if (child.children.isEmpty()) name else "$name(${child.render()})"
+        }
+
+        /** Depth-first leaf values — same order as the leaves appear in [render]. */
+        fun leafValues(): List<String?> = children.values.flatMap { child ->
+            if (child.children.isEmpty()) listOf(child.constantValue) else child.leafValues()
+        }
     }
 
     /**
      * Collects JOIN-resolved unique attributes whose values come from WHERE clause literal equality
      * conditions but whose FK column is NOT in the SELECT list.
      *
-     * Example: `{t0.identifier} = 'mcProductType'` with `t0 → solrIndexedType` in [joinAliasMap]
+     * Example: `{t0.identifier} = 'mcProductType'` with `t0 → (solrIndexedType, [])` in [joinAliasMap]
      * produces `FxSJoinUniqueColumn(fkAttributeName="solrIndexedType", naturalKeyAttr="identifier", constantValue="mcProductType")`.
      *
-     * Only top-level AND conditions are considered (OR conditions are skipped).
-     * Each FK attribute is recorded at most once (first occurrence wins).
+     * All conditions on the same FK's JOIN chain are merged into one nested path; their values are
+     * `:`-joined in the path's depth-first leaf order (`catalog(id),version` → `'x:y'`), or null
+     * when any of them is not statically known. Duplicate conditions on the same leaf keep the
+     * first value. Only top-level AND conditions are considered (OR conditions are skipped).
      * Attributes already present in [excludeAttrNames] (i.e. already in SELECT) are skipped.
      */
     private fun collectJoinUniqueColumns(
         whereClause: com.intellij.psi.PsiElement,
-        joinAliasMap: Map<String, String>,
+        joinAliasMap: Map<String, JoinAliasInfo>,
         excludeAttrNames: Set<String>,
     ): List<FxSJoinUniqueColumn> {
-        val result = mutableListOf<FxSJoinUniqueColumn>()
-        val seenFkAttrs = mutableSetOf<String>()
+        // FK attr (lowercase) → (original-case FK attr, path trie with constant values at leaves)
+        val treesByFk = LinkedHashMap<String, Pair<String, PathNode>>()
 
         PsiTreeUtil.findChildrenOfType(whereClause, FlexibleSearchEquivalenceExpression::class.java).forEach { eq ->
             if (PsiTreeUtil.getParentOfType(eq, FlexibleSearchOrExpression::class.java) != null) return@forEach
@@ -394,12 +450,11 @@ object FxSQueryAnalyzer {
             for (i in 0..1) {
                 val colRef = exprs[i].asSafely<FlexibleSearchColumnRefYExpression>() ?: continue
                 val alias = colRef.selectedTableName?.text ?: continue
-                val fkAttr = joinAliasMap[alias] ?: continue
+                val info = joinAliasMap[alias] ?: continue
                 val naturalKeyAttr = colRef.yColumnName?.text ?: continue
 
-                // Both excludeAttrNames and seenFkAttrs are lowercase; compare case-insensitively
-                if (fkAttr.lowercase() in excludeAttrNames || fkAttr.lowercase() in seenFkAttrs) break
-                seenFkAttrs += fkAttr.lowercase()
+                // excludeAttrNames is lowercase; compare case-insensitively
+                if (info.rootFkAttr.lowercase() in excludeAttrNames) break
 
                 val otherText = exprs[1 - i].text.trim()
                 val constantValue = when {
@@ -409,14 +464,20 @@ object FxSQueryAnalyzer {
                     else -> otherText                  // numeric or unquoted literal
                 }
 
-                result += FxSJoinUniqueColumn(
-                    fkAttributeName = fkAttr,
-                    naturalKeyAttr = naturalKeyAttr,
-                    constantValue = constantValue,
-                )
+                var node = treesByFk.getOrPut(info.rootFkAttr.lowercase()) { info.rootFkAttr to PathNode() }.second
+                (info.pathFromFk + naturalKeyAttr).forEach { node = node.children.getOrPut(it) { PathNode() } }
+                if (node.constantValue == null) node.constantValue = constantValue
                 break
             }
         }
-        return result
+
+        return treesByFk.values.map { (fkAttr, tree) ->
+            val leafValues = tree.leafValues()
+            FxSJoinUniqueColumn(
+                fkAttributeName = fkAttr,
+                naturalKeyAttr = tree.render(),
+                constantValue = if (leafValues.any { it == null }) null else leafValues.joinToString(":"),
+            )
+        }
     }
 }
