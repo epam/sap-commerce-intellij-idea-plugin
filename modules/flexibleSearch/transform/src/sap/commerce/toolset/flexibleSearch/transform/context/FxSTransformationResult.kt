@@ -16,41 +16,19 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-fun properties(key: String) = providers.gradleProperty(key)
+package sap.commerce.toolset.flexibleSearch.transform.context
 
-plugins {
-    id("org.jetbrains.intellij.platform.module")
-    alias(libs.plugins.kotlin) // Kotlin support
-}
+import sap.commerce.toolset.i18n
+import sap.commerce.toolset.transform.TransformationResult
 
-sourceSets {
-    main {
-        java.srcDirs("src", "gen")
-        resources.srcDirs("resources")
-    }
-    test {
-        java.srcDirs("tests")
-    }
-}
+class FxSTransformationResult(
+    content: String,
+    private val transformerName: String,
+    private val exportType: String,
+    private val exportRows: List<List<String>>,
+) : TransformationResult(content) {
 
-idea {
-    module {
-        generatedSourceDirs.add(file("gen"))
-    }
-}
-
-dependencies {
-    implementation(project(":shared-core"))
-    implementation(project(":typeSystem-core"))
-    implementation(project(":project-core"))
-
-    intellijPlatform {
-        intellijIdea(properties("intellij.version")) {
-            useInstaller = false
-        }
-
-        bundledPlugins(
-            "com.intellij.java",
-        )
-    }
+    override val description: String
+        get() = if (exportRows.isEmpty()) "$exportType to $transformerName"
+        else "$exportType to $transformerName (${i18n("hybris.fxs.actions.export.notification.rows", exportRows.size)})"
 }

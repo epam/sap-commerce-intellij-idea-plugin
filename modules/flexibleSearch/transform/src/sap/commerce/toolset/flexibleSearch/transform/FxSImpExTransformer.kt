@@ -1,0 +1,97 @@
+/*
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+package sap.commerce.toolset.flexibleSearch.transform
+
+import com.intellij.psi.PsiFile
+import sap.commerce.toolset.flexibleSearch.FlexibleSearchConstants
+import sap.commerce.toolset.flexibleSearch.exec.FlexibleSearchExecConstants
+import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchPsiFile
+import sap.commerce.toolset.flexibleSearch.transform.context.FxSTransformationContext
+import sap.commerce.toolset.flexibleSearch.transform.context.FxSTransformationResult
+import sap.commerce.toolset.flexibleSearch.transform.impex.ImpExHeaderBuilder
+import sap.commerce.toolset.flexibleSearch.transform.impex.ImpExTransformationService
+import sap.commerce.toolset.transform.Transformer
+
+class FxSImpExTransformer : Transformer<FlexibleSearchPsiFile, FxSTransformationResult> {
+
+    override val name: String
+        get() = "ImpEx"
+    override val description: String
+        get() = TODO("Not yet implemented")
+
+    override fun isApplicable(psiFile: PsiFile) = psiFile is FlexibleSearchPsiFile
+
+    override fun transform(psiFile: FlexibleSearchPsiFile, onComplete: (FxSTransformationResult) -> Unit) {
+        val context = psiFile.context()
+
+        ImpExTransformationService.getInstance(context.project).transform(context) { impexContent ->
+            onComplete(
+                FxSTransformationResult(
+                    transformerName = name,
+                    content = impexContent,
+                    exportType = context.typeName,
+                    exportRows = context.rows,
+                )
+            )
+        }
+    }
+
+    override suspend fun transform(psiFile: FlexibleSearchPsiFile): FxSTransformationResult {
+        val context = psiFile.context()
+        val impexContent = ImpExTransformationService.getInstance(context.project).transform(context)
+
+        return FxSTransformationResult(
+            transformerName = name,
+            content = impexContent,
+            exportType = context.typeName,
+            exportRows = context.rows,
+        )
+    }
+
+    private fun FlexibleSearchPsiFile.context(): FxSTransformationContext {
+        val project = this.project
+        val includeTypeSystemUnique = getUserData(FlexibleSearchConstants.Transform.INCLUDE_TYPE_SYSTEM_UNIQUE) ?: false
+        val includeData = getUserData(FlexibleSearchConstants.Transform.INCLUDE_DATA) ?: false
+        val result = getUserData(FlexibleSearchExecConstants.Transform.EXEC_RESULTS)
+
+        val headers = result?.headers ?: emptyList()
+        val rows = result?.rows ?: emptyList()
+        val baseQueryInfo = FxSQueryAnalyzer.analyze(this, headers)
+
+        val queryInfo = if (includeTypeSystemUnique) {
+            val tsUniqueAttrs = ImpExHeaderBuilder.typeSystemUniqueAttributeNames(baseQueryInfo.primaryType, project)
+            baseQueryInfo.copy(uniqueAttributeNames = baseQueryInfo.uniqueAttributeNames + tsUniqueAttrs)
+        } else {
+            baseQueryInfo
+        }
+
+        val params = ImpExHeaderBuilder.buildParams(queryInfo, project)
+        val joinUniqueParams = ImpExHeaderBuilder.buildJoinUniqueParams(queryInfo, project)
+        val exportRows = if (includeData) rows else emptyList()
+
+        val context = FxSTransformationContext(
+            project = project,
+            queryInfo = queryInfo,
+            params = params,
+            joinUniqueParams = joinUniqueParams,
+            rows = exportRows,
+        )
+        return context
+    }
+}

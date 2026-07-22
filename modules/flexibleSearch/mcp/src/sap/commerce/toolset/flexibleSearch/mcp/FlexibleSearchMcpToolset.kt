@@ -22,11 +22,17 @@ import com.intellij.mcpserver.McpToolset
 import com.intellij.mcpserver.annotations.McpDescription
 import com.intellij.mcpserver.annotations.McpTool
 import com.intellij.mcpserver.project
+import com.intellij.openapi.application.readAction
 import kotlinx.coroutines.currentCoroutineContext
 import sap.commerce.toolset.ai.mcp.map
 import sap.commerce.toolset.ai.mcp.resolveMapper
+import sap.commerce.toolset.flexibleSearch.FlexibleSearchConstants
 import sap.commerce.toolset.flexibleSearch.exec.FlexibleSearchExecConstants
 import sap.commerce.toolset.flexibleSearch.exec.context.QueryMode
+import sap.commerce.toolset.flexibleSearch.mcp.dto.FlexibleSearchMcpResult
+import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchElementFactory
+import sap.commerce.toolset.hac.mcp.HacMcpService
+import sap.commerce.toolset.transform.Transformer
 
 class FlexibleSearchMcpToolset : McpToolset {
 
@@ -88,5 +94,67 @@ class FlexibleSearchMcpToolset : McpToolset {
         val context = FlexibleSearchMcpContext(connectionName, QueryMode.SQL, query, maxCount, locale, dataSource, user)
         val result = FlexibleSearchMcpService.getInstance(project).execute(context)
         return mapper.map(result)
+    }
+
+    @McpTool(name = "sap_commerce_fxs_results_to_impex")
+    @McpDescription(
+        """Executes a FlexibleSearch query on a SAP Commerce server and converts the results with the applicable and chosen transformer, e.g. ImpEx.
+        |The generated ImpEx uses the type system to resolve correct attribute types, nested FK paths (e.g. catalogVersion(catalog(id),version)),
+        |localized attributes (lang=xx), collection delimiters, and [unique=true] modifiers derived from WHERE clause equality conditions.
+        |Enum attribute values are resolved from their runtime PKs to their codes via follow-up queries.
+        |FK attribute values are resolved from their runtime PKs to their natural key strings via follow-up queries.
+        |Returns the ImpEx text along with metadata (primary type, column count, row count).
+        |Requires a configured and authenticated HAC connection."""
+    )
+    suspend fun transform(
+        @McpDescription("Name of the FlexibleSearch applicable Transformer")
+        transformer: String,
+        @McpDescription("FlexibleSearch query to execute and convert, e.g. 'SELECT {pk}, {code}, {catalogVersion} FROM {Product}'")
+        query: String,
+        @McpDescription("Maximum number of result rows to return. Default is 200")
+        maxCount: Int = FlexibleSearchExecConstants.Defaults.MAX_COUNT,
+        @McpDescription("Optional locale for the query. Default is 'en'")
+        locale: String = FlexibleSearchExecConstants.Defaults.LOCALE,
+        @McpDescription("Optional data source for the query. Default is 'master'")
+        dataSource: String = FlexibleSearchExecConstants.Defaults.DATA_SOURCE,
+        @McpDescription("Optional user to execute the query as. Default uses the current session user")
+        user: String? = null,
+        @McpDescription("Optional HAC connection name. Uses the active connection if not specified")
+        connectionName: String? = null,
+        @McpDescription("Optional flag to include all unique attributes from the type. Default is 'false'")
+        includeTypeSystemUnique: Boolean = false,
+        @McpDescription("Optional flag to include data rows. Default is 'true'")
+        includeData: Boolean = true,
+        @McpDescription("Output format for the response. Supported formats: JSON. Default: JSON.")
+        outputFormat: String = "JSON",
+    ): String {
+        val mapper = resolveMapper(outputFormat)
+        val project = currentCoroutineContext().project
+
+        val psiFile = readAction { FlexibleSearchElementFactory.createFile(project, query) }
+        val transformer = Transformer.EP.extensionList
+            .find { it.isApplicable(psiFile) && it.name.equals(transformer, true) }
+            ?: error("No applicable '$transformer' transformer found for FlexibleSearch")
+
+        val connection = HacMcpService.getInstance(project).resolveConnection(connectionName)
+        val context = FlexibleSearchMcpContext(connectionName, QueryMode.SQL, query, maxCount, locale, dataSource, user)
+        val result = FlexibleSearchMcpService.getInstance(project).execute(context)
+
+        if (!result.success) return mapper.map(result)
+
+        psiFile.putUserData(FlexibleSearchConstants.Transform.INCLUDE_TYPE_SYSTEM_UNIQUE, includeTypeSystemUnique)
+        psiFile.putUserData(FlexibleSearchConstants.Transform.INCLUDE_DATA, includeData)
+        psiFile.putUserData(FlexibleSearchExecConstants.Transform.EXEC_RESULTS, result.rawResult)
+
+        val transformationResult = transformer.transform(psiFile)
+
+        return mapper.map(
+            FlexibleSearchMcpResult(
+                connection = connection.connectionName,
+                success = true,
+                output = transformationResult.content,
+                description = transformationResult.description,
+            )
+        )
     }
 }

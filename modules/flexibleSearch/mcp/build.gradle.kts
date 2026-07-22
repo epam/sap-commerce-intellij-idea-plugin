@@ -36,12 +36,13 @@ sourceSets {
 
 dependencies {
     implementation(project(":shared-core"))
+    implementation(project(":shared-transform"))
+    implementation(project(":ai-mcp"))
+    implementation(project(":exec-core"))
+    implementation(project(":hac-mcp"))
     implementation(project(":hac-exec"))
     implementation(project(":flexibleSearch-core"))
     implementation(project(":flexibleSearch-exec"))
-    implementation(project(":exec-core"))
-    implementation(project(":ai-mcp"))
-    implementation(project(":hac-mcp"))
     implementation(libs.kotlinxJson)
 
     intellijPlatform {

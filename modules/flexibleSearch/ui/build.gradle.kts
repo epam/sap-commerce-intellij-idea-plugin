@@ -36,6 +36,7 @@ sourceSets {
 
 dependencies {
     implementation(project(":shared-core"))
+    implementation(project(":shared-transform"))
     implementation(project(":shared-ui"))
     implementation(project(":meta-core"))
     implementation(project(":typeSystem-core"))

@@ -25,7 +25,7 @@ plugins {
 
 sourceSets {
     main {
-        java.srcDirs("src", "gen")
+        java.srcDirs("src")
         resources.srcDirs("resources")
     }
     test {
@@ -33,24 +33,21 @@ sourceSets {
     }
 }
 
-idea {
-    module {
-        generatedSourceDirs.add(file("gen"))
-    }
-}
-
 dependencies {
     implementation(project(":shared-core"))
+    implementation(project(":shared-transform"))
     implementation(project(":typeSystem-core"))
-    implementation(project(":project-core"))
+    implementation(project(":exec-core"))
+    implementation(project(":hac-exec"))
+    implementation(project(":flexibleSearch-core"))
+    implementation(project(":flexibleSearch-exec"))
+    implementation(project(":impex-core"))
+
+    testImplementation(kotlin("test"))
 
     intellijPlatform {
         intellijIdea(properties("intellij.version")) {
             useInstaller = false
         }
-
-        bundledPlugins(
-            "com.intellij.java",
-        )
     }
 }

@@ -16,41 +16,21 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-fun properties(key: String) = providers.gradleProperty(key)
+package sap.commerce.toolset.transform
 
-plugins {
-    id("org.jetbrains.intellij.platform.module")
-    alias(libs.plugins.kotlin) // Kotlin support
-}
+import com.intellij.openapi.extensions.ExtensionPointName
+import com.intellij.psi.PsiFile
 
-sourceSets {
-    main {
-        java.srcDirs("src", "gen")
-        resources.srcDirs("resources")
-    }
-    test {
-        java.srcDirs("tests")
-    }
-}
+interface Transformer<T : PsiFile, R: TransformationResult> {
 
-idea {
-    module {
-        generatedSourceDirs.add(file("gen"))
-    }
-}
+    val name: String
+    val description: String
 
-dependencies {
-    implementation(project(":shared-core"))
-    implementation(project(":typeSystem-core"))
-    implementation(project(":project-core"))
+    fun isApplicable(psiFile: PsiFile): Boolean
+    fun transform(psiFile: T, onComplete: (R) -> Unit)
+    suspend fun transform(psiFile: T): R
 
-    intellijPlatform {
-        intellijIdea(properties("intellij.version")) {
-            useInstaller = false
-        }
-
-        bundledPlugins(
-            "com.intellij.java",
-        )
+    companion object {
+        val EP = ExtensionPointName.create<Transformer<in PsiFile, out TransformationResult>>("sap.commerce.toolset.transformer")
     }
 }

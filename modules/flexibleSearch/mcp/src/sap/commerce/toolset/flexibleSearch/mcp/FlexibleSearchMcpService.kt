@@ -24,7 +24,7 @@ import com.intellij.openapi.project.Project
 import org.apache.http.HttpStatus
 import sap.commerce.toolset.flexibleSearch.exec.FlexibleSearchExecClient
 import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecContext
-import sap.commerce.toolset.flexibleSearch.mcp.dto.FlexibleSearchResult
+import sap.commerce.toolset.flexibleSearch.mcp.dto.FlexibleSearchMcpResult
 import sap.commerce.toolset.hac.mcp.HacMcpService
 
 @Service(Service.Level.PROJECT)
@@ -32,7 +32,7 @@ class FlexibleSearchMcpService(private val project: Project) {
 
     suspend fun execute(
         context: FlexibleSearchMcpContext,
-    ): FlexibleSearchResult {
+    ): FlexibleSearchMcpResult {
         val connection = HacMcpService.getInstance(project).resolveConnection(context.connectionName)
         val execContext = FlexibleSearchExecContext(
             connection = connection,
@@ -48,17 +48,19 @@ class FlexibleSearchMcpService(private val project: Project) {
         val result = FlexibleSearchExecClient.getInstance(project).execute(execContext)
 
         return if (result.statusCode != HttpStatus.SC_OK) {
-            FlexibleSearchResult(
+            FlexibleSearchMcpResult(
                 connection = connection.connectionName,
                 success = false,
                 error = result.errorMessage,
                 errorDetail = result.errorDetailMessage,
+                rawResult = result
             )
         } else {
-            FlexibleSearchResult(
+            FlexibleSearchMcpResult(
                 connection = connection.connectionName,
                 success = true,
                 output = result.output?.takeIf { it.isNotBlank() },
+                rawResult = result
             )
         }
     }

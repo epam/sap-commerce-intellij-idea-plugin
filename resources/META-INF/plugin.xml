@@ -49,6 +49,7 @@
     <xi:include href="/META-INF/sap.commerce.toolset-shared-core.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/sap.commerce.toolset-shared-emitter.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/sap.commerce.toolset-shared-ui.xml" xpointer="xpointer(/idea-plugin/*)"/>
+    <xi:include href="/META-INF/sap.commerce.toolset-shared-transform.xml" xpointer="xpointer(/idea-plugin/*)"/>
 
     <xi:include href="/META-INF/sap.commerce.toolset-exec-core.xml" xpointer="xpointer(/idea-plugin/*)"/>
 
@@ -80,6 +81,8 @@
     <xi:include href="/META-INF/sap.commerce.toolset-impex-exec.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/sap.commerce.toolset-impex-monitoring.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/sap.commerce.toolset-impex-ui.xml" xpointer="xpointer(/idea-plugin/*)"/>
+    <xi:include href="/META-INF/sap.commerce.toolset-impex-transform.xml" xpointer="xpointer(/idea-plugin/*)"/>
+    <xi:include href="/META-INF/sap.commerce.toolset-flexibleSearch-transform.xml" xpointer="xpointer(/idea-plugin/*)"/>
 
     <xi:include href="/META-INF/sap.commerce.toolset-acl-core.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/sap.commerce.toolset-acl-ui.xml" xpointer="xpointer(/idea-plugin/*)"/>

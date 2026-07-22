@@ -16,41 +16,20 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-fun properties(key: String) = providers.gradleProperty(key)
+package sap.commerce.toolset.flexibleSearch.transform.context
 
-plugins {
-    id("org.jetbrains.intellij.platform.module")
-    alias(libs.plugins.kotlin) // Kotlin support
-}
+import com.intellij.openapi.project.Project
+import sap.commerce.toolset.flexibleSearch.transform.impex.ImpExParam
+import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
 
-sourceSets {
-    main {
-        java.srcDirs("src", "gen")
-        resources.srcDirs("resources")
-    }
-    test {
-        java.srcDirs("tests")
-    }
-}
-
-idea {
-    module {
-        generatedSourceDirs.add(file("gen"))
-    }
-}
-
-dependencies {
-    implementation(project(":shared-core"))
-    implementation(project(":typeSystem-core"))
-    implementation(project(":project-core"))
-
-    intellijPlatform {
-        intellijIdea(properties("intellij.version")) {
-            useInstaller = false
-        }
-
-        bundledPlugins(
-            "com.intellij.java",
-        )
-    }
+data class FxSTransformationContext(
+    val project: Project,
+    val queryInfo: FxSQueryInfo,
+    val params: List<ImpExParam>,
+    val joinUniqueParams: List<ImpExParam>,
+    val rows: List<List<String>>,
+    val connection: HacConnectionSettingsState? = null
+) {
+    val typeName: String
+        get() = queryInfo.primaryType
 }

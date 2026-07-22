@@ -15,11 +15,10 @@
   ~ You should have received a copy of the GNU Lesser General Public License
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
   -->
-
 <idea-plugin>
 
-    <extensions defaultExtensionNs="com.intellij">
-        <mcpServer.mcpToolset implementation="sap.commerce.toolset.flexibleSearch.mcp.FlexibleSearchMcpToolset"/>
+    <extensions defaultExtensionNs="sap.commerce.toolset">
+        <transformer implementation="sap.commerce.toolset.flexibleSearch.transform.FxSImpExTransformer"/>
     </extensions>
 
 </idea-plugin>

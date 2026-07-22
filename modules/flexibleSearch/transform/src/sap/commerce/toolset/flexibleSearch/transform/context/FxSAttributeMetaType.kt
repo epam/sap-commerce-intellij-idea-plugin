@@ -16,41 +16,22 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-fun properties(key: String) = providers.gradleProperty(key)
+package sap.commerce.toolset.flexibleSearch.transform.context
 
-plugins {
-    id("org.jetbrains.intellij.platform.module")
-    alias(libs.plugins.kotlin) // Kotlin support
-}
+/** Classifies the resolved SAP Commerce meta-type of an ImpEx parameter column. */
+enum class FxSAttributeMetaType {
+    /** FK to another ComposedType (Item). */
+    ITEM,
 
-sourceSets {
-    main {
-        java.srcDirs("src", "gen")
-        resources.srcDirs("resources")
-    }
-    test {
-        java.srcDirs("tests")
-    }
-}
+    /** Enum type — HAC returns the PK of the HybrisEnumerationValue; must be resolved to its code. */
+    ENUM,
 
-idea {
-    module {
-        generatedSourceDirs.add(file("gen"))
-    }
-}
+    /** Collection type. */
+    COLLECTION,
 
-dependencies {
-    implementation(project(":shared-core"))
-    implementation(project(":typeSystem-core"))
-    implementation(project(":project-core"))
+    /** Atomic / primitive (String, Integer, Boolean, …). */
+    ATOMIC,
 
-    intellijPlatform {
-        intellijIdea(properties("intellij.version")) {
-            useInstaller = false
-        }
-
-        bundledPlugins(
-            "com.intellij.java",
-        )
-    }
+    /** Type could not be determined (unknown attribute or dynamic attribute). */
+    UNKNOWN,
 }

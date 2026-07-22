@@ -18,11 +18,18 @@
 
 package sap.commerce.toolset.flexibleSearch.exec
 
+import com.intellij.openapi.util.Key
+import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecResult
+
 object FlexibleSearchExecConstants {
 
     object Defaults {
         const val MAX_COUNT = 200
         const val LOCALE = "EN"
         const val DATA_SOURCE = "master"
+    }
+
+    object Transform {
+        val EXEC_RESULTS = Key.create<FlexibleSearchExecResult>("flexibleSearch.transform.execResults")
     }
 }
