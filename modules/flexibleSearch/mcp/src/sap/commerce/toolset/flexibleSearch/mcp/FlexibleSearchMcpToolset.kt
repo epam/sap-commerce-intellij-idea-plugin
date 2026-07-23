@@ -96,14 +96,15 @@ class FlexibleSearchMcpToolset : McpToolset {
         return mapper.map(result)
     }
 
-    @McpTool(name = "sap_commerce_fxs_results_to_impex")
+    @McpTool(name = "sap_commerce_execute_and_transform_flexible_search")
     @McpDescription(
-        """Executes a FlexibleSearch query on a SAP Commerce server and converts the results with the applicable and chosen transformer, e.g. ImpEx.
-        |The generated ImpEx uses the type system to resolve correct attribute types, nested FK paths (e.g. catalogVersion(catalog(id),version)),
+        """Executes a FlexibleSearch query on a SAP Commerce server and converts the results with the applicable and chosen transformer.
+        |The output format depends on the selected transformer (specified via 'transformerName') — for example, the ImpEx transformer
+        |uses the type system to resolve correct attribute types, nested FK paths (e.g. catalogVersion(catalog(id),version)),
         |localized attributes (lang=xx), collection delimiters, and [unique=true] modifiers derived from WHERE clause equality conditions.
         |Enum attribute values are resolved from their runtime PKs to their codes via follow-up queries.
         |FK attribute values are resolved from their runtime PKs to their natural key strings via follow-up queries.
-        |Returns the ImpEx text along with metadata (primary type, column count, row count).
+        |Returns the transformed text along with metadata (primary type, column count, row count).
         |Requires a configured and authenticated HAC connection."""
     )
     suspend fun transform(
