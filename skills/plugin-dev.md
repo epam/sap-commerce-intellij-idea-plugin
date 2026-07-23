@@ -68,11 +68,12 @@ Never inline HAC calls — use `HacHttpClient.getInstance(project).post(...)`.
 
 - Thin `class XxxMcpToolset : McpToolset` (no `@Service`), registered via `<mcpServer.mcpToolset implementation="..."/>`.
 - Each tool: `suspend fun` with `@McpTool(name = "sap_commerce_...")` + `@McpDescription`; every param `@McpDescription`-annotated and defaulted if optional; returns `String` (serialized JSON). Project via `currentCoroutineContext().project`.
-- Business logic in `@Service(Service.Level.PROJECT) XxxMcpService`; small `XxxMcpContext` input, `@Serializable` DTOs in `dto/` output.
+- **Toolset contains no business logic.** Its body is exactly: get mapper via `resolveMapper(outputFormat)`, resolve project, call service, return `mapper.map(result)`. Nothing else belongs here.
+- All logic in `@Service(Service.Level.PROJECT) XxxMcpService`; small `XxxMcpContext` input (or plain params for simple cases), `@Serializable` DTOs in `dto/` output.
 - Serialization: `resolveMapper(outputFormat)` + `mapper.map(dto)` — never call `Json` directly. Optional fields: nullable with default `null`; `isX` flags → `@SerialName("x")`.
 - Computed DTO fields: defaulted constructor property ordered after its dependency.
 - No try/catch — `error(...)`/`require(...)`, or model failure as DTO fields (`success = false`, `error`).
-- Exemplar: `groovy/mcp/`.
+- Exemplars: `shared/mcp/` (local EP query, no exec), `groovy/mcp/` (remote exec).
 
 ## Actions & UI
 

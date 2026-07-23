@@ -21,6 +21,8 @@ package sap.commerce.toolset.shared.mcp.dto
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class TransformerMcpResult(
-    val languages: List<LanguageTransformers>
+data class TransformerInfo(
+    val id: String,
+    val name: String,
+    val description: String,
 )

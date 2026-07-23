@@ -21,12 +21,10 @@ package sap.commerce.toolset.shared.mcp
 import com.intellij.mcpserver.McpToolset
 import com.intellij.mcpserver.annotations.McpDescription
 import com.intellij.mcpserver.annotations.McpTool
+import com.intellij.mcpserver.project
+import kotlinx.coroutines.currentCoroutineContext
 import sap.commerce.toolset.ai.mcp.map
 import sap.commerce.toolset.ai.mcp.resolveMapper
-import sap.commerce.toolset.shared.mcp.dto.LanguageTransformers
-import sap.commerce.toolset.shared.mcp.dto.TransformerInfo
-import sap.commerce.toolset.shared.mcp.dto.TransformerMcpResult
-import sap.commerce.toolset.transform.Transformer
 
 class TransformerMcpToolset : McpToolset {
 
@@ -46,29 +44,8 @@ class TransformerMcpToolset : McpToolset {
         outputFormat: String = "JSON",
     ): String {
         val mapper = resolveMapper(outputFormat)
-        val all = Transformer.EP.extensionList
-
-        val filtered = if (languageId != null) {
-            all.filter { t ->
-                t.language.id.equals(languageId, ignoreCase = true) ||
-                t.language.displayName.equals(languageId, ignoreCase = true)
-            }
-        } else {
-            all
-        }
-
-        val languages = filtered
-            .groupBy { it.language }
-            .map { (language, transformers) ->
-                LanguageTransformers(
-                    languageId = language.id,
-                    displayName = language.displayName,
-                    transformers = transformers.map { t ->
-                        TransformerInfo(id = t.id, name = t.name, description = t.description)
-                    },
-                )
-            }
-
-        return mapper.map(TransformerMcpResult(languages = languages))
+        val project = currentCoroutineContext().project
+        val result = TransformerMcpService.getInstance(project).list(languageId)
+        return mapper.map(result)
     }
 }
