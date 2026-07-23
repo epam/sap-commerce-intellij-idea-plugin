@@ -41,4 +41,8 @@ object ImpExConstants {
         const val HEADER_PREFIX = " <"
         const val HEADER_POSTFIX = ">"
     }
+
+    object Value {
+        const val IGNORE = "<ignore>"
+    }
 }

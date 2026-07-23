@@ -86,8 +86,4 @@ object FlexibleSearchConstants {
         val INCLUDE_TYPE_SYSTEM_UNIQUE = Key.create<Boolean>("flexibleSearch.transform.includeTypeSystemUnique")
         val INCLUDE_DATA = Key.create<Boolean>("flexibleSearch.transform.includeData")
     }
-
-    object ImpEx {
-        const val IMPEX_IGNORE = "<ignore>"
-    }
 }

@@ -18,8 +18,8 @@
 
 package sap.commerce.toolset.flexibleSearch.transform.impex
 
-import sap.commerce.toolset.flexibleSearch.FlexibleSearchConstants
 import sap.commerce.toolset.flexibleSearch.transform.context.FxSTransformationRequest
+import sap.commerce.toolset.impex.ImpExConstants
 
 /**
  * Converts a [FxSQueryInfo] + resolved [ImpExHeaderParameter] lists + raw result rows into
@@ -66,17 +66,17 @@ object ImpExConverter {
             context.rows.forEach { row ->
                 uniqueWithIdx.forEach { (srcIdx, param) ->
                     val cell = row.getOrNull(srcIdx) ?: ""
-                    val value = if (cell == "null" || cell == FlexibleSearchConstants.ImpEx.IMPEX_IGNORE) "" else cell
-                    append("; ${param.formatValue(value).ifEmpty { FlexibleSearchConstants.ImpEx.IMPEX_IGNORE }}")
+                    val value = if (cell == "null" || cell == ImpExConstants.Value.IGNORE) "" else cell
+                    append("; ${param.formatValue(value).ifEmpty { ImpExConstants.Value.IGNORE }}")
                 }
                 queryInfo.joinUniqueColumns.forEach { joinCol ->
-                    val v = joinCol.constantValue?.takeIf { it.isNotEmpty() } ?: FlexibleSearchConstants.ImpEx.IMPEX_IGNORE
+                    val v = joinCol.constantValue?.takeIf { it.isNotEmpty() } ?: ImpExConstants.Value.IGNORE
                     append("; $v")
                 }
                 nonUniqueWithIdx.forEach { (srcIdx, param) ->
                     val cell = row.getOrNull(srcIdx) ?: ""
-                    val value = if (cell == "null" || cell == FlexibleSearchConstants.ImpEx.IMPEX_IGNORE) "" else cell
-                    append("; ${param.formatValue(value).ifEmpty { FlexibleSearchConstants.ImpEx.IMPEX_IGNORE }}")
+                    val value = if (cell == "null" || cell == ImpExConstants.Value.IGNORE) "" else cell
+                    append("; ${param.formatValue(value).ifEmpty { ImpExConstants.Value.IGNORE }}")
                 }
                 appendLine()
             }
