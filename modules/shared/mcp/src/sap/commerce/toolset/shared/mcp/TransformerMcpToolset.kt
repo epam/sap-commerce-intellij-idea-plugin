@@ -25,6 +25,7 @@ import com.intellij.mcpserver.project
 import kotlinx.coroutines.currentCoroutineContext
 import sap.commerce.toolset.ai.mcp.map
 import sap.commerce.toolset.ai.mcp.resolveMapper
+import sap.commerce.toolset.shared.mcp.transform.TransformerMcpService
 
 class TransformerMcpToolset : McpToolset {
 

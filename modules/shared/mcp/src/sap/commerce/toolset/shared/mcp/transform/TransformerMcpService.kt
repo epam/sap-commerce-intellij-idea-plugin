@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.shared.mcp
+package sap.commerce.toolset.shared.mcp.transform
 
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
