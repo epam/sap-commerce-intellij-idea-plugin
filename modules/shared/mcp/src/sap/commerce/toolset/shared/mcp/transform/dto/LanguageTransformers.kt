@@ -16,13 +16,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.shared.mcp.dto
+package sap.commerce.toolset.shared.mcp.transform.dto
 
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class TransformerInfo(
-    val id: String,
-    val name: String,
-    val description: String,
+data class LanguageTransformers(
+    val languageId: String,
+    val displayName: String,
+    val transformers: List<TransformerInfo>,
 )

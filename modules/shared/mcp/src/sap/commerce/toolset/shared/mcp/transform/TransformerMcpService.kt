@@ -21,9 +21,9 @@ package sap.commerce.toolset.shared.mcp.transform
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
-import sap.commerce.toolset.shared.mcp.dto.LanguageTransformers
-import sap.commerce.toolset.shared.mcp.dto.TransformerInfo
-import sap.commerce.toolset.shared.mcp.dto.TransformerMcpResult
+import sap.commerce.toolset.shared.mcp.transform.dto.LanguageTransformers
+import sap.commerce.toolset.shared.mcp.transform.dto.TransformerInfo
+import sap.commerce.toolset.shared.mcp.transform.dto.TransformerMcpResult
 import sap.commerce.toolset.transform.Transformer
 
 @Service(Service.Level.PROJECT)
