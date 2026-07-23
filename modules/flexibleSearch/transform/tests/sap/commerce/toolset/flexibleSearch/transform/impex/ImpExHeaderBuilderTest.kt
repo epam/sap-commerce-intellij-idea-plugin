@@ -29,7 +29,7 @@ import kotlin.test.assertNull
 class ImpExHeaderBuilderTest  {
 
     private fun makeContext(queryInfo: FxSQueryInfo, params: List<ImpExHeaderParameter>) =
-        FxSTransformationRequest(
+        ImpExTransformationRequest(
             project = DummyProject.getInstance(),
             queryInfo = queryInfo,
             params = params,

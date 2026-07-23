@@ -16,20 +16,22 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.flexibleSearch.mcp.dto
+package sap.commerce.toolset.flexibleSearch.transform.impex.context
 
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.Transient
-import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecResult
+import com.intellij.openapi.project.Project
+import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecContext
+import sap.commerce.toolset.flexibleSearch.transform.context.FxSQueryInfo
+import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
 
-@Serializable
-data class FlexibleSearchMcpResult(
-    val connectionName: String,
-    val success: Boolean,
-    val output: String? = null,
-    val description: String? = null,
-    val error: String? = null,
-    val errorDetail: String? = null,
-    @Transient
-    val rawResult: FlexibleSearchExecResult? = null
-)
+data class ImpExTransformationDescriptor(
+    val project: Project,
+    val queryInfo: FxSQueryInfo,
+    val params: List<ImpExHeaderParameter>,
+    val joinUniqueParams: List<ImpExHeaderParameter>,
+    val rows: List<List<String>>,
+    val connection: HacConnectionSettingsState? = null,
+    val execSettings: FlexibleSearchExecContext.Settings,
+) {
+    val typeName: String
+        get() = queryInfo.primaryType
+}

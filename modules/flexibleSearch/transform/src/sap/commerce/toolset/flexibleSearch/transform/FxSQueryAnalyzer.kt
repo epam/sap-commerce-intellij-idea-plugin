@@ -18,6 +18,7 @@
 
 package sap.commerce.toolset.flexibleSearch.transform
 
+import com.intellij.openapi.application.readAction
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.util.asSafely
@@ -35,7 +36,7 @@ import sap.commerce.toolset.typeSystem.TSConstants
  */
 object FxSQueryAnalyzer {
 
-    fun analyze(psiFile: FlexibleSearchPsiFile, resultHeaders: List<String>): FxSQueryInfo {
+    suspend fun analyze(psiFile: FlexibleSearchPsiFile, resultHeaders: List<String>): FxSQueryInfo = readAction {
         val selectCore = PsiTreeUtil.findChildOfType(psiFile, FlexibleSearchSelectCoreSelect::class.java)
 
         val primaryType = selectCore?.fromClause
@@ -44,9 +45,7 @@ object FxSQueryAnalyzer {
             ?: "UnknownType"
 
         val psiColumns = selectCore?.resultColumns?.resultColumnList ?: emptyList()
-
         val columns = correlateColumns(resultHeaders, psiColumns)
-
         val joinAliasMap = buildJoinAliasMap(selectCore?.fromClause)
 
         val uniqueAttributeNames = selectCore?.whereClause
@@ -70,7 +69,7 @@ object FxSQueryAnalyzer {
                 ?.let { collectJoinNaturalKeys(it, joinAliasMap) }
                 ?: emptyMap()
 
-        return FxSQueryInfo(
+        FxSQueryInfo(
             primaryType = primaryType,
             columns = columns,
             uniqueAttributeNames = uniqueAttributeNames,

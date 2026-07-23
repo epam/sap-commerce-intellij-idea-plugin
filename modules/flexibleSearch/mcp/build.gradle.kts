@@ -37,6 +37,7 @@ sourceSets {
 dependencies {
     implementation(project(":shared-core"))
     implementation(project(":shared-transform"))
+    implementation(project(":shared-mcp"))
     implementation(project(":ai-mcp"))
     implementation(project(":exec-core"))
     implementation(project(":hac-mcp"))

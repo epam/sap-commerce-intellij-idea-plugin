@@ -18,7 +18,7 @@
 
 package sap.commerce.toolset.flexibleSearch.transform.impex
 
-import sap.commerce.toolset.flexibleSearch.transform.context.FxSTransformationRequest
+import sap.commerce.toolset.flexibleSearch.transform.impex.context.ImpExTransformationDescriptor
 import sap.commerce.toolset.impex.ImpExConstants
 
 /**
@@ -42,13 +42,13 @@ object ImpExConverter {
      * ; uniqueVal1; joinUniqueConst; regularVal
      * ```
      */
-    fun buildImpEx(context: FxSTransformationRequest): String {
-        val queryInfo = context.queryInfo
+    fun buildImpEx(descriptor: ImpExTransformationDescriptor): String {
+        val queryInfo = descriptor.queryInfo
 
         // Pair each non-PK column index in the result row with its resolved param
         val paramWithSourceIdx = queryInfo.columns
             .mapIndexedNotNull { idx, col -> if (!col.isPk) idx else null }
-            .zip(context.params)
+            .zip(descriptor.params)
 
         // Unique columns first, non-unique after — preserving relative order within each group
         val (uniqueWithIdx, nonUniqueWithIdx) = paramWithSourceIdx
@@ -56,14 +56,14 @@ object ImpExConverter {
 
         return buildString {
             // Header: unique SELECT cols → JOIN-unique synthetic cols → non-unique SELECT cols
-            append("INSERT_UPDATE ${context.typeName}")
+            append("INSERT_UPDATE ${descriptor.typeName}")
             uniqueWithIdx.forEach { (_, param) -> append("; ${param.render()}") }
-            context.joinUniqueParams.forEach { param -> append("; ${param.render()}") }
+            descriptor.joinUniqueParams.forEach { param -> append("; ${param.render()}") }
             nonUniqueWithIdx.forEach { (_, param) -> append("; ${param.render()}") }
             appendLine()
 
             // Rows: same order as header
-            context.rows.forEach { row ->
+            descriptor.rows.forEach { row ->
                 uniqueWithIdx.forEach { (srcIdx, param) ->
                     val cell = row.getOrNull(srcIdx) ?: ""
                     val value = if (cell == "null" || cell == ImpExConstants.Value.IGNORE) "" else cell

@@ -18,10 +18,10 @@
 
 package sap.commerce.toolset.flexibleSearch.mcp.context
 
-data class FlexibleSearchTransformMcpContext(
-    val transformerName: String,
+data class FxSTransformMcpContext(
+    val transformerId: String,
     val query: String,
     val includeTypeSystemUnique: Boolean,
     val includeData: Boolean,
-    val execContext: FlexibleSearchMcpContext
+    val execRequest: FxSMcpExecRequest
 )

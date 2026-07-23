@@ -21,9 +21,11 @@ package sap.commerce.toolset.shared.mcp.transform
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
+import com.intellij.psi.PsiFile
 import sap.commerce.toolset.shared.mcp.transform.dto.LanguageTransformers
 import sap.commerce.toolset.shared.mcp.transform.dto.TransformerInfo
 import sap.commerce.toolset.shared.mcp.transform.dto.TransformerMcpResult
+import sap.commerce.toolset.transform.TransformationResult
 import sap.commerce.toolset.transform.Transformer
 
 @Service(Service.Level.PROJECT)
@@ -34,8 +36,8 @@ class TransformerMcpService {
 
         val filtered = if (languageId != null) {
             all.filter { t ->
-                t.language.id.equals(languageId, ignoreCase = true) ||
-                t.language.displayName.equals(languageId, ignoreCase = true)
+                t.language.id.equals(languageId, ignoreCase = true)
+                    || t.language.displayName.equals(languageId, ignoreCase = true)
             }
         } else {
             all
@@ -47,14 +49,15 @@ class TransformerMcpService {
                 LanguageTransformers(
                     languageId = language.id,
                     displayName = language.displayName,
-                    transformers = transformers.map { t ->
-                        TransformerInfo(id = t.id, name = t.name, description = t.description)
-                    },
+                    transformers = transformers.map { it.mcpDto },
                 )
             }
 
         return TransformerMcpResult(languages = languages)
     }
+
+    val Transformer<in PsiFile, out TransformationResult>.mcpDto: TransformerInfo
+        get() = TransformerInfo(id, name, description)
 
     companion object {
         fun getInstance(project: Project): TransformerMcpService = project.service()

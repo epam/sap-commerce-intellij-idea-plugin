@@ -24,10 +24,10 @@ import sap.commerce.toolset.flexibleSearch.transform.context.FkResolutionInfo
 import sap.commerce.toolset.flexibleSearch.transform.context.FxSAttributeMetaType
 import sap.commerce.toolset.flexibleSearch.transform.context.FxSColumn
 import sap.commerce.toolset.flexibleSearch.transform.context.FxSQueryInfo
-import sap.commerce.toolset.flexibleSearch.transform.context.FxSTransformationRequest
 import sap.commerce.toolset.flexibleSearch.transform.impex.ImpExHeaderBuilder.resolveEnumPks
 import sap.commerce.toolset.flexibleSearch.transform.impex.ImpExHeaderBuilder.resolveFkPks
 import sap.commerce.toolset.flexibleSearch.transform.impex.context.ImpExHeaderParameter
+import sap.commerce.toolset.flexibleSearch.transform.impex.context.ImpExTransformationDescriptor
 import sap.commerce.toolset.typeSystem.TSConstants
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
 import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaCollection
@@ -103,10 +103,10 @@ object ImpExHeaderBuilder {
      * [FxSQueryInfo.columns] indices). Callers use this to build follow-up lookup queries
      * (`SELECT {pk}, {code} FROM {EnumType}`) and to pass to [resolveEnumPks].
      */
-    fun enumSourceIndicesByType(context: FxSTransformationRequest): Map<Int, String> =
-        context.queryInfo.columns
+    fun enumSourceIndicesByType(descriptor: ImpExTransformationDescriptor): Map<Int, String> =
+        descriptor.queryInfo.columns
             .mapIndexedNotNull { idx, col -> if (!col.isPk) idx else null }
-            .zip(context.params)
+            .zip(descriptor.params)
             .filter { (_, param) -> param.metaType == FxSAttributeMetaType.ENUM && param.attributeType != null }
             .associate { (srcIdx, param) -> srcIdx to param.attributeType!! }
 
@@ -137,10 +137,10 @@ object ImpExHeaderBuilder {
      * Callers use this to build follow-up FxS queries that convert FK PK values to natural key
      * strings and then pass the result to [resolveFkPks].
      */
-    fun fkSourceIndicesByResolutionInfo(context: FxSTransformationRequest): Map<Int, FkResolutionInfo> =
-        context.queryInfo.columns
+    fun fkSourceIndicesByResolutionInfo(descriptor: ImpExTransformationDescriptor): Map<Int, FkResolutionInfo> =
+        descriptor.queryInfo.columns
             .mapIndexedNotNull { idx, col -> if (!col.isPk) idx else null }
-            .zip(context.params)
+            .zip(descriptor.params)
             .filter { (_, param) -> param.metaType == FxSAttributeMetaType.ITEM && param.fkResolutionInfo != null }
             .associate { (srcIdx, param) -> srcIdx to param.fkResolutionInfo!! }
 

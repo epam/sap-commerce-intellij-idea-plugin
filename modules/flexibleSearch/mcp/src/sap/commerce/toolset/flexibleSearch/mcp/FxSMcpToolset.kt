@@ -27,10 +27,10 @@ import sap.commerce.toolset.ai.mcp.map
 import sap.commerce.toolset.ai.mcp.resolveMapper
 import sap.commerce.toolset.flexibleSearch.exec.FlexibleSearchExecConstants
 import sap.commerce.toolset.flexibleSearch.exec.context.QueryMode
-import sap.commerce.toolset.flexibleSearch.mcp.context.FlexibleSearchMcpContext
-import sap.commerce.toolset.flexibleSearch.mcp.context.FlexibleSearchTransformMcpContext
+import sap.commerce.toolset.flexibleSearch.mcp.context.FxSMcpExecRequest
+import sap.commerce.toolset.flexibleSearch.mcp.context.FxSTransformMcpContext
 
-class FlexibleSearchMcpToolset : McpToolset {
+class FxSMcpToolset : McpToolset {
 
     @McpTool(name = "sap_commerce_execute_flexible_search")
     @McpDescription(
@@ -59,8 +59,8 @@ class FlexibleSearchMcpToolset : McpToolset {
     ): String {
         val mapper = resolveMapper(outputFormat)
         val project = currentCoroutineContext().project
-        val context = FlexibleSearchMcpContext(connectionName, QueryMode.FlexibleSearch, query, maxCount, locale, dataSource, user, timeout)
-        val result = FlexibleSearchMcpService.getInstance(project).execute(context)
+        val execRequest = FxSMcpExecRequest(connectionName, QueryMode.FlexibleSearch, query, maxCount, locale, dataSource, user, timeout)
+        val result = FxSMcpService.getInstance(project).execute(execRequest)
         return mapper.map(result)
     }
 
@@ -91,8 +91,8 @@ class FlexibleSearchMcpToolset : McpToolset {
     ): String {
         val mapper = resolveMapper(outputFormat)
         val project = currentCoroutineContext().project
-        val context = FlexibleSearchMcpContext(connectionName, QueryMode.SQL, query, maxCount, locale, dataSource, user, timeout)
-        val result = FlexibleSearchMcpService.getInstance(project).execute(context)
+        val execRequest = FxSMcpExecRequest(connectionName, QueryMode.SQL, query, maxCount, locale, dataSource, user, timeout)
+        val result = FxSMcpService.getInstance(project).execute(execRequest)
         return mapper.map(result)
     }
 
@@ -107,9 +107,9 @@ class FlexibleSearchMcpToolset : McpToolset {
         |Returns the transformed text along with metadata (primary type, column count, row count).
         |Requires a configured and authenticated HAC connection."""
     )
-    suspend fun transform(
-        @McpDescription("Name of the FlexibleSearch applicable Transformer")
-        transformerName: String,
+    suspend fun executeAndTransform(
+        @McpDescription("ID of the FlexibleSearch applicable Transformer")
+        transformerId: String,
         @McpDescription("FlexibleSearch query to execute and convert, e.g. 'SELECT {pk}, {code}, {catalogVersion} FROM {Product}'")
         query: String,
         @McpDescription("Maximum number of result rows to return. Default is 200")
@@ -126,22 +126,22 @@ class FlexibleSearchMcpToolset : McpToolset {
         connectionName: String? = null,
         @McpDescription("Optional flag to include all unique attributes from the type. Default is 'false'")
         includeTypeSystemUnique: Boolean = false,
-        @McpDescription("Optional flag to include data rows. Default is 'true'")
+        @McpDescription("Flag to include result data rows in the output. Set to 'true' whenever the user wants actual data (not just the ImpEx header). Default is 'true'.")
         includeData: Boolean = true,
         @McpDescription("Output format for the response. Supported formats: JSON. Default: JSON.")
         outputFormat: String = "JSON",
     ): String {
         val mapper = resolveMapper(outputFormat)
         val project = currentCoroutineContext().project
-        val execContext = FlexibleSearchMcpContext(connectionName, QueryMode.FlexibleSearch, query, maxCount, locale, dataSource, user, timeout)
-        val transformContext = FlexibleSearchTransformMcpContext(
-            transformerName = transformerName,
+        val execRequest = FxSMcpExecRequest(connectionName, QueryMode.FlexibleSearch, query, maxCount, locale, dataSource, user, timeout)
+        val transformContext = FxSTransformMcpContext(
+            transformerId = transformerId,
             query = query,
             includeTypeSystemUnique = includeTypeSystemUnique,
             includeData = includeData,
-            execContext = execContext,
+            execRequest = execRequest,
         )
-        val result = FlexibleSearchMcpService.getInstance(project).transform(transformContext)
+        val result = FxSMcpService.getInstance(project).transform(transformContext)
         return mapper.map(result)
     }
 }

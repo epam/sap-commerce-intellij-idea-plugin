@@ -19,14 +19,9 @@
 package sap.commerce.toolset.flexibleSearch.transform
 
 import com.intellij.lang.Language
-import sap.commerce.toolset.flexibleSearch.FlexibleSearchConstants
 import sap.commerce.toolset.flexibleSearch.FlexibleSearchLanguage
-import sap.commerce.toolset.flexibleSearch.exec.FlexibleSearchExecConstants
-import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecContext
 import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchPsiFile
-import sap.commerce.toolset.flexibleSearch.transform.context.FxSTransformationRequest
 import sap.commerce.toolset.flexibleSearch.transform.context.FxSTransformationResult
-import sap.commerce.toolset.flexibleSearch.transform.impex.ImpExHeaderBuilder
 import sap.commerce.toolset.flexibleSearch.transform.impex.ImpExTransformationService
 import sap.commerce.toolset.transform.Transformer
 
@@ -43,65 +38,9 @@ class FxSImpExTransformer : Transformer<FlexibleSearchPsiFile, FxSTransformation
 
     override fun isApplicable(language: Language) = language is FlexibleSearchLanguage
 
-    override fun transform(psiFile: FlexibleSearchPsiFile, onComplete: (FxSTransformationResult) -> Unit) {
-        val context = psiFile.context()
+    override fun transform(psiFile: FlexibleSearchPsiFile, onComplete: (FxSTransformationResult) -> Unit) = ImpExTransformationService.getInstance(psiFile.project)
+        .transform(name, psiFile, onComplete)
 
-        ImpExTransformationService.getInstance(context.project).transform(context) { impexContent ->
-            onComplete(
-                FxSTransformationResult(
-                    transformerName = name,
-                    content = impexContent,
-                    exportType = context.typeName,
-                    exportRows = context.rows,
-                )
-            )
-        }
-    }
-
-    override suspend fun transform(psiFile: FlexibleSearchPsiFile): FxSTransformationResult {
-        val context = psiFile.context()
-        val impexContent = ImpExTransformationService.getInstance(context.project).transform(context)
-
-        return FxSTransformationResult(
-            transformerName = name,
-            content = impexContent,
-            exportType = context.typeName,
-            exportRows = context.rows,
-        )
-    }
-
-    private fun FlexibleSearchPsiFile.context(): FxSTransformationRequest {
-        val project = this.project
-        val includeTypeSystemUnique = getUserData(FlexibleSearchConstants.Transform.INCLUDE_TYPE_SYSTEM_UNIQUE) ?: false
-        val includeData = getUserData(FlexibleSearchConstants.Transform.INCLUDE_DATA) ?: false
-        val connection = getUserData(FlexibleSearchExecConstants.Transform.CONNECTION)
-        val execSettings = getUserData(FlexibleSearchExecConstants.Transform.EXEC_SETTINGS)
-            ?: FlexibleSearchExecContext.defaultSettings(connection)
-        val execResult = getUserData(FlexibleSearchExecConstants.Transform.EXEC_RESULTS)
-
-        val headers = execResult?.headers ?: emptyList()
-        val rows = execResult?.rows ?: emptyList()
-        val baseQueryInfo = FxSQueryAnalyzer.analyze(this, headers)
-
-        val queryInfo = if (includeTypeSystemUnique) {
-            val tsUniqueAttrs = ImpExHeaderBuilder.typeSystemUniqueAttributeNames(baseQueryInfo.primaryType, project)
-            baseQueryInfo.copy(uniqueAttributeNames = baseQueryInfo.uniqueAttributeNames + tsUniqueAttrs)
-        } else {
-            baseQueryInfo
-        }
-
-        val params = ImpExHeaderBuilder.buildParams(queryInfo, project)
-        val joinUniqueParams = ImpExHeaderBuilder.buildJoinUniqueParams(queryInfo, project)
-        val exportRows = if (includeData) rows else emptyList()
-
-        return FxSTransformationRequest(
-            project = project,
-            queryInfo = queryInfo,
-            params = params,
-            joinUniqueParams = joinUniqueParams,
-            rows = exportRows,
-            connection = connection,
-            execSettings = execSettings,
-        )
-    }
+    override suspend fun transform(psiFile: FlexibleSearchPsiFile): FxSTransformationResult = ImpExTransformationService.getInstance(psiFile.project)
+        .transform(name, psiFile)
 }

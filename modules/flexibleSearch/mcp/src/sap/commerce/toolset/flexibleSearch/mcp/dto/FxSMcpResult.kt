@@ -16,20 +16,16 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.flexibleSearch.transform.context
+package sap.commerce.toolset.flexibleSearch.mcp.dto
 
-import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
+import kotlinx.serialization.Serializable
 
-/**
- * Enriched transformation context built from a [FxSTransformationRequest] after the
- * enum and FK resolution maps have been computed.
- *
- * Passed to [sap.commerce.toolset.flexibleSearch.transform.impex.ImpExTransformationService.resolveAndBuild]
- * so that method receives everything it needs without individual parameters.
- */
-data class FxSTransformationContext(
-    val request: FxSTransformationRequest,
-    val connection: HacConnectionSettingsState,
-    val enumSourceIndicesByType: Map<Int, String>,
-    val fkSourceIndicesByResolutionInfo: Map<Int, FkResolutionInfo>,
+@Serializable
+data class FxSMcpResult(
+    val connectionName: String,
+    val success: Boolean,
+    val output: String? = null,
+    val description: String? = null,
+    val error: String? = null,
+    val errorDetail: String? = null,
 )

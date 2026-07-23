@@ -43,7 +43,7 @@ class ImpExConverterTest {
         params: List<ImpExHeaderParameter>,
         rows: List<List<String>> = emptyList(),
         joinUniqueParams: List<ImpExHeaderParameter> = emptyList(),
-    ) = FxSTransformationRequest(
+    ) = ImpExTransformationRequest(
         project = DummyProject.getInstance(),
         queryInfo = queryInfo,
         params = params,

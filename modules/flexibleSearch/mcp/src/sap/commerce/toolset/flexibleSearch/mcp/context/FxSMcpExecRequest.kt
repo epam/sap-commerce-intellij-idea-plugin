@@ -20,7 +20,7 @@ package sap.commerce.toolset.flexibleSearch.mcp.context
 
 import sap.commerce.toolset.flexibleSearch.exec.context.QueryMode
 
-data class FlexibleSearchMcpContext(
+data class FxSMcpExecRequest(
     val connectionName: String?,
     val queryMode: QueryMode,
     val query: String,
