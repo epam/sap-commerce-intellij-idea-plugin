@@ -22,17 +22,13 @@ import com.intellij.mcpserver.McpToolset
 import com.intellij.mcpserver.annotations.McpDescription
 import com.intellij.mcpserver.annotations.McpTool
 import com.intellij.mcpserver.project
-import com.intellij.openapi.application.readAction
 import kotlinx.coroutines.currentCoroutineContext
 import sap.commerce.toolset.ai.mcp.map
 import sap.commerce.toolset.ai.mcp.resolveMapper
-import sap.commerce.toolset.flexibleSearch.FlexibleSearchConstants
 import sap.commerce.toolset.flexibleSearch.exec.FlexibleSearchExecConstants
 import sap.commerce.toolset.flexibleSearch.exec.context.QueryMode
-import sap.commerce.toolset.flexibleSearch.mcp.dto.FlexibleSearchMcpResult
-import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchElementFactory
-import sap.commerce.toolset.hac.mcp.HacMcpService
-import sap.commerce.toolset.transform.Transformer
+import sap.commerce.toolset.flexibleSearch.mcp.context.FlexibleSearchMcpContext
+import sap.commerce.toolset.flexibleSearch.mcp.context.FlexibleSearchTransformMcpContext
 
 class FlexibleSearchMcpToolset : McpToolset {
 
@@ -54,6 +50,8 @@ class FlexibleSearchMcpToolset : McpToolset {
         dataSource: String = FlexibleSearchExecConstants.Defaults.DATA_SOURCE,
         @McpDescription("Optional user to execute the query as. Default uses the current session user")
         user: String? = null,
+        @McpDescription("Optional timeout. Default uses timeout of the connection")
+        timeout: Int? = null,
         @McpDescription("Optional HAC connection name. Uses the active connection if not specified")
         connectionName: String? = null,
         @McpDescription("Output format for the response. Supported formats: JSON. Default: JSON.")
@@ -61,7 +59,7 @@ class FlexibleSearchMcpToolset : McpToolset {
     ): String {
         val mapper = resolveMapper(outputFormat)
         val project = currentCoroutineContext().project
-        val context = FlexibleSearchMcpContext(connectionName, QueryMode.FlexibleSearch, query, maxCount, locale, dataSource, user)
+        val context = FlexibleSearchMcpContext(connectionName, QueryMode.FlexibleSearch, query, maxCount, locale, dataSource, user, timeout)
         val result = FlexibleSearchMcpService.getInstance(project).execute(context)
         return mapper.map(result)
     }
@@ -84,6 +82,8 @@ class FlexibleSearchMcpToolset : McpToolset {
         dataSource: String = FlexibleSearchExecConstants.Defaults.DATA_SOURCE,
         @McpDescription("Optional user to execute the query as. Default uses the current session user")
         user: String? = null,
+        @McpDescription("Optional timeout. Default uses timeout of the connection")
+        timeout: Int? = null,
         @McpDescription("Optional HAC connection name. Uses the active connection if not specified")
         connectionName: String? = null,
         @McpDescription("Output format for the response. Supported formats: JSON. Default: JSON.")
@@ -91,7 +91,7 @@ class FlexibleSearchMcpToolset : McpToolset {
     ): String {
         val mapper = resolveMapper(outputFormat)
         val project = currentCoroutineContext().project
-        val context = FlexibleSearchMcpContext(connectionName, QueryMode.SQL, query, maxCount, locale, dataSource, user)
+        val context = FlexibleSearchMcpContext(connectionName, QueryMode.SQL, query, maxCount, locale, dataSource, user, timeout)
         val result = FlexibleSearchMcpService.getInstance(project).execute(context)
         return mapper.map(result)
     }
@@ -108,7 +108,7 @@ class FlexibleSearchMcpToolset : McpToolset {
     )
     suspend fun transform(
         @McpDescription("Name of the FlexibleSearch applicable Transformer")
-        transformer: String,
+        transformerName: String,
         @McpDescription("FlexibleSearch query to execute and convert, e.g. 'SELECT {pk}, {code}, {catalogVersion} FROM {Product}'")
         query: String,
         @McpDescription("Maximum number of result rows to return. Default is 200")
@@ -119,6 +119,8 @@ class FlexibleSearchMcpToolset : McpToolset {
         dataSource: String = FlexibleSearchExecConstants.Defaults.DATA_SOURCE,
         @McpDescription("Optional user to execute the query as. Default uses the current session user")
         user: String? = null,
+        @McpDescription("Optional timeout. Default uses timeout of the connection")
+        timeout: Int? = null,
         @McpDescription("Optional HAC connection name. Uses the active connection if not specified")
         connectionName: String? = null,
         @McpDescription("Optional flag to include all unique attributes from the type. Default is 'false'")
@@ -130,31 +132,15 @@ class FlexibleSearchMcpToolset : McpToolset {
     ): String {
         val mapper = resolveMapper(outputFormat)
         val project = currentCoroutineContext().project
-
-        val psiFile = readAction { FlexibleSearchElementFactory.createFile(project, query) }
-        val transformer = Transformer.EP.extensionList
-            .find { it.isApplicable(psiFile) && it.name.equals(transformer, true) }
-            ?: error("No applicable '$transformer' transformer found for FlexibleSearch")
-
-        val connection = HacMcpService.getInstance(project).resolveConnection(connectionName)
-        val context = FlexibleSearchMcpContext(connectionName, QueryMode.SQL, query, maxCount, locale, dataSource, user)
-        val result = FlexibleSearchMcpService.getInstance(project).execute(context)
-
-        if (!result.success) return mapper.map(result)
-
-        psiFile.putUserData(FlexibleSearchConstants.Transform.INCLUDE_TYPE_SYSTEM_UNIQUE, includeTypeSystemUnique)
-        psiFile.putUserData(FlexibleSearchConstants.Transform.INCLUDE_DATA, includeData)
-        psiFile.putUserData(FlexibleSearchExecConstants.Transform.EXEC_RESULTS, result.rawResult)
-
-        val transformationResult = transformer.transform(psiFile)
-
-        return mapper.map(
-            FlexibleSearchMcpResult(
-                connection = connection.connectionName,
-                success = true,
-                output = transformationResult.content,
-                description = transformationResult.description,
-            )
+        val execContext = FlexibleSearchMcpContext(connectionName, QueryMode.FlexibleSearch, query, maxCount, locale, dataSource, user, timeout)
+        val transformContext = FlexibleSearchTransformMcpContext(
+            transformerName = transformerName,
+            query = query,
+            includeTypeSystemUnique = includeTypeSystemUnique,
+            includeData = includeData,
+            execContext = execContext,
         )
+        val result = FlexibleSearchMcpService.getInstance(project).transform(transformContext)
+        return mapper.map(result)
     }
 }

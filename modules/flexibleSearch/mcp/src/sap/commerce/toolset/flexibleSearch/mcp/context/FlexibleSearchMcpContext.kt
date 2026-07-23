@@ -16,20 +16,17 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.flexibleSearch.transform.context
+package sap.commerce.toolset.flexibleSearch.mcp.context
 
-import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
+import sap.commerce.toolset.flexibleSearch.exec.context.QueryMode
 
-/**
- * Enriched transformation context built from a [FxSTransformationRequest] after the
- * enum and FK resolution maps have been computed.
- *
- * Passed to [sap.commerce.toolset.flexibleSearch.transform.impex.ImpExTransformationService.resolveAndBuild]
- * so that method receives everything it needs without individual parameters.
- */
-data class FxSTransformationContext(
-    val request: FxSTransformationRequest,
-    val connection: HacConnectionSettingsState,
-    val enumSourceIndicesByType: Map<Int, String>,
-    val fkSourceIndicesByResolutionInfo: Map<Int, FkResolutionInfo>,
+data class FlexibleSearchMcpContext(
+    val connectionName: String?,
+    val queryMode: QueryMode,
+    val query: String,
+    val maxCount: Int,
+    val locale: String,
+    val dataSource: String,
+    val user: String? = null,
+    val timeout: Int? = null,
 )

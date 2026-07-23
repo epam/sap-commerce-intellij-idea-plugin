@@ -18,15 +18,25 @@
 
 package sap.commerce.toolset.flexibleSearch.transform.impex
 
-import sap.commerce.toolset.flexibleSearch.transform.context.FkResolutionInfo
-import sap.commerce.toolset.flexibleSearch.transform.context.FxSAttributeMetaType
-import sap.commerce.toolset.flexibleSearch.transform.context.FxSColumn
-import sap.commerce.toolset.flexibleSearch.transform.context.FxSQueryInfo
+import com.intellij.openapi.command.impl.DummyProject
+import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecContext
+import sap.commerce.toolset.flexibleSearch.transform.context.*
+import sap.commerce.toolset.flexibleSearch.transform.impex.context.ImpExHeaderParameter
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 
-class ImpExHeaderBuilderTest {
+class ImpExHeaderBuilderTest  {
+
+    private fun makeContext(queryInfo: FxSQueryInfo, params: List<ImpExHeaderParameter>) =
+        FxSTransformationRequest(
+            project = DummyProject.getInstance(),
+            queryInfo = queryInfo,
+            params = params,
+            joinUniqueParams = emptyList(),
+            rows = emptyList(),
+            execSettings = FlexibleSearchExecContext.defaultSettings(),
+        )
 
     // -------------------------------------------------------------------------
     // resolveEnumPks()
@@ -105,11 +115,11 @@ class ImpExHeaderBuilderTest {
             uniqueAttributeNames = setOf("code"),
         )
         val params = listOf(
-            ImpExParam(attributeName = "status", attributeType = "OrderStatus", metaType = FxSAttributeMetaType.ENUM),
-            ImpExParam(attributeName = "code", attributeType = "java.lang.String", metaType = FxSAttributeMetaType.ATOMIC),
+            ImpExHeaderParameter(attributeName = "status", attributeType = "OrderStatus", metaType = FxSAttributeMetaType.ENUM),
+            ImpExHeaderParameter(attributeName = "code", attributeType = "java.lang.String", metaType = FxSAttributeMetaType.ATOMIC),
         )
 
-        val result = ImpExHeaderBuilder.enumSourceIndicesByType(queryInfo, params)
+        val result = ImpExHeaderBuilder.enumSourceIndicesByType(makeContext(queryInfo, params))
 
         // Column index 1 (status) → "OrderStatus"
         assertEquals(mapOf(1 to "OrderStatus"), result)
@@ -127,11 +137,11 @@ class ImpExHeaderBuilderTest {
             uniqueAttributeNames = setOf("code"),
         )
         val params = listOf(
-            ImpExParam(attributeName = "code", attributeType = "java.lang.String", metaType = FxSAttributeMetaType.ATOMIC),
-            ImpExParam(attributeName = "name", attributeType = "localizableString", metaType = FxSAttributeMetaType.ATOMIC),
+            ImpExHeaderParameter(attributeName = "code", attributeType = "java.lang.String", metaType = FxSAttributeMetaType.ATOMIC),
+            ImpExHeaderParameter(attributeName = "name", attributeType = "localizableString", metaType = FxSAttributeMetaType.ATOMIC),
         )
 
-        val result = ImpExHeaderBuilder.enumSourceIndicesByType(queryInfo, params)
+        val result = ImpExHeaderBuilder.enumSourceIndicesByType(makeContext(queryInfo, params))
 
         assertEquals(emptyMap(), result)
     }
@@ -148,10 +158,10 @@ class ImpExHeaderBuilderTest {
         )
         val params = listOf(
             // metaType=ENUM but attributeType=null — should be skipped
-            ImpExParam(attributeName = "status", attributeType = null, metaType = FxSAttributeMetaType.ENUM),
+            ImpExHeaderParameter(attributeName = "status", attributeType = null, metaType = FxSAttributeMetaType.ENUM),
         )
 
-        val result = ImpExHeaderBuilder.enumSourceIndicesByType(queryInfo, params)
+        val result = ImpExHeaderBuilder.enumSourceIndicesByType(makeContext(queryInfo, params))
 
         assertEquals(emptyMap(), result)
     }
@@ -168,11 +178,11 @@ class ImpExHeaderBuilderTest {
             uniqueAttributeNames = emptySet(),
         )
         val params = listOf(
-            ImpExParam(attributeName = "deliveryMode", attributeType = "DeliveryMode", metaType = FxSAttributeMetaType.ENUM),
-            ImpExParam(attributeName = "paymentMode", attributeType = "PaymentMode", metaType = FxSAttributeMetaType.ENUM),
+            ImpExHeaderParameter(attributeName = "deliveryMode", attributeType = "DeliveryMode", metaType = FxSAttributeMetaType.ENUM),
+            ImpExHeaderParameter(attributeName = "paymentMode", attributeType = "PaymentMode", metaType = FxSAttributeMetaType.ENUM),
         )
 
-        val result = ImpExHeaderBuilder.enumSourceIndicesByType(queryInfo, params)
+        val result = ImpExHeaderBuilder.enumSourceIndicesByType(makeContext(queryInfo, params))
 
         assertEquals(mapOf(1 to "DeliveryMode", 2 to "PaymentMode"), result)
     }
@@ -327,11 +337,11 @@ class ImpExHeaderBuilderTest {
             uniqueAttributeNames = setOf("code"),
         )
         val params = listOf(
-            ImpExParam(attributeName = "catalogVersion", attributeType = "CatalogVersion", metaType = FxSAttributeMetaType.ITEM, fkResolutionInfo = fkInfo),
-            ImpExParam(attributeName = "code", attributeType = "java.lang.String", metaType = FxSAttributeMetaType.ATOMIC),
+            ImpExHeaderParameter(attributeName = "catalogVersion", attributeType = "CatalogVersion", metaType = FxSAttributeMetaType.ITEM, fkResolutionInfo = fkInfo),
+            ImpExHeaderParameter(attributeName = "code", attributeType = "java.lang.String", metaType = FxSAttributeMetaType.ATOMIC),
         )
 
-        val result = ImpExHeaderBuilder.fkSourceIndicesByResolutionInfo(queryInfo, params)
+        val result = ImpExHeaderBuilder.fkSourceIndicesByResolutionInfo(makeContext(queryInfo, params))
 
         assertEquals(mapOf(1 to fkInfo), result)
     }
@@ -348,10 +358,10 @@ class ImpExHeaderBuilderTest {
         )
         val params = listOf(
             // ITEM but no fkResolutionInfo (e.g. natural key is just "pk")
-            ImpExParam(attributeName = "catalogVersion", attributeType = "CatalogVersion", metaType = FxSAttributeMetaType.ITEM, fkResolutionInfo = null),
+            ImpExHeaderParameter(attributeName = "catalogVersion", attributeType = "CatalogVersion", metaType = FxSAttributeMetaType.ITEM, fkResolutionInfo = null),
         )
 
-        val result = ImpExHeaderBuilder.fkSourceIndicesByResolutionInfo(queryInfo, params)
+        val result = ImpExHeaderBuilder.fkSourceIndicesByResolutionInfo(makeContext(queryInfo, params))
 
         assertEquals(emptyMap(), result)
     }
@@ -368,11 +378,11 @@ class ImpExHeaderBuilderTest {
             uniqueAttributeNames = emptySet(),
         )
         val params = listOf(
-            ImpExParam(attributeName = "status", attributeType = "OrderStatus", metaType = FxSAttributeMetaType.ENUM),
-            ImpExParam(attributeName = "code", attributeType = "java.lang.String", metaType = FxSAttributeMetaType.ATOMIC),
+            ImpExHeaderParameter(attributeName = "status", attributeType = "OrderStatus", metaType = FxSAttributeMetaType.ENUM),
+            ImpExHeaderParameter(attributeName = "code", attributeType = "java.lang.String", metaType = FxSAttributeMetaType.ATOMIC),
         )
 
-        val result = ImpExHeaderBuilder.fkSourceIndicesByResolutionInfo(queryInfo, params)
+        val result = ImpExHeaderBuilder.fkSourceIndicesByResolutionInfo(makeContext(queryInfo, params))
 
         assertEquals(emptyMap(), result)
     }

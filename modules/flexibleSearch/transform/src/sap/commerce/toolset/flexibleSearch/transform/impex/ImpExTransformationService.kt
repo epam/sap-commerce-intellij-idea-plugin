@@ -24,14 +24,12 @@ import com.intellij.openapi.project.Project
 import com.intellij.platform.ide.progress.withBackgroundProgress
 import kotlinx.coroutines.*
 import sap.commerce.toolset.flexibleSearch.exec.FlexibleSearchExecClient
-import sap.commerce.toolset.flexibleSearch.exec.FlexibleSearchExecConstants
 import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecContext
 import sap.commerce.toolset.flexibleSearch.exec.context.QueryMode
-import sap.commerce.toolset.flexibleSearch.transform.context.FkResolutionInfo
-import sap.commerce.toolset.flexibleSearch.transform.context.FxSQueryInfo
 import sap.commerce.toolset.flexibleSearch.transform.context.FxSTransformationContext
+import sap.commerce.toolset.flexibleSearch.transform.context.FxSTransformationRequest
 import sap.commerce.toolset.hac.exec.HacExecConnectionService
-import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
+import sap.commerce.toolset.typeSystem.TSConstants
 
 /**
  * Orchestrates the conversion of FlexibleSearch result rows into an ImpEx INSERT_UPDATE block.
@@ -56,25 +54,22 @@ internal class ImpExTransformationService(
      * is called before this function returns.
      */
     fun transform(
-        context: FxSTransformationContext,
+        request: FxSTransformationRequest,
         onComplete: (String) -> Unit,
     ) {
-        val queryInfo = context.queryInfo
-        val params = context.params
-        val joinUniqueParams = context.joinUniqueParams
-        val rows = context.rows
+        val connection = request.connection ?: HacExecConnectionService.getInstance(project).activeConnection
+        val enumSourceIndicesByType = ImpExHeaderBuilder.enumSourceIndicesByType(request)
+        val fkSourceIndicesByResolutionInfo = ImpExHeaderBuilder.fkSourceIndicesByResolutionInfo(request)
 
-        val connection = context.connection ?: HacExecConnectionService.getInstance(project).activeConnection
-        val enumSourceIndicesByType = ImpExHeaderBuilder.enumSourceIndicesByType(queryInfo, params)
-        val fkSourceIndicesByResolutionInfo = ImpExHeaderBuilder.fkSourceIndicesByResolutionInfo(queryInfo, params)
-
-        if (rows.isEmpty() || enumSourceIndicesByType.isEmpty() && fkSourceIndicesByResolutionInfo.isEmpty()) {
-            onComplete(ImpExConverter.buildImpEx(queryInfo.primaryType, params, joinUniqueParams, queryInfo, rows))
+        if (request.rows.isEmpty() || enumSourceIndicesByType.isEmpty() && fkSourceIndicesByResolutionInfo.isEmpty()) {
+            onComplete(ImpExConverter.buildImpEx(request))
             return
         }
 
+        val context = FxSTransformationContext(request, connection, enumSourceIndicesByType, fkSourceIndicesByResolutionInfo)
         coroutineScope.launch {
-            onComplete(resolveAndBuild(queryInfo, params, joinUniqueParams, rows, connection, enumSourceIndicesByType, fkSourceIndicesByResolutionInfo))
+            val impexContent = resolveAndBuild(context)
+            onComplete(impexContent)
         }
     }
 
@@ -83,60 +78,40 @@ internal class ImpExTransformationService(
      *
      * Behaves identically to the callback overload but returns the ImpEx string directly.
      */
-    suspend fun transform(context: FxSTransformationContext): String {
-        val queryInfo = context.queryInfo
-        val params = context.params
-        val joinUniqueParams = context.joinUniqueParams
-        val rows = context.rows
+    suspend fun transform(request: FxSTransformationRequest): String {
+        val connection = request.connection ?: HacExecConnectionService.getInstance(project).activeConnection
+        val enumSourceIndicesByType = ImpExHeaderBuilder.enumSourceIndicesByType(request)
+        val fkSourceIndicesByResolutionInfo = ImpExHeaderBuilder.fkSourceIndicesByResolutionInfo(request)
 
-        val connection = context.connection ?: HacExecConnectionService.getInstance(project).activeConnection
-        val enumSourceIndicesByType = ImpExHeaderBuilder.enumSourceIndicesByType(queryInfo, params)
-        val fkSourceIndicesByResolutionInfo = ImpExHeaderBuilder.fkSourceIndicesByResolutionInfo(queryInfo, params)
-
-        if (rows.isEmpty() || enumSourceIndicesByType.isEmpty() && fkSourceIndicesByResolutionInfo.isEmpty()) {
-            return ImpExConverter.buildImpEx(queryInfo.primaryType, params, joinUniqueParams, queryInfo, rows)
+        if (request.rows.isEmpty() || enumSourceIndicesByType.isEmpty() && fkSourceIndicesByResolutionInfo.isEmpty()) {
+            return ImpExConverter.buildImpEx(request)
         }
 
-        return resolveAndBuild(queryInfo, params, joinUniqueParams, rows, connection, enumSourceIndicesByType, fkSourceIndicesByResolutionInfo)
+        val context = FxSTransformationContext(request, connection, enumSourceIndicesByType, fkSourceIndicesByResolutionInfo)
+        return resolveAndBuild(context)
     }
 
     /**
      * Issues all follow-up queries concurrently (each under its own background progress indicator),
      * resolves enum codes and FK natural keys, then builds the final ImpEx text.
      */
-    private suspend fun resolveAndBuild(
-        queryInfo: FxSQueryInfo,
-        params: List<ImpExParam>,
-        joinUniqueParams: List<ImpExParam>,
-        rows: List<List<String>>,
-        connection: HacConnectionSettingsState,
-        enumSourceIndicesByType: Map<Int, String>,
-        fkSourceIndicesByResolutionInfo: Map<Int, FkResolutionInfo>,
-    ): String {
-        val enumContextsWithLabel = enumSourceIndicesByType.values.distinct().map { enumType ->
+    private suspend fun resolveAndBuild(context: FxSTransformationContext): String {
+        val enumContextsWithLabel = context.enumSourceIndicesByType.values.distinct().map { enumType ->
             "Getting values for $enumType" to FlexibleSearchExecContext(
-                connection = connection,
-                content = "SELECT {pk}, {code} FROM {$enumType}",
+                connection = context.connection,
+                content = "SELECT {${TSConstants.Attribute.PK}}, {${TSConstants.Attribute.CODE}} FROM {$enumType}",
                 queryMode = QueryMode.FlexibleSearch,
-                maxCount = 10_000,
-                locale = FlexibleSearchExecConstants.Defaults.LOCALE,
-                dataSource = FlexibleSearchExecConstants.Defaults.DATA_SOURCE,
-                user = null,
-                timeout = connection.timeout,
+                settings = context.request.execSettings,
             )
         }
-        val fkContextsWithLabel = fkSourceIndicesByResolutionInfo.values
+        val fkContextsWithLabel = context.fkSourceIndicesByResolutionInfo.values
             .distinctBy { it.fxsLookupQuery }
             .map { fkInfo ->
                 "Getting natural key for ${fkInfo.typeName}" to FlexibleSearchExecContext(
-                    connection = connection,
+                    connection = context.connection,
                     content = fkInfo.fxsLookupQuery,
                     queryMode = QueryMode.FlexibleSearch,
-                    maxCount = 10_000,
-                    locale = FlexibleSearchExecConstants.Defaults.LOCALE,
-                    dataSource = FlexibleSearchExecConstants.Defaults.DATA_SOURCE,
-                    user = null,
-                    timeout = connection.timeout,
+                    settings = context.request.execSettings,
                 )
             }
 
@@ -172,9 +147,9 @@ internal class ImpExTransformationService(
             }
             .toMap()
 
-        val resolvedRows = ImpExHeaderBuilder.resolveEnumPks(rows, enumSourceIndicesByType.keys, pkToCode)
-        val finalRows = ImpExHeaderBuilder.resolveFkPks(resolvedRows, fkSourceIndicesByResolutionInfo.keys, pkToNaturalKey)
-        return ImpExConverter.buildImpEx(queryInfo.primaryType, params, joinUniqueParams, queryInfo, finalRows)
+        val resolvedRows = ImpExHeaderBuilder.resolveEnumPks(context.request.rows, context.enumSourceIndicesByType.keys, pkToCode)
+        val finalRows = ImpExHeaderBuilder.resolveFkPks(resolvedRows, context.fkSourceIndicesByResolutionInfo.keys, pkToNaturalKey)
+        return ImpExConverter.buildImpEx(context.request.copy(rows = finalRows))
     }
 
     companion object {

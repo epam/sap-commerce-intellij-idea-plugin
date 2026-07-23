@@ -18,10 +18,10 @@
 
 package sap.commerce.toolset.flexibleSearch.transform.impex
 
-import sap.commerce.toolset.flexibleSearch.transform.context.FxSAttributeMetaType
-import sap.commerce.toolset.flexibleSearch.transform.context.FxSColumn
-import sap.commerce.toolset.flexibleSearch.transform.context.FxSJoinUniqueColumn
-import sap.commerce.toolset.flexibleSearch.transform.context.FxSQueryInfo
+import com.intellij.openapi.command.impl.DummyProject
+import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecContext
+import sap.commerce.toolset.flexibleSearch.transform.context.*
+import sap.commerce.toolset.flexibleSearch.transform.impex.context.ImpExHeaderParameter
 import sap.commerce.toolset.typeSystem.TSConstants
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -29,7 +29,7 @@ import kotlin.test.assertEquals
 /**
  * Tests for [ImpExConverter.buildImpEx] covering the full ImpEx text generation pipeline.
  *
- * Each test constructs plain [FxSQueryInfo] / [ImpExParam] data-class instances — no PSI or
+ * Each test constructs plain [FxSQueryInfo] / [ImpExHeaderParameter] data-class instances — no PSI or
  * IntelliJ services required.
  */
 class ImpExConverterTest {
@@ -38,8 +38,22 @@ class ImpExConverterTest {
     // Helpers
     // -------------------------------------------------------------------------
 
+    private fun makeContext(
+        queryInfo: FxSQueryInfo,
+        params: List<ImpExHeaderParameter>,
+        rows: List<List<String>> = emptyList(),
+        joinUniqueParams: List<ImpExHeaderParameter> = emptyList(),
+    ) = FxSTransformationRequest(
+        project = DummyProject.getInstance(),
+        queryInfo = queryInfo,
+        params = params,
+        joinUniqueParams = joinUniqueParams,
+        rows = rows,
+        execSettings = FlexibleSearchExecContext.defaultSettings(),
+    )
+
     private fun atomicParam(name: String, unique: Boolean = false, type: String = "java.lang.String") =
-        ImpExParam(
+        ImpExHeaderParameter(
             attributeName = name,
             attributeType = type,
             metaType = FxSAttributeMetaType.ATOMIC,
@@ -76,7 +90,7 @@ class ImpExConverterTest {
         )
         val rows = listOf(listOf("8796093054978", "testProduct", "Test Product"))
 
-        val result = ImpExConverter.buildImpEx("Product", params, emptyList(), queryInfo, rows)
+        val result = ImpExConverter.buildImpEx(makeContext(queryInfo, params, rows))
 
         assertEquals(
             expected = """INSERT_UPDATE Product; code[unique=true]; name
@@ -102,7 +116,7 @@ class ImpExConverterTest {
             listOf("pk2", "product-B"),
         )
 
-        val result = ImpExConverter.buildImpEx("Product", params, emptyList(), queryInfo, rows)
+        val result = ImpExConverter.buildImpEx(makeContext(queryInfo, params, rows))
 
         assertEquals(
             expected = """INSERT_UPDATE Product; code[unique=true]
@@ -121,7 +135,7 @@ class ImpExConverterTest {
             uniqueAttributeNames = emptySet(),
         )
 
-        val result = ImpExConverter.buildImpEx("Product", emptyList(), emptyList(), queryInfo, listOf(listOf("pk1")))
+        val result = ImpExConverter.buildImpEx(makeContext(queryInfo, emptyList(), listOf(listOf("pk1"))))
 
         // Header only, data row has no fields
         assertEquals(
@@ -160,7 +174,7 @@ class ImpExConverterTest {
             atomicParam(TSConstants.Attribute.NAME),
         )
 
-        val result = ImpExConverter.buildImpEx("Product", params, emptyList(), queryInfo, emptyList())
+        val result = ImpExConverter.buildImpEx(makeContext(queryInfo, params))
 
         assertEquals(
             expected = "INSERT_UPDATE Product; code[unique=true]; name\n",
@@ -199,7 +213,7 @@ class ImpExConverterTest {
             atomicParam(TSConstants.Attribute.NAME),
         )
         val joinUniqueParams = listOf(
-            ImpExParam(
+            ImpExHeaderParameter(
                 attributeName = "catalogVersion",
                 nestedPath = "catalog(id),version",
                 modifiers = listOf("unique=true"),
@@ -207,7 +221,7 @@ class ImpExConverterTest {
             )
         )
 
-        val result = ImpExConverter.buildImpEx("Product", params, joinUniqueParams, queryInfo, emptyList())
+        val result = ImpExConverter.buildImpEx(makeContext(queryInfo, params, joinUniqueParams = joinUniqueParams))
 
         assertEquals(
             expected = "INSERT_UPDATE Product; catalogVersion(catalog(id),version)[unique=true]; code; name\n",
@@ -237,7 +251,7 @@ class ImpExConverterTest {
         val params = listOf(atomicParam(TSConstants.Attribute.CODE), atomicParam(TSConstants.Attribute.NAME))
         val rows = listOf(listOf("pk1", "null", "<ignore>"))
 
-        val result = ImpExConverter.buildImpEx("Product", params, emptyList(), queryInfo, rows)
+        val result = ImpExConverter.buildImpEx(makeContext(queryInfo, params, rows))
 
         assertEquals(
             expected = """INSERT_UPDATE Product; code; name
@@ -265,7 +279,7 @@ class ImpExConverterTest {
             uniqueAttributeNames = emptySet(),
         )
         val params = listOf(
-            ImpExParam(
+            ImpExHeaderParameter(
                 attributeName = TSConstants.Attribute.NAME,
                 attributeType = "localizableString",
                 metaType = FxSAttributeMetaType.ATOMIC,
@@ -274,7 +288,7 @@ class ImpExConverterTest {
         )
         val rows = listOf(listOf("pk1", "English Name"))
 
-        val result = ImpExConverter.buildImpEx("Product", params, emptyList(), queryInfo, rows)
+        val result = ImpExConverter.buildImpEx(makeContext(queryInfo, params, rows))
 
         assertEquals(
             expected = """INSERT_UPDATE Product; name[lang=en]
@@ -305,7 +319,7 @@ class ImpExConverterTest {
         )
         val params = listOf(
             atomicParam(TSConstants.Attribute.CODE, unique = true),
-            ImpExParam(
+            ImpExHeaderParameter(
                 attributeName = "catalogVersion",
                 nestedPath = "catalog(id),version",
                 attributeType = "CatalogVersion",
@@ -315,7 +329,7 @@ class ImpExConverterTest {
         )
         val rows = listOf(listOf("pk1", "myProduct", "Default:Staged"))
 
-        val result = ImpExConverter.buildImpEx("Product", params, emptyList(), queryInfo, rows)
+        val result = ImpExConverter.buildImpEx(makeContext(queryInfo, params, rows))
 
         assertEquals(
             expected = """INSERT_UPDATE Product; code[unique=true]; catalogVersion(catalog(id),version)[unique=true]
@@ -348,7 +362,7 @@ class ImpExConverterTest {
         )
         val params = listOf(
             atomicParam(TSConstants.Attribute.NAME, unique = true),
-            ImpExParam(
+            ImpExHeaderParameter(
                 attributeName = "solrIndexedType",
                 nestedPath = "identifier",
                 attributeType = "SolrIndexedType",
@@ -358,7 +372,7 @@ class ImpExConverterTest {
         )
         val rows = listOf(listOf("pk1", "feature-powersupply", "mcProductType"))
 
-        val result = ImpExConverter.buildImpEx("SolrIndexedProperty", params, emptyList(), queryInfo, rows)
+        val result = ImpExConverter.buildImpEx(makeContext(queryInfo, params, rows))
 
         assertEquals(
             expected = """INSERT_UPDATE SolrIndexedProperty; name[unique=true]; solrIndexedType(identifier)[unique=true]
@@ -390,7 +404,7 @@ class ImpExConverterTest {
         )
         val params = listOf(
             atomicParam(TSConstants.Attribute.CODE, unique = true),
-            ImpExParam(
+            ImpExHeaderParameter(
                 attributeName = "thumbnail",
                 nestedPath = TSConstants.Attribute.PK,
                 attributeType = "Media",
@@ -399,7 +413,7 @@ class ImpExConverterTest {
         )
         val rows = listOf(listOf("pk1", "637227", "8796218130462"))
 
-        val result = ImpExConverter.buildImpEx("Product", params, emptyList(), queryInfo, rows)
+        val result = ImpExConverter.buildImpEx(makeContext(queryInfo, params, rows))
 
         assertEquals(
             expected = """INSERT_UPDATE Product; code[unique=true]; thumbnail(pk)
@@ -430,7 +444,7 @@ class ImpExConverterTest {
         )
         val params = listOf(
             atomicParam(TSConstants.Attribute.CODE, unique = true),
-            ImpExParam(
+            ImpExHeaderParameter(
                 attributeName = "supercategories",
                 nestedPath = TSConstants.Attribute.PK,
                 attributeType = "CategoryCollection",
@@ -439,7 +453,7 @@ class ImpExConverterTest {
         )
         val rows = listOf(listOf("pk1", "myProduct", "8796163833886,8796245262366"))
 
-        val result = ImpExConverter.buildImpEx("Product", params, emptyList(), queryInfo, rows)
+        val result = ImpExConverter.buildImpEx(makeContext(queryInfo, params, rows))
 
         assertEquals(
             expected = """INSERT_UPDATE Product; code[unique=true]; supercategories(pk)
@@ -483,7 +497,7 @@ class ImpExConverterTest {
         )
         val params = listOf(atomicParam(TSConstants.Attribute.NAME, unique = true))
         val joinUniqueParams = listOf(
-            ImpExParam(
+            ImpExHeaderParameter(
                 attributeName = "solrIndexedType",
                 nestedPath = "identifier",
                 modifiers = listOf("unique=true"),
@@ -492,9 +506,7 @@ class ImpExConverterTest {
         )
         val rows = listOf(listOf("pk1", "propertyName"))
 
-        val result = ImpExConverter.buildImpEx(
-            "SolrIndexedProperty", params, joinUniqueParams, queryInfo, rows
-        )
+        val result = ImpExConverter.buildImpEx(makeContext(queryInfo, params, rows, joinUniqueParams))
 
         assertEquals(
             expected = """INSERT_UPDATE SolrIndexedProperty; name[unique=true]; solrIndexedType(identifier)[unique=true]
@@ -522,7 +534,7 @@ class ImpExConverterTest {
         )
         val params = listOf(atomicParam(TSConstants.Attribute.NAME, unique = true))
         val joinUniqueParams = listOf(
-            ImpExParam(
+            ImpExHeaderParameter(
                 attributeName = "solrIndexedType",
                 nestedPath = "identifier",
                 modifiers = listOf("unique=true"),
@@ -531,9 +543,7 @@ class ImpExConverterTest {
         )
         val rows = listOf(listOf("pk1", "propertyName"))
 
-        val result = ImpExConverter.buildImpEx(
-            "SolrIndexedProperty", params, joinUniqueParams, queryInfo, rows
-        )
+        val result = ImpExConverter.buildImpEx(makeContext(queryInfo, params, rows, joinUniqueParams))
 
         assertEquals(
             expected = """INSERT_UPDATE SolrIndexedProperty; name[unique=true]; solrIndexedType(identifier)[unique=true]
@@ -564,7 +574,7 @@ class ImpExConverterTest {
         )
         val params = listOf(
             atomicParam(TSConstants.Attribute.CODE, unique = true),
-            ImpExParam(
+            ImpExHeaderParameter(
                 attributeName = "status",
                 nestedPath = TSConstants.Attribute.CODE,
                 attributeType = "OrderStatus",
@@ -574,7 +584,7 @@ class ImpExConverterTest {
         // Row after enum PK resolution — enum cell already contains the code string
         val rows = listOf(listOf("pk1", "ORD-001", "CREATED"))
 
-        val result = ImpExConverter.buildImpEx("Order", params, emptyList(), queryInfo, rows)
+        val result = ImpExConverter.buildImpEx(makeContext(queryInfo, params, rows))
 
         assertEquals(
             expected = """INSERT_UPDATE Order; code[unique=true]; status(code)
@@ -606,7 +616,7 @@ class ImpExConverterTest {
         // Row is missing the TSConstants.Attribute.NAME cell entirely
         val rows = listOf(listOf("pk1", "myCode"))
 
-        val result = ImpExConverter.buildImpEx("Product", params, emptyList(), queryInfo, rows)
+        val result = ImpExConverter.buildImpEx(makeContext(queryInfo, params, rows))
 
         assertEquals(
             expected = """INSERT_UPDATE Product; code[unique=true]; name
@@ -662,7 +672,7 @@ class ImpExConverterTest {
             // name is not unique
             atomicParam(TSConstants.Attribute.NAME),
             // resolveParam sets unique=true: "catalogVersion".lowercase() matches "catalogversion"
-            ImpExParam(
+            ImpExHeaderParameter(
                 attributeName = "catalogVersion",
                 nestedPath = "catalog(id),version",
                 modifiers = listOf("unique=true"),
@@ -672,7 +682,7 @@ class ImpExConverterTest {
         // row order: pk(0), code(1), name(2), catalogVersion(3)
         val rows = listOf(listOf("pk1", "637227", "My Product", "8796125987417"))
 
-        val result = ImpExConverter.buildImpEx("Product", params, emptyList(), queryInfo, rows)
+        val result = ImpExConverter.buildImpEx(makeContext(queryInfo, params, rows))
 
         assertEquals(
             expected = """INSERT_UPDATE Product; code[unique=true]; catalogVersion(catalog(id),version)[unique=true]; name
@@ -713,7 +723,7 @@ class ImpExConverterTest {
         )
         val rows = listOf(listOf("pk1", "My Product", "Some description", "myCode"))
 
-        val result = ImpExConverter.buildImpEx("Product", params, emptyList(), queryInfo, rows)
+        val result = ImpExConverter.buildImpEx(makeContext(queryInfo, params, rows))
 
         assertEquals(
             expected = """INSERT_UPDATE Product; code[unique=true]; name; description
@@ -743,7 +753,7 @@ class ImpExConverterTest {
         val params = listOf(
             atomicParam(TSConstants.Attribute.CODE, unique = true),
             atomicParam(TSConstants.Attribute.NAME),
-            ImpExParam(
+            ImpExHeaderParameter(
                 attributeName = "catalogVersion",
                 nestedPath = "catalog(id),version",
                 modifiers = listOf("unique=true"),
@@ -753,7 +763,7 @@ class ImpExConverterTest {
         )
         val rows = listOf(listOf("pk1", "myCode", "My Product", "Default:Staged", "Desc"))
 
-        val result = ImpExConverter.buildImpEx("Product", params, emptyList(), queryInfo, rows)
+        val result = ImpExConverter.buildImpEx(makeContext(queryInfo, params, rows))
 
         assertEquals(
             expected = """INSERT_UPDATE Product; code[unique=true]; catalogVersion(catalog(id),version)[unique=true]; name; description

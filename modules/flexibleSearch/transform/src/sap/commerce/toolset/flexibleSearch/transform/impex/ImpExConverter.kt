@@ -19,10 +19,10 @@
 package sap.commerce.toolset.flexibleSearch.transform.impex
 
 import sap.commerce.toolset.flexibleSearch.FlexibleSearchConstants
-import sap.commerce.toolset.flexibleSearch.transform.context.FxSQueryInfo
+import sap.commerce.toolset.flexibleSearch.transform.context.FxSTransformationRequest
 
 /**
- * Converts a [FxSQueryInfo] + resolved [ImpExParam] lists + raw result rows into
+ * Converts a [FxSQueryInfo] + resolved [ImpExHeaderParameter] lists + raw result rows into
  * an ImpEx `INSERT_UPDATE` block.
  *
  * Kept in `core` (no IntelliJ services) so it can be unit-tested without a full IDE environment.
@@ -41,24 +41,14 @@ object ImpExConverter {
      * INSERT_UPDATE TypeName; uniqueCol1[unique=true]; joinUniqueCol(key)[unique=true]; regularCol
      * ; uniqueVal1; joinUniqueConst; regularVal
      * ```
-     *
-     * @param typeName          ImpEx type name (e.g. `Product`).
-     * @param params            Ordered params for the non-PK SELECT columns.
-     * @param joinUniqueParams  Synthetic params for JOIN-unique attributes absent from SELECT.
-     * @param queryInfo         Analyzed query — provides column list and join-unique column metadata.
-     * @param rows              Raw result rows from HAC (each row is a list of cell strings).
      */
-    fun buildImpEx(
-        typeName: String,
-        params: List<ImpExParam>,
-        joinUniqueParams: List<ImpExParam>,
-        queryInfo: FxSQueryInfo,
-        rows: List<List<String>>,
-    ): String {
+    fun buildImpEx(context: FxSTransformationRequest): String {
+        val queryInfo = context.queryInfo
+
         // Pair each non-PK column index in the result row with its resolved param
         val paramWithSourceIdx = queryInfo.columns
             .mapIndexedNotNull { idx, col -> if (!col.isPk) idx else null }
-            .zip(params)
+            .zip(context.params)
 
         // Unique columns first, non-unique after — preserving relative order within each group
         val (uniqueWithIdx, nonUniqueWithIdx) = paramWithSourceIdx
@@ -66,14 +56,14 @@ object ImpExConverter {
 
         return buildString {
             // Header: unique SELECT cols → JOIN-unique synthetic cols → non-unique SELECT cols
-            append("INSERT_UPDATE $typeName")
+            append("INSERT_UPDATE ${context.typeName}")
             uniqueWithIdx.forEach { (_, param) -> append("; ${param.render()}") }
-            joinUniqueParams.forEach { param -> append("; ${param.render()}") }
+            context.joinUniqueParams.forEach { param -> append("; ${param.render()}") }
             nonUniqueWithIdx.forEach { (_, param) -> append("; ${param.render()}") }
             appendLine()
 
             // Rows: same order as header
-            rows.forEach { row ->
+            context.rows.forEach { row ->
                 uniqueWithIdx.forEach { (srcIdx, param) ->
                     val cell = row.getOrNull(srcIdx) ?: ""
                     val value = if (cell == "null" || cell == FlexibleSearchConstants.ImpEx.IMPEX_IGNORE) "" else cell

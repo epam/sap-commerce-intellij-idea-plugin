@@ -19,7 +19,9 @@
 package sap.commerce.toolset.flexibleSearch.exec
 
 import com.intellij.openapi.util.Key
+import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecContext
 import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecResult
+import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
 
 object FlexibleSearchExecConstants {
 
@@ -30,6 +32,8 @@ object FlexibleSearchExecConstants {
     }
 
     object Transform {
+        val CONNECTION = Key.create<HacConnectionSettingsState>("flexibleSearch.transform.connection")
+        val EXEC_SETTINGS = Key.create<FlexibleSearchExecContext.Settings>("flexibleSearch.transform.execSettings")
         val EXEC_RESULTS = Key.create<FlexibleSearchExecResult>("flexibleSearch.transform.execResults")
     }
 }

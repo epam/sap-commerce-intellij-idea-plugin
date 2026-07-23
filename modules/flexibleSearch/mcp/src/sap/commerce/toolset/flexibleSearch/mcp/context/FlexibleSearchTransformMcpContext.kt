@@ -16,16 +16,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.flexibleSearch.mcp
+package sap.commerce.toolset.flexibleSearch.mcp.context
 
-import sap.commerce.toolset.flexibleSearch.exec.context.QueryMode
-
-data class FlexibleSearchMcpContext(
-    val connectionName: String?,
-    val queryMode: QueryMode,
+data class FlexibleSearchTransformMcpContext(
+    val transformerName: String,
     val query: String,
-    val maxCount: Int,
-    val locale: String,
-    val dataSource: String,
-    val user: String? = null,
+    val includeTypeSystemUnique: Boolean,
+    val includeData: Boolean,
+    val execContext: FlexibleSearchMcpContext
 )

@@ -21,8 +21,9 @@ package sap.commerce.toolset.flexibleSearch.transform
 import com.intellij.psi.PsiFile
 import sap.commerce.toolset.flexibleSearch.FlexibleSearchConstants
 import sap.commerce.toolset.flexibleSearch.exec.FlexibleSearchExecConstants
+import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecContext
 import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchPsiFile
-import sap.commerce.toolset.flexibleSearch.transform.context.FxSTransformationContext
+import sap.commerce.toolset.flexibleSearch.transform.context.FxSTransformationRequest
 import sap.commerce.toolset.flexibleSearch.transform.context.FxSTransformationResult
 import sap.commerce.toolset.flexibleSearch.transform.impex.ImpExHeaderBuilder
 import sap.commerce.toolset.flexibleSearch.transform.impex.ImpExTransformationService
@@ -64,14 +65,17 @@ class FxSImpExTransformer : Transformer<FlexibleSearchPsiFile, FxSTransformation
         )
     }
 
-    private fun FlexibleSearchPsiFile.context(): FxSTransformationContext {
+    private fun FlexibleSearchPsiFile.context(): FxSTransformationRequest {
         val project = this.project
         val includeTypeSystemUnique = getUserData(FlexibleSearchConstants.Transform.INCLUDE_TYPE_SYSTEM_UNIQUE) ?: false
         val includeData = getUserData(FlexibleSearchConstants.Transform.INCLUDE_DATA) ?: false
-        val result = getUserData(FlexibleSearchExecConstants.Transform.EXEC_RESULTS)
+        val connection = getUserData(FlexibleSearchExecConstants.Transform.CONNECTION)
+        val execSettings = getUserData(FlexibleSearchExecConstants.Transform.EXEC_SETTINGS)
+            ?: FlexibleSearchExecContext.defaultSettings(connection)
+        val execResult = getUserData(FlexibleSearchExecConstants.Transform.EXEC_RESULTS)
 
-        val headers = result?.headers ?: emptyList()
-        val rows = result?.rows ?: emptyList()
+        val headers = execResult?.headers ?: emptyList()
+        val rows = execResult?.rows ?: emptyList()
         val baseQueryInfo = FxSQueryAnalyzer.analyze(this, headers)
 
         val queryInfo = if (includeTypeSystemUnique) {
@@ -85,13 +89,14 @@ class FxSImpExTransformer : Transformer<FlexibleSearchPsiFile, FxSTransformation
         val joinUniqueParams = ImpExHeaderBuilder.buildJoinUniqueParams(queryInfo, project)
         val exportRows = if (includeData) rows else emptyList()
 
-        val context = FxSTransformationContext(
+        return FxSTransformationRequest(
             project = project,
             queryInfo = queryInfo,
             params = params,
             joinUniqueParams = joinUniqueParams,
             rows = exportRows,
+            connection = connection,
+            execSettings = execSettings,
         )
-        return context
     }
 }

@@ -24,8 +24,10 @@ import sap.commerce.toolset.flexibleSearch.transform.context.FkResolutionInfo
 import sap.commerce.toolset.flexibleSearch.transform.context.FxSAttributeMetaType
 import sap.commerce.toolset.flexibleSearch.transform.context.FxSColumn
 import sap.commerce.toolset.flexibleSearch.transform.context.FxSQueryInfo
+import sap.commerce.toolset.flexibleSearch.transform.context.FxSTransformationRequest
 import sap.commerce.toolset.flexibleSearch.transform.impex.ImpExHeaderBuilder.resolveEnumPks
 import sap.commerce.toolset.flexibleSearch.transform.impex.ImpExHeaderBuilder.resolveFkPks
+import sap.commerce.toolset.flexibleSearch.transform.impex.context.ImpExHeaderParameter
 import sap.commerce.toolset.typeSystem.TSConstants
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
 import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaCollection
@@ -48,7 +50,7 @@ import sap.commerce.toolset.typeSystem.model.PersistenceType
  */
 object ImpExHeaderBuilder {
 
-    fun buildParams(queryInfo: FxSQueryInfo, project: Project): List<ImpExParam> {
+    fun buildParams(queryInfo: FxSQueryInfo, project: Project): List<ImpExHeaderParameter> {
         val tsAccess = TSMetaModelAccess.getInstance(project)
         val primaryMeta = tsAccess.findMetaItemByName(queryInfo.primaryType)
 
@@ -72,7 +74,7 @@ object ImpExHeaderBuilder {
      * Each [FxSJoinUniqueColumn] becomes a param with `[unique=true]` and the nested path set to
      * the [FxSJoinUniqueColumn.naturalKeyAttr] specified in the WHERE condition.
      */
-    fun buildJoinUniqueParams(queryInfo: FxSQueryInfo, project: Project): List<ImpExParam> {
+    fun buildJoinUniqueParams(queryInfo: FxSQueryInfo, project: Project): List<ImpExHeaderParameter> {
         if (queryInfo.joinUniqueColumns.isEmpty()) return emptyList()
         val tsAccess = TSMetaModelAccess.getInstance(project)
         val primaryMeta = tsAccess.findMetaItemByName(queryInfo.primaryType)
@@ -84,7 +86,7 @@ object ImpExHeaderBuilder {
                     ?.type
             val metaType = if (attrType != null && tsAccess.findMetaClassifierByName(attrType) is TSGlobalMetaItem)
                 FxSAttributeMetaType.ITEM else FxSAttributeMetaType.UNKNOWN
-            ImpExParam(
+            ImpExHeaderParameter(
                 attributeName = joinCol.fkAttributeName,
                 nestedPath = joinCol.naturalKeyAttr,
                 modifiers = listOf("unique=true"),
@@ -101,10 +103,10 @@ object ImpExHeaderBuilder {
      * [FxSQueryInfo.columns] indices). Callers use this to build follow-up lookup queries
      * (`SELECT {pk}, {code} FROM {EnumType}`) and to pass to [resolveEnumPks].
      */
-    fun enumSourceIndicesByType(queryInfo: FxSQueryInfo, params: List<ImpExParam>): Map<Int, String> =
-        queryInfo.columns
+    fun enumSourceIndicesByType(context: FxSTransformationRequest): Map<Int, String> =
+        context.queryInfo.columns
             .mapIndexedNotNull { idx, col -> if (!col.isPk) idx else null }
-            .zip(params)
+            .zip(context.params)
             .filter { (_, param) -> param.metaType == FxSAttributeMetaType.ENUM && param.attributeType != null }
             .associate { (srcIdx, param) -> srcIdx to param.attributeType!! }
 
@@ -135,10 +137,10 @@ object ImpExHeaderBuilder {
      * Callers use this to build follow-up FxS queries that convert FK PK values to natural key
      * strings and then pass the result to [resolveFkPks].
      */
-    fun fkSourceIndicesByResolutionInfo(queryInfo: FxSQueryInfo, params: List<ImpExParam>): Map<Int, FkResolutionInfo> =
-        queryInfo.columns
+    fun fkSourceIndicesByResolutionInfo(context: FxSTransformationRequest): Map<Int, FkResolutionInfo> =
+        context.queryInfo.columns
             .mapIndexedNotNull { idx, col -> if (!col.isPk) idx else null }
-            .zip(params)
+            .zip(context.params)
             .filter { (_, param) -> param.metaType == FxSAttributeMetaType.ITEM && param.fkResolutionInfo != null }
             .associate { (srcIdx, param) -> srcIdx to param.fkResolutionInfo!! }
 
@@ -308,7 +310,7 @@ object ImpExHeaderBuilder {
         tsAccess: TSMetaModelAccess,
         uniqueAttributeNames: Set<String>,
         joinNaturalKey: String? = null,
-    ): ImpExParam {
+    ): ImpExHeaderParameter {
         val modifiers = mutableListOf<String>()
         // uniqueAttributeNames is stored lowercase; compare case-insensitively
         if (col.attributeName.lowercase() in uniqueAttributeNames) modifiers += "unique=true"
@@ -317,12 +319,12 @@ object ImpExHeaderBuilder {
         // Dynamic attributes cannot be imported — mark them as virtual
         if (isDynamic) {
             modifiers += "virtual=true"
-            return ImpExParam(col.attributeName, modifiers = modifiers, metaType = FxSAttributeMetaType.UNKNOWN)
+            return ImpExHeaderParameter(col.attributeName, modifiers = modifiers, metaType = FxSAttributeMetaType.UNKNOWN)
         }
 
         if (attrType == null) {
             // Unknown attribute — fall back to plain parameter, type not determinable
-            return ImpExParam(col.attributeName, modifiers = modifiers, metaType = FxSAttributeMetaType.UNKNOWN)
+            return ImpExHeaderParameter(col.attributeName, modifiers = modifiers, metaType = FxSAttributeMetaType.UNKNOWN)
         }
 
         return when (val meta = tsAccess.findMetaClassifierByName(attrType)) {
@@ -341,8 +343,8 @@ object ImpExHeaderBuilder {
                             ?: emptyMap()
                     }
                         ?.let { FkResolutionInfo(attrType, it) }
-                    ImpExParam(
-                        col.attributeName,
+                    ImpExHeaderParameter(
+                        attributeName = col.attributeName,
                         nestedPath = naturalPath,
                         modifiers = modifiers,
                         attributeType = attrType,
@@ -352,25 +354,48 @@ object ImpExHeaderBuilder {
                 } else {
                     // Non-unique FK column: the HAC result contains a raw PK.
                     // Use attrName(pk) — ImpEx resolves it directly; no follow-up query needed.
-                    ImpExParam(col.attributeName, nestedPath = TSConstants.Attribute.PK, modifiers = modifiers, attributeType = attrType, metaType = FxSAttributeMetaType.ITEM)
+                    ImpExHeaderParameter(
+                        attributeName = col.attributeName,
+                        nestedPath = TSConstants.Attribute.PK,
+                        modifiers = modifiers,
+                        attributeType = attrType,
+                        metaType = FxSAttributeMetaType.ITEM
+                    )
                 }
             }
 
             is TSGlobalMetaCollection -> {
                 // Collection — attrName(pk): each element is resolved by PK
-                ImpExParam(col.attributeName, nestedPath = TSConstants.Attribute.PK, modifiers = modifiers, attributeType = attrType, metaType = FxSAttributeMetaType.COLLECTION)
+                ImpExHeaderParameter(
+                    attributeName = col.attributeName,
+                    nestedPath = TSConstants.Attribute.PK,
+                    modifiers = modifiers,
+                    attributeType = attrType,
+                    metaType = FxSAttributeMetaType.COLLECTION
+                )
             }
 
             is TSGlobalMetaEnum -> {
                 // Enum — reference by code: attrName(code) so ImpEx resolves the enum value by its code.
                 // HAC returns the PK of the HybrisEnumerationValue item; callers must resolve it via
                 // a follow-up SELECT {pk}, {code} FROM {EnumType} query.
-                ImpExParam(col.attributeName, nestedPath = "code", modifiers = modifiers, attributeType = attrType, metaType = FxSAttributeMetaType.ENUM)
+                ImpExHeaderParameter(
+                    attributeName = col.attributeName,
+                    nestedPath = "code",
+                    modifiers = modifiers,
+                    attributeType = attrType,
+                    metaType = FxSAttributeMetaType.ENUM
+                )
             }
 
             else -> {
                 // Primitive, atomic, map, or unknown — plain parameter
-                ImpExParam(col.attributeName, modifiers = modifiers, attributeType = attrType, metaType = FxSAttributeMetaType.ATOMIC)
+                ImpExHeaderParameter(
+                    attributeName = col.attributeName,
+                    modifiers = modifiers,
+                    attributeType = attrType,
+                    metaType = FxSAttributeMetaType.ATOMIC
+                )
             }
         }
     }

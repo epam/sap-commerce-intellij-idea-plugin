@@ -24,7 +24,7 @@ import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecResult
 
 @Serializable
 data class FlexibleSearchMcpResult(
-    val connection: String,
+    val connectionName: String,
     val success: Boolean,
     val output: String? = null,
     val description: String? = null,
