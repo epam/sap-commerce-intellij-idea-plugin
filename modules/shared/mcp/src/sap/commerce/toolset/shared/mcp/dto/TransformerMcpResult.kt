@@ -16,25 +16,23 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.transform
+package sap.commerce.toolset.shared.mcp.dto
 
-import com.intellij.lang.Language
-import com.intellij.openapi.extensions.ExtensionPointName
-import com.intellij.psi.PsiFile
+import kotlinx.serialization.Serializable
 
-interface Transformer<T : PsiFile, R: TransformationResult> {
+@Serializable
+data class TransformerMcpResult(val languages: List<LanguageTransformers>)
 
-    val id: String
-    val name: String
-    val description: String
-    val language: Language
+@Serializable
+data class LanguageTransformers(
+    val languageId: String,
+    val displayName: String,
+    val transformers: List<TransformerInfo>,
+)
 
-    fun isApplicable(language: Language): Boolean
-    fun isApplicable(psiFile: PsiFile): Boolean = isApplicable(psiFile.language)
-    fun transform(psiFile: T, onComplete: (R) -> Unit)
-    suspend fun transform(psiFile: T): R
-
-    companion object {
-        val EP = ExtensionPointName.create<Transformer<in PsiFile, out TransformationResult>>("sap.commerce.toolset.transformer")
-    }
-}
+@Serializable
+data class TransformerInfo(
+    val id: String,
+    val name: String,
+    val description: String,
+)

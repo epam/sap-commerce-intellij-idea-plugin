@@ -16,25 +16,37 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.transform
+fun properties(key: String) = providers.gradleProperty(key)
 
-import com.intellij.lang.Language
-import com.intellij.openapi.extensions.ExtensionPointName
-import com.intellij.psi.PsiFile
+plugins {
+    id("org.jetbrains.intellij.platform.module")
+    alias(libs.plugins.kotlin) // Kotlin support
+    alias(libs.plugins.serialization)
+}
 
-interface Transformer<T : PsiFile, R: TransformationResult> {
+sourceSets {
+    main {
+        java.srcDirs("src")
+        resources.srcDirs("resources")
+    }
+    test {
+        java.srcDirs("tests")
+    }
+}
 
-    val id: String
-    val name: String
-    val description: String
-    val language: Language
+dependencies {
+    implementation(project(":shared-core"))
+    implementation(project(":shared-transform"))
+    implementation(project(":ai-mcp"))
+    implementation(libs.kotlinxJson)
 
-    fun isApplicable(language: Language): Boolean
-    fun isApplicable(psiFile: PsiFile): Boolean = isApplicable(psiFile.language)
-    fun transform(psiFile: T, onComplete: (R) -> Unit)
-    suspend fun transform(psiFile: T): R
+    intellijPlatform {
+        intellijIdea(properties("intellij.version")) {
+            useInstaller = false
+        }
 
-    companion object {
-        val EP = ExtensionPointName.create<Transformer<in PsiFile, out TransformationResult>>("sap.commerce.toolset.transformer")
+        bundledPlugins(
+            "com.intellij.mcpServer",
+        )
     }
 }

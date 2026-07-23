@@ -157,6 +157,7 @@
     <depends optional="true" config-file="sap.commerce.toolset-database-core.xml">com.intellij.database</depends>
     <depends optional="true" config-file="sap.commerce.toolset-cron-core.xml">com.intellij.cron</depends>
     <depends optional="true" config-file="sap.commerce.toolset-javascript-core.xml">JavaScript</depends>
+    <depends optional="true" config-file="sap.commerce.toolset-shared-mcp.xml">com.intellij.mcpServer</depends>
     <depends optional="true" config-file="sap.commerce.toolset-hac-mcp.xml">com.intellij.mcpServer</depends>
     <depends optional="true" config-file="sap.commerce.toolset-groovy-mcp.xml">com.intellij.mcpServer</depends>
     <depends optional="true" config-file="sap.commerce.toolset-flexibleSearch-mcp.xml">com.intellij.mcpServer</depends>

@@ -18,8 +18,9 @@
 
 package sap.commerce.toolset.flexibleSearch.transform
 
-import com.intellij.psi.PsiFile
+import com.intellij.lang.Language
 import sap.commerce.toolset.flexibleSearch.FlexibleSearchConstants
+import sap.commerce.toolset.flexibleSearch.FlexibleSearchLanguage
 import sap.commerce.toolset.flexibleSearch.exec.FlexibleSearchExecConstants
 import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecContext
 import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchPsiFile
@@ -31,12 +32,16 @@ import sap.commerce.toolset.transform.Transformer
 
 class FxSImpExTransformer : Transformer<FlexibleSearchPsiFile, FxSTransformationResult> {
 
+    override val id: String
+        get() = "fxs-to-impex"
     override val name: String
         get() = "ImpEx"
     override val description: String
-        get() = TODO("Not yet implemented")
+        get() = "Converts FlexibleSearch query results to ImpEx format, resolving FK natural keys, enum codes, and localized attributes via the SAP Commerce type system"
+    override val language: Language
+        get() = FlexibleSearchLanguage
 
-    override fun isApplicable(psiFile: PsiFile) = psiFile is FlexibleSearchPsiFile
+    override fun isApplicable(language: Language) = language is FlexibleSearchLanguage
 
     override fun transform(psiFile: FlexibleSearchPsiFile, onComplete: (FxSTransformationResult) -> Unit) {
         val context = psiFile.context()
