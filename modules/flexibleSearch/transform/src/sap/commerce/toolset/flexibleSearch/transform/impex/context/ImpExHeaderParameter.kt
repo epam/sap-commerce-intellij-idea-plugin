@@ -79,7 +79,7 @@ data class ImpExHeaderParameter(
 
     companion object {
         /** SAP Commerce atomic type names whose values require double-quote wrapping in ImpEx. */
-        val STRING_ATTRIBUTE_TYPES = setOf("java.lang.String", "localizableString")
+        val STRING_ATTRIBUTE_TYPES = setOf("java.lang.String", "localized:java.lang.String")
 
         /** Matches HAC internal collection markers like `#1`, `#42`. */
         private val HAC_INTERNAL_MARKER = Regex("#\\d+")

@@ -322,12 +322,20 @@ object ImpExHeaderBuilder {
             return ImpExHeaderParameter(col.attributeName, modifiers = modifiers, metaType = FxSAttributeMetaType.UNKNOWN)
         }
 
-        if (attrType == null) {
+        // Strip the "localized:" prefix so classification and value formatting use the base type.
+        // e.g. "localized:java.lang.String" → "java.lang.String" → quoted by formatValue.
+        val effectiveAttrType = attrType?.let {
+            if (it.startsWith(TSConstants.Attribute.LOCALIZED_PREFIX, ignoreCase = true))
+                it.substring(TSConstants.Attribute.LOCALIZED_PREFIX.length)
+            else it
+        }
+
+        if (effectiveAttrType == null) {
             // Unknown attribute — fall back to plain parameter, type not determinable
             return ImpExHeaderParameter(col.attributeName, modifiers = modifiers, metaType = FxSAttributeMetaType.UNKNOWN)
         }
 
-        return when (val meta = tsAccess.findMetaClassifierByName(attrType)) {
+        return when (val meta = tsAccess.findMetaClassifierByName(effectiveAttrType)) {
             is TSGlobalMetaItem -> {
                 if ("unique=true" in modifiers) {
                     // Prefer the natural key attr(s) from the WHERE JOIN condition when available —
@@ -337,17 +345,17 @@ object ImpExHeaderBuilder {
                     // FK tokens (e.g. `catalog(id),version` from a multi-level JOIN chain).
                     val naturalPath = joinNaturalKey ?: FxSNaturalKeyResolver.resolve(meta, tsAccess)
                     val fkAttrTypes = FxSNaturalKeyResolver.buildAttrTypes(meta)
-                    val fkResolutionInfo = buildFkLookupQuery(attrType, naturalPath, fkAttrTypes) { nestedTypeName ->
+                    val fkResolutionInfo = buildFkLookupQuery(effectiveAttrType, naturalPath, fkAttrTypes) { nestedTypeName ->
                         tsAccess.findMetaItemByName(nestedTypeName)
                             ?.let(FxSNaturalKeyResolver::buildAttrTypes)
                             ?: emptyMap()
                     }
-                        ?.let { FkResolutionInfo(attrType, it) }
+                        ?.let { FkResolutionInfo(effectiveAttrType, it) }
                     ImpExHeaderParameter(
                         attributeName = col.attributeName,
                         nestedPath = naturalPath,
                         modifiers = modifiers,
-                        attributeType = attrType,
+                        attributeType = effectiveAttrType,
                         metaType = FxSAttributeMetaType.ITEM,
                         fkResolutionInfo = fkResolutionInfo
                     )
@@ -358,7 +366,7 @@ object ImpExHeaderBuilder {
                         attributeName = col.attributeName,
                         nestedPath = TSConstants.Attribute.PK,
                         modifiers = modifiers,
-                        attributeType = attrType,
+                        attributeType = effectiveAttrType,
                         metaType = FxSAttributeMetaType.ITEM
                     )
                 }
@@ -370,7 +378,7 @@ object ImpExHeaderBuilder {
                     attributeName = col.attributeName,
                     nestedPath = TSConstants.Attribute.PK,
                     modifiers = modifiers,
-                    attributeType = attrType,
+                    attributeType = effectiveAttrType,
                     metaType = FxSAttributeMetaType.COLLECTION
                 )
             }
@@ -383,7 +391,7 @@ object ImpExHeaderBuilder {
                     attributeName = col.attributeName,
                     nestedPath = "code",
                     modifiers = modifiers,
-                    attributeType = attrType,
+                    attributeType = effectiveAttrType,
                     metaType = FxSAttributeMetaType.ENUM
                 )
             }
@@ -393,7 +401,7 @@ object ImpExHeaderBuilder {
                 ImpExHeaderParameter(
                     attributeName = col.attributeName,
                     modifiers = modifiers,
-                    attributeType = attrType,
+                    attributeType = effectiveAttrType,
                     metaType = FxSAttributeMetaType.ATOMIC
                 )
             }

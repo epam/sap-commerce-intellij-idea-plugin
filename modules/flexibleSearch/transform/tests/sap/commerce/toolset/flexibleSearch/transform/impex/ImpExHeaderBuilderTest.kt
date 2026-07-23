@@ -20,8 +20,12 @@ package sap.commerce.toolset.flexibleSearch.transform.impex
 
 import com.intellij.openapi.command.impl.DummyProject
 import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecContext
-import sap.commerce.toolset.flexibleSearch.transform.context.*
+import sap.commerce.toolset.flexibleSearch.transform.context.FkResolutionInfo
+import sap.commerce.toolset.flexibleSearch.transform.context.FxSAttributeMetaType
+import sap.commerce.toolset.flexibleSearch.transform.context.FxSColumn
+import sap.commerce.toolset.flexibleSearch.transform.context.FxSQueryInfo
 import sap.commerce.toolset.flexibleSearch.transform.impex.context.ImpExHeaderParameter
+import sap.commerce.toolset.flexibleSearch.transform.impex.context.ImpExTransformationDescriptor
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
@@ -29,7 +33,7 @@ import kotlin.test.assertNull
 class ImpExHeaderBuilderTest  {
 
     private fun makeContext(queryInfo: FxSQueryInfo, params: List<ImpExHeaderParameter>) =
-        ImpExTransformationRequest(
+        ImpExTransformationDescriptor(
             project = DummyProject.getInstance(),
             queryInfo = queryInfo,
             params = params,
@@ -138,7 +142,7 @@ class ImpExHeaderBuilderTest  {
         )
         val params = listOf(
             ImpExHeaderParameter(attributeName = "code", attributeType = "java.lang.String", metaType = FxSAttributeMetaType.ATOMIC),
-            ImpExHeaderParameter(attributeName = "name", attributeType = "localizableString", metaType = FxSAttributeMetaType.ATOMIC),
+            ImpExHeaderParameter(attributeName = "name", attributeType = "localized:java.lang.String", metaType = FxSAttributeMetaType.ATOMIC),
         )
 
         val result = ImpExHeaderBuilder.enumSourceIndicesByType(makeContext(queryInfo, params))

@@ -103,8 +103,20 @@ class ImpExHeaderParameterTest {
 
     @Test
     fun formatValue_localizableString_wrapsInDoubleQuotes() {
-        val param = ImpExHeaderParameter(attributeName = "name", attributeType = "localizableString")
+        val param = ImpExHeaderParameter(attributeName = "name", attributeType = "localized:java.lang.String")
         assertEquals("\"My Product\"", param.formatValue("My Product"))
+    }
+
+    @Test
+    fun formatValue_localizableString_unknownMetaType_wrapsInDoubleQuotes() {
+        // When the type system lookup fails the metaType is UNKNOWN but attributeType is still
+        // set to "localized:java.lang.String" as a fallback — the value must still be quoted.
+        val param = ImpExHeaderParameter(
+            attributeName = "name",
+            attributeType = "localized:java.lang.String",
+            metaType = FxSAttributeMetaType.UNKNOWN,
+        )
+        assertEquals("\"FireStorm 18 Volt 6 Tool Combo Kit\"", param.formatValue("FireStorm 18 Volt 6 Tool Combo Kit"))
     }
 
     @Test

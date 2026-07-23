@@ -20,8 +20,12 @@ package sap.commerce.toolset.flexibleSearch.transform.impex
 
 import com.intellij.openapi.command.impl.DummyProject
 import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecContext
-import sap.commerce.toolset.flexibleSearch.transform.context.*
+import sap.commerce.toolset.flexibleSearch.transform.context.FxSAttributeMetaType
+import sap.commerce.toolset.flexibleSearch.transform.context.FxSColumn
+import sap.commerce.toolset.flexibleSearch.transform.context.FxSJoinUniqueColumn
+import sap.commerce.toolset.flexibleSearch.transform.context.FxSQueryInfo
 import sap.commerce.toolset.flexibleSearch.transform.impex.context.ImpExHeaderParameter
+import sap.commerce.toolset.flexibleSearch.transform.impex.context.ImpExTransformationDescriptor
 import sap.commerce.toolset.typeSystem.TSConstants
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -43,7 +47,7 @@ class ImpExConverterTest {
         params: List<ImpExHeaderParameter>,
         rows: List<List<String>> = emptyList(),
         joinUniqueParams: List<ImpExHeaderParameter> = emptyList(),
-    ) = ImpExTransformationRequest(
+    ) = ImpExTransformationDescriptor(
         project = DummyProject.getInstance(),
         queryInfo = queryInfo,
         params = params,
@@ -281,7 +285,7 @@ class ImpExConverterTest {
         val params = listOf(
             ImpExHeaderParameter(
                 attributeName = TSConstants.Attribute.NAME,
-                attributeType = "localizableString",
+                attributeType = "localized:java.lang.String",
                 metaType = FxSAttributeMetaType.ATOMIC,
                 modifiers = listOf("lang=en"),
             )
@@ -293,6 +297,41 @@ class ImpExConverterTest {
         assertEquals(
             expected = """INSERT_UPDATE Product; name[lang=en]
 ; "English Name"
+""",
+            actual = result
+        )
+    }
+
+    /**
+     * When the type system cannot resolve the attribute type for a localized column (e.g. the
+     * items.xml is not indexed yet), `ImpExHeaderBuilder` falls back to `attributeType =
+     * "localized:java.lang.String"` with `metaType = UNKNOWN`. The cell value must still be quoted.
+     */
+    @Test
+    fun buildImpEx_localizedColumn_unknownTypeFallback_quotesValue() {
+        val queryInfo = FxSQueryInfo(
+            primaryType = "Product",
+            columns = listOf(
+                FxSColumn(resultHeaderName = TSConstants.Attribute.PK, attributeName = TSConstants.Attribute.PK, isPk = true),
+                FxSColumn(resultHeaderName = TSConstants.Attribute.NAME, attributeName = TSConstants.Attribute.NAME, isPk = false, isLocalized = true, langCode = "en"),
+            ),
+            uniqueAttributeNames = emptySet(),
+        )
+        val params = listOf(
+            ImpExHeaderParameter(
+                attributeName = TSConstants.Attribute.NAME,
+                attributeType = "localized:java.lang.String",
+                metaType = FxSAttributeMetaType.UNKNOWN,
+                modifiers = listOf("lang=en"),
+            )
+        )
+        val rows = listOf(listOf("pk1", "FireStorm 18 Volt 6 Tool Combo Kit"))
+
+        val result = ImpExConverter.buildImpEx(makeContext(queryInfo, params, rows))
+
+        assertEquals(
+            expected = """INSERT_UPDATE Product; name[lang=en]
+; "FireStorm 18 Volt 6 Tool Combo Kit"
 """,
             actual = result
         )
