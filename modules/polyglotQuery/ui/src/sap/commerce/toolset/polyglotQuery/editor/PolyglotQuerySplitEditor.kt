@@ -36,6 +36,8 @@ import com.intellij.ui.OnePixelSplitter
 import com.intellij.util.asSafely
 import kotlinx.coroutines.*
 import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecResult
+import sap.commerce.toolset.scratch.SCRATCH_INITIAL_PARAMS
+import java.lang.ref.WeakReference
 import sap.commerce.toolset.typeSystem.meta.TSGlobalMetaModel
 import sap.commerce.toolset.typeSystem.meta.event.TSMetaModelChangeListener
 import java.awt.BorderLayout
@@ -138,6 +140,15 @@ class PolyglotQuerySplitEditorEx(override val textEditor: TextEditor, private va
                     reparseTextEditor()
                 }
             })
+        }
+
+        file?.getUserData(SCRATCH_INITIAL_PARAMS)?.also { rawParams ->
+            file!!.putUserData(SCRATCH_INITIAL_PARAMS, null)
+            virtualParameters = rawParams.mapValues { (name, value) ->
+                PolyglotQueryVirtualParameter(name = name, project = WeakReference(project))
+                    .apply { rawValue = value }
+            }
+            inEditorParameters = true
         }
     }
 

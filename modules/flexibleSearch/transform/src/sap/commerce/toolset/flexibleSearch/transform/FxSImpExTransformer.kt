@@ -19,11 +19,11 @@
 package sap.commerce.toolset.flexibleSearch.transform
 
 import com.intellij.lang.Language
-import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.flexibleSearch.FlexibleSearchLanguage
 import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchPsiFile
 import sap.commerce.toolset.flexibleSearch.transform.context.FxSTransformationResult
 import sap.commerce.toolset.flexibleSearch.transform.impex.ImpExTransformationService
+import sap.commerce.toolset.impex.file.ImpExFileType
 import sap.commerce.toolset.transform.Transformer
 
 class FxSImpExTransformer : Transformer<FlexibleSearchPsiFile, FxSTransformationResult> {
@@ -37,7 +37,7 @@ class FxSImpExTransformer : Transformer<FlexibleSearchPsiFile, FxSTransformation
     override val language: Language
         get() = FlexibleSearchLanguage
     override val fileExtension: String
-        get() = HybrisConstants.Languages.ImpEx.EXTENSION
+        get() = ImpExFileType.defaultExtension
 
     override fun isApplicable(language: Language) = language is FlexibleSearchLanguage
 

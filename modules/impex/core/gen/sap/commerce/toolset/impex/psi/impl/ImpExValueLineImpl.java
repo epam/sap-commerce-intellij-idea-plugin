@@ -13,6 +13,8 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static sap.commerce.toolset.impex.psi.ImpExTypes.*;
 import sap.commerce.toolset.impex.psi.*;
+import com.intellij.util.xml.DomElement;
+import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaClassifier;
 
 public class ImpExValueLineImpl extends ImpExValueLineMixin implements ImpExValueLine {
 

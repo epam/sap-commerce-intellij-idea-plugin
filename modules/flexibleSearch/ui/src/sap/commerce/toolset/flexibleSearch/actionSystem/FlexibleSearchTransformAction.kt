@@ -28,16 +28,20 @@ import com.intellij.openapi.observable.properties.AtomicBooleanProperty
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.popup.*
+import com.intellij.psi.PsiElement
 import com.intellij.ui.dsl.builder.AlignX
 import com.intellij.ui.dsl.builder.bindSelected
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.util.asSafely
 import com.intellij.util.ui.JBUI
-import sap.commerce.toolset.*
+import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.Notifications
 import sap.commerce.toolset.flexibleSearch.FlexibleSearchConstants
 import sap.commerce.toolset.flexibleSearch.editor.flexibleSearchSplitEditor
 import sap.commerce.toolset.flexibleSearch.exec.FlexibleSearchExecConstants
 import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchPsiFile
+import sap.commerce.toolset.i18n
+import sap.commerce.toolset.ifNotFromSearchPopup
 import sap.commerce.toolset.scratch.createScratchFile
 import sap.commerce.toolset.transform.TransformationResult
 import sap.commerce.toolset.transform.Transformer
@@ -145,8 +149,9 @@ class FlexibleSearchTransformAction : AnAction() {
                         psiFile.putUserData(FlexibleSearchConstants.Transform.INCLUDE_DATA, includeData.get())
                         psiFile.putUserData(FlexibleSearchExecConstants.Transform.EXEC_RESULTS, execResult)
 
-                        applicableTransformers[selectedTransformerIndex].transform(psiFile) { result ->
-                            notifyExportDone(project, result)
+                        val transformer = applicableTransformers[selectedTransformerIndex]
+                        transformer.transform(psiFile) { result ->
+                            notify(project, result, transformer)
                         }
                     }
                 })
@@ -154,7 +159,7 @@ class FlexibleSearchTransformAction : AnAction() {
             }
     }
 
-    private fun notifyExportDone(project: Project, result: TransformationResult) = Notifications.create(
+    private fun notify(project: Project, result: TransformationResult, transformer: Transformer<in PsiElement, out TransformationResult>) = Notifications.create(
         NotificationType.INFORMATION,
         i18n("hybris.fxs.actions.transform.notification.title"),
         result.description
@@ -163,7 +168,7 @@ class FlexibleSearchTransformAction : AnAction() {
             CopyPasteManager.getInstance().setContents(StringSelection(result.content))
         }
         .addAction(i18n("hybris.fxs.actions.transform.notification.open_scratch")) { _, _ ->
-            createScratchFile(project, result.content, HybrisConstants.Languages.ImpEx.EXTENSION)
+            createScratchFile(project, result.content, transformer.fileExtension)
         }
         .system(true)
         .notify(project)

@@ -19,12 +19,12 @@
 package sap.commerce.toolset.impex.transform
 
 import com.intellij.lang.Language
-import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.impex.ImpExLanguage
 import sap.commerce.toolset.impex.psi.ImpExValueLine
 import sap.commerce.toolset.impex.transform.context.ImpExTransformationResult
 import sap.commerce.toolset.impex.transform.polyglotQuery.PgQTransformationService
 import sap.commerce.toolset.polyglotQuery.PolyglotQueryLanguage
+import sap.commerce.toolset.polyglotQuery.file.PolyglotQueryFileType
 import sap.commerce.toolset.transform.Transformer
 
 class ImpExValueLinePgQTransformer : Transformer<ImpExValueLine, ImpExTransformationResult> {
@@ -38,7 +38,7 @@ class ImpExValueLinePgQTransformer : Transformer<ImpExValueLine, ImpExTransforma
     override val language: Language
         get() = PolyglotQueryLanguage
     override val fileExtension: String
-        get() = HybrisConstants.Languages.PolyglotQuery.EXTENSION
+        get() = PolyglotQueryFileType.defaultExtension
 
     override fun isApplicable(language: Language) = language is ImpExLanguage
 

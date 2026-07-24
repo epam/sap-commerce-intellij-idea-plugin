@@ -77,21 +77,24 @@ class ImpExValueLineTransformLineMarkerProvider : LineMarkerProvider {
     ) {
         val element = leaf?.parentOfType<ImpExValueLine>() ?: return
         val project = element.project
-        val includeAllAttributes = AtomicBooleanProperty(false)
+        val metaType = element.metaType?.name
+        val includeAllAttributes = AtomicBooleanProperty(metaType != null)
         var selectedTransformerIndex = 0
         lateinit var myPopup: JBPopup
 
         val content = panel {
+            if (metaType != null) {
+                row {
+                    checkBox(i18n("hybris.impex.actions.transform.dialog.include_all_attributes", metaType))
+                        .bindSelected(includeAllAttributes)
+                }
+            }
+
             row(i18n("hybris.impex.actions.export.dialog.transformer")) {
                 val cell = comboBox(transformers.map { it.name })
                 cell.component.addActionListener {
                     selectedTransformerIndex = cell.component.selectedIndex.coerceAtLeast(0)
                 }
-            }
-
-            row {
-                checkBox(i18n("hybris.impex.actions.transform.dialog.include_all_attributes"))
-                    .bindSelected(includeAllAttributes)
             }
 
             separator()
@@ -122,7 +125,7 @@ class ImpExValueLineTransformLineMarkerProvider : LineMarkerProvider {
                         val transformer = transformers[selectedTransformerIndex]
                         element.putUserData(ImpExConstants.Transform.INCLUDE_ALL_ATTRIBUTES, includeAllAttributes.get())
                         transformer.transform(element) { result ->
-                            notify(project, result.content, transformer.fileExtension)
+                            notify(project, result, transformer)
                         }
                     }
                 })
@@ -131,17 +134,17 @@ class ImpExValueLineTransformLineMarkerProvider : LineMarkerProvider {
             }
     }
 
-    private fun notify(project: Project, content: String, fileExtension: String) {
+    private fun notify(project: Project, result: TransformationResult, transformer: Transformer<in PsiElement, out TransformationResult>) {
         Notifications.create(
             NotificationType.INFORMATION,
             "ImpEx Transform",
-            content
+            result.content
         )
             .addAction("Copy to Clipboard") { _, _ ->
-                CopyPasteManager.getInstance().setContents(StringSelection(content))
+                CopyPasteManager.getInstance().setContents(StringSelection(result.content))
             }
             .addAction("Open as a Scratch File") { _, _ ->
-                createScratchFile(project, content, fileExtension)
+                createScratchFile(project, result.content, transformer.fileExtension, result.queryParams)
             }
             .notify(project)
     }

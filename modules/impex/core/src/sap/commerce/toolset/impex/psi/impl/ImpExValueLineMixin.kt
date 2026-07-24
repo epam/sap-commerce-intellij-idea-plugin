@@ -25,9 +25,14 @@ import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
 import com.intellij.util.asSafely
+import com.intellij.util.xml.DomElement
 import sap.commerce.toolset.impex.psi.ImpExFile
 import sap.commerce.toolset.impex.psi.ImpExHeaderLine
 import sap.commerce.toolset.impex.psi.ImpExValueLine
+import sap.commerce.toolset.impex.psi.references.ImpExTSSubTypeItemReference
+import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
+import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaClassifier
+import sap.commerce.toolset.typeSystem.psi.reference.result.ItemResolveResult
 import java.io.Serial
 
 abstract class ImpExValueLineMixin(node: ASTNode) : ASTWrapperPsiElement(node), ImpExValueLine {
@@ -45,6 +50,22 @@ abstract class ImpExValueLineMixin(node: ASTNode) : ASTWrapperPsiElement(node), 
             this,
         )
     }, false)
+
+    override fun getMetaType(): TSGlobalMetaClassifier<out DomElement>? {
+        val metaName = subTypeName
+            ?.reference
+            ?.asSafely<ImpExTSSubTypeItemReference>()
+            ?.multiResolve(false)
+            ?.firstOrNull()
+            ?.asSafely<ItemResolveResult>()
+            ?.meta
+            ?.name
+            ?: headerLine
+                ?.fullHeaderType
+                ?.headerTypeName
+                ?.text
+        return TSMetaModelAccess.getInstance(project).findMetaClassifierByName(metaName)
+    }
 
     companion object {
         val CACHE_KEY_HEADER_LINE = Key.create<CachedValue<ImpExHeaderLine?>>("SAP_CX_IMPEX_HEADER_LINE")

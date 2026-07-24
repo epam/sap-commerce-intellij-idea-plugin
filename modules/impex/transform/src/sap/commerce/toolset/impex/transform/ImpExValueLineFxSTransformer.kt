@@ -19,8 +19,8 @@
 package sap.commerce.toolset.impex.transform
 
 import com.intellij.lang.Language
-import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.flexibleSearch.FlexibleSearchLanguage
+import sap.commerce.toolset.flexibleSearch.file.FlexibleSearchFileType
 import sap.commerce.toolset.impex.ImpExLanguage
 import sap.commerce.toolset.impex.psi.ImpExValueLine
 import sap.commerce.toolset.impex.transform.context.ImpExTransformationResult
@@ -38,7 +38,7 @@ class ImpExValueLineFxSTransformer : Transformer<ImpExValueLine, ImpExTransforma
     override val language: Language
         get() = FlexibleSearchLanguage
     override val fileExtension: String
-        get() = HybrisConstants.Languages.FlexibleSearch.EXTENSION
+        get() = FlexibleSearchFileType.defaultExtension
 
     override fun isApplicable(language: Language) = language is ImpExLanguage
 

@@ -24,6 +24,7 @@ class ImpExTransformationResult(
     content: String,
     private val transformerName: String,
     private val exportType: String,
+    override val queryParams: Map<String, String>? = null,
 ) : TransformationResult(content) {
 
     override val description: String

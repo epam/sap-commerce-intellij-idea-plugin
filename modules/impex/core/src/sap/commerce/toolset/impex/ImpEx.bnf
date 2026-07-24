@@ -307,7 +307,7 @@ private double_quoted_string_content ::=
 // Value line rules
 value_line ::= (sub_type_name value_group*) | (value_group+) {
     mixin="sap.commerce.toolset.impex.psi.impl.ImpExValueLineMixin"
-    methods=[getHeaderLine getValueGroup addValueGroups]
+    methods=[getHeaderLine getValueGroup getMetaType addValueGroups]
 }
 
 value_group ::= FIELD_VALUE_SEPARATOR value? MULTILINE_SEPARATOR?
