@@ -19,6 +19,7 @@
 package sap.commerce.toolset.flexibleSearch.transform
 
 import com.intellij.lang.Language
+import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.flexibleSearch.FlexibleSearchLanguage
 import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchPsiFile
 import sap.commerce.toolset.flexibleSearch.transform.context.FxSTransformationResult
@@ -35,6 +36,8 @@ class FxSImpExTransformer : Transformer<FlexibleSearchPsiFile, FxSTransformation
         get() = "Converts FlexibleSearch query results to ImpEx format, resolving FK natural keys, enum codes, and localized attributes via the SAP Commerce type system"
     override val language: Language
         get() = FlexibleSearchLanguage
+    override val fileExtension: String
+        get() = HybrisConstants.Languages.ImpEx.EXTENSION
 
     override fun isApplicable(language: Language) = language is FlexibleSearchLanguage
 

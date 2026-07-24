@@ -38,6 +38,7 @@ dependencies {
     implementation(project(":shared-transform"))
     implementation(project(":impex-core"))
     implementation(project(":flexibleSearch-core"))
+    implementation(project(":polyglotQuery-core"))
     implementation(project(":typeSystem-core"))
 
     intellijPlatform {

@@ -20,31 +20,31 @@ package sap.commerce.toolset.impex.transform
 
 import com.intellij.lang.Language
 import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.flexibleSearch.FlexibleSearchLanguage
 import sap.commerce.toolset.impex.ImpExLanguage
 import sap.commerce.toolset.impex.psi.ImpExValueLine
 import sap.commerce.toolset.impex.transform.context.ImpExTransformationResult
-import sap.commerce.toolset.impex.transform.flexibleSearch.FxSTransformationService
+import sap.commerce.toolset.impex.transform.polyglotQuery.PgQTransformationService
+import sap.commerce.toolset.polyglotQuery.PolyglotQueryLanguage
 import sap.commerce.toolset.transform.Transformer
 
-class ImpExValueLineFxSTransformer : Transformer<ImpExValueLine, ImpExTransformationResult> {
+class ImpExValueLinePgQTransformer : Transformer<ImpExValueLine, ImpExTransformationResult> {
 
     override val id: String
-        get() = "impexValueLine-to-fxs"
+        get() = "impexValueLine-to-pgq"
     override val name: String
-        get() = "FlexibleSearch"
+        get() = "PolyglotQuery"
     override val description: String
-        get() = "Converts ImpEx Value Line statement to FlexibleSearch format"
+        get() = "Converts ImpEx Value Line statement to PolyglotQuery format"
     override val language: Language
-        get() = FlexibleSearchLanguage
+        get() = PolyglotQueryLanguage
     override val fileExtension: String
-        get() = HybrisConstants.Languages.FlexibleSearch.EXTENSION
+        get() = HybrisConstants.Languages.PolyglotQuery.EXTENSION
 
     override fun isApplicable(language: Language) = language is ImpExLanguage
 
-    override fun transform(psiElement: ImpExValueLine, onComplete: (ImpExTransformationResult) -> Unit) = FxSTransformationService.getInstance(psiElement.project)
+    override fun transform(psiElement: ImpExValueLine, onComplete: (ImpExTransformationResult) -> Unit) = PgQTransformationService.getInstance(psiElement.project)
         .transform(name, psiElement, onComplete)
 
-    override suspend fun transform(psiElement: ImpExValueLine): ImpExTransformationResult = FxSTransformationService.getInstance(psiElement.project)
+    override suspend fun transform(psiElement: ImpExValueLine): ImpExTransformationResult = PgQTransformationService.getInstance(psiElement.project)
         .transform(name, psiElement)
 }

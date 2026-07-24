@@ -40,7 +40,6 @@ import com.intellij.ui.dsl.builder.bindSelected
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.util.Function
 import com.intellij.util.ui.JBUI
-import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.Notifications
 import sap.commerce.toolset.i18n
@@ -83,16 +82,16 @@ class ImpExValueLineTransformLineMarkerProvider : LineMarkerProvider {
         lateinit var myPopup: JBPopup
 
         val content = panel {
-            row {
-                checkBox(i18n("hybris.impex.actions.transform.dialog.include_all_attributes"))
-                    .bindSelected(includeAllAttributes)
-            }
-
             row(i18n("hybris.impex.actions.export.dialog.transformer")) {
                 val cell = comboBox(transformers.map { it.name })
                 cell.component.addActionListener {
                     selectedTransformerIndex = cell.component.selectedIndex.coerceAtLeast(0)
                 }
+            }
+
+            row {
+                checkBox(i18n("hybris.impex.actions.transform.dialog.include_all_attributes"))
+                    .bindSelected(includeAllAttributes)
             }
 
             separator()
@@ -120,9 +119,10 @@ class ImpExValueLineTransformLineMarkerProvider : LineMarkerProvider {
                     override fun onClosed(event: LightweightWindowEvent) {
                         if (!event.isOk) return
                         content.apply()
+                        val transformer = transformers[selectedTransformerIndex]
                         element.putUserData(ImpExConstants.Transform.INCLUDE_ALL_ATTRIBUTES, includeAllAttributes.get())
-                        transformers[selectedTransformerIndex].transform(element) { result ->
-                            notify(project, result.content)
+                        transformer.transform(element) { result ->
+                            notify(project, result.content, transformer.fileExtension)
                         }
                     }
                 })
@@ -131,7 +131,7 @@ class ImpExValueLineTransformLineMarkerProvider : LineMarkerProvider {
             }
     }
 
-    private fun notify(project: Project, content: String) {
+    private fun notify(project: Project, content: String, fileExtension: String) {
         Notifications.create(
             NotificationType.INFORMATION,
             "ImpEx Transform",
@@ -141,7 +141,7 @@ class ImpExValueLineTransformLineMarkerProvider : LineMarkerProvider {
                 CopyPasteManager.getInstance().setContents(StringSelection(content))
             }
             .addAction("Open as a Scratch File") { _, _ ->
-                createScratchFile(project, content, HybrisConstants.Languages.FlexibleSearch.EXTENSION)
+                createScratchFile(project, content, fileExtension)
             }
             .notify(project)
     }

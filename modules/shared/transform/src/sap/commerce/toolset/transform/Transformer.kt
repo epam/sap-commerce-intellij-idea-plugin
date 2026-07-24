@@ -28,6 +28,7 @@ interface Transformer<T : PsiElement, R: TransformationResult> {
     val name: String
     val description: String
     val language: Language
+    val fileExtension: String
 
     fun isApplicable(language: Language): Boolean
     fun isApplicable(psiElement: PsiElement): Boolean = isApplicable(psiElement.language)
