@@ -47,6 +47,7 @@ All versions in `gradle/libs.versions.toml` (use `libs.*` references).
 - `jps-plugin/` — JPS module for SAP Commerce compilation; excluded from `pluginComposedModule`.
 
 ### Code conventions
+Read `skills/polyglot-query.md` before writing any PolyglotQuery code.
 Read `skills/plugin-dev.md` before modifying Kotlin source.
 Read `skills/github.md` before committing or opening a PR.
 See `TECH_NOTES.md` for: action invocation, background-thread patterns, dialog sizing, GotItTooltip.

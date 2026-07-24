@@ -29,6 +29,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchElementFactory
 import sap.commerce.toolset.impex.ImpExConstants
+import sap.commerce.toolset.impex.ImpExConstants.Transform
 import sap.commerce.toolset.impex.constants.modifier.AttributeModifier
 import sap.commerce.toolset.impex.psi.ImpExValueLine
 import sap.commerce.toolset.impex.psi.impl.ImpExFullHeaderParameterMixin
@@ -85,6 +86,7 @@ class FxSTransformationService(
         val header = element.headerLine ?: return null
         val rootType = header.fullHeaderType?.headerTypeName?.text ?: return null
         val project = header.project
+        val includeAllAttributes = element.getUserData(Transform.INCLUDE_ALL_ATTRIBUTES) ?: false
 
         val ctx = QueryContext()
         val rootMeta = TSMetaModelAccess.getInstance(project).findMetaItemByName(rootType)
@@ -131,8 +133,18 @@ class FxSTransformationService(
 
         val hasJoins = ctx.joins.isNotEmpty()
 
-        val selectColumns = (rootMeta?.selectableColumns() ?: listOf("pk"))
-            .joinToString(", ") { if (hasJoins) "{${ctx.rootAlias}.$it}" else "{$it}" }
+        val selectColumns = if (includeAllAttributes) {
+            rootMeta?.selectableColumns() ?: listOf("pk")
+        } else {
+            buildList {
+                add("pk")
+                header.fullHeaderParameterList
+                    .map { it.parametersContext.rootParameter.name }
+                    .distinct()
+                    .filter { it != "pk" }
+                    .forEach { add(it) }
+            }
+        }.joinToString(", ") { if (hasJoins) "{${ctx.rootAlias}.$it}" else "{$it}" }
 
         val fromClause = buildString {
             append(if (hasJoins) "$rootType AS ${ctx.rootAlias}" else rootType)

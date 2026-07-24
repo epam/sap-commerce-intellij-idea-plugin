@@ -26,6 +26,7 @@ import com.intellij.openapi.editor.markup.GutterIconRenderer
 import com.intellij.openapi.editor.markup.MarkupEditorFilter
 import com.intellij.openapi.editor.markup.MarkupEditorFilterFactory
 import com.intellij.openapi.ide.CopyPasteManager
+import com.intellij.openapi.observable.properties.AtomicBooleanProperty
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.popup.*
@@ -35,6 +36,7 @@ import com.intellij.psi.util.parentOfType
 import com.intellij.ui.JBColor
 import com.intellij.ui.awt.RelativePoint
 import com.intellij.ui.dsl.builder.AlignX
+import com.intellij.ui.dsl.builder.bindSelected
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.util.Function
 import com.intellij.util.ui.JBUI
@@ -42,6 +44,7 @@ import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.Notifications
 import sap.commerce.toolset.i18n
+import sap.commerce.toolset.impex.ImpExConstants
 import sap.commerce.toolset.impex.psi.ImpExValueLine
 import sap.commerce.toolset.scratch.createScratchFile
 import sap.commerce.toolset.transform.TransformationResult
@@ -53,7 +56,7 @@ import java.awt.event.MouseEvent
 import java.util.function.Supplier
 import javax.swing.Icon
 
-class ImpExExportLineMarkerProvider : LineMarkerProvider {
+class ImpExValueLineTransformLineMarkerProvider : LineMarkerProvider {
 
     override fun getLineMarkerInfo(element: PsiElement): LineMarkerInfo<*>? {
         if (DumbService.isDumb(element.project)) return null
@@ -75,10 +78,16 @@ class ImpExExportLineMarkerProvider : LineMarkerProvider {
     ) {
         val element = leaf?.parentOfType<ImpExValueLine>() ?: return
         val project = element.project
+        val includeAllAttributes = AtomicBooleanProperty(false)
         var selectedTransformerIndex = 0
         lateinit var myPopup: JBPopup
 
         val content = panel {
+            row {
+                checkBox(i18n("hybris.impex.actions.transform.dialog.include_all_attributes"))
+                    .bindSelected(includeAllAttributes)
+            }
+
             row(i18n("hybris.impex.actions.export.dialog.transformer")) {
                 val cell = comboBox(transformers.map { it.name })
                 cell.component.addActionListener {
@@ -110,6 +119,8 @@ class ImpExExportLineMarkerProvider : LineMarkerProvider {
                 it.addListener(object : JBPopupListener {
                     override fun onClosed(event: LightweightWindowEvent) {
                         if (!event.isOk) return
+                        content.apply()
+                        element.putUserData(ImpExConstants.Transform.INCLUDE_ALL_ATTRIBUTES, includeAllAttributes.get())
                         transformers[selectedTransformerIndex].transform(element) { result ->
                             notify(project, result.content)
                         }
