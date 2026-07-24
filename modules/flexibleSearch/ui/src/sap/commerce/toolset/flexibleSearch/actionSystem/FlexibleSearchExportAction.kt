@@ -157,12 +157,12 @@ class FlexibleSearchExportAction : AnAction() {
         i18n("hybris.fxs.actions.export.notification.title"),
         result.description
     )
-        .hideAfter(10)
         .addAction(i18n("hybris.fxs.actions.export.notification.copy_to_clipboard")) { _, _ ->
             CopyPasteManager.getInstance().setContents(StringSelection(result.content))
         }
         .addAction(i18n("hybris.fxs.actions.export.notification.open_scratch")) { _, _ ->
             createScratchFile(project, result.content, HybrisConstants.Languages.ImpEx.EXTENSION)
         }
+        .system(true)
         .notify(project)
 }
