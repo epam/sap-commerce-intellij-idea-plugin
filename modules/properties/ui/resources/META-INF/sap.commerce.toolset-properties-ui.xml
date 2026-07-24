@@ -1,0 +1,47 @@
+<!--
+  ~ This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+  ~ Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Lesser General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  ~ See the GNU Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public License
+  ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<idea-plugin>
+
+    <extensions defaultExtensionNs="sap.commerce.toolset">
+        <ui.toolWindowProvider implementation="sap.commerce.toolset.properties.ui.CxPropertiesToolWindowContentProvider"/>
+    </extensions>
+
+    <actions>
+        <action id="sap.cx.properties.applyTemplate" class="sap.commerce.toolset.properties.actionSystem.CxApplyPropertyTemplateAction"/>
+        <action id="sap.cx.properties.remote.fetch" class="sap.commerce.toolset.properties.actionSystem.CxFetchRemotePropertyStateAction"/>
+        <action id="sap.cx.properties.custom.createTemplate" class="sap.commerce.toolset.properties.actionSystem.CxCreateCustomPropertyTemplateAction"/>
+        <action id="sap.cx.properties.custom.addTemplate" class="sap.commerce.toolset.properties.actionSystem.CxAddCustomPropertyTemplateAction"/>
+        <action id="sap.cx.properties.custom.deleteTemplate" class="sap.commerce.toolset.properties.actionSystem.CxDeleteCustomPropertyTemplateAction"/>
+        <action id="sap.cx.properties.custom.editTemplate" class="sap.commerce.toolset.properties.actionSystem.CxEditCustomPropertyTemplateAction"/>
+
+        <group id="sap.cx.properties.toolbar.actions" searchable="false">
+            <reference ref="sap.commerce.toolset.hac.chooseConnection"/>
+            <reference ref="sap.cx.properties.remote.fetch"/>
+        </group>
+
+        <group id="sap.cx.properties.template.item.actions" searchable="false">
+            <reference ref="sap.cx.properties.applyTemplate"/>
+            <reference ref="sap.cx.properties.custom.createTemplate"/>
+            <reference ref="sap.cx.properties.custom.editTemplate"/>
+            <reference ref="sap.cx.properties.custom.deleteTemplate"/>
+        </group>
+
+        <group id="sap.cx.properties.toolwindow.menu" popup="true" searchable="false" class="sap.commerce.toolset.properties.actionSystem.CxPropertyTemplateContextMenuActionGroup"/>
+    </actions>
+</idea-plugin>
