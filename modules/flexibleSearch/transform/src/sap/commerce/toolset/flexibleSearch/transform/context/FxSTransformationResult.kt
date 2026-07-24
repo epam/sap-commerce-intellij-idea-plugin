@@ -30,5 +30,5 @@ class FxSTransformationResult(
 
     override val description: String
         get() = if (exportRows.isEmpty()) "$exportType to $transformerName"
-        else "$exportType to $transformerName (${i18n("hybris.fxs.actions.export.notification.rows", exportRows.size)})"
+        else "$exportType to $transformerName (${i18n("hybris.fxs.actions.transform.notification.rows", exportRows.size)})"
 }

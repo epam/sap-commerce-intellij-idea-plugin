@@ -225,6 +225,22 @@ abstract class ImpExFullHeaderParameterMixin(node: ASTNode) : ASTWrapperPsiEleme
             )
         }, false)
 
+    override fun getDocIdUsages(): List<ImpExDocumentIdUsage> = CachedValuesManager.getManager(project)
+        .getCachedValue(this, CACHE_KEY_DOC_ID_USAGES, {
+            val usages = parametersList
+                .firstOrNull()
+                ?.parameterList
+                ?.takeIf { it.size == 1 }
+                ?.firstOrNull()
+                ?.childrenOfType<ImpExDocumentIdUsage>()
+                ?: emptyList()
+
+            CachedValueProvider.Result.createSingleDependency(
+                usages,
+                this,
+            )
+        }, false)
+
     private fun parameter(
         name: String,
         modifiers: List<ImpExModifiers>,
@@ -417,7 +433,6 @@ abstract class ImpExFullHeaderParameterMixin(node: ASTNode) : ASTWrapperPsiEleme
     private fun TextRange.isMacro(text: String): Boolean = substring(text)
         .startsWith(ImpExConstants.MACRO_MARKER)
 
-
     data class ParametersContext(
         val rootParameter: Parameter,
         val subParameters: List<Parameter>?
@@ -448,6 +463,7 @@ abstract class ImpExFullHeaderParameterMixin(node: ASTNode) : ASTWrapperPsiEleme
 
     companion object {
         private val CACHE_KEY_EXPANDED_ATTRIBUTES = Key.create<CachedValue<ParametersContext>>("SAP_CX_IMPEX_EXPANDED_ATTRIBUTE")
+        private val CACHE_KEY_DOC_ID_USAGES = Key.create<CachedValue<List<ImpExDocumentIdUsage>>>("SAP_CX_IMPEX_DOC_ID_USAGES")
         val CACHE_KEY_COLUMN_NUMBER = Key.create<CachedValue<Int>>("SAP_CX_IMPEX_COLUMN_NUMBER")
         val CACHE_KEY_VALUE_GROUPS = Key.create<CachedValue<List<ImpExValueGroup>>>("SAP_CX_IMPEX_VALUE_GROUPS")
 

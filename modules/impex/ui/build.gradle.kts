@@ -41,6 +41,7 @@ idea {
 
 dependencies {
     implementation(project(":shared-core"))
+    implementation(project(":shared-transform"))
     implementation(project(":shared-ui"))
     implementation(project(":typeSystem-core"))
     implementation(project(":project-core"))

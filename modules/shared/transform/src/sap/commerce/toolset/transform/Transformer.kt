@@ -20,9 +20,9 @@ package sap.commerce.toolset.transform
 
 import com.intellij.lang.Language
 import com.intellij.openapi.extensions.ExtensionPointName
-import com.intellij.psi.PsiFile
+import com.intellij.psi.PsiElement
 
-interface Transformer<T : PsiFile, R: TransformationResult> {
+interface Transformer<T : PsiElement, R: TransformationResult> {
 
     val id: String
     val name: String
@@ -30,11 +30,11 @@ interface Transformer<T : PsiFile, R: TransformationResult> {
     val language: Language
 
     fun isApplicable(language: Language): Boolean
-    fun isApplicable(psiFile: PsiFile): Boolean = isApplicable(psiFile.language)
-    fun transform(psiFile: T, onComplete: (R) -> Unit)
-    suspend fun transform(psiFile: T): R
+    fun isApplicable(psiElement: PsiElement): Boolean = isApplicable(psiElement.language)
+    fun transform(psiElement: T, onComplete: (R) -> Unit)
+    suspend fun transform(psiElement: T): R
 
     companion object {
-        val EP = ExtensionPointName.create<Transformer<in PsiFile, out TransformationResult>>("sap.commerce.toolset.transformer")
+        val EP = ExtensionPointName.create<Transformer<in PsiElement, out TransformationResult>>("sap.commerce.toolset.transformer")
     }
 }

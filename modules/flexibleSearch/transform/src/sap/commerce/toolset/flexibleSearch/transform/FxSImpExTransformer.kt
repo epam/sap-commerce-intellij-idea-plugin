@@ -38,9 +38,9 @@ class FxSImpExTransformer : Transformer<FlexibleSearchPsiFile, FxSTransformation
 
     override fun isApplicable(language: Language) = language is FlexibleSearchLanguage
 
-    override fun transform(psiFile: FlexibleSearchPsiFile, onComplete: (FxSTransformationResult) -> Unit) = ImpExTransformationService.getInstance(psiFile.project)
-        .transform(name, psiFile, onComplete)
+    override fun transform(psiElement: FlexibleSearchPsiFile, onComplete: (FxSTransformationResult) -> Unit) = ImpExTransformationService.getInstance(psiElement.project)
+        .transform(name, psiElement, onComplete)
 
-    override suspend fun transform(psiFile: FlexibleSearchPsiFile): FxSTransformationResult = ImpExTransformationService.getInstance(psiFile.project)
-        .transform(name, psiFile)
+    override suspend fun transform(psiElement: FlexibleSearchPsiFile): FxSTransformationResult = ImpExTransformationService.getInstance(psiElement.project)
+        .transform(name, psiElement)
 }

@@ -21,29 +21,20 @@ package sap.commerce.toolset.impex.codeInsight.daemon
 import com.intellij.codeInsight.daemon.LineMarkerInfo
 import com.intellij.codeInsight.daemon.LineMarkerProvider
 import com.intellij.codeInsight.daemon.MergeableLineMarkerInfo
-import com.intellij.database.csv.CsvFormat
-import com.intellij.database.csv.CsvRecordFormat
-import com.intellij.database.vfs.fragment.CsvTableDataFragmentFile
 import com.intellij.openapi.editor.markup.GutterIconRenderer
 import com.intellij.openapi.editor.markup.MarkupEditorFilter
 import com.intellij.openapi.editor.markup.MarkupEditorFilterFactory
 import com.intellij.openapi.fileEditor.FileEditorManager
-import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.firstLeaf
-import com.intellij.psi.util.parentOfType
 import com.intellij.util.Function
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.Plugin
 import sap.commerce.toolset.impex.psi.ImpExHeaderLine
-import sap.commerce.toolset.settings.yDeveloperSettings
-import java.util.*
 import java.util.function.Supplier
 import javax.swing.Icon
 
 class ImpExDataEditModeLineMarkerProvider : LineMarkerProvider {
-
-    private val valueSeparator = ";"
 
     override fun getLineMarkerInfo(element: PsiElement): LineMarkerInfo<*>? {
         if (Plugin.DATABASE.isDisabled()) return null
@@ -56,46 +47,16 @@ class ImpExDataEditModeLineMarkerProvider : LineMarkerProvider {
         )
     }
 
-    private fun handler(leaf: PsiElement?) {
-        val element = leaf?.parentOfType<ImpExHeaderLine>()
-        val project = element?.project ?: return
-        val tableRange = element.tableRange
-        val format = getImpExFormat(project)
-        val fragmentFile = CsvTableDataFragmentFile(leaf.containingFile.virtualFile, tableRange, format)
-
-        FileEditorManager.getInstance(project).openFile(fragmentFile)
-    }
-
-    private fun getImpExFormat(project: Project): CsvFormat {
-        val editModeSettings = project.yDeveloperSettings.impexSettings.editMode
-
-        val key = BitSet(2).also {
-            it.set(0, editModeSettings.firstRowIsHeader)
-            it.set(1, editModeSettings.trimWhitespace)
-        }
-
-        return xsvImpExFormat(
-            firstRowIsHeader = key.get(0),
-            trimWhitespace = key.get(1)
-        )
-    }
-
-    private fun xsvImpExFormat(firstRowIsHeader: Boolean, trimWhitespace: Boolean): CsvFormat {
-        val quotationPolicy = CsvRecordFormat.QuotationPolicy.NEVER
-        val headerFormat = if (firstRowIsHeader) CsvRecordFormat("", "", null, emptyList(), quotationPolicy, valueSeparator, "\n", trimWhitespace)
-        else null
-        val dataFormat = CsvRecordFormat("", "", null, emptyList(), quotationPolicy, valueSeparator, "\n", trimWhitespace)
-
-        return CsvFormat("ImpEx", dataFormat, headerFormat, "ImpEx", false)
-    }
-
     private inner class ImpExLineMarkerInfo(
         leaf: PsiElement,
         icon: Icon,
     ) : MergeableLineMarkerInfo<PsiElement?>(
         leaf, leaf.textRange, icon,
         Function { "Enter Data Edit Mode" },
-        { _, e -> handler(e) },
+        { _, e ->
+            ImpExDataEditModeHandler.extract(e)
+                ?.let { FileEditorManager.getInstance(leaf.project).openFile(it) }
+        },
         GutterIconRenderer.Alignment.CENTER,
         Supplier { "Enter Data Edit Mode" }
     ) {

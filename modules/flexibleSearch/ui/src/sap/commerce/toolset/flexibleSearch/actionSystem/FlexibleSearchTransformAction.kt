@@ -24,6 +24,7 @@ import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.ide.CopyPasteManager
+import com.intellij.openapi.observable.properties.AtomicBooleanProperty
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.popup.*
@@ -43,7 +44,7 @@ import sap.commerce.toolset.transform.Transformer
 import java.awt.datatransfer.StringSelection
 import java.awt.event.KeyEvent
 
-class FlexibleSearchExportAction : AnAction() {
+class FlexibleSearchTransformAction : AnAction() {
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
@@ -56,10 +57,10 @@ class FlexibleSearchExportAction : AnAction() {
             return@ifNotFromSearchPopup
         }
 
-        e.presentation.text = i18n("hybris.fxs.actions.export")
-        e.presentation.description = i18n("hybris.fxs.actions.export.description")
+        e.presentation.text = i18n("hybris.fxs.actions.transform")
+        e.presentation.description = i18n("hybris.fxs.actions.transform.description")
         val isDumb = e.project?.let { DumbService.isDumb(it) } ?: false
-        e.presentation.icon = HybrisIcons.FlexibleSearch.Actions.EXPORT
+        e.presentation.icon = HybrisIcons.FlexibleSearch.Actions.TRANSFORM
         e.presentation.isEnabled = !isDumb
     }
 
@@ -76,27 +77,27 @@ class FlexibleSearchExportAction : AnAction() {
 
         val inputEvent = e.inputEvent ?: return
 
-        var includeTypeSystemUnique = true
-        var includeData = hasData
+        val includeTypeSystemUnique = AtomicBooleanProperty(true)
+        val includeData = AtomicBooleanProperty(hasData)
         var selectedTransformerIndex = 0
         lateinit var myPopup: JBPopup
 
         val exportPanel = panel {
             row {
-                checkBox(i18n("hybris.fxs.actions.export.dialog.include_type_unique"))
-                    .bindSelected({ includeTypeSystemUnique }, { includeTypeSystemUnique = it })
+                checkBox(i18n("hybris.fxs.actions.transform.dialog.include_type_unique"))
+                    .bindSelected(includeTypeSystemUnique)
             }
             row {
-                checkBox(i18n("hybris.fxs.actions.export.dialog.include_data"))
-                    .bindSelected({ includeData }, { includeData = it })
+                checkBox(i18n("hybris.fxs.actions.transform.dialog.include_data"))
+                    .bindSelected(includeData)
                     .enabled(hasData)
                     .comment(
-                        if (hasData) i18n("hybris.fxs.actions.export.dialog.include_data.has_result", rows.size)
-                        else i18n("hybris.fxs.actions.export.dialog.include_data.no_result")
+                        if (hasData) i18n("hybris.fxs.actions.transform.dialog.include_data.has_result", rows.size)
+                        else i18n("hybris.fxs.actions.transform.dialog.include_data.no_result")
                     )
             }
 
-            row(i18n("hybris.fxs.actions.export.dialog.transformer")) {
+            row(i18n("hybris.fxs.actions.transform.dialog.transformer")) {
                 val cell = comboBox(applicableTransformers.map { it.name })
                 cell.component.addActionListener {
                     selectedTransformerIndex = cell.component.selectedIndex.coerceAtLeast(0)
@@ -107,12 +108,12 @@ class FlexibleSearchExportAction : AnAction() {
 
             row {
                 if (hasData) {
-                    button(i18n("hybris.fxs.actions.export.dialog.clear_data")) {
+                    button(i18n("hybris.fxs.actions.transform.dialog.clear_data")) {
                         editor.clearExecutionResult()
                         myPopup.cancel()
                     }
                 }
-                button(i18n("hybris.fxs.actions.export.dialog.export")) {
+                button(i18n("hybris.fxs.actions.transform.dialog.transform")) {
                     myPopup.closeOk(null)
                 }.align(AlignX.RIGHT)
             }
@@ -125,8 +126,8 @@ class FlexibleSearchExportAction : AnAction() {
             .setMovable(false)
             .setResizable(false)
             .setRequestFocus(true)
-            .setTitle(i18n("hybris.fxs.actions.export.dialog.title"))
-            .setTitleIcon(ActiveIcon(HybrisIcons.FlexibleSearch.Actions.EXPORT))
+            .setTitle(i18n("hybris.fxs.actions.transform.dialog.title"))
+            .setTitleIcon(ActiveIcon(HybrisIcons.FlexibleSearch.Actions.TRANSFORM))
             .setKeyEventHandler {
                 val enterKey = it.keyCode == KeyEvent.VK_ENTER
                 if (enterKey) myPopup.closeOk(it)
@@ -140,8 +141,8 @@ class FlexibleSearchExportAction : AnAction() {
                         if (!event.isOk) return
                         exportPanel.apply()
 
-                        psiFile.putUserData(FlexibleSearchConstants.Transform.INCLUDE_TYPE_SYSTEM_UNIQUE, includeTypeSystemUnique)
-                        psiFile.putUserData(FlexibleSearchConstants.Transform.INCLUDE_DATA, includeData)
+                        psiFile.putUserData(FlexibleSearchConstants.Transform.INCLUDE_TYPE_SYSTEM_UNIQUE, includeTypeSystemUnique.get())
+                        psiFile.putUserData(FlexibleSearchConstants.Transform.INCLUDE_DATA, includeData.get())
                         psiFile.putUserData(FlexibleSearchExecConstants.Transform.EXEC_RESULTS, execResult)
 
                         applicableTransformers[selectedTransformerIndex].transform(psiFile) { result ->
@@ -155,13 +156,13 @@ class FlexibleSearchExportAction : AnAction() {
 
     private fun notifyExportDone(project: Project, result: TransformationResult) = Notifications.create(
         NotificationType.INFORMATION,
-        i18n("hybris.fxs.actions.export.notification.title"),
+        i18n("hybris.fxs.actions.transform.notification.title"),
         result.description
     )
-        .addAction(i18n("hybris.fxs.actions.export.notification.copy_to_clipboard")) { _, _ ->
+        .addAction(i18n("hybris.fxs.actions.transform.notification.copy_to_clipboard")) { _, _ ->
             CopyPasteManager.getInstance().setContents(StringSelection(result.content))
         }
-        .addAction(i18n("hybris.fxs.actions.export.notification.open_scratch")) { _, _ ->
+        .addAction(i18n("hybris.fxs.actions.transform.notification.open_scratch")) { _, _ ->
             createScratchFile(project, result.content, HybrisConstants.Languages.ImpEx.EXTENSION)
         }
         .system(true)

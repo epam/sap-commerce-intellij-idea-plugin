@@ -23,17 +23,17 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 /**
- * Unit tests for the pure value-resolution logic of [ImpExToFlexibleSearchLineMarkerProvider].
+ * Unit tests for the pure value-resolution logic of [ImpExExportLineMarkerProvider].
  *
- * The full [ImpExToFlexibleSearchLineMarkerProvider.toUniqueSelectQuery] pipeline is PSI- and
+ * The full [ImpExExportLineMarkerProvider.toUniqueSelectQuery] pipeline is PSI- and
  * type-system-bound and cannot be exercised without a loaded SAP Commerce project. These tests
  * cover the two pieces that decide the WHERE-clause value of a nested leaf parameter:
- * [ImpExToFlexibleSearchLineMarkerProvider.resolveLeafValue] and
- * [ImpExToFlexibleSearchLineMarkerProvider.formatPredicate].
+ * [ImpExExportLineMarkerProvider.resolveLeafValue] and
+ * [ImpExExportLineMarkerProvider.formatPredicate].
  */
-class ImpExToFlexibleSearchLineMarkerProviderTest {
+class ImpExExportLineMarkerProviderTest {
 
-    private val provider = ImpExToFlexibleSearchLineMarkerProvider()
+    private val provider = ImpExExportLineMarkerProvider()
 
     // -------------------------------------------------------------------------
     // resolveLeafValue — positional value wins

@@ -118,8 +118,16 @@ abstract class ImpExHeaderLineMixin(node: ASTNode) : ASTWrapperPsiElement(node),
         )
     }
 
-    override fun getUniqueFullHeaderParameters(): List<ImpExFullHeaderParameter> = fullHeaderParameterList
-        .filter { it.isUnique }
+    override fun getUniqueFullHeaderParameters(): List<ImpExFullHeaderParameter> = CachedValuesManager.getManager(project).getCachedValue(
+        this, CACHE_KEY_UNIQUE_PARAMETERS, {
+            val uniquerParameters = fullHeaderParameterList.filter { it.isUnique }
+
+            CachedValueProvider.Result.createSingleDependency(
+                uniquerParameters,
+                this
+            )
+        }, false
+    )
 
     override fun getTableRange(): TextRange {
         val tableElements = ArrayDeque<PsiElement>()
@@ -156,6 +164,7 @@ abstract class ImpExHeaderLineMixin(node: ASTNode) : ASTWrapperPsiElement(node),
         val CACHE_KEY_BY_INDEX = Key.create<CachedValue<Map<Int, ImpExFullHeaderParameter>>>("SAP_CX_IMPEX_FHP_BY_INDEX")
         val CACHE_KEY_BY_NAME = Key.create<CachedValue<Map<String, ImpExFullHeaderParameter>>>("SAP_CX_IMPEX_FHP_BY_NAME")
         val CACHE_KEY_VALUE_LINES = Key.create<CachedValue<Collection<ImpExValueLine>>>("SAP_CX_IMPEX_VALUE_LINES")
+        val CACHE_KEY_UNIQUE_PARAMETERS = Key.create<CachedValue<List<ImpExFullHeaderParameter>>>("SAP_CX_IMPEX_UNIQUE_PARAMETERS")
 
         @Serial
         private val serialVersionUID: Long = -4491471414641409161L
