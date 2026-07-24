@@ -25,10 +25,6 @@ import kotlin.test.assertEquals
 
 class ImpExHeaderParameterTest {
 
-    // -------------------------------------------------------------------------
-    // render()
-    // -------------------------------------------------------------------------
-
     @Test
     fun render_plainAttribute() {
         val param = ImpExHeaderParameter(attributeName = "code")

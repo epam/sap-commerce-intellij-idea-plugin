@@ -72,10 +72,9 @@ data class ImpExHeaderParameter(
      *
      * Returns only the meaningful tokens joined by `,`.
      */
-    private fun cleanCollectionValue(value: String): String =
-        value.split(",")
-            .filter { token -> token.isNotEmpty() && !token.matches(HAC_INTERNAL_MARKER) }
-            .joinToString(",")
+    private fun cleanCollectionValue(value: String): String = value.split(",")
+        .filter { token -> token.isNotEmpty() && !token.matches(HAC_INTERNAL_MARKER) }
+        .joinToString(",")
 
     companion object {
         /** SAP Commerce atomic type names whose values require double-quote wrapping in ImpEx. */

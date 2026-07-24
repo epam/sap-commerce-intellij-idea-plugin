@@ -102,6 +102,7 @@ class FlexibleSearchExportAction : AnAction() {
                     selectedTransformerIndex = cell.component.selectedIndex.coerceAtLeast(0)
                 }
             }
+
             separator()
 
             row {

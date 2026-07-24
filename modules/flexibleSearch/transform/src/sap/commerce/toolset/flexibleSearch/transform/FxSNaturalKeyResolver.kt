@@ -63,10 +63,6 @@ object FxSNaturalKeyResolver {
         }
     }
 
-    // -------------------------------------------------------------------------
-    // Public API
-    // -------------------------------------------------------------------------
-
     /**
      * Resolves the natural key path for [meta].
      * Returns a comma-separated string suitable for use as ImpEx nested parameter list,
@@ -74,10 +70,6 @@ object FxSNaturalKeyResolver {
      */
     fun resolve(meta: TSGlobalMetaItem, tsAccess: TSMetaModelAccess): String =
         resolve(buildSnapshot(meta)) { name -> tsAccess.findMetaItemByName(name)?.let { buildSnapshot(it) } }
-
-    // -------------------------------------------------------------------------
-    // Internal testable API
-    // -------------------------------------------------------------------------
 
     /**
      * Resolves the natural key path from a plain [FxSTypeSnapshot].
@@ -91,10 +83,6 @@ object FxSNaturalKeyResolver {
         snapshot: FxSTypeSnapshot,
         lookupSnapshot: (typeName: String) -> FxSTypeSnapshot?,
     ): String = resolveInternal(snapshot, lookupSnapshot, depth = 0)
-
-    // -------------------------------------------------------------------------
-    // Core algorithm
-    // -------------------------------------------------------------------------
 
     private fun resolveInternal(
         snapshot: FxSTypeSnapshot,
@@ -123,10 +111,6 @@ object FxSNaturalKeyResolver {
             }
         }
     }
-
-    // -------------------------------------------------------------------------
-    // Snapshot builder (platform-facing)
-    // -------------------------------------------------------------------------
 
     private fun buildSnapshot(meta: TSGlobalMetaItem): FxSTypeSnapshot {
         val uniqueIndexKeys = findUniqueIndexKeys(meta)
