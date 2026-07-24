@@ -16,15 +16,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.flexibleSearch.mcp.dto
+package sap.commerce.toolset.shared.mcp.transform.dto
 
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class FlexibleSearchResult(
-    val connection: String,
-    val success: Boolean,
-    val output: String? = null,
-    val error: String? = null,
-    val errorDetail: String? = null,
+data class TransformerInfo(
+    val id: String,
+    val name: String,
+    val description: String,
 )

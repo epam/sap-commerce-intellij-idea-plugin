@@ -69,6 +69,9 @@ class FlexibleSearchExecClient(
                 .toString(Charsets.UTF_8)
                 .let { Gson().fromJson(it, HashMap::class.java) }
 
+            val rawHeaders = json["headers"].asSafely<MutableList<String>>()
+            val rawRows = json["resultList"].asSafely<List<List<String>>>()
+
             return json["exception"]
                 ?.asSafely<MutableMap<*, *>>()
                 ?.let { it["message"] }
@@ -80,7 +83,9 @@ class FlexibleSearchExecClient(
                     )
                 }
                 ?: FlexibleSearchExecResult(
-                    output = buildTableResult(json)
+                    output = buildTableResult(rawHeaders, rawRows),
+                    headers = rawHeaders,
+                    rows = rawRows,
                 )
         } catch (e: Exception) {
             return FlexibleSearchExecResult(
@@ -90,14 +95,10 @@ class FlexibleSearchExecClient(
         }
     }
 
-    private fun buildTableResult(json: HashMap<*, *>): String {
+    private fun buildTableResult(headers: List<String>?, rows: List<List<String>>?): String {
         val tableBuilder = TableBuilder()
-
-        json["headers"].asSafely<MutableList<String>>()
-            ?.let { headers -> tableBuilder.addHeaders(headers) }
-        json["resultList"].asSafely<List<List<String>>>()
-            ?.forEach { row -> tableBuilder.addRow(row) }
-
+        headers?.let { tableBuilder.addHeaders(it) }
+        rows?.forEach { row -> tableBuilder.addRow(row) }
         return tableBuilder.toString()
     }
 

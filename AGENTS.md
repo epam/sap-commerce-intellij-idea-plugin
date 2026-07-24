@@ -47,40 +47,17 @@ All versions in `gradle/libs.versions.toml` (use `libs.*` references).
 - `jps-plugin/` — JPS module for SAP Commerce compilation; excluded from `pluginComposedModule`.
 
 ### Code conventions
-Read `skills/sap-commerce-plugin-dev/SKILL.md` before modifying Kotlin source.
+Read `skills/plugin-dev.md` before modifying Kotlin source.
+Read `skills/github.md` before committing or opening a PR.
 See `TECH_NOTES.md` for: action invocation, background-thread patterns, dialog sizing, GotItTooltip.
-
-## Git & PR
-
-### Commit format
-`<Area> | <Description>` (squash merge — only final commit quality matters)
-
-Area: from PR labels → changed functionality → existing commits. Defined in `.github/labels.md`.
-Do not invent new areas unless introducing a new long-lived feature domain.
-Description: release-note-friendly, user-visible capability — not implementation details.
-
-Examples:
-- `ImpEx | Resolve external macros from included files`
-- `Project Import | Detect extension source availability`
-- `AI | Expose Bean System enums as MCP tool`
-
-### PR impact labels
-- `Requires - Project Refresh` — user must refresh after update; bump `ProjectImportConstants.MIN_REFRESH_API_VERSION`
-- `Requires - Project Reimport` — user must reimport (stronger); bump `MIN_IMPORT_API_VERSION`
-
-Add these labels when the implemented change requires the corresponding user action.
-
-### Changelog & release
-- Update `CHANGELOG.md` (rendered by `org.jetbrains.changelog` plugin).
-- Keep `<!-- Plugin description -->` / `<!-- Plugin description end -->` markers in README intact.
-- DCO required: `Signed-off-by: Real Name <email>` on every commit/PR.
 
 ## Workflow
 1. Identify affected area.
-2. Implement focused change.
-3. Run relevant tests.
-4. Review modified files — remove unrelated changes, no formatting noise.
-5. Final commit message matches repository style.
+2. Create a feature branch: `git checkout -b feature/<short-topic>`.
+3. Implement focused change; commit iterative progress as you work — don't accumulate all changes into one diff.
+4. Run relevant tests.
+5. Review modified files — remove unrelated changes, no formatting noise.
+6. Commit message matches repository style (see `skills/github.md`).
 
 Because PRs are squash merged: intermediate commits are for convenience; do not create artificial micro-commits.
 
@@ -89,3 +66,4 @@ Because PRs are squash merged: intermediate commits are for convenience; do not 
 - No hand-editing `gen/` files.
 - Avoid unnecessary generated-file commits.
 - Small, focused, reviewable, easy-to-revert changes.
+- New/changed logic: cover with atomic unit tests (single behavior per test) in the relevant module's own test source set — required before merge, not necessarily written first. TDD encouraged for `core`/pure logic; test-after acceptable for `exec` (remote IO) and `ui` (Swing glue).

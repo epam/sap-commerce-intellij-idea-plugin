@@ -28,6 +28,7 @@ import com.intellij.openapi.editor.markup.MarkupEditorFilterFactory
 import com.intellij.openapi.fileTypes.FileTypeRegistry
 import com.intellij.openapi.ide.CopyPasteManager
 import com.intellij.openapi.project.DumbService
+import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFileFactory
 import com.intellij.psi.codeStyle.CodeStyleManager
@@ -48,6 +49,7 @@ import sap.commerce.toolset.scratch.createScratchFile
 import sap.commerce.toolset.typeSystem.TSConstants
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
 import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaItem
+import sap.commerce.toolset.typeSystem.model.Cardinality
 import sap.commerce.toolset.typeSystem.model.PersistenceType
 import java.awt.datatransfer.StringSelection
 import java.util.function.Supplier
@@ -84,7 +86,8 @@ class ImpExToFlexibleSearchLineMarkerProvider : LineMarkerProvider {
 
         header.uniqueFullHeaderParameters.forEach { param ->
             val pathDelimiter = param.getAttributeValue(AttributeModifier.PATH_DELIMITER, ImpExConstants.PATH_DELIMITER)
-            val resolvedValue = getValueGroup(param.columnNumber)?.resolveValue() ?: return@forEach
+            val valueGroup = getValueGroup(param.columnNumber) ?: return@forEach
+            val resolvedValue = valueGroup.resolveValue() ?: return@forEach
             val parametersContext = param.parametersContext
 
             if (parametersContext.subParameters == null) {
@@ -106,8 +109,12 @@ class ImpExToFlexibleSearchLineMarkerProvider : LineMarkerProvider {
                     ownerAttr = parametersContext.rootParameter.name
                 )
 
-                val splitValues = resolvedValue.split(pathDelimiter)
-                    .toMutableList()
+                // An empty cell resolves to the joined defaults of only those leaves that declare
+                // one (see resolveDefaultValue) — distributing that string positionally would
+                // misalign segments onto the wrong leaves. Pass no positional values instead and
+                // let every leaf pull its own default in place.
+                val splitValues = if (valueGroup.value == null) mutableListOf()
+                else resolvedValue.split(pathDelimiter).toMutableList()
 
                 parametersContext.subParameters.forEach { subParameter ->
                     processSubParameter(subParameter, ctx, joinAlias, parametersContext, splitValues)
@@ -164,7 +171,10 @@ class ImpExToFlexibleSearchLineMarkerProvider : LineMarkerProvider {
             }
         } else {
             val metaContext = subParameter.metaContext ?: return
-            val subParameterValue = rawValues.removeFirstOrNull() ?: "?"
+            val subParameterValue = resolveLeafValue(
+                positional = rawValues.removeFirstOrNull(),
+                default = subParameter.getAttributeValue(AttributeModifier.DEFAULT, "")
+            )
 
             ctx.conditions += Condition(
                 alias = ownerAlias,
@@ -174,6 +184,25 @@ class ImpExToFlexibleSearchLineMarkerProvider : LineMarkerProvider {
         }
     }
 
+    /**
+     * Resolves a nested leaf parameter's value.
+     *
+     * The single cell value of a nested unique column is distributed positionally across its leaf
+     * sub-parameters. When a leaf has no positional value left (e.g. only `code` is supplied for
+     * `baseProduct(code, catalogversion(catalog(id[default=$cat]),version[default='Staged']))`)
+     * or its segment is blank (`26002000::Staged`), fall back to its `[default=...]` modifier —
+     * matching ImpEx semantics where an empty value triggers the default — before the `?` sentinel.
+     *
+     * The default's macros are already expanded (see [ImpExFullHeaderParameterMixin] value resolution);
+     * surrounding single quotes are stripped the same way value groups unquote raw values.
+     */
+    internal fun resolveLeafValue(positional: String?, default: String): String = positional
+        ?.takeIf { it.isNotBlank() }
+        ?: default
+            .takeIf { it.isNotEmpty() }
+            ?.let { StringUtil.unquoteString(it, '\'') }
+        ?: "?"
+
     private fun TSGlobalMetaItem.selectableColumns(): List<String> = buildList {
         add("pk")
         allAttributes.values
@@ -181,6 +210,12 @@ class ImpExToFlexibleSearchLineMarkerProvider : LineMarkerProvider {
             .filter { it.persistence.type == PersistenceType.PROPERTY }
             .filterNot { it.isLocalized }
             .map { it.name }
+            .distinct()
+            .forEach { add(it) }
+        allRelationEnds
+            .asSequence()
+            .filter { it.cardinality == Cardinality.ONE }
+            .mapNotNull { it.qualifier }
             .distinct()
             .forEach { add(it) }
     }

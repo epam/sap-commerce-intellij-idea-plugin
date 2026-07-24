@@ -30,6 +30,8 @@ data class FlexibleSearchExecResult(
     override val replicaContext: ReplicaContext? = null,
     override val errorMessage: String? = null,
     override val errorDetailMessage: String? = null,
+    val headers: List<String>? = null,
+    val rows: List<List<String>>? = null,
 ) : ConsoleAwareExecResult {
 
     val hasDataRows: Boolean

@@ -1,7 +1,7 @@
 ## [2026.0.15]
 
 <cite>Release contributors</code>
-- 15 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.15+author%3Amlytvyn+is%3Apr)
+- 16 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.15+author%3Amlytvyn+is%3Apr)
 - 8 PR(s) by [Eugeni Kalenchuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.15+author%3Aekalenchuk+is%3Apr)
 
 ### `Project Import` enhancements
@@ -30,9 +30,11 @@
 - Added new icon for `&DocId` usage values [#1972](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1972)
 - Added rename capabilities for Document ID `&DocId` usage values [#1973](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1973)
 - Resolve exact value line meta type in the Document ID `&DocId` usage lookup elements [#1974](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1974)
+- Improved resolution of the nested attributes in the generated FlexibleSearch query [#1974](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1974)
 
 ### `FlexibleSearch` enhancements
 - New action to `Introduce Bind Parameters` for query with exact values in the expressions [#1962](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1962)
+- New capability to export FlexibleSearch with results into an ImpEx [#1976](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1976)
 
 ### Other enhancements
 - Updated project libraries [#1955](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1955)
