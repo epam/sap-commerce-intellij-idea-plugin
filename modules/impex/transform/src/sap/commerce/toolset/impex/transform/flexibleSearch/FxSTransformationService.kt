@@ -18,6 +18,8 @@
 
 package sap.commerce.toolset.impex.transform.flexibleSearch
 
+import com.intellij.openapi.application.edtWriteAction
+import com.intellij.openapi.application.readAction
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
@@ -61,8 +63,27 @@ class FxSTransformationService(
      * Behaves identically to the callback overload but returns the ImpEx string directly.
      */
     suspend fun transform(transformerName: String, element: ImpExValueLine): ImpExTransformationResult {
-        val header = element.headerLine ?: error("header line is not defined")
-        val rootType = header.fullHeaderType?.headerTypeName?.text ?: error("target type is not defined")
+        val data = readAction { buildTransformData(element) }
+            ?: error("cannot extract PSI/meta data")
+
+        val content = "SELECT ${data.selectColumns} FROM {${data.fromClause}} WHERE ${data.whereClause}"
+
+        val formattedText = edtWriteAction {
+            FlexibleSearchElementFactory.createFile(data.project, content)
+                .let { CodeStyleManager.getInstance(data.project).reformat(it) }
+                .text
+        }
+
+        return ImpExTransformationResult(
+            transformerName = transformerName,
+            content = formattedText,
+            exportType = data.rootType
+        )
+    }
+
+    private fun buildTransformData(element: ImpExValueLine): TransformData? {
+        val header = element.headerLine ?: return null
+        val rootType = header.fullHeaderType?.headerTypeName?.text ?: return null
         val project = header.project
 
         val ctx = QueryContext()
@@ -106,7 +127,7 @@ class FxSTransformationService(
             }
         }
 
-        if (ctx.conditions.isEmpty()) error("unique columns are not declared")
+        if (ctx.conditions.isEmpty()) return null
 
         val hasJoins = ctx.joins.isNotEmpty()
 
@@ -123,14 +144,12 @@ class FxSTransformationService(
             else "{${c.attribute}} ${c.predicate} \n"
         }
 
-        val content = "SELECT $selectColumns FROM {$fromClause} WHERE $whereClause"
-        val formattedStatement = FlexibleSearchElementFactory.createFile(project, content)
-            .let { CodeStyleManager.getInstance(project).reformat(it) }
-
-        return ImpExTransformationResult(
-            transformerName = transformerName,
-            content = formattedStatement.text,
-            exportType = rootType
+        return TransformData(
+            project = project,
+            rootType = rootType,
+            selectColumns = selectColumns,
+            fromClause = fromClause,
+            whereClause = whereClause
         )
     }
 
@@ -222,6 +241,14 @@ class FxSTransformationService(
             else -> "= $value" // numeric/enum/date/etc — used as-is, unquoted
         }
     }
+
+    private data class TransformData(
+        val project: Project,
+        val rootType: String,
+        val selectColumns: String,
+        val fromClause: String,
+        val whereClause: String
+    )
 
     companion object {
         fun getInstance(project: Project): FxSTransformationService = project.service()
