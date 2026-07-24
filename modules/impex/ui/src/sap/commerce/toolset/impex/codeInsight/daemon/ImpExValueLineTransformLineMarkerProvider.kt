@@ -144,7 +144,7 @@ class ImpExValueLineTransformLineMarkerProvider : LineMarkerProvider {
                 CopyPasteManager.getInstance().setContents(StringSelection(result.content))
             }
             .addAction("Open as a Scratch File") { _, _ ->
-                createScratchFile(project, result.content, transformer.fileExtension, result.queryParams)
+                createScratchFile(project, result.content, transformer.fileExtension)
             }
             .notify(project)
     }

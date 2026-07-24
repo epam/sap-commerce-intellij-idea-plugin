@@ -69,7 +69,6 @@ class PgQTransformationService(
             transformerName = transformerName,
             content = formattedText,
             exportType = data.rootType,
-            queryParams = data.params.takeIf { it.isNotEmpty() },
         )
     }
 
@@ -80,16 +79,12 @@ class PgQTransformationService(
 
         val paramNameCounts = mutableMapOf<String, Int>()
         val conditions = mutableListOf<String>()
-        val params = mutableMapOf<String, String>()
 
         header.uniqueFullHeaderParameters.forEach { param ->
             val attrName = param.parametersContext.rootParameter.name
             val count = paramNameCounts.merge(attrName, 1, Int::plus)!!
             val paramName = if (count == 1) attrName else "$attrName$count"
             conditions += "{$attrName}=?$paramName"
-
-            val resolvedValue = element.getValueGroup(param.columnNumber)?.resolveValue()
-            if (!resolvedValue.isNullOrBlank()) params[paramName] = resolvedValue
         }
 
         if (conditions.isEmpty()) return null
@@ -98,7 +93,6 @@ class PgQTransformationService(
             project = project,
             rootType = rootType,
             conditions = conditions,
-            params = params,
         )
     }
 
@@ -106,7 +100,6 @@ class PgQTransformationService(
         val project: Project,
         val rootType: String,
         val conditions: List<String>,
-        val params: Map<String, String>,
     )
 
     companion object {

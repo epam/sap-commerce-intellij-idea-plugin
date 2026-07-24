@@ -22,5 +22,4 @@ abstract class TransformationResult(
     val content: String
 ) {
     abstract val description: String
-    open val queryParams: Map<String, String>? get() = null
 }

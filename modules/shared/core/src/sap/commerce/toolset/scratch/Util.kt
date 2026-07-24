@@ -26,15 +26,11 @@ import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.fileTypes.FileTypeRegistry
 import com.intellij.openapi.fileTypes.LanguageFileType
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.util.Key
 import com.intellij.util.asSafely
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-
-/** Pre-seeded query bind parameters for a scratch file; consumed by the file's editor on first open. */
-val SCRATCH_INITIAL_PARAMS: Key<Map<String, String>> = Key.create("scratch.initialQueryParams")
 
 fun createScratchFile(
     project: Project,
@@ -60,7 +56,6 @@ fun createScratchFile(
     project: Project,
     text: String,
     fileExtension: String,
-    initialParams: Map<String, String>? = null,
 ) {
     CoroutineScope(Dispatchers.Default).launch {
         val scratchRoot = ScratchRootType.getInstance()
@@ -70,24 +65,11 @@ fun createScratchFile(
         val fileName = "scratch.${fileType.defaultExtension}"
         val language = fileType.language
 
-        createAndOpenScratchFile(scratchRoot, project, fileName, language, text, initialParams)
-    }
-}
+        val vf = edtWriteAction { scratchRoot.createScratchFile(project, fileName, language, text) }
+            ?: return@launch
 
-private suspend fun createAndOpenScratchFile(
-    scratchRoot: ScratchRootType,
-    project: Project,
-    fileName: String,
-    language: Language,
-    text: String,
-    initialParams: Map<String, String>? = null,
-) {
-    val vf = edtWriteAction { scratchRoot.createScratchFile(project, fileName, language, text) }
-        ?: return
-
-    if (initialParams != null) vf.putUserData(SCRATCH_INITIAL_PARAMS, initialParams)
-
-    withContext(Dispatchers.EDT) {
-        FileEditorManager.getInstance(project).openFile(vf, true)
+        withContext(Dispatchers.EDT) {
+            FileEditorManager.getInstance(project).openFile(vf, true)
+        }
     }
 }
