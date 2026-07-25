@@ -16,18 +16,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.impex.transform.context
+package sap.commerce.toolset.transform.handlers
 
-import sap.commerce.toolset.transform.TransformationResult
-import sap.commerce.toolset.transform.handlers.TransformResultHandler
-
-class ImpExTransformationResult(
-    content: String,
-    handlers: Collection<TransformResultHandler>,
-    private val languageName: String,
-    private val exportType: String,
-) : TransformationResult(content, handlers) {
-
-    override val description: String
-        get() = "$exportType to $languageName"
+interface TransformResultHandler {
+    val presentationTitle: String
+    fun handle()
 }

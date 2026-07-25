@@ -25,7 +25,6 @@ import com.intellij.notification.NotificationType
 import com.intellij.openapi.editor.markup.GutterIconRenderer
 import com.intellij.openapi.editor.markup.MarkupEditorFilter
 import com.intellij.openapi.editor.markup.MarkupEditorFilterFactory
-import com.intellij.openapi.ide.CopyPasteManager
 import com.intellij.openapi.observable.properties.AtomicBooleanProperty
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
@@ -45,11 +44,9 @@ import sap.commerce.toolset.Notifications
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.impex.ImpExConstants
 import sap.commerce.toolset.impex.psi.ImpExValueLine
-import sap.commerce.toolset.scratch.createScratchFile
 import sap.commerce.toolset.transform.TransformationResult
 import sap.commerce.toolset.transform.Transformer
 import java.awt.Point
-import java.awt.datatransfer.StringSelection
 import java.awt.event.KeyEvent
 import java.awt.event.MouseEvent
 import java.util.function.Supplier
@@ -128,7 +125,7 @@ class ImpExValueLineTransformLineMarkerProvider : LineMarkerProvider {
                         val transformer = transformers[selectedTransformerIndex]
                         element.putUserData(ImpExConstants.Transform.INCLUDE_ALL_ATTRIBUTES, includeAllAttributes.get())
                         transformer.transform(element) { result ->
-                            notify(project, result, transformer)
+                            notify(project, result)
                         }
                     }
                 })
@@ -137,17 +134,16 @@ class ImpExValueLineTransformLineMarkerProvider : LineMarkerProvider {
             }
     }
 
-    private fun notify(project: Project, result: TransformationResult, transformer: Transformer<in PsiElement, out TransformationResult>) {
+    private fun notify(project: Project, result: TransformationResult) {
         Notifications.create(
             NotificationType.INFORMATION,
             i18n("hybris.impex.actions.transform.valueLine.notification.title"),
             result.content
         )
-            .addAction("Copy to Clipboard") { _, _ ->
-                CopyPasteManager.getInstance().setContents(StringSelection(result.content))
-            }
-            .addAction("Open as a Scratch File") { _, _ ->
-                createScratchFile(project, result.content, transformer.fileType.defaultExtension)
+            .apply {
+                result.handlers.forEach {
+                    this.addAction(it.presentationTitle) { _, _ -> it.handle() }
+                }
             }
             .hideAfter(1.minutes)
             .notify(project)

@@ -38,6 +38,8 @@ import sap.commerce.toolset.impex.transform.context.ImpExTransformationResult
 import sap.commerce.toolset.impex.transform.flexibleSearch.context.Condition
 import sap.commerce.toolset.impex.transform.flexibleSearch.context.Join
 import sap.commerce.toolset.impex.transform.flexibleSearch.context.QueryContext
+import sap.commerce.toolset.transform.handlers.CopyToClipboardTransformResultHandler
+import sap.commerce.toolset.transform.handlers.CreateScratchFileTransformResultHandler
 import sap.commerce.toolset.typeSystem.TSConstants
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
 import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaItem
@@ -81,7 +83,11 @@ class FxSTransformationService(
         return ImpExTransformationResult(
             languageName = fileType.name,
             content = formattedText,
-            exportType = data.rootType
+            exportType = data.rootType,
+            handlers = listOf(
+                CopyToClipboardTransformResultHandler(content),
+                CreateScratchFileTransformResultHandler(project, content, fileType)
+            )
         )
     }
 

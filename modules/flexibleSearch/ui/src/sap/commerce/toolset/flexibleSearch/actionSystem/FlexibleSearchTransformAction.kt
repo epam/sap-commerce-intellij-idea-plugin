@@ -23,12 +23,10 @@ import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
-import com.intellij.openapi.ide.CopyPasteManager
 import com.intellij.openapi.observable.properties.AtomicBooleanProperty
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.popup.*
-import com.intellij.psi.PsiElement
 import com.intellij.ui.dsl.builder.AlignX
 import com.intellij.ui.dsl.builder.bindSelected
 import com.intellij.ui.dsl.builder.panel
@@ -42,10 +40,8 @@ import sap.commerce.toolset.flexibleSearch.exec.FlexibleSearchExecConstants
 import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchPsiFile
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.ifNotFromSearchPopup
-import sap.commerce.toolset.scratch.createScratchFile
 import sap.commerce.toolset.transform.TransformationResult
 import sap.commerce.toolset.transform.Transformer
-import java.awt.datatransfer.StringSelection
 import java.awt.event.KeyEvent
 import kotlin.time.Duration.Companion.minutes
 
@@ -153,7 +149,7 @@ class FlexibleSearchTransformAction : AnAction() {
 
                         val transformer = applicableTransformers[selectedTransformerIndex]
                         transformer.transform(psiFile) { result ->
-                            notify(project, result, transformer)
+                            notify(project, result)
                         }
                     }
                 })
@@ -161,16 +157,15 @@ class FlexibleSearchTransformAction : AnAction() {
             }
     }
 
-    private fun notify(project: Project, result: TransformationResult, transformer: Transformer<in PsiElement, out TransformationResult>) = Notifications.create(
+    private fun notify(project: Project, result: TransformationResult) = Notifications.create(
         NotificationType.INFORMATION,
         i18n("hybris.fxs.actions.transform.notification.title"),
         result.description
     )
-        .addAction(i18n("hybris.fxs.actions.transform.notification.copy_to_clipboard")) { _, _ ->
-            CopyPasteManager.getInstance().setContents(StringSelection(result.content))
-        }
-        .addAction(i18n("hybris.fxs.actions.transform.notification.open_scratch")) { _, _ ->
-            createScratchFile(project, result.content, transformer.fileType.defaultExtension)
+        .apply {
+            result.handlers.forEach {
+                this.addAction(it.presentationTitle) { _, _ -> it.handle() }
+            }
         }
         .hideAfter(1.minutes)
         .notify(project)

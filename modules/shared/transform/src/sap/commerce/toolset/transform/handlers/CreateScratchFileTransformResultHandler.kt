@@ -16,18 +16,24 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.impex.transform.context
+package sap.commerce.toolset.transform.handlers
 
-import sap.commerce.toolset.transform.TransformationResult
-import sap.commerce.toolset.transform.handlers.TransformResultHandler
+import com.intellij.openapi.fileEditor.FileEditor
+import com.intellij.openapi.fileTypes.FileType
+import com.intellij.openapi.project.Project
+import sap.commerce.toolset.scratch.createScratchFile
 
-class ImpExTransformationResult(
-    content: String,
-    handlers: Collection<TransformResultHandler>,
-    private val languageName: String,
-    private val exportType: String,
-) : TransformationResult(content, handlers) {
+class CreateScratchFileTransformResultHandler(
+    private val project: Project,
+    private val content: String,
+    private val fileType: FileType,
+    private val onOpen: FileEditor.() -> Unit = {}
+) : TransformResultHandler {
 
-    override val description: String
-        get() = "$exportType to $languageName"
+    override val presentationTitle: String
+        get() = "Open as Scratch File"
+
+    override fun handle() {
+        createScratchFile(project, content, fileType.defaultExtension, onOpen)
+    }
 }

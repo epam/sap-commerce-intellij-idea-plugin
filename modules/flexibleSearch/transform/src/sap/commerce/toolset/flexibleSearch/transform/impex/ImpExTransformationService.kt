@@ -35,6 +35,8 @@ import sap.commerce.toolset.flexibleSearch.transform.context.FxSTransformationRe
 import sap.commerce.toolset.flexibleSearch.transform.impex.context.ImpExTransformationContext
 import sap.commerce.toolset.flexibleSearch.transform.impex.context.ImpExTransformationDescriptor
 import sap.commerce.toolset.hac.exec.HacExecConnectionService
+import sap.commerce.toolset.transform.handlers.CopyToClipboardTransformResultHandler
+import sap.commerce.toolset.transform.handlers.CreateScratchFileTransformResultHandler
 import sap.commerce.toolset.typeSystem.TSConstants
 
 /**
@@ -88,6 +90,10 @@ internal class ImpExTransformationService(
                 content = content,
                 exportType = descriptor.typeName,
                 exportRows = descriptor.rows,
+                handlers = listOf(
+                    CopyToClipboardTransformResultHandler(content),
+                    CreateScratchFileTransformResultHandler(project, content, fileType)
+                ),
             )
         }
 
@@ -99,6 +105,10 @@ internal class ImpExTransformationService(
             content = content,
             exportType = descriptor.typeName,
             exportRows = descriptor.rows,
+            handlers = listOf(
+                CopyToClipboardTransformResultHandler(content),
+                CreateScratchFileTransformResultHandler(project, content, fileType)
+            )
         )
     }
 

@@ -25,14 +25,19 @@ import com.intellij.openapi.components.service
 import com.intellij.openapi.fileTypes.LanguageFileType
 import com.intellij.openapi.project.Project
 import com.intellij.psi.codeStyle.CodeStyleManager
+import com.intellij.util.asSafely
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import sap.commerce.toolset.impex.psi.ImpExValueLine
 import sap.commerce.toolset.impex.transform.context.ImpExTransformationResult
+import sap.commerce.toolset.polyglotQuery.editor.PolyglotQuerySplitEditor
 import sap.commerce.toolset.polyglotQuery.psi.PolyglotElementFactory
+import sap.commerce.toolset.transform.handlers.CopyToClipboardTransformResultHandler
+import sap.commerce.toolset.transform.handlers.CreateScratchFileTransformResultHandler
 
 @Service(Service.Level.PROJECT)
 class PgQTransformationService(
+    private val project: Project,
     private val coroutineScope: CoroutineScope,
 ) {
 
@@ -47,7 +52,7 @@ class PgQTransformationService(
         }
     }
 
-    suspend fun transform(languageFileType: LanguageFileType, element: ImpExValueLine): ImpExTransformationResult {
+    suspend fun transform(fileType: LanguageFileType, element: ImpExValueLine): ImpExTransformationResult {
         val data = readAction { buildTransformData(element) }
             ?: error("cannot extract PSI/meta data")
 
@@ -66,9 +71,17 @@ class PgQTransformationService(
         }
 
         return ImpExTransformationResult(
-            languageName = languageFileType.name,
+            languageName = fileType.name,
             content = formattedText,
             exportType = data.rootType,
+            handlers = listOf(
+                CopyToClipboardTransformResultHandler(content),
+                CreateScratchFileTransformResultHandler(project, content, fileType) {
+                    this.asSafely<PolyglotQuerySplitEditor>()?.let {
+                        it.inEditorParameters = true
+                    }
+                }
+            )
         )
     }
 

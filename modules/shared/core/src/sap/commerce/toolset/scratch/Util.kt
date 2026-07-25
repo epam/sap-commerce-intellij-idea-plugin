@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,6 +22,7 @@ import com.intellij.ide.scratch.ScratchRootType
 import com.intellij.lang.Language
 import com.intellij.openapi.application.EDT
 import com.intellij.openapi.application.edtWriteAction
+import com.intellij.openapi.fileEditor.FileEditor
 import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.fileTypes.FileTypeRegistry
 import com.intellij.openapi.fileTypes.LanguageFileType
@@ -56,6 +57,7 @@ fun createScratchFile(
     project: Project,
     text: String,
     fileExtension: String,
+    onOpen: FileEditor.() -> Unit = {}
 ) {
     CoroutineScope(Dispatchers.Default).launch {
         val scratchRoot = ScratchRootType.getInstance()
@@ -70,6 +72,8 @@ fun createScratchFile(
 
         withContext(Dispatchers.EDT) {
             FileEditorManager.getInstance(project).openFile(vf, true)
+                .firstOrNull()
+                ?.let { onOpen(it) }
         }
     }
 }

@@ -20,13 +20,15 @@ package sap.commerce.toolset.flexibleSearch.transform.context
 
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.transform.TransformationResult
+import sap.commerce.toolset.transform.handlers.TransformResultHandler
 
 class FxSTransformationResult(
     content: String,
+    handlers: Collection<TransformResultHandler>,
     private val languageName: String,
     private val exportType: String,
     private val exportRows: List<List<String>>,
-) : TransformationResult(content) {
+) : TransformationResult(content, handlers) {
 
     override val description: String
         get() = if (exportRows.isEmpty()) "$exportType to $languageName"
