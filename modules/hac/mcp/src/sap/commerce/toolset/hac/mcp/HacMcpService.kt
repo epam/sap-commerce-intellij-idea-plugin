@@ -70,7 +70,7 @@ class HacMcpService(private val project: Project) {
                 supportedByMcp = conn.authMode == AuthMode.AUTOMATIC,
             )
         }
-        return HacConnectionsDto(matched = items.size, total = items.size, connections = items)
+        return HacConnectionsDto(matched = items.size, total = items.size, items = items)
     }
 
     companion object {

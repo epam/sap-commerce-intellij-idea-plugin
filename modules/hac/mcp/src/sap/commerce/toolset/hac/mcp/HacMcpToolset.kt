@@ -30,7 +30,7 @@ class HacMcpToolset : McpToolset {
     @McpTool(name = "sap_commerce_list_hac_connections")
     @McpDescription(
         """Lists all configured HAC (Hybris Administration Console) connections for the current project as a JSON object.
-        |Shape: {"matched", "total", "connections": [{"name": String, "url": String, "active": Boolean, "authMode": "AUTOMATIC" | "MANUAL", "supportedByMcp": Boolean}]}.
+        |Shape: {"matched", "total", "items": [{"name": String, "url": String, "active": Boolean, "authMode": "AUTOMATIC" | "MANUAL", "supportedByMcp": Boolean}]}.
         | - name: pass it to other HAC tools to target a specific server;
         | - active: whether it is the currently active connection;
         | - authMode: AUTOMATIC (credentials persisted in the IDE) or MANUAL (interactive browser-based authentication);

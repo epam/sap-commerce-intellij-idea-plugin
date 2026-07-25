@@ -24,5 +24,5 @@ import kotlinx.serialization.Serializable
 data class HacConnectionsDto(
     val matched: Int,
     val total: Int,
-    val connections: List<HacConnectionDto>,
+    val items: List<HacConnectionDto>,
 )
