@@ -385,7 +385,7 @@ class ImpExConverterTest {
      * `solrIndexedType(identifier)[unique=true]` — not `(identifier,indexname)`.
      *
      * Query: `… FROM {SolrIndexedProperty AS t JOIN SolrIndexedType AS t0 ON {t0.pk}={t.solrIndexedType}}`
-     *        `WHERE {t.name} = 'feature-powersupply' AND {t0.identifier} = 'mcProductType'`
+     *        `WHERE {t.name} = 'feature-powersupply' AND {t0.identifier} = 'productType'`
      */
     @Test
     fun buildImpEx_joinNaturalKeyOverridesFullCompositeKey() {
@@ -409,13 +409,13 @@ class ImpExConverterTest {
                 modifiers = listOf("unique=true"),
             ),
         )
-        val rows = listOf(listOf("pk1", "feature-powersupply", "mcProductType"))
+        val rows = listOf(listOf("pk1", "feature-powersupply", "productType"))
 
         val result = ImpExConverter.buildImpEx(makeContext(queryInfo, params, rows))
 
         assertEquals(
             expected = """INSERT_UPDATE SolrIndexedProperty; name[unique=true]; solrIndexedType(identifier)[unique=true]
-; "feature-powersupply"; mcProductType
+; "feature-powersupply"; productType
 """,
             actual = result
         )
@@ -508,7 +508,7 @@ class ImpExConverterTest {
 
     /**
      * Query: SELECT {pk},{name} FROM {SolrIndexedProperty AS t JOIN SolrIndexedType AS t0 ON {t0.pk}={t.solrIndexedType}}
-     *        WHERE {t.name} = ?name AND {t0.identifier} = 'mcProductType'
+     *        WHERE {t.name} = ?name AND {t0.identifier} = 'productType'
      *
      * The `solrIndexedType` FK column is not in SELECT but is uniquely constrained via the JOIN.
      * It must appear as a synthetic column at the end with the constant value from the WHERE clause.
@@ -516,14 +516,14 @@ class ImpExConverterTest {
      * Expected header:
      *   INSERT_UPDATE SolrIndexedProperty; name[unique=true]; solrIndexedType(identifier)[unique=true]
      * Expected data row:
-     *   ; "propertyName"; mcProductType
+     *   ; "propertyName"; productType
      */
     @Test
     fun buildImpEx_joinUniqueColumn_appendedAtEndWithConstantValue() {
         val joinUniqueCol = FxSJoinUniqueColumn(
             fkAttributeName = "solrIndexedType",
             naturalKeyAttr = "identifier",
-            constantValue = "mcProductType",
+            constantValue = "productType",
         )
         val queryInfo = FxSQueryInfo(
             primaryType = "SolrIndexedProperty",
@@ -549,7 +549,7 @@ class ImpExConverterTest {
 
         assertEquals(
             expected = """INSERT_UPDATE SolrIndexedProperty; name[unique=true]; solrIndexedType(identifier)[unique=true]
-; "propertyName"; mcProductType
+; "propertyName"; productType
 """,
             actual = result
         )
@@ -676,7 +676,7 @@ class ImpExConverterTest {
      * FROM {Product AS t
      *        JOIN CatalogVersion AS t0 ON {t0.pk} = {t.catalogversion}
      *        JOIN Catalog        AS t1 ON {t1.pk} = {t0.catalog}}
-     * WHERE {t.code} = '637227' AND {t1.id} = 'mcProductCatalog' AND {t0.version} = 'Staged'
+     * WHERE {t.code} = '637227' AND {t1.id} = 'productCatalog' AND {t0.version} = 'Staged'
      * ```
      *
      * Both `t0` and `t1` resolve to the same root FK `catalogversion` after multi-level chain

@@ -23,7 +23,7 @@ package sap.commerce.toolset.flexibleSearch.transform.context
  *
  * The [fxsLookupQuery] returns rows where column 0 is the PK and columns 1..N are the natural key
  * component values. These components are joined with `:` (the ImpEx path delimiter) to form the
- * final importable string, e.g. `mcProductCatalog:Staged` for a CatalogVersion reference.
+ * final importable string, e.g. `productCatalog:Staged` for a CatalogVersion reference.
  *
  * @param typeName       SAP Commerce type name of the FK attribute (e.g. `CatalogVersion`).
  * @param fxsLookupQuery Pre-built FxS SELECT query (e.g.

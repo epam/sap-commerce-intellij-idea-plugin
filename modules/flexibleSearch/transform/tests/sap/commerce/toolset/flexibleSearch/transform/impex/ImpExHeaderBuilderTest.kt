@@ -399,18 +399,18 @@ class ImpExHeaderBuilderTest  {
     fun resolveFkPks_replacesKnownFkPks() {
         val rows = listOf(listOf("rowPk", "8796125987417", "637227"))
         val fkColIndices = setOf(1)
-        val pkToNaturalKey = mapOf("8796125987417" to "mcProductCatalog:Staged")
+        val pkToNaturalKey = mapOf("8796125987417" to "productCatalog:Staged")
 
         val result = ImpExHeaderBuilder.resolveFkPks(rows, fkColIndices, pkToNaturalKey)
 
-        assertEquals(listOf(listOf("rowPk", "mcProductCatalog:Staged", "637227")), result)
+        assertEquals(listOf(listOf("rowPk", "productCatalog:Staged", "637227")), result)
     }
 
     @Test
     fun resolveFkPks_keepsOriginalValueForUnknownPk() {
         val rows = listOf(listOf("rowPk", "9999999999999"))
         val fkColIndices = setOf(1)
-        val pkToNaturalKey = mapOf("8796125987417" to "mcProductCatalog:Staged")
+        val pkToNaturalKey = mapOf("8796125987417" to "productCatalog:Staged")
 
         val result = ImpExHeaderBuilder.resolveFkPks(rows, fkColIndices, pkToNaturalKey)
 
@@ -420,7 +420,7 @@ class ImpExHeaderBuilderTest  {
     @Test
     fun resolveFkPks_emptyIndices_returnsRowsUnchanged() {
         val rows = listOf(listOf("rowPk", "8796125987417"))
-        val pkToNaturalKey = mapOf("8796125987417" to "mcProductCatalog:Staged")
+        val pkToNaturalKey = mapOf("8796125987417" to "productCatalog:Staged")
 
         val result = ImpExHeaderBuilder.resolveFkPks(rows, emptySet(), pkToNaturalKey)
 
@@ -431,11 +431,11 @@ class ImpExHeaderBuilderTest  {
     fun resolveFkPks_multipleFkColumns_replacesAll() {
         val rows = listOf(listOf("rowPk", "fk1Pk", "scalar", "fk2Pk"))
         val fkColIndices = setOf(1, 3)
-        val pkToNaturalKey = mapOf("fk1Pk" to "mcProductCatalog:Staged", "fk2Pk" to "en")
+        val pkToNaturalKey = mapOf("fk1Pk" to "productCatalog:Staged", "fk2Pk" to "en")
 
         val result = ImpExHeaderBuilder.resolveFkPks(rows, fkColIndices, pkToNaturalKey)
 
-        assertEquals(listOf(listOf("rowPk", "mcProductCatalog:Staged", "scalar", "en")), result)
+        assertEquals(listOf(listOf("rowPk", "productCatalog:Staged", "scalar", "en")), result)
     }
 
     @Test
