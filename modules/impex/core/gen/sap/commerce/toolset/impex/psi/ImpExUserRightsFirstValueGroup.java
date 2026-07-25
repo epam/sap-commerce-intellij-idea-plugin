@@ -41,6 +41,6 @@ public interface ImpExUserRightsFirstValueGroup extends PsiElement {
   @Nullable
   ImpExUserRightsSingleValue getUserRightsSingleValue();
 
-  @NotNull ImpExValueLine getValueLine();
+  @Nullable ImpExValueLine getValueLine();
 
 }

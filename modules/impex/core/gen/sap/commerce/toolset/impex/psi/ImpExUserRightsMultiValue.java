@@ -29,6 +29,6 @@ import com.intellij.psi.PsiElement;
 
 public interface ImpExUserRightsMultiValue extends ImpExUserRightsValue {
 
-  @NotNull ImpExUserRightsHeaderParameter getHeaderParameter();
+  @Nullable ImpExUserRightsHeaderParameter getHeaderParameter();
 
 }

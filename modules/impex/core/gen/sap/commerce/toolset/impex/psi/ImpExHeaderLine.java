@@ -27,7 +27,6 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.openapi.util.TextRange;
-import error.NonExistentClass;
 import java.util.Collection;
 
 import sap.commerce.toolset.impex.codeInspection.context.ImpExColumnContext;

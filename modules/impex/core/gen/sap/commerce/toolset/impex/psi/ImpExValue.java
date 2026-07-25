@@ -38,7 +38,7 @@ public interface ImpExValue extends ImpExPsiNamedElement {
   @Nullable
   ImpExString getString();
 
-  @NotNull ImpExValueGroup getValueGroup();
+  @Nullable ImpExValueGroup getValueGroup();
 
   @Nullable PsiElement getFieldValue(int index);
 

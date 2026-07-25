@@ -39,7 +39,7 @@ public interface ImpExValueLine extends PsiElement {
 
   @Nullable ImpExHeaderLine getHeaderLine();
 
-  @NotNull ImpExValueGroup getValueGroup(int columnNumber);
+  @Nullable ImpExValueGroup getValueGroup(int columnNumber);
 
   @Nullable TSGlobalMetaClassifier<? extends @NotNull DomElement> getMetaType();
 

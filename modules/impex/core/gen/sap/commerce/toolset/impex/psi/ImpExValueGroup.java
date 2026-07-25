@@ -34,11 +34,11 @@ public interface ImpExValueGroup extends PsiElement {
   @Nullable
   ImpExValue getValue();
 
-  @NotNull ImpExFullHeaderParameter getFullHeaderParameter();
+  @Nullable ImpExFullHeaderParameter getFullHeaderParameter();
 
   int getColumnNumber();
 
-  @NotNull ImpExValueLine getValueLine();
+  @Nullable ImpExValueLine getValueLine();
 
   @Nullable String rawValue();
 

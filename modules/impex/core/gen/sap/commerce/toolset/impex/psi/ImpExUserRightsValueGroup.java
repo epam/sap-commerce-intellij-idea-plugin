@@ -41,10 +41,10 @@ public interface ImpExUserRightsValueGroup extends PsiElement {
   @Nullable
   ImpExUserRightsSingleValue getUserRightsSingleValue();
 
-  @NotNull ImpExUserRightsValueLine getValueLine();
+  @Nullable ImpExUserRightsValueLine getValueLine();
 
   @Nullable Integer getColumnNumber();
 
-  @NotNull ImpExUserRightsHeaderParameter getHeaderParameter();
+  @Nullable ImpExUserRightsHeaderParameter getHeaderParameter();
 
 }
