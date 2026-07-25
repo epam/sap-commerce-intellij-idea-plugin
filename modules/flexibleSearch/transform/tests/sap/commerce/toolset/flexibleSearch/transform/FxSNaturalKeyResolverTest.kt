@@ -18,6 +18,7 @@
 
 package sap.commerce.toolset.flexibleSearch.transform
 
+import sap.commerce.toolset.typeSystem.TSConstants
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -59,7 +60,7 @@ class FxSNaturalKeyResolverTest {
             uniqueIndexKeys = emptyList(),
             attrTypes = emptyMap(),
         )
-        assertEquals("pk", resolve(snapshot))
+        assertEquals(TSConstants.Attribute.PK, resolve(snapshot))
     }
 
     @Test

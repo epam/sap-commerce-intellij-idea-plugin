@@ -26,6 +26,7 @@ import sap.commerce.toolset.flexibleSearch.transform.context.FxSColumn
 import sap.commerce.toolset.flexibleSearch.transform.context.FxSQueryInfo
 import sap.commerce.toolset.flexibleSearch.transform.impex.context.ImpExHeaderParameter
 import sap.commerce.toolset.flexibleSearch.transform.impex.context.ImpExTransformationDescriptor
+import sap.commerce.toolset.typeSystem.TSConstants
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
@@ -112,7 +113,7 @@ class ImpExHeaderBuilderTest  {
         val queryInfo = FxSQueryInfo(
             primaryType = "Order",
             columns = listOf(
-                FxSColumn(resultHeaderName = "pk", attributeName = "pk", isPk = true),
+                FxSColumn(resultHeaderName = TSConstants.Attribute.PK, attributeName = "pk", isPk = true),
                 FxSColumn(resultHeaderName = "status", attributeName = "status", isPk = false),
                 FxSColumn(resultHeaderName = "code", attributeName = "code", isPk = false),
             ),
@@ -134,7 +135,7 @@ class ImpExHeaderBuilderTest  {
         val queryInfo = FxSQueryInfo(
             primaryType = "Product",
             columns = listOf(
-                FxSColumn(resultHeaderName = "pk", attributeName = "pk", isPk = true),
+                FxSColumn(resultHeaderName = TSConstants.Attribute.PK, attributeName = "pk", isPk = true),
                 FxSColumn(resultHeaderName = "code", attributeName = "code", isPk = false),
                 FxSColumn(resultHeaderName = "name", attributeName = "name", isPk = false),
             ),
@@ -155,7 +156,7 @@ class ImpExHeaderBuilderTest  {
         val queryInfo = FxSQueryInfo(
             primaryType = "Product",
             columns = listOf(
-                FxSColumn(resultHeaderName = "pk", attributeName = "pk", isPk = true),
+                FxSColumn(resultHeaderName = TSConstants.Attribute.PK, attributeName = "pk", isPk = true),
                 FxSColumn(resultHeaderName = "status", attributeName = "status", isPk = false),
             ),
             uniqueAttributeNames = emptySet(),
@@ -175,7 +176,7 @@ class ImpExHeaderBuilderTest  {
         val queryInfo = FxSQueryInfo(
             primaryType = "OrderEntry",
             columns = listOf(
-                FxSColumn(resultHeaderName = "pk", attributeName = "pk", isPk = true),
+                FxSColumn(resultHeaderName = TSConstants.Attribute.PK, attributeName = "pk", isPk = true),
                 FxSColumn(resultHeaderName = "deliveryMode", attributeName = "deliveryMode", isPk = false),
                 FxSColumn(resultHeaderName = "paymentMode", attributeName = "paymentMode", isPk = false),
             ),
@@ -223,7 +224,7 @@ class ImpExHeaderBuilderTest  {
 
     @Test
     fun buildFkLookupQuery_pkPath_returnsNull() {
-        assertNull(ImpExHeaderBuilder.buildFkLookupQuery("Language", "pk", emptyMap()))
+        assertNull(ImpExHeaderBuilder.buildFkLookupQuery("Language", TSConstants.Attribute.PK, emptyMap()))
     }
 
     @Test
@@ -334,7 +335,7 @@ class ImpExHeaderBuilderTest  {
         val queryInfo = FxSQueryInfo(
             primaryType = "Product",
             columns = listOf(
-                FxSColumn(resultHeaderName = "pk", attributeName = "pk", isPk = true),
+                FxSColumn(resultHeaderName = TSConstants.Attribute.PK, attributeName = "pk", isPk = true),
                 FxSColumn(resultHeaderName = "catalogVersion", attributeName = "catalogVersion", isPk = false),
                 FxSColumn(resultHeaderName = "code", attributeName = "code", isPk = false),
             ),
@@ -355,7 +356,7 @@ class ImpExHeaderBuilderTest  {
         val queryInfo = FxSQueryInfo(
             primaryType = "Product",
             columns = listOf(
-                FxSColumn(resultHeaderName = "pk", attributeName = "pk", isPk = true),
+                FxSColumn(resultHeaderName = TSConstants.Attribute.PK, attributeName = "pk", isPk = true),
                 FxSColumn(resultHeaderName = "catalogVersion", attributeName = "catalogVersion", isPk = false),
             ),
             uniqueAttributeNames = emptySet(),
@@ -375,7 +376,7 @@ class ImpExHeaderBuilderTest  {
         val queryInfo = FxSQueryInfo(
             primaryType = "Order",
             columns = listOf(
-                FxSColumn(resultHeaderName = "pk", attributeName = "pk", isPk = true),
+                FxSColumn(resultHeaderName = TSConstants.Attribute.PK, attributeName = "pk", isPk = true),
                 FxSColumn(resultHeaderName = "status", attributeName = "status", isPk = false),
                 FxSColumn(resultHeaderName = "code", attributeName = "code", isPk = false),
             ),

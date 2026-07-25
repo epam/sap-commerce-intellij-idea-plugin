@@ -137,14 +137,14 @@ class FxSTransformationService(
         val hasJoins = ctx.joins.isNotEmpty()
 
         val selectColumns = if (includeAllAttributes) {
-            rootMeta?.selectableColumns() ?: listOf("pk")
+            rootMeta?.selectableColumns() ?: listOf(TSConstants.Attribute.PK)
         } else {
             buildList {
-                add("pk")
+                add(TSConstants.Attribute.PK)
                 header.fullHeaderParameterList
                     .map { it.parametersContext.rootParameter.name }
                     .distinct()
-                    .filter { it != "pk" }
+                    .filter { it != TSConstants.Attribute.PK }
                     .forEach { add(it) }
             }
         }.joinToString(", ") { if (hasJoins) "{${ctx.rootAlias}.$it}" else "{$it}" }
@@ -226,7 +226,7 @@ class FxSTransformationService(
         ?: "?"
 
     private fun TSGlobalMetaItem.selectableColumns(): List<String> = buildList {
-        add("pk")
+        add(TSConstants.Attribute.PK)
         allAttributes.values
             .asSequence()
             .filter { it.persistence.type == PersistenceType.PROPERTY }
