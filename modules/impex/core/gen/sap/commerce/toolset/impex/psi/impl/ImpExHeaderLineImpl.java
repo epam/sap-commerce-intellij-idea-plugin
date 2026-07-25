@@ -31,11 +31,10 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static sap.commerce.toolset.impex.psi.ImpExTypes.*;
 
-import sap.commerce.toolset.impex.codeInspection.context.ImpExColumnContext;
-import sap.commerce.toolset.impex.psi.*;
 import com.intellij.openapi.util.TextRange;
-import error.NonExistentClass;
 import java.util.Collection;
+import sap.commerce.toolset.impex.psi.*;
+import sap.commerce.toolset.impex.codeInspection.context.ImpExColumnContext;
 import sap.commerce.toolset.impex.codeInspection.context.ImpExDocIdGenerationContext;
 import sap.commerce.toolset.psi.RangeAwareContent;
 
