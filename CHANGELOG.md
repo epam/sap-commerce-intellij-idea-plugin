@@ -31,7 +31,7 @@
 - Added rename capabilities for Document ID `&DocId` usage values [#1973](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1973)
 - Resolve exact value line meta type in the Document ID `&DocId` usage lookup elements [#1974](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1974)
 - Improved resolution of the nested attributes in the generated FlexibleSearch query [#1974](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1974)
-- New ImpEx Value Line transformer into a Polyglot Query [#1975](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1975)
+- New ImpEx Value Line transformer into a Polyglot Query [#1977](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1977)
 
 ### `FlexibleSearch` enhancements
 - New action to `Introduce Bind Parameters` for query with exact values in the expressions [#1962](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1962)
