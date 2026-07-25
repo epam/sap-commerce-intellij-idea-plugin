@@ -21,8 +21,6 @@ package sap.commerce.toolset.polyglotQuery.editor
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.ClearableLazyValue
 import com.intellij.openapi.util.text.StringUtil
-import com.intellij.psi.tree.IElementType
-import com.intellij.psi.util.elementType
 import com.intellij.util.asSafely
 import org.apache.commons.lang3.BooleanUtils
 import sap.commerce.toolset.polyglotQuery.psi.PolyglotQueryBindParameter
@@ -34,7 +32,6 @@ import kotlin.reflect.KClass
 
 data class PolyglotQueryVirtualParameter(
     val name: String,
-    val operand: IElementType? = null,
     private val project: WeakReference<Project>,
     private val rawType: String? = null,
     val displayName: String = StringUtil.shortenPathWithEllipsis(name, 20),
@@ -54,7 +51,11 @@ data class PolyglotQueryVirtualParameter(
         "long", "java.lang.Long" -> Long::class
         "java.util.Date" -> Date::class
 
-        else -> Any::class
+        else -> project.get()?.takeUnless { p -> p.isDisposed }
+            ?.let { TSMetaModelAccess.getInstance(it) }
+            ?.findMetaItemByName(rawType)
+            ?.let { Int::class }
+            ?: Any::class
     }
 
     var rawValue: Any? = null
@@ -83,7 +84,7 @@ data class PolyglotQueryVirtualParameter(
 
         else -> rawValue?.asSafely<String>()
             ?.let {
-                project.get()?.takeUnless { it.isDisposed }
+                project.get()?.takeUnless { p -> p.isDisposed }
                     ?.let { TSMetaModelAccess.getInstance(it) }
                     ?.findMetaItemByName(rawType)
                     ?.let { "de.hybris.platform.core.PK.parse(\"$rawValue\")" }
@@ -106,12 +107,10 @@ data class PolyglotQueryVirtualParameter(
 
         fun of(bindParameter: PolyglotQueryBindParameter, currentParameters: Map<String, PolyglotQueryVirtualParameter>) = PolyglotQueryVirtualParameter(
             name = bindParameter.value,
-            operand = bindParameter.operator?.elementType,
             rawType = bindParameter.itemType,
             project = WeakReference(bindParameter.project),
         ).apply {
             rawValue = currentParameters[name]?.rawValue
         }
-
     }
 }
