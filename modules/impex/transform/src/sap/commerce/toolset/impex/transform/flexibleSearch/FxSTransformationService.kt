@@ -35,6 +35,8 @@ import sap.commerce.toolset.impex.constants.modifier.AttributeModifier
 import sap.commerce.toolset.impex.psi.ImpExValueLine
 import sap.commerce.toolset.impex.psi.impl.ImpExFullHeaderParameterMixin
 import sap.commerce.toolset.impex.transform.context.ImpExTransformationResult
+import sap.commerce.toolset.impex.transform.flexibleSearch.context.Condition
+import sap.commerce.toolset.impex.transform.flexibleSearch.context.Join
 import sap.commerce.toolset.impex.transform.flexibleSearch.context.QueryContext
 import sap.commerce.toolset.typeSystem.TSConstants
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess

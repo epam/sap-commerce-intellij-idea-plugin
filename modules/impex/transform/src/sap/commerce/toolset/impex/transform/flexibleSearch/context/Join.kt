@@ -16,6 +16,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.impex.transform.flexibleSearch
+package sap.commerce.toolset.impex.transform.flexibleSearch.context
 
-data class Join(val type: String, val alias: String, val ownerAlias: String, val ownerAttr: String)
+data class Join(
+    val type: String,
+    val alias: String,
+    val ownerAlias: String,
+    val ownerAttr: String
+)

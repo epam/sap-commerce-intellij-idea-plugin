@@ -18,9 +18,6 @@
 
 package sap.commerce.toolset.impex.transform.flexibleSearch.context
 
-import sap.commerce.toolset.impex.transform.flexibleSearch.Condition
-import sap.commerce.toolset.impex.transform.flexibleSearch.Join
-
 class QueryContext {
     val rootAlias = "t"
     val joins = mutableListOf<Join>()

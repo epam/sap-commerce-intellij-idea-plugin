@@ -16,6 +16,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.impex.transform.flexibleSearch
+package sap.commerce.toolset.impex.transform.flexibleSearch.context
 
-data class Condition(val alias: String, val attribute: String, val predicate: String)
+data class Condition(
+    val alias: String,
+    val attribute: String,
+    val predicate: String
+)

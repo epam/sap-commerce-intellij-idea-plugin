@@ -33,7 +33,6 @@ import sap.commerce.toolset.polyglotQuery.psi.PolyglotElementFactory
 
 @Service(Service.Level.PROJECT)
 class PgQTransformationService(
-    private val project: Project,
     private val coroutineScope: CoroutineScope,
 ) {
 
