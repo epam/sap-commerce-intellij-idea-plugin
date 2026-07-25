@@ -55,7 +55,7 @@ public class ImpExAnyAttributeNameImpl extends ImpExAttributeNameMixin implement
   }
 
   @Override
-  public @NotNull ImpExAnyAttributeValue getAnyAttributeValue() {
+  public @Nullable ImpExAnyAttributeValue getAnyAttributeValue() {
     return ImpExPsiUtil.getAnyAttributeValue(this);
   }
 

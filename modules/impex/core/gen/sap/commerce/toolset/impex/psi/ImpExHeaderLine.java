@@ -29,6 +29,8 @@ import com.intellij.psi.PsiElement;
 import com.intellij.openapi.util.TextRange;
 import error.NonExistentClass;
 import java.util.Collection;
+
+import sap.commerce.toolset.impex.codeInspection.context.ImpExColumnContext;
 import sap.commerce.toolset.impex.codeInspection.context.ImpExDocIdGenerationContext;
 import sap.commerce.toolset.psi.RangeAwareContent;
 
@@ -43,9 +45,9 @@ public interface ImpExHeaderLine extends PsiElement {
   @Nullable
   ImpExFullHeaderType getFullHeaderType();
 
-  @NotNull ImpExFullHeaderParameter getFullHeaderParameter(@NotNull String parameterName);
+  @Nullable ImpExFullHeaderParameter getFullHeaderParameter(@NotNull String parameterName);
 
-  @NotNull ImpExFullHeaderParameter getFullHeaderParameter(int index);
+  @Nullable ImpExFullHeaderParameter getFullHeaderParameter(int index);
 
   @NotNull Collection<@NotNull ImpExValueLine> getValueLines();
 
@@ -59,6 +61,6 @@ public interface ImpExHeaderLine extends PsiElement {
 
   @Nullable RangeAwareContent generateDocId(@NotNull ImpExDocIdGenerationContext context);
 
-  NonExistentClass getColumnContexts();
+  @NotNull List<@NotNull ImpExColumnContext> getColumnContexts();
 
 }

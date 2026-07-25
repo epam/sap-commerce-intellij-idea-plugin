@@ -33,6 +33,6 @@ public interface ImpExMacroNameDec extends ImpExPsiNamedElement {
 
   @NotNull ImpExMacroNameDecMixin getNameIdentifier();
 
-  @NotNull String resolveValue(@NotNull Set<@NotNull ImpExMacroUsageDec> evaluatedMacroUsages);
+  @NotNull String resolveValue(@NotNull Set<@Nullable ImpExMacroUsageDec> evaluatedMacroUsages);
 
 }

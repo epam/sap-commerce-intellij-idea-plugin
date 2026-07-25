@@ -74,7 +74,7 @@ public class ImpExUserRightsValueGroupImpl extends ASTWrapperPsiElement implemen
   }
 
   @Override
-  public @NotNull ImpExUserRightsValueLine getValueLine() {
+  public @Nullable ImpExUserRightsValueLine getValueLine() {
     return ImpExPsiUtil.getValueLine(this);
   }
 
@@ -84,7 +84,7 @@ public class ImpExUserRightsValueGroupImpl extends ASTWrapperPsiElement implemen
   }
 
   @Override
-  public @NotNull ImpExUserRightsHeaderParameter getHeaderParameter() {
+  public @Nullable ImpExUserRightsHeaderParameter getHeaderParameter() {
     return ImpExPsiUtil.getHeaderParameter(this);
   }
 

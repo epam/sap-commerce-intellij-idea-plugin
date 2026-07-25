@@ -35,6 +35,6 @@ public interface ImpExMacroUsageDec extends ImpExPsiNamedElement {
 
   @Nullable String getConfigPropertyKey();
 
-  @NotNull String resolveValue(@NotNull Set<@NotNull ImpExMacroUsageDec> evaluatedMacroUsages);
+  @NotNull String resolveValue(@NotNull Set<@Nullable ImpExMacroUsageDec> evaluatedMacroUsages);
 
 }

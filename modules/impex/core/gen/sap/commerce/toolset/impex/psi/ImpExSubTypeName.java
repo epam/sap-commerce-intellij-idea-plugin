@@ -29,8 +29,8 @@ import com.intellij.psi.PsiElement;
 
 public interface ImpExSubTypeName extends PsiElement {
 
-  @NotNull ImpExValueLine getValueLine();
+  @Nullable ImpExValueLine getValueLine();
 
-  @NotNull ImpExHeaderTypeName getHeaderTypeName();
+  @Nullable ImpExHeaderTypeName getHeaderTypeName();
 
 }

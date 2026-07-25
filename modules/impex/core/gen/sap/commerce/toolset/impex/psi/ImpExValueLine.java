@@ -37,7 +37,7 @@ public interface ImpExValueLine extends PsiElement {
   @NotNull
   List<ImpExValueGroup> getValueGroupList();
 
-  @NotNull ImpExHeaderLine getHeaderLine();
+  @Nullable ImpExHeaderLine getHeaderLine();
 
   @NotNull ImpExValueGroup getValueGroup(int columnNumber);
 

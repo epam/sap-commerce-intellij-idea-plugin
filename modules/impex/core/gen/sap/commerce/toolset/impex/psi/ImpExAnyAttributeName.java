@@ -32,6 +32,6 @@ public interface ImpExAnyAttributeName extends PsiElement {
   @NotNull
   List<ImpExString> getStringList();
 
-  @NotNull ImpExAnyAttributeValue getAnyAttributeValue();
+  @Nullable ImpExAnyAttributeValue getAnyAttributeValue();
 
 }

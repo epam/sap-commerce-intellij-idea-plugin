@@ -33,6 +33,6 @@ public interface ImpExDocumentIdDec extends ImpExPsiNamedElement {
 
   @NotNull Map<@NotNull String, @NotNull Collection<@NotNull ImpExValue>> getValues();
 
-  @NotNull ImpExHeaderTypeName getHeaderType();
+  @Nullable ImpExHeaderTypeName getHeaderType();
 
 }

@@ -49,7 +49,7 @@ public class ImpExUserRightsAttributeValueImpl extends ImpExUserRightsAttributeV
   }
 
   @Override
-  public @NotNull ImpExUserRightsHeaderParameter getHeaderParameter() {
+  public @Nullable ImpExUserRightsHeaderParameter getHeaderParameter() {
     return ImpExPsiUtil.getHeaderParameter(this);
   }
 

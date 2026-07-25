@@ -41,7 +41,7 @@ public interface ImpExAnyHeaderParameterName extends PsiElement {
   @Nullable
   ImpExSpecialParameter getSpecialParameter();
 
-  @NotNull ImpExHeaderTypeName getHeaderItemTypeName();
+  @Nullable ImpExHeaderTypeName getHeaderItemTypeName();
 
   boolean isHeaderAbbreviation();
 

@@ -38,6 +38,6 @@ public interface ImpExString extends PsiElement {
   @NotNull
   List<ImpExScriptMultiline> getScriptMultilineList();
 
-  @NotNull ImpExValueGroup getValueGroup();
+  @Nullable ImpExValueGroup getValueGroup();
 
 }

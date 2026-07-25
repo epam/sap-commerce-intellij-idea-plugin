@@ -30,6 +30,8 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static sap.commerce.toolset.impex.psi.ImpExTypes.*;
+
+import sap.commerce.toolset.impex.codeInspection.context.ImpExColumnContext;
 import sap.commerce.toolset.impex.psi.*;
 import com.intellij.openapi.util.TextRange;
 import error.NonExistentClass;
@@ -77,7 +79,7 @@ public class ImpExHeaderLineImpl extends ImpExHeaderLineMixin implements ImpExHe
   }
 
   @Override
-  public NonExistentClass getColumnContexts() {
+  public @NotNull List<@NotNull ImpExColumnContext>  getColumnContexts() {
     return ImpExPsiUtil.getColumnContexts(this);
   }
 

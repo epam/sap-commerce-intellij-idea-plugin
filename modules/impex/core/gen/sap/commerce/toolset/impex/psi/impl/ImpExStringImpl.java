@@ -67,7 +67,7 @@ public class ImpExStringImpl extends ImpExStringMixin implements ImpExString {
   }
 
   @Override
-  public @NotNull ImpExValueGroup getValueGroup() {
+  public @Nullable ImpExValueGroup getValueGroup() {
     return ImpExPsiUtil.getValueGroup(this);
   }
 

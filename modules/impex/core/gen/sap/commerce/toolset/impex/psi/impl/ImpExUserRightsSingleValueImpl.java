@@ -49,7 +49,7 @@ public class ImpExUserRightsSingleValueImpl extends ImpExUserRightsSingleValueMi
   }
 
   @Override
-  public @NotNull ImpExUserRightsHeaderParameter getHeaderParameter() {
+  public @Nullable ImpExUserRightsHeaderParameter getHeaderParameter() {
     return ImpExPsiUtil.getHeaderParameter(this);
   }
 
