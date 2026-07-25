@@ -30,7 +30,7 @@ import sap.commerce.toolset.typeSystem.meta.model.*
 @Service(Service.Level.PROJECT)
 class TSMcpService(private val project: Project) {
 
-    suspend fun searchItems(request: TSItemSearchMcpRequest): TSItemsDto {
+    suspend fun searchItems(request: TSSearchItemMcpRequest): TSItemsDto {
         val result = TSMcpDataProvider.getInstance(project).search<TSGlobalMetaItem>(request)
         val items = result.items.map { it.toDto(request.detailLevel) }
         return TSItemsDto(
@@ -86,7 +86,7 @@ class TSMcpService(private val project: Project) {
         )
     }
 
-    suspend fun searchEnums(request: TSEnumSearchMcpRequest): TSEnumsDto {
+    suspend fun searchEnums(request: TSSearchEnumMcpRequest): TSEnumsDto {
         val result = TSMcpDataProvider.getInstance(project).search<TSGlobalMetaEnum>(request)
         val items = result.items.map { it.toDto(request.detailLevel) }
         return TSEnumsDto(

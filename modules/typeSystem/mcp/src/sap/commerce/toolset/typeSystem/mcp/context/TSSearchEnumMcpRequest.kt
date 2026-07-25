@@ -20,7 +20,7 @@ package sap.commerce.toolset.typeSystem.mcp.context
 
 import sap.commerce.toolset.typeSystem.meta.model.TSMetaType
 
-class TSEnumSearchMcpRequest(
+class TSSearchEnumMcpRequest(
     filter: String? = null,
     extensions: String? = null,
     val detailLevel: EnumTypeDetail

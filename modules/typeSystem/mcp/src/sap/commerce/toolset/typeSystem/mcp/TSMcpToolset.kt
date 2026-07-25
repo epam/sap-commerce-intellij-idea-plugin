@@ -63,7 +63,7 @@ class TSMcpToolset : McpToolset {
     ): String {
         val mapper = resolveMapper(outputFormat)
         val detailLevel = ItemTypeDetail.resolve(detail)
-        val request = TSItemSearchMcpRequest(filter, extensions, detailLevel)
+        val request = TSSearchItemMcpRequest(filter, extensions, detailLevel)
         val itemTypes = TSMcpService.getInstance().searchItems(request)
         return mapper.map(itemTypes)
     }
@@ -161,7 +161,7 @@ class TSMcpToolset : McpToolset {
     ): String {
         val mapper = resolveMapper(outputFormat)
         val detailLevel = EnumTypeDetail.resolve(detail)
-        val request = TSEnumSearchMcpRequest(filter, extensions, detailLevel)
+        val request = TSSearchEnumMcpRequest(filter, extensions, detailLevel)
         val enumTypes = TSMcpService.getInstance().searchEnums(request)
         return mapper.map(enumTypes)
     }
