@@ -24,20 +24,14 @@ import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.fileTypes.LanguageFileType
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.codeStyle.CodeStyleManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchElementFactory
-import sap.commerce.toolset.impex.ImpExConstants
 import sap.commerce.toolset.impex.ImpExConstants.Transform
-import sap.commerce.toolset.impex.constants.modifier.AttributeModifier
 import sap.commerce.toolset.impex.psi.ImpExValueLine
-import sap.commerce.toolset.impex.psi.impl.ImpExFullHeaderParameterMixin
+import sap.commerce.toolset.impex.transform.ImpExUniqueParamsParser
 import sap.commerce.toolset.impex.transform.context.ImpExTransformationResult
-import sap.commerce.toolset.impex.transform.flexibleSearch.context.Condition
-import sap.commerce.toolset.impex.transform.flexibleSearch.context.Join
-import sap.commerce.toolset.impex.transform.flexibleSearch.context.QueryContext
 import sap.commerce.toolset.transform.handlers.CopyToClipboardTransformResultHandler
 import sap.commerce.toolset.transform.handlers.CreateScratchFileTransformResultHandler
 import sap.commerce.toolset.typeSystem.TSConstants
@@ -85,58 +79,20 @@ class FxSTransformationService(
             content = formattedText,
             exportType = data.rootType,
             handlers = listOf(
-                CopyToClipboardTransformResultHandler(content),
-                CreateScratchFileTransformResultHandler(project, content, fileType)
+                CopyToClipboardTransformResultHandler(formattedText),
+                CreateScratchFileTransformResultHandler(project, formattedText, fileType)
             )
         )
     }
 
     private fun buildTransformData(element: ImpExValueLine): TransformData? {
-        val header = element.headerLine ?: return null
-        val rootType = header.fullHeaderType?.headerTypeName?.text ?: return null
-        val project = header.project
+        val parsed = ImpExUniqueParamsParser.parse(element) ?: return null
+        val ctx = parsed.ctx
+        val rootType = parsed.rootType
+        val project = parsed.project
         val includeAllAttributes = element.getUserData(Transform.INCLUDE_ALL_ATTRIBUTES) ?: false
-
-        val ctx = QueryContext()
         val rootMeta = TSMetaModelAccess.getInstance(project).findMetaItemByName(rootType)
-
-        header.uniqueFullHeaderParameters.forEach { param ->
-            val pathDelimiter = param.getAttributeValue(AttributeModifier.PATH_DELIMITER, ImpExConstants.PATH_DELIMITER)
-            val valueGroup = element.getValueGroup(param.columnNumber) ?: return@forEach
-            val resolvedValue = valueGroup.resolveValue() ?: return@forEach
-            val parametersContext = param.parametersContext
-
-            if (parametersContext.subParameters == null) {
-                val rootParameter = parametersContext.rootParameter
-                val rootMetaContext = rootParameter.metaContext ?: return@forEach
-                ctx.conditions += Condition(
-                    alias = ctx.rootAlias,
-                    attribute = rootParameter.name,
-                    predicate = formatPredicate(resolvedValue, rootMetaContext.attributeType)
-                )
-            } else {
-                val rootParameter = parametersContext.rootParameter
-                val rootMetaContext = rootParameter.metaContext ?: return@forEach
-                val joinAlias = ctx.nextAlias()
-                ctx.joins += Join(
-                    type = rootMetaContext.attributeType,
-                    alias = joinAlias,
-                    ownerAlias = ctx.rootAlias,
-                    ownerAttr = parametersContext.rootParameter.name
-                )
-
-                // An empty cell resolves to the joined defaults of only those leaves that declare
-                // one (see resolveDefaultValue) — distributing that string positionally would
-                // misalign segments onto the wrong leaves. Pass no positional values instead and
-                // let every leaf pull its own default in place.
-                val splitValues = if (valueGroup.value == null) mutableListOf()
-                else resolvedValue.split(pathDelimiter).toMutableList()
-
-                parametersContext.subParameters?.forEach { subParameter ->
-                    processSubParameter(subParameter, ctx, joinAlias, parametersContext, splitValues)
-                }
-            }
-        }
+        val header = element.headerLine ?: return null
 
         if (ctx.conditions.isEmpty()) return null
 
@@ -174,63 +130,6 @@ class FxSTransformationService(
         )
     }
 
-    private fun processSubParameter(
-        subParameter: ImpExFullHeaderParameterMixin.ParametersContext.Parameter,
-        ctx: QueryContext,
-        ownerAlias: String,
-        parametersContext: ImpExFullHeaderParameterMixin.ParametersContext,
-        rawValues: MutableList<String>
-    ) {
-        val subParameters = subParameter.subParameters
-        if (subParameters != null) {
-            val metaContext = subParameter.metaContext ?: return
-            val ownerAttr = metaContext.meta.name ?: return
-
-            val nextAlias = ctx.nextAlias()
-            ctx.joins += Join(
-                type = metaContext.attributeType,
-                alias = nextAlias,
-                ownerAlias = ownerAlias,
-                ownerAttr = ownerAttr
-            )
-
-            subParameters.forEach {
-                processSubParameter(it, ctx, nextAlias, parametersContext, rawValues)
-            }
-        } else {
-            val metaContext = subParameter.metaContext ?: return
-            val subParameterValue = resolveLeafValue(
-                positional = rawValues.removeFirstOrNull(),
-                default = subParameter.getAttributeValue(AttributeModifier.DEFAULT, "")
-            )
-
-            ctx.conditions += Condition(
-                alias = ownerAlias,
-                attribute = subParameter.name,
-                predicate = formatPredicate(subParameterValue, metaContext.attributeType)
-            )
-        }
-    }
-
-    /**
-     * Resolves a nested leaf parameter's value.
-     *
-     * The single cell value of a nested unique column is distributed positionally across its leaf
-     * sub-parameters. When a leaf has no positional value left (e.g. only `code` is supplied for
-     * `baseProduct(code, catalogversion(catalog(id[default=$cat]),version[default='Staged']))`)
-     * or its segment is blank (`26002000::Staged`), fall back to its `[default=...]` modifier —
-     * matching ImpEx semantics where an empty value triggers the default — before the `?` sentinel.
-     *
-     * The default's macros are already expanded (see [ImpExFullHeaderParameterMixin] value resolution);
-     * surrounding single quotes are stripped the same way value groups unquote raw values.
-     */
-    internal fun resolveLeafValue(positional: String?, default: String): String = positional
-        ?.takeIf { it.isNotBlank() }
-        ?: default
-            .takeIf { it.isNotEmpty() }
-            ?.let { StringUtil.unquoteString(it, '\'') }
-        ?: "?"
-
     private fun TSGlobalMetaItem.selectableColumns(): List<String> = buildList {
         add(TSConstants.Attribute.PK)
         allAttributes.values
@@ -246,21 +145,6 @@ class FxSTransformationService(
             .mapNotNull { it.qualifier }
             .distinct()
             .forEach { add(it) }
-    }
-
-    /** Produces "= <literal>" respecting the attribute's declared type. */
-    fun formatPredicate(resolvedValue: String, type: String?): String {
-        val value = resolvedValue.trim().removeSurrounding("\"")
-
-        return when (type) {
-            TSConstants.Primitive.BOOLEAN,
-            TSConstants.Type.JAVA_BOOLEAN -> "= ${if (value.equals("true", true) || value == "1") "1" else "0"}"
-
-            TSConstants.Type.JAVA_STRING -> "= '${value.replace("'", "''")}'"
-
-            null -> "= '${value.replace("'", "''")}'" // unresolved type → safe default: quote as string
-            else -> "= $value" // numeric/enum/date/etc — used as-is, unquoted
-        }
     }
 
     private data class TransformData(

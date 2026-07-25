@@ -21,5 +21,6 @@ package sap.commerce.toolset.impex.transform.flexibleSearch.context
 data class Condition(
     val alias: String,
     val attribute: String,
-    val predicate: String
+    val predicate: String,
+    val rawValue: String? = null,
 )

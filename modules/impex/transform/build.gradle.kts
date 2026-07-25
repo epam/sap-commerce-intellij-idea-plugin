@@ -40,6 +40,9 @@ dependencies {
     implementation(project(":flexibleSearch-core"))
     implementation(project(":polyglotQuery-core"))
     implementation(project(":typeSystem-core"))
+    implementation(project(":exec-core"))
+    implementation(project(":hac-exec"))
+    implementation(project(":flexibleSearch-exec"))
 
     intellijPlatform {
         intellijIdea(properties("intellij.version")) {
