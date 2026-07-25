@@ -20,7 +20,7 @@ package sap.commerce.toolset.ai.mcp
 
 import sap.commerce.toolset.ai.mcp.json.McpJsonMapper
 
-private val mappers = mapOf("JSON" to McpJsonMapper)
+private val mappers = mapOf(McpConstants.Formats.JSON to McpJsonMapper)
 
 fun resolveMapper(format: String): McpMapper = mappers[format.trim().uppercase()]
     ?: error("Unsupported output format '$format'. Supported formats: ${mappers.keys.joinToString()}")

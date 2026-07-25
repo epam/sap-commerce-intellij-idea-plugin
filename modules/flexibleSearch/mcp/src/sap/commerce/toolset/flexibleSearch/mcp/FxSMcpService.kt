@@ -18,40 +18,41 @@
 
 package sap.commerce.toolset.flexibleSearch.mcp
 
+import com.intellij.mcpserver.project
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
+import kotlinx.coroutines.currentCoroutineContext
 import org.apache.http.HttpStatus
 import sap.commerce.toolset.flexibleSearch.FlexibleSearchConstants
 import sap.commerce.toolset.flexibleSearch.exec.FlexibleSearchExecClient
 import sap.commerce.toolset.flexibleSearch.exec.FlexibleSearchExecConstants
 import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecContext
 import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecResult
-import sap.commerce.toolset.flexibleSearch.mcp.context.FxSMcpExecRequest
-import sap.commerce.toolset.flexibleSearch.mcp.context.FxSTransformMcpContext
-import sap.commerce.toolset.flexibleSearch.mcp.dto.FxSMcpResult
+import sap.commerce.toolset.flexibleSearch.mcp.context.FxSExecMcpRequest
+import sap.commerce.toolset.flexibleSearch.mcp.context.FxSTransformMcpRequest
+import sap.commerce.toolset.flexibleSearch.mcp.dto.FxSExecResultDto
 import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchElementFactory
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
-import sap.commerce.toolset.hac.mcp.HacMcpService
 import sap.commerce.toolset.transform.Transformer
 
 @Service(Service.Level.PROJECT)
 class FxSMcpService(private val project: Project) {
 
-    suspend fun execute(execRequest: FxSMcpExecRequest): FxSMcpResult {
-        val connection = execRequest.connection
-        val result = execute(execRequest, connection)
+    suspend fun execute(request: FxSExecMcpRequest): FxSExecResultDto {
+        val connection = request.connection(project)
+        val result = execute(request, connection)
 
         return if (result.statusCode != HttpStatus.SC_OK) {
-            FxSMcpResult(
+            FxSExecResultDto(
                 connectionName = connection.connectionName,
                 success = false,
                 error = result.errorMessage,
                 errorDetail = result.errorDetailMessage,
             )
         } else {
-            FxSMcpResult(
+            FxSExecResultDto(
                 connectionName = connection.connectionName,
                 success = true,
                 output = result.output?.takeIf { it.isNotBlank() },
@@ -59,29 +60,29 @@ class FxSMcpService(private val project: Project) {
         }
     }
 
-    suspend fun transform(context: FxSTransformMcpContext): FxSMcpResult {
-        val psiFile = readAction { FlexibleSearchElementFactory.createFile(project, context.query) }
+    suspend fun transform(request: FxSTransformMcpRequest): FxSExecResultDto {
+        val psiFile = readAction { FlexibleSearchElementFactory.createFile(project, request.query) }
 
         val transformer = Transformer.EP.extensionList
-            .find { it.isApplicable(psiFile) && it.id.equals(context.transformerId, true) }
-            ?: error("No applicable '${context.transformerId}' transformer found for FlexibleSearch")
+            .find { it.isApplicable(psiFile) && it.id.equals(request.transformerId, true) }
+            ?: error("No applicable '${request.transformerId}' transformer found for FlexibleSearch")
 
-        val execRequest = context.execRequest
-        val connection = execRequest.connection
+        val execRequest = request.execRequest
+        val connection = execRequest.connection(project)
 
-        psiFile.putUserData(FlexibleSearchConstants.Transform.INCLUDE_TYPE_SYSTEM_UNIQUE, context.includeTypeSystemUnique)
-        psiFile.putUserData(FlexibleSearchConstants.Transform.INCLUDE_DATA, context.includeData)
+        psiFile.putUserData(FlexibleSearchConstants.Transform.INCLUDE_TYPE_SYSTEM_UNIQUE, request.includeTypeSystemUnique)
+        psiFile.putUserData(FlexibleSearchConstants.Transform.INCLUDE_DATA, request.includeData)
         psiFile.putUserData(FlexibleSearchExecConstants.Transform.CONNECTION, connection)
         psiFile.putUserData(FlexibleSearchExecConstants.Transform.EXEC_SETTINGS, execRequest.execSettings(connection))
 
-        if (context.includeData) {
+        if (request.includeData) {
             val result = execute(execRequest, connection)
             psiFile.putUserData(FlexibleSearchExecConstants.Transform.EXEC_RESULTS, result)
         }
 
         val transformationResult = transformer.transform(psiFile)
 
-        return FxSMcpResult(
+        return FxSExecResultDto(
             connectionName = connection.connectionName,
             success = true,
             output = transformationResult.content,
@@ -90,25 +91,22 @@ class FxSMcpService(private val project: Project) {
     }
 
     private suspend fun execute(
-        execRequest: FxSMcpExecRequest,
+        request: FxSExecMcpRequest,
         connection: HacConnectionSettingsState
     ): FlexibleSearchExecResult {
-        val execSettings = execRequest.execSettings(connection)
+        val execSettings = request.execSettings(connection)
 
         val execContext = FlexibleSearchExecContext(
             connection = connection,
-            content = execRequest.query,
-            queryMode = execRequest.queryMode,
+            content = request.query,
+            queryMode = request.queryMode,
             settings = execSettings
         )
 
         return FlexibleSearchExecClient.getInstance(project).execute(execContext)
     }
 
-    private val FxSMcpExecRequest.connection
-        get() = HacMcpService.getInstance(project).resolveConnection(connectionName)
-
-    private fun FxSMcpExecRequest.execSettings(connection: HacConnectionSettingsState) = FlexibleSearchExecContext.Settings(
+    private fun FxSExecMcpRequest.execSettings(connection: HacConnectionSettingsState) = FlexibleSearchExecContext.Settings(
         maxCount = maxCount,
         locale = locale,
         dataSource = dataSource,
@@ -117,6 +115,6 @@ class FxSMcpService(private val project: Project) {
     )
 
     companion object {
-        fun getInstance(project: Project): FxSMcpService = project.service()
+        suspend fun getInstance(): FxSMcpService = currentCoroutineContext().project.service()
     }
 }

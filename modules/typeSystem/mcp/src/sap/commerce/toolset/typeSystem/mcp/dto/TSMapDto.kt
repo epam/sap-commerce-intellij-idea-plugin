@@ -22,12 +22,12 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class TSMapDto(
-    val name: String,
-    val argumentType: String? = null,
+    override val name: String,
+    override val extension: String? = null,
+    override val custom: Boolean? = null,
+    override val autoCreate: Boolean? = null,
+    override val generate: Boolean? = null,
     val returnType: String? = null,
-    val extension: String? = null,
-    val custom: Boolean? = null,
-    val autoCreate: Boolean? = null,
-    val generate: Boolean? = null,
+    val argumentType: String? = null,
     val redeclare: Boolean? = null,
-)
+) : TSClassifierDto

@@ -21,10 +21,10 @@ package sap.commerce.toolset.groovy.mcp
 import com.intellij.mcpserver.McpToolset
 import com.intellij.mcpserver.annotations.McpDescription
 import com.intellij.mcpserver.annotations.McpTool
-import com.intellij.mcpserver.project
-import kotlinx.coroutines.currentCoroutineContext
+import sap.commerce.toolset.ai.mcp.McpConstants
 import sap.commerce.toolset.ai.mcp.map
 import sap.commerce.toolset.ai.mcp.resolveMapper
+import sap.commerce.toolset.groovy.mcp.context.GroovyExecMcpRequest
 
 class GroovyMcpToolset : McpToolset {
 
@@ -43,12 +43,11 @@ class GroovyMcpToolset : McpToolset {
         @McpDescription("Optional HAC connection name. Uses the active connection if not specified")
         connectionName: String? = null,
         @McpDescription("Output format for the response. Supported formats: JSON. Default: JSON.")
-        outputFormat: String = "JSON",
+        outputFormat: String = McpConstants.Formats.JSON,
     ): String {
         val mapper = resolveMapper(outputFormat)
-        val project = currentCoroutineContext().project
-        val context = GroovyMcpContext(connectionName, script, commit)
-        val result = GroovyMcpService.getInstance(project).execute(context)
+        val request = GroovyExecMcpRequest(connectionName, script, commit)
+        val result = GroovyMcpService.getInstance().execute(request)
         return mapper.map(result)
     }
 }

@@ -23,12 +23,12 @@ import sap.commerce.toolset.transform.TransformationResult
 
 class FxSTransformationResult(
     content: String,
-    private val transformerName: String,
+    private val languageName: String,
     private val exportType: String,
     private val exportRows: List<List<String>>,
 ) : TransformationResult(content) {
 
     override val description: String
-        get() = if (exportRows.isEmpty()) "$exportType to $transformerName"
-        else "$exportType to $transformerName (${i18n("hybris.fxs.actions.transform.notification.rows", exportRows.size)})"
+        get() = if (exportRows.isEmpty()) "$exportType to $languageName"
+        else "$exportType to $languageName (${i18n("hybris.fxs.actions.transform.notification.rows", exportRows.size)})"
 }

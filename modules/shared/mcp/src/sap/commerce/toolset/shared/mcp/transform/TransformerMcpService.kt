@@ -18,48 +18,49 @@
 
 package sap.commerce.toolset.shared.mcp.transform
 
+import com.intellij.mcpserver.project
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
-import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
-import sap.commerce.toolset.shared.mcp.transform.dto.LanguageTransformers
-import sap.commerce.toolset.shared.mcp.transform.dto.TransformerInfo
-import sap.commerce.toolset.shared.mcp.transform.dto.TransformerMcpResult
+import kotlinx.coroutines.currentCoroutineContext
+import sap.commerce.toolset.shared.mcp.transform.dto.TransformerDto
+import sap.commerce.toolset.shared.mcp.transform.dto.TransformersDto
+import sap.commerce.toolset.shared.mcp.transform.dto.TransformersResultDto
 import sap.commerce.toolset.transform.TransformationResult
 import sap.commerce.toolset.transform.Transformer
 
 @Service(Service.Level.PROJECT)
 class TransformerMcpService {
 
-    fun list(languageId: String?): TransformerMcpResult {
+    fun list(languageId: String?): TransformersResultDto {
         val all = Transformer.EP.extensionList
 
         val filtered = if (languageId != null) {
             all.filter { t ->
-                t.language.id.equals(languageId, ignoreCase = true)
-                    || t.language.displayName.equals(languageId, ignoreCase = true)
+                t.fileType.language.id.equals(languageId, ignoreCase = true)
+                    || t.fileType.language.displayName.equals(languageId, ignoreCase = true)
             }
         } else {
             all
         }
 
-        val languages = filtered
-            .groupBy { it.language }
+        val transformers = filtered
+            .groupBy { it.fileType.language }
             .map { (language, transformers) ->
-                LanguageTransformers(
+                TransformersDto(
                     languageId = language.id,
                     displayName = language.displayName,
                     transformers = transformers.map { it.mcpDto },
                 )
             }
 
-        return TransformerMcpResult(languages = languages)
+        return TransformersResultDto(transformers = transformers)
     }
 
-    val Transformer<in PsiFile, out TransformationResult>.mcpDto: TransformerInfo
-        get() = TransformerInfo(id, name, description)
+    val Transformer<in PsiFile, out TransformationResult>.mcpDto: TransformerDto
+        get() = TransformerDto(id, fileType.name, description)
 
     companion object {
-        fun getInstance(project: Project): TransformerMcpService = project.service()
+        suspend fun getInstance(): TransformerMcpService = currentCoroutineContext().project.service()
     }
 }

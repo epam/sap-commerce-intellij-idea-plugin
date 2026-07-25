@@ -21,10 +21,11 @@ package sap.commerce.toolset.solr.mcp
 import com.intellij.mcpserver.McpToolset
 import com.intellij.mcpserver.annotations.McpDescription
 import com.intellij.mcpserver.annotations.McpTool
-import com.intellij.mcpserver.project
-import kotlinx.coroutines.currentCoroutineContext
+import sap.commerce.toolset.ai.mcp.McpConstants
 import sap.commerce.toolset.ai.mcp.map
 import sap.commerce.toolset.ai.mcp.resolveMapper
+import sap.commerce.toolset.solr.mcp.context.SolrListCoresMcpRequest
+import sap.commerce.toolset.solr.mcp.context.SolrQueryExecMcpRequest
 
 class SolrMcpToolset : McpToolset {
 
@@ -43,10 +44,13 @@ class SolrMcpToolset : McpToolset {
         rows: Int = 10,
         @McpDescription("Optional Solr connection name. Uses the active connection if not specified")
         connectionName: String? = null,
+        @McpDescription("Output format for the response. Supported formats: JSON. Default: JSON.")
+        outputFormat: String = McpConstants.Formats.JSON,
     ): String {
-        val project = currentCoroutineContext().project
-        val context = SolrQueryMcpContext(connectionName, query, core, rows)
-        return SolrMcpService.getInstance(project).executeQuery(context)
+        val mapper = resolveMapper(outputFormat)
+        val request = SolrQueryExecMcpRequest(connectionName, query, core, rows)
+        val result = SolrMcpService.getInstance().executeQuery(request)
+        return mapper.map(result)
     }
 
     @McpTool(name = "sap_commerce_solr_list_cores")
@@ -59,12 +63,11 @@ class SolrMcpToolset : McpToolset {
         @McpDescription("Optional Solr connection name. Uses the active connection if not specified")
         connectionName: String? = null,
         @McpDescription("Output format for the response. Supported formats: JSON. Default: JSON.")
-        outputFormat: String = "JSON",
+        outputFormat: String = McpConstants.Formats.JSON,
     ): String {
         val mapper = resolveMapper(outputFormat)
-        val project = currentCoroutineContext().project
-        val context = SolrListCoresMcpContext(connectionName)
-        val cores = SolrMcpService.getInstance(project).listCores(context)
+        val request = SolrListCoresMcpRequest(connectionName)
+        val cores = SolrMcpService.getInstance().listCores(request)
         return mapper.map(cores)
     }
 
@@ -77,11 +80,10 @@ class SolrMcpToolset : McpToolset {
     )
     suspend fun listSolrConnections(
         @McpDescription("Output format for the response. Supported formats: JSON. Default: JSON.")
-        outputFormat: String = "JSON",
+        outputFormat: String = McpConstants.Formats.JSON,
     ): String {
         val mapper = resolveMapper(outputFormat)
-        val project = currentCoroutineContext().project
-        val connections = SolrMcpService.getInstance(project).listConnections()
+        val connections = SolrMcpService.getInstance().listConnections()
         return mapper.map(connections)
     }
 }

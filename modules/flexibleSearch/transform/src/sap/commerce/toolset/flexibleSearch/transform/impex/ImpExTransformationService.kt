@@ -20,6 +20,7 @@ package sap.commerce.toolset.flexibleSearch.transform.impex
 
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
+import com.intellij.openapi.fileTypes.LanguageFileType
 import com.intellij.openapi.project.Project
 import com.intellij.platform.ide.progress.withBackgroundProgress
 import kotlinx.coroutines.*
@@ -57,12 +58,12 @@ internal class ImpExTransformationService(
      * is called before this function returns.
      */
     fun transform(
-        transformerName: String,
+        fileType: LanguageFileType,
         psiFile: FlexibleSearchPsiFile,
         onComplete: (FxSTransformationResult) -> Unit,
     ) {
         coroutineScope.launch {
-            val result = transform(transformerName, psiFile)
+            val result = transform(fileType, psiFile)
             onComplete(result)
         }
     }
@@ -72,7 +73,7 @@ internal class ImpExTransformationService(
      *
      * Behaves identically to the callback overload but returns the ImpEx string directly.
      */
-    suspend fun transform(transformerName: String, psiFile: FlexibleSearchPsiFile): FxSTransformationResult {
+    suspend fun transform(fileType: LanguageFileType, psiFile: FlexibleSearchPsiFile): FxSTransformationResult {
         val descriptor = psiFile.transformationDescriptor()
         val connection = descriptor.connection
             ?: HacExecConnectionService.getInstance(project).activeConnection
@@ -83,7 +84,7 @@ internal class ImpExTransformationService(
             val content = ImpExConverter.buildImpEx(descriptor)
 
             return FxSTransformationResult(
-                transformerName = transformerName,
+                languageName = fileType.name,
                 content = content,
                 exportType = descriptor.typeName,
                 exportRows = descriptor.rows,
@@ -94,7 +95,7 @@ internal class ImpExTransformationService(
         val content = resolveAndBuild(context)
 
         return FxSTransformationResult(
-            transformerName = transformerName,
+            languageName = fileType.name,
             content = content,
             exportType = descriptor.typeName,
             exportRows = descriptor.rows,

@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -28,6 +28,7 @@ import com.intellij.openapi.wm.WindowManager
 import com.intellij.ui.SystemNotifications
 import com.intellij.util.concurrency.AppExecutorUtil
 import java.util.concurrent.TimeUnit
+import kotlin.time.Duration
 
 class Notifications private constructor(type: NotificationType, title: String, content: String) {
 
@@ -55,6 +56,8 @@ class Notifications private constructor(type: NotificationType, title: String, c
         this.system = system
         return this
     }
+
+    fun hideAfter(duration: Duration): Notifications = hideAfter(duration.inWholeSeconds)
 
     fun hideAfter(seconds: Long): Notifications {
         if (seconds > 0) {

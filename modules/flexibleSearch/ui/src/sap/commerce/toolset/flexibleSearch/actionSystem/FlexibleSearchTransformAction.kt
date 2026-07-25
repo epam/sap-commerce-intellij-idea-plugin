@@ -47,6 +47,7 @@ import sap.commerce.toolset.transform.TransformationResult
 import sap.commerce.toolset.transform.Transformer
 import java.awt.datatransfer.StringSelection
 import java.awt.event.KeyEvent
+import kotlin.time.Duration.Companion.minutes
 
 class FlexibleSearchTransformAction : AnAction() {
 
@@ -99,24 +100,25 @@ class FlexibleSearchTransformAction : AnAction() {
                         if (hasData) i18n("hybris.fxs.actions.transform.dialog.include_data.has_result", rows.size)
                         else i18n("hybris.fxs.actions.transform.dialog.include_data.no_result")
                     )
-            }
-
-            row(i18n("hybris.fxs.actions.transform.dialog.transformer")) {
-                val cell = comboBox(applicableTransformers.map { it.name })
-                cell.component.addActionListener {
-                    selectedTransformerIndex = cell.component.selectedIndex.coerceAtLeast(0)
+                if (hasData) {
+                    link(i18n("hybris.fxs.actions.transform.dialog.clear_data")) {
+                        editor.clearExecutionResult()
+                        myPopup.cancel()
+                    }.align(AlignX.RIGHT)
                 }
             }
 
             separator()
 
             row {
-                if (hasData) {
-                    button(i18n("hybris.fxs.actions.transform.dialog.clear_data")) {
-                        editor.clearExecutionResult()
-                        myPopup.cancel()
+                comboBox(applicableTransformers.map { it.fileType.name })
+                    .label(i18n("hybris.fxs.actions.transform.dialog.transformer"))
+                    .applyToComponent {
+                        addActionListener {
+                            selectedTransformerIndex = selectedIndex.coerceAtLeast(0)
+                        }
                     }
-                }
+
                 button(i18n("hybris.fxs.actions.transform.dialog.transform")) {
                     myPopup.closeOk(null)
                 }.align(AlignX.RIGHT)
@@ -168,8 +170,8 @@ class FlexibleSearchTransformAction : AnAction() {
             CopyPasteManager.getInstance().setContents(StringSelection(result.content))
         }
         .addAction(i18n("hybris.fxs.actions.transform.notification.open_scratch")) { _, _ ->
-            createScratchFile(project, result.content, transformer.fileExtension)
+            createScratchFile(project, result.content, transformer.fileType.defaultExtension)
         }
-        .system(true)
+        .hideAfter(1.minutes)
         .notify(project)
 }

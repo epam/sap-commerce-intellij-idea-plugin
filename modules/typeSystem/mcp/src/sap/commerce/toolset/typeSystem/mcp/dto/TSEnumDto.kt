@@ -22,13 +22,13 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class TSEnumDto(
-    val name: String,
-    val extension: String? = null,
+    override val name: String,
+    override val extension: String? = null,
+    override val custom: Boolean? = null,
+    override val autoCreate: Boolean? = null,
+    override val generate: Boolean? = null,
     val dynamic: Boolean? = null,
-    val custom: Boolean? = null,
-    val autoCreate: Boolean? = null,
-    val generate: Boolean? = null,
     val deprecated: Boolean? = null,
     val description: String? = null,
     val values: List<TSEnumValueDto>? = null,
-)
+) : TSClassifierDto

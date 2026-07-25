@@ -22,10 +22,10 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class TSAtomicDto(
-    val name: String,
+    override val name: String,
+    override val extension: String? = null,
+    override val custom: Boolean? = null,
+    override val autoCreate: Boolean? = null,
+    override val generate: Boolean? = null,
     val extends: String? = null,
-    val extension: String? = null,
-    val custom: Boolean? = null,
-    val autoCreate: Boolean? = null,
-    val generate: Boolean? = null,
-)
+) : TSClassifierDto

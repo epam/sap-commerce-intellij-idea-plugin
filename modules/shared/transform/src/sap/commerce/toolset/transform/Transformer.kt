@@ -20,15 +20,14 @@ package sap.commerce.toolset.transform
 
 import com.intellij.lang.Language
 import com.intellij.openapi.extensions.ExtensionPointName
+import com.intellij.openapi.fileTypes.LanguageFileType
 import com.intellij.psi.PsiElement
 
 interface Transformer<T : PsiElement, R: TransformationResult> {
 
     val id: String
-    val name: String
     val description: String
-    val language: Language
-    val fileExtension: String
+    val fileType: LanguageFileType
 
     fun isApplicable(language: Language): Boolean
     fun isApplicable(psiElement: PsiElement): Boolean = isApplicable(psiElement.language)

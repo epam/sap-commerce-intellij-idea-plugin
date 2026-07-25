@@ -21,8 +21,7 @@ package sap.commerce.toolset.hac.mcp
 import com.intellij.mcpserver.McpToolset
 import com.intellij.mcpserver.annotations.McpDescription
 import com.intellij.mcpserver.annotations.McpTool
-import com.intellij.mcpserver.project
-import kotlinx.coroutines.currentCoroutineContext
+import sap.commerce.toolset.ai.mcp.McpConstants
 import sap.commerce.toolset.ai.mcp.map
 import sap.commerce.toolset.ai.mcp.resolveMapper
 
@@ -31,7 +30,7 @@ class HacMcpToolset : McpToolset {
     @McpTool(name = "sap_commerce_list_hac_connections")
     @McpDescription(
         """Lists all configured HAC (Hybris Administration Console) connections for the current project as a JSON object.
-        |Shape: {"matched", "total", "items": [{"name": String, "url": String, "active": Boolean, "authMode": "AUTOMATIC" | "MANUAL", "supportedByMcp": Boolean}]}.
+        |Shape: {"matched", "total", "connections": [{"name": String, "url": String, "active": Boolean, "authMode": "AUTOMATIC" | "MANUAL", "supportedByMcp": Boolean}]}.
         | - name: pass it to other HAC tools to target a specific server;
         | - active: whether it is the currently active connection;
         | - authMode: AUTOMATIC (credentials persisted in the IDE) or MANUAL (interactive browser-based authentication);
@@ -40,11 +39,10 @@ class HacMcpToolset : McpToolset {
     )
     suspend fun listHacConnections(
         @McpDescription("Output format for the response. Supported formats: JSON. Default: JSON.")
-        outputFormat: String = "JSON",
+        outputFormat: String = McpConstants.Formats.JSON,
     ): String {
         val mapper = resolveMapper(outputFormat)
-        val project = currentCoroutineContext().project
-        val connections = HacMcpService.getInstance(project).listConnections()
+        val connections = HacMcpService.getInstance().listConnections()
         return mapper.map(connections)
     }
 }

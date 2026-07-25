@@ -22,6 +22,7 @@ import com.intellij.openapi.application.edtWriteAction
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
+import com.intellij.openapi.fileTypes.LanguageFileType
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.codeStyle.CodeStyleManager
@@ -48,12 +49,12 @@ class FxSTransformationService(
 ) {
 
     fun transform(
-        transformerName: String,
+        fileType: LanguageFileType,
         element: ImpExValueLine,
         onComplete: (ImpExTransformationResult) -> Unit,
     ) {
         coroutineScope.launch {
-            val result = transform(transformerName, element)
+            val result = transform(fileType, element)
             onComplete(result)
         }
     }
@@ -63,7 +64,7 @@ class FxSTransformationService(
      *
      * Behaves identically to the callback overload but returns the ImpEx string directly.
      */
-    suspend fun transform(transformerName: String, element: ImpExValueLine): ImpExTransformationResult {
+    suspend fun transform(fileType: LanguageFileType, element: ImpExValueLine): ImpExTransformationResult {
         val data = readAction { buildTransformData(element) }
             ?: error("cannot extract PSI/meta data")
 
@@ -76,7 +77,7 @@ class FxSTransformationService(
         }
 
         return ImpExTransformationResult(
-            transformerName = transformerName,
+            languageName = fileType.name,
             content = formattedText,
             exportType = data.rootType
         )

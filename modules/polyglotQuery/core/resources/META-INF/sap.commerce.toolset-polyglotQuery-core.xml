@@ -24,7 +24,7 @@
     <extensions defaultExtensionNs="com.intellij">
         <internalFileTemplate name="Polyglot Query File"/>
 
-        <fileType language="Polyglot Query" extensions="pgq" name="Polyglot Query File" fieldName="INSTANCE"
+        <fileType language="Polyglot Query" extensions="pgq" name="Polyglot Query" fieldName="INSTANCE"
                   implementationClass="sap.commerce.toolset.polyglotQuery.file.PolyglotQueryFileType"/>
 
         <codeInsight.lineMarkerProvider language="JAVA" implementationClass="sap.commerce.toolset.polyglotQuery.codeInsight.daemon.PolyglotQueryLineMarkerProvider"/>

@@ -22,10 +22,10 @@ import sap.commerce.toolset.transform.TransformationResult
 
 class ImpExTransformationResult(
     content: String,
-    private val transformerName: String,
+    private val languageName: String,
     private val exportType: String,
 ) : TransformationResult(content) {
 
     override val description: String
-        get() = "$exportType to $transformerName"
+        get() = "$exportType to $languageName"
 }

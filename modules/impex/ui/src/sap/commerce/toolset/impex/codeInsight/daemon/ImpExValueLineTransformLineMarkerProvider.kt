@@ -54,12 +54,14 @@ import java.awt.event.KeyEvent
 import java.awt.event.MouseEvent
 import java.util.function.Supplier
 import javax.swing.Icon
+import kotlin.time.Duration.Companion.minutes
 
 class ImpExValueLineTransformLineMarkerProvider : LineMarkerProvider {
 
     override fun getLineMarkerInfo(element: PsiElement): LineMarkerInfo<*>? {
         if (DumbService.isDumb(element.project)) return null
         if (element !is ImpExValueLine) return null
+        element.headerLine ?: return null
         val transformers = Transformer.EP.extensionList.filter { it.isApplicable(element) }
         if (element.headerLine?.uniqueFullHeaderParameters?.any { it.docIdUsages.isNotEmpty() } == true) return null
 
@@ -85,22 +87,23 @@ class ImpExValueLineTransformLineMarkerProvider : LineMarkerProvider {
         val content = panel {
             if (metaType != null) {
                 row {
-                    checkBox(i18n("hybris.impex.actions.transform.dialog.include_all_attributes", metaType))
+                    checkBox(i18n("hybris.impex.actions.transform.valueLine.dialog.include_all_attributes", metaType))
                         .bindSelected(includeAllAttributes)
-                }
-            }
-
-            row(i18n("hybris.impex.actions.export.dialog.transformer")) {
-                val cell = comboBox(transformers.map { it.name })
-                cell.component.addActionListener {
-                    selectedTransformerIndex = cell.component.selectedIndex.coerceAtLeast(0)
                 }
             }
 
             separator()
 
             row {
-                button(i18n("hybris.fxs.actions.transform.dialog.transform")) {
+                comboBox(transformers.map { it.fileType.name })
+                    .label(i18n("hybris.impex.actions.transform.valueLine.dialog.transformer"))
+                    .applyToComponent {
+                        addActionListener {
+                            selectedTransformerIndex = selectedIndex.coerceAtLeast(0)
+                        }
+                    }
+
+                button(i18n("hybris.impex.actions.transform.valueLine.dialog.transform")) {
                     myPopup.closeOk(null)
                 }.align(AlignX.RIGHT)
             }
@@ -109,7 +112,7 @@ class ImpExValueLineTransformLineMarkerProvider : LineMarkerProvider {
         myPopup = JBPopupFactory.getInstance()
             .createComponentPopupBuilder(content, content.preferredFocusedComponent)
             .setBorderColor(JBColor.border())
-            .setTitle("Transform ImpEx Value Line")
+            .setTitle(i18n("hybris.impex.actions.transform.valueLine.dialog.title"))
             .setTitleIcon(ActiveIcon(HybrisIcons.ImpEx.Actions.TRANSFORM))
             .setKeyEventHandler {
                 val enterKey = it.keyCode == KeyEvent.VK_ENTER
@@ -137,15 +140,16 @@ class ImpExValueLineTransformLineMarkerProvider : LineMarkerProvider {
     private fun notify(project: Project, result: TransformationResult, transformer: Transformer<in PsiElement, out TransformationResult>) {
         Notifications.create(
             NotificationType.INFORMATION,
-            "ImpEx Transform",
+            i18n("hybris.impex.actions.transform.valueLine.notification.title"),
             result.content
         )
             .addAction("Copy to Clipboard") { _, _ ->
                 CopyPasteManager.getInstance().setContents(StringSelection(result.content))
             }
             .addAction("Open as a Scratch File") { _, _ ->
-                createScratchFile(project, result.content, transformer.fileExtension)
+                createScratchFile(project, result.content, transformer.fileType.defaultExtension)
             }
+            .hideAfter(1.minutes)
             .notify(project)
     }
 
@@ -155,10 +159,10 @@ class ImpExValueLineTransformLineMarkerProvider : LineMarkerProvider {
         icon: Icon,
     ) : MergeableLineMarkerInfo<PsiElement?>(
         leaf, leaf.textRange, icon,
-        Function { "Transform" },
+        Function { i18n("hybris.impex.actions.transform.valueLine.name") },
         { event, leaf -> handler(event, leaf, transformers) },
         GutterIconRenderer.Alignment.CENTER,
-        Supplier { "Transform" }
+        Supplier { i18n("hybris.impex.actions.transform.valueLine.name") }
     ) {
         override fun getEditorFilter(): MarkupEditorFilter = MarkupEditorFilterFactory.createIsNotDiffFilter()
         override fun getCommonIcon(infos: List<MergeableLineMarkerInfo<*>?>): Icon = icon

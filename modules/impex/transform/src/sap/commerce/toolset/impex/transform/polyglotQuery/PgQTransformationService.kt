@@ -22,6 +22,7 @@ import com.intellij.openapi.application.edtWriteAction
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
+import com.intellij.openapi.fileTypes.LanguageFileType
 import com.intellij.openapi.project.Project
 import com.intellij.psi.codeStyle.CodeStyleManager
 import kotlinx.coroutines.CoroutineScope
@@ -37,17 +38,17 @@ class PgQTransformationService(
 ) {
 
     fun transform(
-        transformerName: String,
+        languageFileType: LanguageFileType,
         element: ImpExValueLine,
         onComplete: (ImpExTransformationResult) -> Unit,
     ) {
         coroutineScope.launch {
-            val result = transform(transformerName, element)
+            val result = transform(languageFileType, element)
             onComplete(result)
         }
     }
 
-    suspend fun transform(transformerName: String, element: ImpExValueLine): ImpExTransformationResult {
+    suspend fun transform(languageFileType: LanguageFileType, element: ImpExValueLine): ImpExTransformationResult {
         val data = readAction { buildTransformData(element) }
             ?: error("cannot extract PSI/meta data")
 
@@ -66,7 +67,7 @@ class PgQTransformationService(
         }
 
         return ImpExTransformationResult(
-            transformerName = transformerName,
+            languageName = languageFileType.name,
             content = formattedText,
             exportType = data.rootType,
         )
