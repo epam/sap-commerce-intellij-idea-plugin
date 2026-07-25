@@ -28,7 +28,6 @@ import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.openapi.util.TextRange;
 import java.util.Collection;
-
 import sap.commerce.toolset.impex.codeInspection.context.ImpExColumnContext;
 import sap.commerce.toolset.impex.codeInspection.context.ImpExDocIdGenerationContext;
 import sap.commerce.toolset.psi.RangeAwareContent;
