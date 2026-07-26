@@ -95,6 +95,53 @@ Never inline HAC calls — use `HacHttpClient.getInstance(project).post(...)`.
 - Line markers: extend `HybrisLineMarkerProvider<T>` — never `LineMarkerProvider` directly.
 - Single tool window `"SAP CX"` — contribute content, don't register new tool windows.
 
+### DSL action buttons with context data (`DataKey` + `sinkExtender`)
+
+Use this pattern when an action button in a `panel { row { ... } }` DSL needs context that is unavailable via the standard `DataContext` (e.g. a callback tied to a specific Swing component instance).
+
+**1. Declare a `DataKey` companion in the action:**
+
+```kotlin
+class MyAction : DumbAwareAction(...) {
+    companion object {
+        val MY_KEY: DataKey<() -> Unit> = DataKey.create("sap.commerce.toolset.myKey")
+        // Or any T: DataKey<MyData> = DataKey.create("...")
+    }
+
+    override fun getActionUpdateThread() = ActionUpdateThread.BGT
+
+    override fun update(e: AnActionEvent) {
+        e.presentation.isEnabledAndVisible = e.getData(MY_KEY) != null
+    }
+
+    override fun actionPerformed(e: AnActionEvent) {
+        e.getData(MY_KEY)?.invoke()         // or use the T value
+    }
+}
+```
+
+**2. Register the action by ID in the module descriptor (no `add-to-group` needed):**
+
+```xml
+<action id="sap.commerce.toolset.myAction"
+        class="...MyAction"/>
+```
+
+**3. Retrieve via `ActionManager` and inject context via `sinkExtender`:**
+
+```kotlin
+val action = ActionManager.getInstance().getAction("sap.commerce.toolset.myAction")
+// inside panel { row { ... } }:
+actionButton(action, sinkExtender = { sink ->
+    sink.set(MyAction.MY_KEY) { /* lambda called by the action */ }
+})
+```
+
+`ActionButtonSink` (in `Dsl.kt`) implements `UiDataProvider`; `uiDataSnapshot` delegates to `sinkExtender`, making the key visible to `e.getData(key)` in `update` and `actionPerformed`.
+
+- Never instantiate the action directly with a lambda constructor — use registration + `ActionManager`.
+- `update()` **must** guard `isEnabledAndVisible` on `e.getData(MY_KEY) != null` so buttons backed by the same registered action in other contexts stay disabled.
+
 ## Custom language & PSI
 
 - Inspections (custom languages): `LocalInspectionTool`, name `<Lang><Meaning>Inspection`, delegate to inner `<Lang>Visitor`, report via `holder.registerProblem(...)`. Register as `<localInspection>` with `groupPath="SAP Commerce"`, `groupName="[y] <Lang>"`; ship description HTML under `resources/inspectionDescriptions/`; quick fixes in `codeInspection/fix/`.

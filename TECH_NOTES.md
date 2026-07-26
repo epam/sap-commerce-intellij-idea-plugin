@@ -1,7 +1,9 @@
 <!-- TOC -->
   * [Technical Notes & How-To(s)](#technical-notes--how-tos)
+    * [Pull requests categorizations and labels](#pull-requests-categorizations-and-labels)
     * [Enable specific feature only during development](#enable-specific-feature-only-during-development)
     * [Get project's base directory](#get-projects-base-directory)
+    * [Do not init plugin extensions](#do-not-init-plugin-extensions)
     * [Invoke AnAction](#invoke-anaction)
     * [Refresh state of an AnAction in case of background thread](#refresh-state-of-an-anaction-in-case-of-background-thread)
     * [Forms](#forms)

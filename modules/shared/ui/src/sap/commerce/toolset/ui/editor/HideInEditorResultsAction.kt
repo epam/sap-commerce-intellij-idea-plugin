@@ -19,13 +19,28 @@
 package sap.commerce.toolset.ui.editor
 
 import com.intellij.icons.AllIcons
-import com.intellij.openapi.actionSystem.AnAction
+import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.actionSystem.DataKey
+import com.intellij.openapi.project.DumbAwareAction
 
-class HideInEditorResultsAction(private val onHide: () -> Unit) : AnAction(
+class HideInEditorResultsAction : DumbAwareAction(
     "Hide",
     "Hide in-editor results panel",
     AllIcons.Actions.Close
 ) {
-    override fun actionPerformed(e: AnActionEvent) = onHide()
+
+    companion object {
+        val HIDE_CALLBACK: DataKey<() -> Unit> = DataKey.create("sap.commerce.toolset.hideInEditorResults")
+    }
+
+    override fun getActionUpdateThread() = ActionUpdateThread.BGT
+
+    override fun update(e: AnActionEvent) {
+        e.presentation.isEnabledAndVisible = e.getData(HIDE_CALLBACK) != null
+    }
+
+    override fun actionPerformed(e: AnActionEvent) {
+        e.getData(HIDE_CALLBACK)?.invoke()
+    }
 }

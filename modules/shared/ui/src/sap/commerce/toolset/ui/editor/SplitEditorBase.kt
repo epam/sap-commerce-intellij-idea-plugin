@@ -19,6 +19,7 @@
 package sap.commerce.toolset.ui.editor
 
 import com.intellij.openapi.Disposable
+import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.application.edtWriteAction
 import com.intellij.openapi.fileEditor.FileEditorState
@@ -71,12 +72,12 @@ abstract class SplitEditorBase(
 
     private fun buildResultsPanel(content: JComponent): JComponent {
         val leftActions = inEditorResultsActions()
-        val hideAction = HideInEditorResultsAction { inEditorResultsView = null }
+        val hideAction = ActionManager.getInstance().getAction("sap.commerce.toolset.editor.hideInEditorResults")
 
         val actionBar = panel {
             row {
                 leftActions.forEach { actionButton(it) }
-                actionButton(hideAction).align(AlignX.RIGHT)
+                actionButton(hideAction, sinkExtender = { sink -> sink.set(HideInEditorResultsAction.HIDE_CALLBACK) { inEditorResultsView = null } }).align(AlignX.RIGHT)
             }
         }.apply {
             border = JBUI.Borders.compound(

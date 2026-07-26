@@ -39,7 +39,7 @@
 
 ### Other enhancements
 - Updated project libraries [#1955](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1955)
-- Unified Split Editors API [#1978](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1978)
+- Unified Split Editors API and hide In-Editor Results [#1978](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1978)
 
 ## [2026.0.14]
 
