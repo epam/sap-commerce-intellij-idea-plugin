@@ -47,6 +47,8 @@ dependencies {
             useInstaller = true
         }
 
+        jetbrainsRuntime()
+
         bundledModules(
             "intellij.platform.ui.jcef"
         )
