@@ -64,6 +64,14 @@ New remote feature = `modules/<feature>/exec`, four pieces (base classes in `exe
 
 Never inline HAC calls — use `HacHttpClient.getInstance(project).post(...)`.
 
+`HacHttpClient.post(actionUrl, params, canReLoginIfNeeded, timeout, settings, replicaContext)`:
+- `actionUrl` = `"${context.connection.generatedURL}/console/scripting/execute"` (adjust path per HAC endpoint)
+- `params` = `context.params().map { BasicNameValuePair(it.key, it.value) }`
+- `settings` = `context.connection` (`HacConnectionSettingsState`)
+- Returns `HttpResponse`; check `statusCode == HttpStatus.SC_OK` before reading `response.entity.content`
+
+`DefaultExecResult` fields: `statusCode`, `output: String?`, `result: String?`, `errorMessage: String?`, `errorDetailMessage: String?`, `replicaContext`
+
 ## MCP toolsets
 
 - Thin `class XxxMcpToolset : McpToolset` (no `@Service`), registered via `<mcpServer.mcpToolset implementation="..."/>`.
@@ -95,7 +103,7 @@ Never inline HAC calls — use `HacHttpClient.getInstance(project).post(...)`.
 - In-memory PSI: `psi/<Lang>ElementFactory.createFile(project, text)` when it exists; otherwise `PsiFileFactory`.
 - References: extend `<Lang>ReferenceBase`; `multiResolve` via `getParameterizedCachedValue` with companion `Key`. Cache on feature's modification tracker (meta-model-backed) or `PsiModificationTracker.MODIFICATION_COUNT` (pure-PSI).
 - Completion: one `<Lang>CompletionContributor` wiring in `init`; patterns in `<Lang>Patterns`; lookup elements via `object <Lang>LookupElementFactory`.
-- Meta-model: never read type-/bean-system model directly — `TSMetaModelAccess`/`BSMetaModelAccess.getInstance(project)`. Never swallow `ProcessCanceledException`.
+- Meta-model: never read type-/bean-system model directly — `TSMetaModelAccess`/`BSMetaModelAccess.getInstance(project)`. Never swallow `ProcessCanceledException`. See `skills/dev-typeSystem.md` and `skills/dev-beanSystem.md` for full API.
 - Annotators: extend `AbstractAnnotator`.
 
 ## New module checklist

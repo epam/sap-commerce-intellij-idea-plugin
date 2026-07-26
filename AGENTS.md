@@ -47,7 +47,12 @@ All versions in `gradle/libs.versions.toml` (use `libs.*` references).
 - `jps-plugin/` — JPS module for SAP Commerce compilation; excluded from `pluginComposedModule`.
 
 ### Code conventions
-Read `skills/polyglot-query.md` before writing any PolyglotQuery code.
+Read `skills/lang-PolyglotQuery.md` before writing any PolyglotQuery code.
+Read `skills/lang-ImpEx.md` before writing any Impex code.
+Read `skills/lang-FlexibleSearch.md` before writing any FlexibleSearch code.
+Read `skills/dev-beanSystem.md` before working on Bean System.
+Read `skills/dev-cockpitNG.md` before working on Cockpit NG.
+Read `skills/dev-typeSystem.md` before working on Type System.
 Read `skills/plugin-dev.md` before modifying Kotlin source.
 Read `skills/github.md` before committing or opening a PR.
 See `TECH_NOTES.md` for: action invocation, background-thread patterns, dialog sizing, GotItTooltip.
