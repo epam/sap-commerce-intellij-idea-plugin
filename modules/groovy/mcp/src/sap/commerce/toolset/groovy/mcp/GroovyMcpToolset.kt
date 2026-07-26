@@ -25,6 +25,7 @@ import sap.commerce.toolset.ai.mcp.McpConstants
 import sap.commerce.toolset.ai.mcp.map
 import sap.commerce.toolset.ai.mcp.resolveMapper
 import sap.commerce.toolset.groovy.mcp.context.GroovyExecMcpRequest
+import sap.commerce.toolset.groovy.mcp.context.GroovyTransformMcpRequest
 
 class GroovyMcpToolset : McpToolset {
 
@@ -48,6 +49,34 @@ class GroovyMcpToolset : McpToolset {
         val mapper = resolveMapper(outputFormat)
         val request = GroovyExecMcpRequest(connectionName, script, commit)
         val result = GroovyMcpService.getInstance().execute(request)
+        return mapper.map(result)
+    }
+
+    @McpTool(name = "sap_commerce_transform_groovy")
+    @McpDescription(
+        """Transforms a Groovy script into a SAP Commerce ImpEx using the specified transformer.
+        |The generated ImpEx contains an INSERT_UPDATE Script item with the script content and
+        |an INSERT_UPDATE ScriptingJob item referencing it via model:// URI.
+        |Use sap_commerce_list_transformers to discover available Groovy transformers and their IDs.
+        |No HAC connection is required — this is a local, offline transformation."""
+    )
+    suspend fun transformGroovy(
+        @McpDescription("ID of the Groovy-applicable transformer (e.g. 'groovy-to-impex-script'). Use sap_commerce_list_transformers to list available IDs.")
+        transformerId: String,
+        @McpDescription("Groovy script source code to transform")
+        script: String,
+        @McpDescription("Name used as the Script item code and ScriptingJob code prefix (e.g. 'removeTestUserScript')")
+        scriptName: String,
+        @McpDescription("Output format for the response. Supported formats: JSON. Default: JSON.")
+        outputFormat: String = McpConstants.Formats.JSON,
+    ): String {
+        val mapper = resolveMapper(outputFormat)
+        val request = GroovyTransformMcpRequest(
+            transformerId = transformerId,
+            script = script,
+            scriptName = scriptName,
+        )
+        val result = GroovyMcpService.getInstance().transform(request)
         return mapper.map(result)
     }
 }

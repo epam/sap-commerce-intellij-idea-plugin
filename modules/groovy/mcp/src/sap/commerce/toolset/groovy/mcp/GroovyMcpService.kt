@@ -19,15 +19,24 @@
 package sap.commerce.toolset.groovy.mcp
 
 import com.intellij.mcpserver.project
+import com.intellij.openapi.application.readAction
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
+import com.intellij.psi.PsiFileFactory
+import com.intellij.util.asSafely
 import kotlinx.coroutines.currentCoroutineContext
 import org.apache.http.HttpStatus
+import org.jetbrains.plugins.groovy.GroovyLanguage
+import org.jetbrains.plugins.groovy.lang.psi.GroovyFile
+import sap.commerce.toolset.groovy.GroovyConstants
 import sap.commerce.toolset.groovy.exec.GroovyExecClient
 import sap.commerce.toolset.groovy.exec.context.GroovyExecContext
 import sap.commerce.toolset.groovy.mcp.context.GroovyExecMcpRequest
+import sap.commerce.toolset.groovy.mcp.context.GroovyTransformMcpRequest
 import sap.commerce.toolset.groovy.mcp.dto.GroovyExecResultDto
+import sap.commerce.toolset.groovy.mcp.dto.GroovyTransformResultDto
+import sap.commerce.toolset.transform.Transformer
 
 @Service(Service.Level.PROJECT)
 class GroovyMcpService(private val project: Project) {
@@ -58,6 +67,29 @@ class GroovyMcpService(private val project: Project) {
                 result = result.result?.takeIf { it.isNotBlank() },
             )
         }
+    }
+
+    suspend fun transform(request: GroovyTransformMcpRequest): GroovyTransformResultDto {
+        val psiFile = readAction {
+            PsiFileFactory.getInstance(project)
+                .createFileFromText("transform.groovy", GroovyLanguage, request.script)
+                .asSafely<GroovyFile>()
+                ?: error("cannot create GroovyFile PSI from script")
+        }
+
+        val transformer = Transformer.EP.extensionList
+            .find { it.isApplicable(psiFile) && it.id.equals(request.transformerId, ignoreCase = true) }
+            ?: error("No applicable '${request.transformerId}' transformer found for Groovy")
+
+        psiFile.putUserData(GroovyConstants.Transform.SCRIPT_NAME, request.scriptName)
+
+        val result = transformer.transform(psiFile)
+
+        return GroovyTransformResultDto(
+            success = true,
+            content = result.content,
+            description = result.description,
+        )
     }
 
     companion object {
