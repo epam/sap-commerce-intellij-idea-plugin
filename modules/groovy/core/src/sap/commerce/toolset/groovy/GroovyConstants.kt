@@ -18,6 +18,12 @@
 
 package sap.commerce.toolset.groovy
 
+import com.intellij.openapi.util.Key
+
 object GroovyConstants {
     const val PATH_CONSOLES_GROOVY = "consoles/groovy/"
+
+    object Transform {
+        val SCRIPT_NAME = Key.create<String>("groovy.transform.scriptName")
+    }
 }

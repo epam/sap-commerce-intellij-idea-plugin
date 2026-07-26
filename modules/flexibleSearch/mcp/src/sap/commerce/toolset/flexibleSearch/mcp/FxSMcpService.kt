@@ -26,6 +26,7 @@ import com.intellij.openapi.project.Project
 import kotlinx.coroutines.currentCoroutineContext
 import org.apache.http.HttpStatus
 import sap.commerce.toolset.flexibleSearch.FlexibleSearchConstants
+import sap.commerce.toolset.flexibleSearch.FlexibleSearchLanguage
 import sap.commerce.toolset.flexibleSearch.exec.FlexibleSearchExecClient
 import sap.commerce.toolset.flexibleSearch.exec.FlexibleSearchExecConstants
 import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecContext
@@ -61,12 +62,11 @@ class FxSMcpService(private val project: Project) {
     }
 
     suspend fun transform(request: FxSTransformMcpRequest): FxSExecResultDto {
-        val psiFile = readAction { FlexibleSearchElementFactory.createFile(project, request.query) }
-
         val transformer = Transformer.EP.extensionList
-            .find { it.isApplicable(psiFile) && it.id.equals(request.transformerId, true) }
+            .find { it.isApplicable(FlexibleSearchLanguage) && it.id.equals(request.transformerId, true) }
             ?: error("No applicable '${request.transformerId}' transformer found for FlexibleSearch")
 
+        val psiFile = readAction { FlexibleSearchElementFactory.createFile(project, request.query) }
         val execRequest = request.execRequest
         val connection = execRequest.connection(project)
 

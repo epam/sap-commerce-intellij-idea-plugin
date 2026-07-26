@@ -58,7 +58,7 @@ class TransformerMcpService {
     }
 
     val Transformer<in PsiFile>.mcpDto: TransformerDto
-        get() = TransformerDto(id, outputFileType.name, description)
+        get() = TransformerDto(id, presentableTitle, description)
 
     companion object {
         suspend fun getInstance(): TransformerMcpService = currentCoroutineContext().project.service()

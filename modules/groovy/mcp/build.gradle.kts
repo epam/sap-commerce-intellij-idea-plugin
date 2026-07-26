@@ -36,8 +36,11 @@ sourceSets {
 
 dependencies {
     implementation(project(":shared-core"))
+    implementation(project(":shared-transform"))
     implementation(project(":hac-exec"))
+    implementation(project(":groovy-core"))
     implementation(project(":groovy-exec"))
+    implementation(project(":groovy-transform"))
     implementation(project(":exec-core"))
     implementation(project(":ai-mcp"))
     implementation(project(":hac-mcp"))
@@ -50,6 +53,7 @@ dependencies {
 
         bundledPlugins(
             "com.intellij.mcpServer",
+            "org.intellij.groovy",
         )
     }
 }

@@ -82,6 +82,10 @@ object HybrisIcons {
         val WEB_CONTEXT_ACTIVE = getIcon("icons/groovy/webContextActive.svg")
         val WEB_CONTEXTS_LOAD = AllIcons.Vcs.Fetch
         val WEB_CONTEXTS_RELOAD = AllIcons.General.Refresh
+
+        object Actions {
+            val TRANSFORM = AllIcons.General.Export
+        }
     }
 
     object Tools {

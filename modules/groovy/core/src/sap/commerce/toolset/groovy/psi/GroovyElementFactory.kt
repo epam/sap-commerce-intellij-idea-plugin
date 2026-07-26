@@ -16,27 +16,15 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.transform
+package sap.commerce.toolset.groovy.psi
 
-import com.intellij.lang.Language
-import com.intellij.openapi.extensions.ExtensionPointName
-import com.intellij.openapi.fileTypes.LanguageFileType
-import com.intellij.psi.PsiElement
+import com.intellij.openapi.project.Project
+import com.intellij.psi.PsiFileFactory
+import org.jetbrains.plugins.groovy.GroovyLanguage
+import org.jetbrains.plugins.groovy.lang.psi.GroovyFile
 
-interface Transformer<T : PsiElement> {
+object GroovyElementFactory {
 
-    val id: String
-    val description: String
-    val outputFileType: LanguageFileType
-    val presentableTitle: String
-        get() = outputFileType.name
-
-    fun isApplicable(language: Language): Boolean
-    fun isApplicable(psiElement: PsiElement): Boolean = isApplicable(psiElement.language)
-    fun transform(psiElement: T, onComplete: (TransformationResult) -> Unit)
-    suspend fun transform(psiElement: T): TransformationResult
-
-    companion object {
-        val EP = ExtensionPointName.create<Transformer<in PsiElement>>("sap.commerce.toolset.transformer")
-    }
+    fun createFile(project: Project, text: String): GroovyFile = PsiFileFactory.getInstance(project)
+        .createFileFromText("dummy.groovy", GroovyLanguage, text) as GroovyFile
 }

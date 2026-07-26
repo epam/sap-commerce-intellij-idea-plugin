@@ -37,6 +37,7 @@ dependencies {
     implementation(libs.jsoup)
     implementation(project(":shared-core"))
     implementation(project(":shared-ui"))
+    implementation(project(":shared-transform"))
     implementation(project(":exec-core"))
     implementation(project(":hac-exec"))
     implementation(project(":hac-ui"))

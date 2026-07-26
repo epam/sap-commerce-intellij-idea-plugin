@@ -1,7 +1,7 @@
 ## [2026.0.15]
 
 <cite>Release contributors</code>
-- 18 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.15+author%3Amlytvyn+is%3Apr)
+- 19 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.15+author%3Amlytvyn+is%3Apr)
 - 8 PR(s) by [Eugeni Kalenchuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.15+author%3Aekalenchuk+is%3Apr)
 
 ### `Project Import` enhancements
@@ -17,6 +17,9 @@
 - Expose Bean System WS beans as MCP tool [#1957](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1957)
 - Expose Bean System event beans as MCP tool [#1958](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1958)
 - Expose Bean System enums as MCP tool [#1959](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1959)
+
+### `Groovy` enhancements
+- New transformer from Groovy script into ImpEx `Script` and `ScriptingJob` [#1979](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1979)
 
 ### `ImpEx` enhancements
 - Copy ImpEx value line into an executable FlexibleSearch query [#1960](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1960)
