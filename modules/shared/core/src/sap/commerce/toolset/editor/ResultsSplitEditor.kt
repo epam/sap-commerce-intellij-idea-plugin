@@ -31,6 +31,14 @@ interface ResultsSplitEditor : SplitEditor {
     var inEditorResults: Boolean
 
     /**
+     * Clears the current in-editor results view without affecting the [inEditorResults] toggle.
+     *
+     * Use this to dismiss the panel after the user explicitly closes it via the Hide button.
+     * The next execution will still show results according to the [inEditorResults] preference.
+     */
+    fun dismissInEditorResults()
+
+    /**
      * Title shown as a bold label on the left side of the in-editor results panel action bar.
      *
      * Each language-specific split editor provides a descriptive heading

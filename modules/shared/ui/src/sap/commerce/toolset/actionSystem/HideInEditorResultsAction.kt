@@ -38,6 +38,6 @@ class HideInEditorResultsAction : DumbAwareAction(
 
     override fun actionPerformed(e: AnActionEvent) {
         val editor = e.getData(SplitEditor.DATA_KEY_SPLIT_EDITOR) ?: return
-        editor.inEditorResults = false
+        editor.dismissInEditorResults()
     }
 }

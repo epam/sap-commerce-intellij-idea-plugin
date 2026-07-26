@@ -64,6 +64,10 @@ abstract class SplitEditorBase(
             verticalSplitter.secondComponent?.isVisible = state
         }
 
+    override fun dismissInEditorResults() {
+        inEditorResultsView = null
+    }
+
     protected var inEditorResultsView: JComponent?
         get() = verticalSplitter.secondComponent
         set(view) {
