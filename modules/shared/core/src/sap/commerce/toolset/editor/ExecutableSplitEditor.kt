@@ -20,7 +20,7 @@ package sap.commerce.toolset.editor
 
 import com.intellij.openapi.actionSystem.AnAction
 
-interface ResultsSplitEditor : SplitEditor {
+interface ExecutableSplitEditor : SplitEditor {
 
     /**
      * Whether the in-editor results panel is currently visible.

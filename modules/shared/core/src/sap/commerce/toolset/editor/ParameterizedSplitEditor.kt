@@ -21,7 +21,7 @@ package sap.commerce.toolset.editor
 import com.intellij.openapi.Disposable
 import javax.swing.JComponent
 
-interface ParameterizedSplitEditor : ResultsSplitEditor {
+interface ParameterizedSplitEditor : ExecutableSplitEditor {
     var inEditorParameters: Boolean
     var inEditorParametersView: JComponent?
     var virtualParametersDisposable: Disposable?

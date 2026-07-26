@@ -18,6 +18,6 @@
 
 package sap.commerce.toolset.groovy.editor
 
-import sap.commerce.toolset.editor.ResultsSplitEditor
+import sap.commerce.toolset.editor.ExecutableSplitEditor
 
-interface GroovySplitEditor : ResultsSplitEditor
+interface GroovySplitEditor : ExecutableSplitEditor

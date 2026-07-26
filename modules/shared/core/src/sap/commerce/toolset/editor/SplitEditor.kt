@@ -26,6 +26,6 @@ interface SplitEditor : FileEditor, TextEditor {
     val textEditor: TextEditor
 
     companion object {
-        val DATA_KEY_SPLIT_EDITOR: DataKey<ResultsSplitEditor> = DataKey.create("sap.commerce.toolset.splitEditor")
+        val DATA_KEY_SPLIT_EDITOR: DataKey<ExecutableSplitEditor> = DataKey.create("sap.commerce.toolset.splitEditor")
     }
 }

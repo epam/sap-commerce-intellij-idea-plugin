@@ -101,7 +101,7 @@ SplitEditor (shared/core)                         — textEditor val; DATA_KEY_S
                       └─ AclSplitEditorBase
 ```
 
-Key contracts on `ResultsSplitEditor`:
+Key contracts on `ExecutableSplitEditor`:
 - `inEditorResults: Boolean` — persistent toggle; controls whether results show after execution.
 - `dismissInEditorResults()` — clears current view only, does **not** change the toggle.
 - `inEditorResultsTitle: String` — abstract `val`; every concrete editor must supply a heading.

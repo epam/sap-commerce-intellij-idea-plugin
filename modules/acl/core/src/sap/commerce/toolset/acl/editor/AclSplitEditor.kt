@@ -18,6 +18,6 @@
 
 package sap.commerce.toolset.acl.editor
 
-import sap.commerce.toolset.editor.ResultsSplitEditor
+import sap.commerce.toolset.editor.ExecutableSplitEditor
 
-interface AclSplitEditor : ResultsSplitEditor
+interface AclSplitEditor : ExecutableSplitEditor

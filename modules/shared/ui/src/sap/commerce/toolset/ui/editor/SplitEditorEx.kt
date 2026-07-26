@@ -18,10 +18,10 @@
 
 package sap.commerce.toolset.ui.editor
 
-import sap.commerce.toolset.editor.ResultsSplitEditor
+import sap.commerce.toolset.editor.ExecutableSplitEditor
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
-interface SplitEditorEx : ResultsSplitEditor {
+interface SplitEditorEx : ExecutableSplitEditor {
     fun reparseTextEditor(delayMs: Duration = 1000.milliseconds)
 }
