@@ -220,6 +220,10 @@
         <localInspection groupPath="SAP Commerce" shortName="ImpExUnresolvedReferenceInspection" displayName="[y] Unresolved reference"
                          groupName="[y] ImpEx" level="ERROR" language="ImpEx" enabledByDefault="true"
                          implementationClass="sap.commerce.toolset.impex.codeInspection.ImpExUnresolvedReferenceInspection"/>
+
+        <localInspection groupPath="SAP Commerce" shortName="ImpExHeaderModeCaseInspection" displayName="[y] Header mode is not uppercase"
+                         groupName="[y] ImpEx" level="WEAK WARNING" language="ImpEx" enabledByDefault="true"
+                         implementationClass="sap.commerce.toolset.impex.codeInspection.ImpExHeaderModeCaseInspection"/>
     </extensions>
 
 </idea-plugin>
