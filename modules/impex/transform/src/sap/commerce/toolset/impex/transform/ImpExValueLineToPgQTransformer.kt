@@ -33,14 +33,14 @@ class ImpExValueLineToPgQTransformer : Transformer<ImpExValueLine> {
         get() = "impexValueLine-to-pgq"
     override val description: String
         get() = "Converts ImpEx Value Line statement to PolyglotQuery format"
-    override val fileType: LanguageFileType
+    override val outputFileType: LanguageFileType
         get() = PolyglotQueryFileType
 
     override fun isApplicable(language: Language) = language is ImpExLanguage
 
     override fun transform(psiElement: ImpExValueLine, onComplete: (TransformationResult) -> Unit) = PgQTransformationService.getInstance(psiElement.project)
-        .transform(fileType, psiElement, onComplete)
+        .transform(outputFileType, psiElement, onComplete)
 
     override suspend fun transform(psiElement: ImpExValueLine): TransformationResult = PgQTransformationService.getInstance(psiElement.project)
-        .transform(fileType, psiElement)
+        .transform(outputFileType, psiElement)
 }

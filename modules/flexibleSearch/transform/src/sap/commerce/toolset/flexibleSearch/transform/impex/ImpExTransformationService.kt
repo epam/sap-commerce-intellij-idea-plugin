@@ -61,12 +61,12 @@ internal class ImpExTransformationService(
      * is called before this function returns.
      */
     fun transform(
-        fileType: LanguageFileType,
+        outputFileType: LanguageFileType,
         psiFile: FlexibleSearchPsiFile,
         onComplete: (TransformationResult) -> Unit,
     ) {
         coroutineScope.launch {
-            val result = transform(fileType, psiFile)
+            val result = transform(outputFileType, psiFile)
             onComplete(result)
         }
     }
@@ -76,15 +76,15 @@ internal class ImpExTransformationService(
      *
      * Behaves identically to the callback overload but returns the ImpEx string directly.
      */
-    suspend fun transform(fileType: LanguageFileType, psiFile: FlexibleSearchPsiFile): TransformationResult {
+    suspend fun transform(outputFileType: LanguageFileType, psiFile: FlexibleSearchPsiFile): TransformationResult {
         val descriptor = psiFile.transformationDescriptor()
         val connection = descriptor.connection
             ?: HacExecConnectionService.getInstance(project).activeConnection
         val enumSourceIndicesByType = ImpExHeaderBuilder.enumSourceIndicesByType(descriptor)
         val fkSourceIndicesByResolutionInfo = ImpExHeaderBuilder.fkSourceIndicesByResolutionInfo(descriptor)
 
-        val description = if (descriptor.rows.isEmpty()) "${descriptor.typeName} to ${fileType.name}"
-        else "${descriptor.typeName} to ${fileType.name} (${i18n("hybris.fxs.actions.transform.notification.rows", descriptor.rows.size)})"
+        val description = if (descriptor.rows.isEmpty()) "${descriptor.typeName} to ${outputFileType.name}"
+        else "${descriptor.typeName} to ${outputFileType.name} (${i18n("hybris.fxs.actions.transform.notification.rows", descriptor.rows.size)})"
 
         if (descriptor.rows.isEmpty() || enumSourceIndicesByType.isEmpty() && fkSourceIndicesByResolutionInfo.isEmpty()) {
             val content = ImpExConverter.buildImpEx(descriptor)
@@ -94,7 +94,7 @@ internal class ImpExTransformationService(
                 description = description,
                 handlers = listOf(
                     CopyToClipboardTransformResultHandler(content),
-                    CreateScratchFileTransformResultHandler(project, content, fileType)
+                    CreateScratchFileTransformResultHandler(project, content, outputFileType)
                 ),
             )
         }
@@ -107,7 +107,7 @@ internal class ImpExTransformationService(
             description = description,
             handlers = listOf(
                 CopyToClipboardTransformResultHandler(content),
-                CreateScratchFileTransformResultHandler(project, content, fileType)
+                CreateScratchFileTransformResultHandler(project, content, outputFileType)
             )
         )
     }

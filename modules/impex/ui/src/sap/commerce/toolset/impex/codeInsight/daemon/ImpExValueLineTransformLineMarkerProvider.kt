@@ -92,7 +92,7 @@ class ImpExValueLineTransformLineMarkerProvider : LineMarkerProvider {
             separator()
 
             row {
-                comboBox(transformers.map { it.fileType.name })
+                comboBox(transformers.map { it.outputFileType.name })
                     .label(i18n("hybris.impex.actions.transform.valueLine.dialog.transformer"))
                     .applyToComponent {
                         addActionListener {

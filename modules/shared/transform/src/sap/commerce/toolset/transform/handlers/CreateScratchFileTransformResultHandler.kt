@@ -26,7 +26,7 @@ import sap.commerce.toolset.scratch.createScratchFile
 class CreateScratchFileTransformResultHandler(
     private val project: Project,
     private val content: String,
-    private val fileType: FileType,
+    private val outputFileType: FileType,
     private val onOpen: FileEditor.() -> Unit = {}
 ) : TransformResultHandler {
 
@@ -34,6 +34,6 @@ class CreateScratchFileTransformResultHandler(
         get() = "Open as Scratch File"
 
     override fun handle() {
-        createScratchFile(project, content, fileType.defaultExtension, onOpen)
+        createScratchFile(project, content, outputFileType.defaultExtension, onOpen)
     }
 }

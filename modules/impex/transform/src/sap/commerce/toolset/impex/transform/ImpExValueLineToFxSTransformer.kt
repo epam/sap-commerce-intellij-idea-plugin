@@ -33,14 +33,14 @@ class ImpExValueLineToFxSTransformer : Transformer<ImpExValueLine> {
         get() = "impexValueLine-to-fxs"
     override val description: String
         get() = "Converts ImpEx Value Line statement to FlexibleSearch format"
-    override val fileType: LanguageFileType
+    override val outputFileType: LanguageFileType
         get() = FlexibleSearchFileType
 
     override fun isApplicable(language: Language) = language is ImpExLanguage
 
     override fun transform(psiElement: ImpExValueLine, onComplete: (TransformationResult) -> Unit) = FxSTransformationService.getInstance(psiElement.project)
-        .transform(fileType, psiElement, onComplete)
+        .transform(outputFileType, psiElement, onComplete)
 
     override suspend fun transform(psiElement: ImpExValueLine): TransformationResult = FxSTransformationService.getInstance(psiElement.project)
-        .transform(fileType, psiElement)
+        .transform(outputFileType, psiElement)
 }

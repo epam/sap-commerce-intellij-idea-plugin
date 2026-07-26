@@ -54,17 +54,17 @@ class PgQTransformationService(
 ) {
 
     fun transform(
-        languageFileType: LanguageFileType,
+        outputFileType: LanguageFileType,
         element: ImpExValueLine,
         onComplete: (TransformationResult) -> Unit,
     ) {
         coroutineScope.launch {
-            val result = transform(languageFileType, element)
+            val result = transform(outputFileType, element)
             onComplete(result)
         }
     }
 
-    suspend fun transform(fileType: LanguageFileType, element: ImpExValueLine): TransformationResult {
+    suspend fun transform(outputFileType: LanguageFileType, element: ImpExValueLine): TransformationResult {
         val data = readAction { buildTransformData(element) }
             ?: error("cannot extract PSI/meta data")
 
@@ -78,10 +78,10 @@ class PgQTransformationService(
 
         return TransformationResult(
             content = formattedText,
-            description = "${data.rootType} to ${fileType.name}",
+            description = "${data.rootType} to ${outputFileType.name}",
             handlers = listOf(
                 CopyToClipboardTransformResultHandler(formattedText),
-                CreateScratchFileTransformResultHandler(project, formattedText, fileType) {
+                CreateScratchFileTransformResultHandler(project, formattedText, outputFileType) {
                     this.asSafely<PolyglotQuerySplitEditor>()?.let { editor ->
                         if (seedValues.isNotEmpty()) {
                             editor.virtualParameters = seedValues.mapValues { (name, value) ->

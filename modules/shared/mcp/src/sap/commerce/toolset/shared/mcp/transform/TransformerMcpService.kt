@@ -37,15 +37,15 @@ class TransformerMcpService {
 
         val filtered = if (languageId != null) {
             all.filter { t ->
-                t.fileType.language.id.equals(languageId, ignoreCase = true)
-                    || t.fileType.language.displayName.equals(languageId, ignoreCase = true)
+                t.outputFileType.language.id.equals(languageId, ignoreCase = true)
+                    || t.outputFileType.language.displayName.equals(languageId, ignoreCase = true)
             }
         } else {
             all
         }
 
         val transformers = filtered
-            .groupBy { it.fileType.language }
+            .groupBy { it.outputFileType.language }
             .map { (language, transformers) ->
                 TransformersDto(
                     languageId = language.id,
@@ -58,7 +58,7 @@ class TransformerMcpService {
     }
 
     val Transformer<in PsiFile>.mcpDto: TransformerDto
-        get() = TransformerDto(id, fileType.name, description)
+        get() = TransformerDto(id, outputFileType.name, description)
 
     companion object {
         suspend fun getInstance(): TransformerMcpService = currentCoroutineContext().project.service()

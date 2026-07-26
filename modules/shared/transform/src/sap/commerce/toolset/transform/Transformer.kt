@@ -27,7 +27,7 @@ interface Transformer<T : PsiElement> {
 
     val id: String
     val description: String
-    val fileType: LanguageFileType
+    val outputFileType: LanguageFileType
 
     fun isApplicable(language: Language): Boolean
     fun isApplicable(psiElement: PsiElement): Boolean = isApplicable(psiElement.language)

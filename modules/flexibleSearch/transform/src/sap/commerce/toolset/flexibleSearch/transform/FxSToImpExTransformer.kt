@@ -33,14 +33,14 @@ class FxSToImpExTransformer : Transformer<FlexibleSearchPsiFile> {
         get() = "fxs-to-impex"
     override val description: String
         get() = "Converts FlexibleSearch query results to ImpEx format, resolving FK natural keys, enum codes, and localized attributes via the SAP Commerce type system"
-    override val fileType: LanguageFileType
+    override val outputFileType: LanguageFileType
         get() = ImpExFileType
 
     override fun isApplicable(language: Language) = language is FlexibleSearchLanguage
 
     override fun transform(psiElement: FlexibleSearchPsiFile, onComplete: (TransformationResult) -> Unit) = ImpExTransformationService.getInstance(psiElement.project)
-        .transform(fileType, psiElement, onComplete)
+        .transform(outputFileType, psiElement, onComplete)
 
     override suspend fun transform(psiElement: FlexibleSearchPsiFile): TransformationResult = ImpExTransformationService.getInstance(psiElement.project)
-        .transform(fileType, psiElement)
+        .transform(outputFileType, psiElement)
 }
