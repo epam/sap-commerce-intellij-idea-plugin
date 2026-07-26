@@ -23,6 +23,8 @@ Critical rule: `<attribute>` elements → `allAttributes`; `<relation>` elements
 
 `TSMetaModelAccess.getInstance(project)` — project service; call inside a read action.
 
+**All `findMetaXxxByName()` lookups are case-insensitive** — backed by `CaseInsensitiveConcurrentHashMap`. `findMetaClassifierByName("product")` returns the `Product` meta item. Returns `null` only when the type genuinely doesn't exist (not a case mismatch). Use `.name` on the result to get the canonical casing.
+
 Additional finders:
 
 - `findAttributeByName(item, name, includeInherited)` — shortcut for `item.allAttributes[name]`
