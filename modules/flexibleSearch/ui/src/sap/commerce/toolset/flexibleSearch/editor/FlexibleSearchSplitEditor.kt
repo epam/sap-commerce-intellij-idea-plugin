@@ -118,6 +118,7 @@ class FlexibleSearchSplitEditorBase(textEditor: TextEditor, project: Project) : 
     override fun getName() = "FlexibleSearch Split Editor"
 
     init {
+        horizontalSplitter.firstComponent = textEditor.component
         verticalSplitter.firstComponent = horizontalSplitter
 
         with(project.messageBus.connect(this)) {

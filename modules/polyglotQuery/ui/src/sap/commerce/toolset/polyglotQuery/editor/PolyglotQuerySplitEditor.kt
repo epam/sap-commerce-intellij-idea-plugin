@@ -90,6 +90,7 @@ class PolyglotQuerySplitEditorBase(textEditor: TextEditor, project: Project) : S
     override fun getName() = "Polyglot Query Split Editor"
 
     init {
+        horizontalSplitter.firstComponent = textEditor.component
         verticalSplitter.firstComponent = horizontalSplitter
 
         with(project.messageBus.connect(this)) {

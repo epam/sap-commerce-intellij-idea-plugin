@@ -114,6 +114,7 @@ class ImpExSplitEditorBase(textEditor: TextEditor, project: Project) : SplitEdit
     override fun getName() = "ImpEx Split Editor"
 
     init {
+        horizontalSplitter.firstComponent = textEditor.component
         verticalSplitter.firstComponent = horizontalSplitter
     }
 

@@ -38,7 +38,6 @@ import java.io.Serial
 import javax.swing.JComponent
 import javax.swing.JPanel
 import kotlin.time.Duration
-import kotlin.time.Duration.Companion.milliseconds
 
 abstract class SplitEditorBase(
     override val textEditor: TextEditor,
@@ -68,20 +67,22 @@ abstract class SplitEditorBase(
         isShowDividerControls = true
         splitterProportionKey = "$javaClass.horizontalSplitter"
         setHonorComponentsMinimumSize(true)
-
-        firstComponent = textEditor.component
     }
 
     protected val verticalSplitter = OnePixelSplitter(true).apply {
         isShowDividerControls = true
         splitterProportionKey = "$javaClass.verticalSplitter"
         setHonorComponentsMinimumSize(true)
-
-        firstComponent = textEditor.component
     }
 
     private val rootPanel = JPanel(BorderLayout()).apply {
         add(verticalSplitter, BorderLayout.CENTER)
+    }
+
+    init {
+        // Default layout for editors without a parameters panel (ACL, Groovy).
+        // Parameterized editors override this in their own init block.
+        verticalSplitter.firstComponent = textEditor.component
     }
 
     open var inEditorParameters: Boolean
