@@ -54,9 +54,11 @@ class ImpExHeaderParameterNameCaseInspection : LocalInspectionTool() {
                 ?: return
             if (canonicalName == ref.value) return
 
+            val typeName = element.headerItemTypeName?.text ?: return
+
             holder.registerProblem(
                 element,
-                i18n("hybris.inspections.impex.ImpExHeaderParameterNameCaseInspection.key", ref.value, canonicalName),
+                i18n("hybris.inspections.impex.ImpExHeaderParameterNameCaseInspection.key", ref.value, canonicalName, typeName),
                 ProblemHighlightType.WEAK_WARNING,
                 ImpExCorrectHeaderParameterNameQuickFix(element, canonicalName)
             )
