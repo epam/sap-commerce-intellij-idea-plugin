@@ -35,14 +35,9 @@ import kotlinx.coroutines.launch
 import sap.commerce.toolset.exec.context.ExecResult
 import sap.commerce.toolset.ui.scrollPanel
 import java.awt.Dimension
-import java.lang.Boolean
 import javax.swing.JComponent
 import javax.swing.JEditorPane
 import javax.swing.ScrollPaneConstants
-import kotlin.String
-import kotlin.Unit
-import kotlin.apply
-import kotlin.let
 
 abstract class InEditorResultsView<E : FileEditor, R : ExecResult>(protected val project: Project, private val coroutineScope: CoroutineScope) {
 
@@ -61,8 +56,8 @@ abstract class InEditorResultsView<E : FileEditor, R : ExecResult>(protected val
                     .resizableColumn()
             }.topGap(TopGap.SMALL)
         }
-            .customize(UnscaledGaps(16, 16, 16, 16))
-    }.apply { border = JBUI.Borders.empty(5, 16, 10, 16) }
+            .customize(UnscaledGaps(21,32, 10,32))
+    }
 
     fun resultView(fileEditor: E, execResult: R, applyView: (CoroutineScope, JComponent) -> Unit) = resultView(fileEditor, listOf(execResult), applyView)
 
@@ -128,7 +123,7 @@ abstract class InEditorResultsView<E : FileEditor, R : ExecResult>(protected val
                                 isEditable = false
                                 isOpaque = false
                                 background = null
-                                putClientProperty(JEditorPane.HONOR_DISPLAY_PROPERTIES, Boolean.TRUE)
+                                putClientProperty(JEditorPane.HONOR_DISPLAY_PROPERTIES, true)
                             }
                         )
                             .align(Align.FILL)

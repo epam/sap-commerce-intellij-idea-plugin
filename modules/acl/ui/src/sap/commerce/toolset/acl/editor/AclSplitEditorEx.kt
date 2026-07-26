@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -16,13 +16,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.flexibleSearch.editor
+package sap.commerce.toolset.acl.editor
 
-import com.intellij.openapi.Disposable
-import sap.commerce.toolset.editor.ParameterizedSplitEditor
+import sap.commerce.toolset.exec.context.DefaultExecResult
+import sap.commerce.toolset.impex.exec.context.ImpExExecContext
+import sap.commerce.toolset.ui.editor.SplitEditorEx
 
-interface FlexibleSearchSplitEditor : ParameterizedSplitEditor {
-    var csvResultsDisposable: Disposable?
-    var virtualParameters: Map<String, FlexibleSearchVirtualParameter>?
-    val virtualText: String
+interface AclSplitEditorEx : AclSplitEditor, SplitEditorEx {
+    fun showLoader(context: ImpExExecContext)
+    fun renderExecutionResult(result: DefaultExecResult)
 }

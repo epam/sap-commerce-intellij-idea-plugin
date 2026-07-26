@@ -31,6 +31,9 @@
     </extensions>
 
     <actions>
+        <action id="sap.commerce.toolset.splitEditor.hideInEditorResults"
+                class="sap.commerce.toolset.actionSystem.HideInEditorResultsAction"/>
+
         <group id="HybrisToolsActions"
                text="[y] SAP Commerce"
                popup="true"

@@ -28,7 +28,7 @@ import org.jetbrains.plugins.groovy.lang.psi.GroovyFile
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.exec.context.DefaultExecResult
 import sap.commerce.toolset.groovy.console.HybrisGroovyConsole
-import sap.commerce.toolset.groovy.editor.GroovySplitEditor
+import sap.commerce.toolset.groovy.editor.GroovySplitEditorEx
 import sap.commerce.toolset.groovy.editor.groovySplitEditor
 import sap.commerce.toolset.groovy.exec.GroovyExecClient
 import sap.commerce.toolset.groovy.exec.GroovyExecService
@@ -37,7 +37,7 @@ import sap.commerce.toolset.hac.actionSystem.ExecuteStatementAction
 import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import sap.commerce.toolset.settings.state.TransactionMode
 
-class GroovyExecuteAction : ExecuteStatementAction<HybrisGroovyConsole, GroovySplitEditor>(
+class GroovyExecuteAction : ExecuteStatementAction<HybrisGroovyConsole, GroovySplitEditorEx>(
     GroovyLanguage,
     HybrisGroovyConsole::class,
     "Execute Groovy Script",
@@ -45,7 +45,7 @@ class GroovyExecuteAction : ExecuteStatementAction<HybrisGroovyConsole, GroovySp
     HybrisIcons.Console.Actions.EXECUTE
 ) {
 
-    override fun fileEditor(e: AnActionEvent): GroovySplitEditor? = e.groovySplitEditor()
+    override fun fileEditor(e: AnActionEvent): GroovySplitEditorEx? = e.groovySplitEditor()
 
     override fun actionPerformed(e: AnActionEvent, project: Project, content: String) {
         val fileEditor = fileEditor(e) ?: return

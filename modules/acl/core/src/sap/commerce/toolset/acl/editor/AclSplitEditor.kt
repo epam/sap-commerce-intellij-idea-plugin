@@ -18,10 +18,6 @@
 
 package sap.commerce.toolset.acl.editor
 
-import com.intellij.openapi.fileEditor.FileEditor
-import com.intellij.openapi.fileEditor.TextEditor
+import sap.commerce.toolset.editor.ExecutableSplitEditor
 
-interface AclSplitEditor : FileEditor, TextEditor {
-    val textEditor: TextEditor
-    var inEditorResults: Boolean
-}
+interface AclSplitEditor : ExecutableSplitEditor

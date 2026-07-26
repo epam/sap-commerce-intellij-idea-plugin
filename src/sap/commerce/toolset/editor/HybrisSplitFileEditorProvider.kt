@@ -29,14 +29,14 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.util.asSafely
 import org.jetbrains.plugins.groovy.GroovyFileType
 import sap.commerce.toolset.Plugin
-import sap.commerce.toolset.acl.editor.AclSplitEditorEx
+import sap.commerce.toolset.acl.editor.AclSplitEditorBase
 import sap.commerce.toolset.acl.file.AclFileType
-import sap.commerce.toolset.flexibleSearch.editor.FlexibleSearchSplitEditorEx
+import sap.commerce.toolset.flexibleSearch.editor.FlexibleSearchSplitEditorBase
 import sap.commerce.toolset.flexibleSearch.file.FlexibleSearchFileType
-import sap.commerce.toolset.groovy.editor.GroovySplitEditor
+import sap.commerce.toolset.groovy.editor.GroovySplitEditorBase
 import sap.commerce.toolset.impex.editor.ImpExSplitEditorBase
 import sap.commerce.toolset.impex.file.ImpExFileType
-import sap.commerce.toolset.polyglotQuery.editor.PolyglotQuerySplitEditorEx
+import sap.commerce.toolset.polyglotQuery.editor.PolyglotQuerySplitEditorBase
 import sap.commerce.toolset.polyglotQuery.file.PolyglotQueryFileType
 
 class HybrisSplitFileEditorProvider : FileEditorProvider, DumbAware {
@@ -45,11 +45,11 @@ class HybrisSplitFileEditorProvider : FileEditorProvider, DumbAware {
         asSafely<TextEditor>()
             ?.let {
                 when (file.fileType) {
-                    is FlexibleSearchFileType -> FlexibleSearchSplitEditorEx(it, project)
-                    is PolyglotQueryFileType -> PolyglotQuerySplitEditorEx(it, project)
+                    is FlexibleSearchFileType -> FlexibleSearchSplitEditorBase(it, project)
+                    is PolyglotQueryFileType -> PolyglotQuerySplitEditorBase(it, project)
                     is ImpExFileType -> ImpExSplitEditorBase(it, project)
-                    is AclFileType -> AclSplitEditorEx(it, project)
-                    else -> if (Plugin.GROOVY.isActive() && file.fileType is GroovyFileType) GroovySplitEditor(it, project)
+                    is AclFileType -> AclSplitEditorBase(it, project)
+                    else -> if (Plugin.GROOVY.isActive() && file.fileType is GroovyFileType) GroovySplitEditorBase(it, project)
                     else null
                 }
             }
