@@ -106,6 +106,7 @@
 - Add autocomplete search for logger class and package names [#1920](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1920)
 
 ### `Groovy` enhancements
+- New transformer from Groovy script into ImpEx `Script` and `ScriptingJob` items
 - Show & fetch available web application contexts [#1926](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1926)
 - New `Remote` Spring Beans resolution mode [#1928](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1928)
 - Refetch remote Spring Beans on web application context change [#1929](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1929)

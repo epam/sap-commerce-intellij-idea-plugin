@@ -41,6 +41,7 @@
             <action class="sap.commerce.toolset.groovy.actionSystem.GroovyToggleInEditorResultsAction"/>
             <separator/>
             <action id="hybris.groovy.openSettings" class="sap.commerce.toolset.groovy.actionSystem.GroovyOpenSettingsAction"/>
+            <action id="hybris.groovy.transform" class="sap.commerce.toolset.groovy.actionSystem.GroovyTransformAction"/>
             <separator/>
 
             <group id="hybris.groovy.toolbar.springResolutionMode" popup="true"
