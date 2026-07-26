@@ -31,7 +31,7 @@ import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchElementFactory
 import sap.commerce.toolset.impex.ImpExConstants.Transform
 import sap.commerce.toolset.impex.psi.ImpExValueLine
 import sap.commerce.toolset.impex.transform.ImpExUniqueParamsParser
-import sap.commerce.toolset.impex.transform.context.ImpExTransformationResult
+import sap.commerce.toolset.transform.TransformationResult
 import sap.commerce.toolset.transform.handlers.CopyToClipboardTransformResultHandler
 import sap.commerce.toolset.transform.handlers.CreateScratchFileTransformResultHandler
 import sap.commerce.toolset.typeSystem.TSConstants
@@ -49,7 +49,7 @@ class FxSTransformationService(
     fun transform(
         fileType: LanguageFileType,
         element: ImpExValueLine,
-        onComplete: (ImpExTransformationResult) -> Unit,
+        onComplete: (TransformationResult) -> Unit,
     ) {
         coroutineScope.launch {
             val result = transform(fileType, element)
@@ -62,7 +62,7 @@ class FxSTransformationService(
      *
      * Behaves identically to the callback overload but returns the ImpEx string directly.
      */
-    suspend fun transform(fileType: LanguageFileType, element: ImpExValueLine): ImpExTransformationResult {
+    suspend fun transform(fileType: LanguageFileType, element: ImpExValueLine): TransformationResult {
         val data = readAction { buildTransformData(element) }
             ?: error("cannot extract PSI/meta data")
 
@@ -74,10 +74,9 @@ class FxSTransformationService(
                 .text
         }
 
-        return ImpExTransformationResult(
-            languageName = fileType.name,
+        return TransformationResult(
             content = formattedText,
-            exportType = data.rootType,
+            description = "${data.rootType} to ${fileType.name}",
             handlers = listOf(
                 CopyToClipboardTransformResultHandler(formattedText),
                 CreateScratchFileTransformResultHandler(project, formattedText, fileType)

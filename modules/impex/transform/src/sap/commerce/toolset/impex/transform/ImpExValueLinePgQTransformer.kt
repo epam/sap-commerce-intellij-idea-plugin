@@ -22,12 +22,12 @@ import com.intellij.lang.Language
 import com.intellij.openapi.fileTypes.LanguageFileType
 import sap.commerce.toolset.impex.ImpExLanguage
 import sap.commerce.toolset.impex.psi.ImpExValueLine
-import sap.commerce.toolset.impex.transform.context.ImpExTransformationResult
 import sap.commerce.toolset.impex.transform.polyglotQuery.PgQTransformationService
 import sap.commerce.toolset.polyglotQuery.file.PolyglotQueryFileType
+import sap.commerce.toolset.transform.TransformationResult
 import sap.commerce.toolset.transform.Transformer
 
-class ImpExValueLinePgQTransformer : Transformer<ImpExValueLine, ImpExTransformationResult> {
+class ImpExValueLinePgQTransformer : Transformer<ImpExValueLine, TransformationResult> {
 
     override val id: String
         get() = "impexValueLine-to-pgq"
@@ -38,9 +38,9 @@ class ImpExValueLinePgQTransformer : Transformer<ImpExValueLine, ImpExTransforma
 
     override fun isApplicable(language: Language) = language is ImpExLanguage
 
-    override fun transform(psiElement: ImpExValueLine, onComplete: (ImpExTransformationResult) -> Unit) = PgQTransformationService.getInstance(psiElement.project)
+    override fun transform(psiElement: ImpExValueLine, onComplete: (TransformationResult) -> Unit) = PgQTransformationService.getInstance(psiElement.project)
         .transform(fileType, psiElement, onComplete)
 
-    override suspend fun transform(psiElement: ImpExValueLine): ImpExTransformationResult = PgQTransformationService.getInstance(psiElement.project)
+    override suspend fun transform(psiElement: ImpExValueLine): TransformationResult = PgQTransformationService.getInstance(psiElement.project)
         .transform(fileType, psiElement)
 }

@@ -22,12 +22,12 @@ import com.intellij.lang.Language
 import com.intellij.openapi.fileTypes.LanguageFileType
 import sap.commerce.toolset.flexibleSearch.FlexibleSearchLanguage
 import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchPsiFile
-import sap.commerce.toolset.flexibleSearch.transform.context.FxSTransformationResult
 import sap.commerce.toolset.flexibleSearch.transform.impex.ImpExTransformationService
 import sap.commerce.toolset.impex.file.ImpExFileType
+import sap.commerce.toolset.transform.TransformationResult
 import sap.commerce.toolset.transform.Transformer
 
-class FxSImpExTransformer : Transformer<FlexibleSearchPsiFile, FxSTransformationResult> {
+class FxSImpExTransformer : Transformer<FlexibleSearchPsiFile, TransformationResult> {
 
     override val id: String
         get() = "fxs-to-impex"
@@ -38,9 +38,9 @@ class FxSImpExTransformer : Transformer<FlexibleSearchPsiFile, FxSTransformation
 
     override fun isApplicable(language: Language) = language is FlexibleSearchLanguage
 
-    override fun transform(psiElement: FlexibleSearchPsiFile, onComplete: (FxSTransformationResult) -> Unit) = ImpExTransformationService.getInstance(psiElement.project)
+    override fun transform(psiElement: FlexibleSearchPsiFile, onComplete: (TransformationResult) -> Unit) = ImpExTransformationService.getInstance(psiElement.project)
         .transform(fileType, psiElement, onComplete)
 
-    override suspend fun transform(psiElement: FlexibleSearchPsiFile): FxSTransformationResult = ImpExTransformationService.getInstance(psiElement.project)
+    override suspend fun transform(psiElement: FlexibleSearchPsiFile): TransformationResult = ImpExTransformationService.getInstance(psiElement.project)
         .transform(fileType, psiElement)
 }

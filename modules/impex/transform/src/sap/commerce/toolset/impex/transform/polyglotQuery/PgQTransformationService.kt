@@ -36,13 +36,13 @@ import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
 import sap.commerce.toolset.impex.psi.ImpExValueLine
 import sap.commerce.toolset.impex.transform.ImpExUniqueParamsParser
-import sap.commerce.toolset.impex.transform.context.ImpExTransformationResult
 import sap.commerce.toolset.impex.transform.flexibleSearch.context.Condition
 import sap.commerce.toolset.impex.transform.flexibleSearch.context.Join
 import sap.commerce.toolset.impex.transform.flexibleSearch.context.QueryContext
 import sap.commerce.toolset.polyglotQuery.editor.PolyglotQuerySplitEditor
 import sap.commerce.toolset.polyglotQuery.editor.PolyglotQueryVirtualParameter
 import sap.commerce.toolset.polyglotQuery.psi.PolyglotElementFactory
+import sap.commerce.toolset.transform.TransformationResult
 import sap.commerce.toolset.transform.handlers.CopyToClipboardTransformResultHandler
 import sap.commerce.toolset.transform.handlers.CreateScratchFileTransformResultHandler
 import java.lang.ref.WeakReference
@@ -56,7 +56,7 @@ class PgQTransformationService(
     fun transform(
         languageFileType: LanguageFileType,
         element: ImpExValueLine,
-        onComplete: (ImpExTransformationResult) -> Unit,
+        onComplete: (TransformationResult) -> Unit,
     ) {
         coroutineScope.launch {
             val result = transform(languageFileType, element)
@@ -64,7 +64,7 @@ class PgQTransformationService(
         }
     }
 
-    suspend fun transform(fileType: LanguageFileType, element: ImpExValueLine): ImpExTransformationResult {
+    suspend fun transform(fileType: LanguageFileType, element: ImpExValueLine): TransformationResult {
         val data = readAction { buildTransformData(element) }
             ?: error("cannot extract PSI/meta data")
 
@@ -76,10 +76,9 @@ class PgQTransformationService(
 
         val seedValues = resolveSeedValues(data)
 
-        return ImpExTransformationResult(
-            languageName = fileType.name,
+        return TransformationResult(
             content = formattedText,
-            exportType = data.rootType,
+            description = "${data.rootType} to ${fileType.name}",
             handlers = listOf(
                 CopyToClipboardTransformResultHandler(formattedText),
                 CreateScratchFileTransformResultHandler(project, formattedText, fileType) {

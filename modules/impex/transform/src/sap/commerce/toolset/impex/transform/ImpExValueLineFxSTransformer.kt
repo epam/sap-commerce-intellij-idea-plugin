@@ -23,11 +23,11 @@ import com.intellij.openapi.fileTypes.LanguageFileType
 import sap.commerce.toolset.flexibleSearch.file.FlexibleSearchFileType
 import sap.commerce.toolset.impex.ImpExLanguage
 import sap.commerce.toolset.impex.psi.ImpExValueLine
-import sap.commerce.toolset.impex.transform.context.ImpExTransformationResult
 import sap.commerce.toolset.impex.transform.flexibleSearch.FxSTransformationService
+import sap.commerce.toolset.transform.TransformationResult
 import sap.commerce.toolset.transform.Transformer
 
-class ImpExValueLineFxSTransformer : Transformer<ImpExValueLine, ImpExTransformationResult> {
+class ImpExValueLineFxSTransformer : Transformer<ImpExValueLine, TransformationResult> {
 
     override val id: String
         get() = "impexValueLine-to-fxs"
@@ -38,9 +38,9 @@ class ImpExValueLineFxSTransformer : Transformer<ImpExValueLine, ImpExTransforma
 
     override fun isApplicable(language: Language) = language is ImpExLanguage
 
-    override fun transform(psiElement: ImpExValueLine, onComplete: (ImpExTransformationResult) -> Unit) = FxSTransformationService.getInstance(psiElement.project)
+    override fun transform(psiElement: ImpExValueLine, onComplete: (TransformationResult) -> Unit) = FxSTransformationService.getInstance(psiElement.project)
         .transform(fileType, psiElement, onComplete)
 
-    override suspend fun transform(psiElement: ImpExValueLine): ImpExTransformationResult = FxSTransformationService.getInstance(psiElement.project)
+    override suspend fun transform(psiElement: ImpExValueLine): TransformationResult = FxSTransformationService.getInstance(psiElement.project)
         .transform(fileType, psiElement)
 }

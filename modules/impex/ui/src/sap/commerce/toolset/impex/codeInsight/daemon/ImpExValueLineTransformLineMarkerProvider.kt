@@ -138,7 +138,7 @@ class ImpExValueLineTransformLineMarkerProvider : LineMarkerProvider {
         Notifications.create(
             NotificationType.INFORMATION,
             i18n("hybris.impex.actions.transform.valueLine.notification.title"),
-            result.content
+            result.description
         )
             .apply {
                 result.handlers.forEach {
