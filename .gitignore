@@ -16,6 +16,7 @@
 .idea/dataSources.local.xml
 .idea/kotlinc.xml
 .idea/gradle.xml
+.idea/codeStyles
 
 .kotlin
 
