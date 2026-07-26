@@ -44,6 +44,8 @@ dependencies {
     implementation(project(":hac-exec"))
     implementation(project(":flexibleSearch-exec"))
 
+    testImplementation(kotlin("test"))
+
     intellijPlatform {
         intellijIdea(properties("intellij.version")) {
             useInstaller = false

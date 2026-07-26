@@ -45,6 +45,8 @@ dependencies {
     implementation(project(":project-core"))
     implementation(project(":flexibleSearch-core"))
 
+    testImplementation(kotlin("test"))
+
     intellijPlatform {
         intellijIdea(properties("intellij.version")) {
             useInstaller = false
