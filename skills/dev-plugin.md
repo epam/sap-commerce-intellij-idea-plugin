@@ -97,50 +97,57 @@ Never inline HAC calls — use `HacHttpClient.getInstance(project).post(...)`.
 
 ### DSL action buttons with context data (`DataKey` + `sinkExtender`)
 
-Use this pattern when an action button in a `panel { row { ... } }` DSL needs context that is unavailable via the standard `DataContext` (e.g. a callback tied to a specific Swing component instance).
+Use this pattern when an action button in a `panel { row { ... } }` DSL needs context that is unavailable via the standard `DataContext` (e.g. a domain object tied to a specific Swing component instance).
 
-**1. Declare a `DataKey` companion in the action:**
+**1. Declare `DataKey` constants in a dedicated `object`, never in a registered action's `companion object`:**
+
+```kotlin
+// e.g. SplitEditorDataKeys.kt
+object SplitEditorDataKeys {
+    val SPLIT_EDITOR: DataKey<ResultsSplitEditor> = DataKey.create("sap.commerce.toolset.splitEditor")
+}
+```
+
+**2. Write the action — no `companion object`, reads the key from the event:**
 
 ```kotlin
 class MyAction : DumbAwareAction(...) {
-    companion object {
-        val MY_KEY: DataKey<() -> Unit> = DataKey.create("sap.commerce.toolset.myKey")
-        // Or any T: DataKey<MyData> = DataKey.create("...")
-    }
-
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     override fun update(e: AnActionEvent) {
-        e.presentation.isEnabledAndVisible = e.getData(MY_KEY) != null
+        e.presentation.isEnabledAndVisible = e.getData(SplitEditorDataKeys.SPLIT_EDITOR) != null
     }
 
     override fun actionPerformed(e: AnActionEvent) {
-        e.getData(MY_KEY)?.invoke()         // or use the T value
+        val editor = e.getData(SplitEditorDataKeys.SPLIT_EDITOR) ?: return
+        // operate on the domain object directly
+        editor.inEditorResults = !editor.inEditorResults
     }
 }
 ```
 
-**2. Register the action by ID in the module descriptor (no `add-to-group` needed):**
+**3. Register the action by ID in the module descriptor (no `add-to-group` needed):**
 
 ```xml
 <action id="sap.commerce.toolset.myAction"
         class="...MyAction"/>
 ```
 
-**3. Retrieve via `ActionManager` and inject context via `sinkExtender`:**
+**4. Retrieve via `ActionManager` and inject context via `sinkExtender`:**
 
 ```kotlin
 val action = ActionManager.getInstance().getAction("sap.commerce.toolset.myAction")
 // inside panel { row { ... } }:
 actionButton(action, sinkExtender = { sink ->
-    sink.set(MyAction.MY_KEY) { /* lambda called by the action */ }
+    sink.set(SplitEditorDataKeys.SPLIT_EDITOR, this@MyComponent)
 })
 ```
 
 `ActionButtonSink` (in `Dsl.kt`) implements `UiDataProvider`; `uiDataSnapshot` delegates to `sinkExtender`, making the key visible to `e.getData(key)` in `update` and `actionPerformed`.
 
-- Never instantiate the action directly with a lambda constructor — use registration + `ActionManager`.
-- `update()` **must** guard `isEnabledAndVisible` on `e.getData(MY_KEY) != null` so buttons backed by the same registered action in other contexts stay disabled.
+- **Never** put `DataKey` in a registered action's `companion object` — keep them in a standalone constants `object`.
+- **Never** instantiate a registered action directly with a lambda constructor — use registration + `ActionManager`.
+- `update()` **must** guard `isEnabledAndVisible` on `e.getData(key) != null` so the same registered action stays disabled in other contexts that don't supply the key.
 
 ## Custom language & PSI
 

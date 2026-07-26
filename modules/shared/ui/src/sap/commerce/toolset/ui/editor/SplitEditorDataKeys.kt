@@ -18,25 +18,9 @@
 
 package sap.commerce.toolset.ui.editor
 
-import com.intellij.icons.AllIcons
-import com.intellij.openapi.actionSystem.ActionUpdateThread
-import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.project.DumbAwareAction
+import com.intellij.openapi.actionSystem.DataKey
+import sap.commerce.toolset.editor.ResultsSplitEditor
 
-class HideInEditorResultsAction : DumbAwareAction(
-    "Hide",
-    "Hide in-editor results panel",
-    AllIcons.Actions.Close
-) {
-
-    override fun getActionUpdateThread() = ActionUpdateThread.BGT
-
-    override fun update(e: AnActionEvent) {
-        e.presentation.isEnabledAndVisible = e.getData(SplitEditorDataKeys.SPLIT_EDITOR) != null
-    }
-
-    override fun actionPerformed(e: AnActionEvent) {
-        val editor = e.getData(SplitEditorDataKeys.SPLIT_EDITOR) ?: return
-        editor.inEditorResults = !editor.inEditorResults
-    }
+object SplitEditorDataKeys {
+    val SPLIT_EDITOR: DataKey<ResultsSplitEditor> = DataKey.create("sap.commerce.toolset.splitEditor")
 }

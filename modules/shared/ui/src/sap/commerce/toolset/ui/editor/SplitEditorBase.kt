@@ -77,7 +77,7 @@ abstract class SplitEditorBase(
         val actionBar = panel {
             row {
                 leftActions.forEach { actionButton(it) }
-                actionButton(hideAction, sinkExtender = { sink -> sink.set(HideInEditorResultsAction.HIDE_CALLBACK) { inEditorResultsView = null } }).align(AlignX.RIGHT)
+                actionButton(hideAction, sinkExtender = { sink -> sink.set(SplitEditorDataKeys.SPLIT_EDITOR, this@SplitEditorBase) }).align(AlignX.RIGHT)
             }
         }.apply {
             border = JBUI.Borders.compound(
