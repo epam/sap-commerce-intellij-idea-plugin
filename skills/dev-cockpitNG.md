@@ -2,54 +2,78 @@
 
 Backoffice/Cockpit XML configuration. Module: `modules/cockpitNG/`.
 
+## XML File → Model Field
+
+| File pattern | `CngGlobalMetaModel` field | Meta type |
+|---|---|---|
+| `*-widgets-definition.xml` | `.widgetDefinitions` | `CngMetaWidgetDefinition` |
+| `widgets.xml` | `.widgets` (flat map, all depths) | `CngMetaWidget` |
+| `*-actions.xml` | `.actionDefinitions` | `CngMetaActionDefinition` |
+| `*-editors.xml` | `.editorDefinitions` | `CngMetaEditorDefinition` |
+| `*-config.xml` | `.components`, `.contextAttributes` | `CngMetaConfig` / `CngMetaContext` |
+
 ## Entry Point
 
-`CngMetaModelStateService.state(project)` → `CngGlobalMetaModel`
+`CngMetaModelStateService.state(project)` → `CngGlobalMetaModel` (snapshot; no read action needed)
 
-No `findBy*` finders — access maps directly on the model:
+## Base Fields (all types)
 
-```kotlin
-val model = CngMetaModelStateService.state(project)
-model.widgetDefinitions["myWidgetId"]   // CaseInsensitiveConcurrentHashMap — key lookup is case-insensitive
-model.widgets["myWidgetId"]
-model.actionDefinitions["myActionId"]
-model.editorDefinitions["myEditorId"]
-model.components                        // Set<String>
-model.contextAttributes                 // Map<String, Set<String>>
+Every meta type extends `CngMeta<DOM>`:
+`.fileName: String`, `.custom: Boolean`, `.domAnchor`, `.retrieveDom(): DOM?` (nullable — DOM may be GC'd)
+
+## CngGlobalMetaModel
+
+```
+.widgetDefinitions: Map<String, CngMetaWidgetDefinition>   // CaseInsensitiveConcurrentHashMap
+.widgets:           Map<String, CngMetaWidget>             // CaseInsensitiveConcurrentHashMap; ALL widgets flat
+.actionDefinitions: Map<String, CngMetaActionDefinition>   // CaseInsensitiveConcurrentHashMap
+.editorDefinitions: Map<String, CngMetaEditorDefinition>   // CaseInsensitiveConcurrentHashMap
+.components:        Set<String>                            // component strings from *-config.xml
+.contextAttributes: Map<String, MutableSet<String>>        // context type → attribute qualifiers
 ```
 
-## CngGlobalMetaModel Fields
+## Meta Types
 
-- `widgetDefinitions: Map<String, CngMetaWidgetDefinition>` — from `*-widgets-definition.xml`
-- `widgets: Map<String, CngMetaWidget>` — from `widgets.xml`
-- `actionDefinitions: Map<String, CngMetaActionDefinition>` — from `*-actions.xml`
-- `editorDefinitions: Map<String, CngMetaEditorDefinition>` — from `*-editors.xml`
-- `components: Set<String>` — component strings from cng-config XML
-- `contextAttributes: Map<String, Set<String>>` — context type → attribute qualifiers
+### CngMetaWidgetDefinition
+`.id`, `.name: String?`, `.description: String?`, `.settings: Map<String, CngMetaWidgetSetting>`
 
-## Meta Objects (all extend CngMeta<DOM>)
+### CngMetaWidgetSetting
+`.id` (key), `.type: String?`, `.defaultValue: String?`
 
-Common fields: `.fileName: String`, `.custom: Boolean`, `.retrieveDom(): DOM?` (nullable — DOM may be GC'd)
+### CngMetaWidget
+`.id`, `.name: String?`, `.widgetDefinitionId: String?`, `.slotId: String?`
+`.access: String?`, `.template: Boolean`
+`.widgets: Collection<CngMetaWidget>` — direct children (tree structure; use model `.widgets` map for flat lookup)
 
-`CngMetaWidgetDefinition`: `.id`, `.name: String?`, `.settings: Map<String, CngMetaWidgetSetting>`
-`CngMetaWidgetSetting`: `.id` (key), `.type: String?`, `.defaultValue: String?`
-`CngMetaWidget`: `.id`, `.widgetDefinitionId: String?`, `.name: String?`, `.slotId: String?`, `.template: Boolean`, `.widgets: Collection<CngMetaWidget>` (children)
-`CngMetaActionDefinition`: `.id`, `.name: String?`
-`CngMetaEditorDefinition`: `.id`, `.name: String?`
+### CngMetaWidgetExtension
+`.id` (= `widgetId` being extended), `.widgets: Collection<CngMetaWidget>` — injected children
 
-## DOM File Types
+### CngMetaActionDefinition
+`.id`, `.name: String?`, `.description: String?`
 
-| File pattern | DomFileDescription |
-|---|---|
-| `*-widgets-definition.xml` | `CngWidgetDefinitionDomFileDescription` |
-| `widgets.xml` | `CngWidgetsDomFileDescription` |
-| `*-config.xml` / `cng-config` | `CngConfigDomFileDescription` |
-| `*-actions.xml` | `CngActionDefinitionDomFileDescription` |
-| `*-editors.xml` | `CngEditorDefinitionDomFileDescription` |
+### CngMetaEditorDefinition
+`.id`, `.name: String?`, `.description: String?`
 
-## Cache Keys
+### CngMetaConfig *(intermediate parse container; not in CngGlobalMetaModel)*
+`.contexts: List<CngMetaContext>`
 
-`CngModificationTracker.getInstance(project)` — use for Cng-backed PSI caches.
+### CngMetaContext
+`.name: String`, `.attributes: Map<String, String>` — all raw XML attributes of the `<context>` element
+
+## Non-obvious Behaviors
+
+- All `CngGlobalMetaModel` maps use `CaseInsensitiveConcurrentHashMap` — key lookups are case-insensitive.
+- `CngGlobalMetaModel.widgets` is a **flat** map of all widgets at all nesting levels. `CngMetaWidget.widgets` is the direct-children tree.
+- `CngMetaConfig` / `CngMetaContext` are intermediate parse containers. Aggregated context data ends up in `CngGlobalMetaModel.contextAttributes` (context type → qualifier set).
+- `retrieveDom()` may return null even on a valid meta object — the DOM anchor holds a weak reference.
+
+## Caching
+
+```kotlin
+CachedValueProvider.Result.create(value,
+    CngModificationTracker.getInstance(project),
+    PsiModificationTracker.MODIFICATION_COUNT)
+```
 
 ## Inspections
 

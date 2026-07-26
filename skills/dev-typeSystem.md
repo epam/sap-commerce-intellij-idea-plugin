@@ -1,203 +1,149 @@
 # TypeSystem — Plugin Dev Reference
 
-Source: `*-items.xml` files. Module: `modules/typeSystem/`.
+Source: `*-items.xml`. Module: `modules/typeSystem/`.
+
+## XML Element → Meta Type
+
+| XML element                                   | Meta type                   | How to get it                                                              |
+|-----------------------------------------------|-----------------------------|----------------------------------------------------------------------------|
+| `<itemtype code="X">`                         | `TSGlobalMetaItem`          | `findMetaItemByName("X")`                                                  |
+| `<attribute qualifier="q">` (inside itemtype) | `TSGlobalMetaItemAttribute` | `item.allAttributes["q"]`                                                  |
+| `<relation code="X">`                         | `TSGlobalMetaRelation`      | `findMetaRelationByName("X")`                                              |
+| `<sourceElement>` / `<targetElement>`         | `TSMetaRelationElement`     | `item.allRelationEnds`                                                     |
+| `<enumtype code="X">`                         | `TSGlobalMetaEnum`          | `findMetaEnumByName("X")`                                                  |
+| `<collectiontype code="X">`                   | `TSGlobalMetaCollection`    | `findMetaCollectionByName("X")`                                            |
+| `<maptype code="X">`                          | `TSGlobalMetaMap`           | `findMetaMapByName("X")`                                                   |
+| `<atomictype class="X">`                      | `TSGlobalMetaAtomic`        | `findMetaAtomicByName("X")`                                                |
+| any                                           | `TSGlobalMetaClassifier`    | `findMetaClassifierByName("X")` — item→collection→relation→enum→map→atomic |
+
+Critical rule: `<attribute>` elements → `allAttributes`; `<relation>` elements →
+`allRelationEnds`. Mutually exclusive — relation-declared attributes like `catalogVersion` are NEVER in `allAttributes`.
 
 ## Entry Point
 
 `TSMetaModelAccess.getInstance(project)` — project service; call inside a read action.
 
-Key finders (all nullable):
-- `findMetaItemByName(name?)` → `TSGlobalMetaItem?`
-- `findMetaEnumByName(name?)` → `TSGlobalMetaEnum?`
-- `findMetaCollectionByName(name?)` → `TSGlobalMetaCollection?`
-- `findMetaMapByName(name?)` → `TSGlobalMetaMap?`
-- `findMetaAtomicByName(name?)` → `TSGlobalMetaAtomic?`
-- `findMetaRelationByName(name?)` → `TSGlobalMetaRelation?`
-- `findMetaClassifierByName(name?)` → item → collection → relation → enum → map → atomic (first non-null)
-- `findAttributeByName(meta, name, includeInherited)` — shortcut for `meta.allAttributes[name]`
-- `getRelationEnds(meta, includeInherited)` — shortcut for `meta.allRelationEnds`
+Additional finders:
 
-## TSGlobalMetaClassifier (base for all types)
+- `findAttributeByName(item, name, includeInherited)` — shortcut for `item.allAttributes[name]`
+- `getRelationEnds(item, includeInherited)` — shortcut for `item.allRelationEnds`
 
-`.name: String?`, `.extensionName: String` (owning extension), `.moduleName: String`, `.isCustom: Boolean`, `.domAnchor` / `.retrieveDom()` (navigate to XML source)
+## Base Fields (all types)
 
-## TSGlobalMetaItem
+Every meta type implements `TSGlobalMetaClassifier`:
+`.name: String?`, `.extensionName: String` (owning extension), `.moduleName: String`, `.isCustom: Boolean`
+`.domAnchor` / `.retrieveDom()` — navigate back to the XML DOM source element
 
-- `allAttributes: Map<String, TSGlobalMetaItemAttribute>` — only `<attribute>` XML elements; includes inherited
-- `allRelationEnds: List<TSMetaRelation.TSMetaRelationElement>` — from `<relation>` XML; includes inherited
-- `relationEnds: List<TSMetaRelation.TSMetaRelationElement>` — own only (non-inherited)
-- `allIndexes: List<TSGlobalMetaItemIndex>`, `indexes: Map<String, TSGlobalMetaItemIndex>` — own
-- `allCustomProperties: List<TSMetaCustomProperty>`, `customProperties: Map<String, TSMetaCustomProperty>`
-- `allOrderingAttributes: Map<String, TSMetaRelation.TSMetaOrderingAttribute>`
-- `deployment: TSMetaDeployment?`
-- `.extendedMetaItemName: String?`, `.allExtends: Set<TSGlobalMetaItem>`, `.hierarchy: Set<TSGlobalMetaItem>`
-- `.isAbstract`, `.isAutoCreate`, `.isGenerate`, `.isSingleton`, `.isJaloOnly`, `.isCatalogAware`, `.isDeprecated`
-- `.description: String?`, `.jaloClass: String?`, `.deprecatedSince: String?`
+## Item Types
 
-Critical: relation-declared FK attributes (e.g. `catalogVersion`) are in `allRelationEnds`, NOT `allAttributes`. Filter `.cardinality == Cardinality.ONE` for single-value FK columns stored in this item's DB table.
+### TSGlobalMetaItem
 
-## TSGlobalMetaItemAttribute
+Hierarchy: `.extendedMetaItemName: String?`, `.allExtends: Set<TSGlobalMetaItem>`, `.hierarchy: Set<TSGlobalMetaItem>`
 
-`.name`, `.type: String?`, `.isLocalized`, `.isDynamic`, `.isDeprecated`, `.isAutoCreate`, `.isRedeclare`, `.isGenerate`
-`.modifiers: TSMetaModifiers`, `.persistence: TSMetaPersistence`, `.defaultValue: String?`, `.isSelectionOf: String?`
-`.description: String?`, `.owner: TSGlobalMetaItem`
+Attributes (`<attribute>` XML only):
 
-## TSMetaPersistence
+- `.allAttributes: Map<String, TSGlobalMetaItemAttribute>` — own + inherited
+- `.attributes: Map<String, TSGlobalMetaItemAttribute>` — own only
 
-`.type: PersistenceType?` — `PROPERTY` (column), `DYNAMIC` (no DB), `CMP`, `JALO`
-`.qualifier: String?` — DB column name override (if different from attribute name)
-`.attributeHandler: String?` — Spring bean id for dynamic attributes
+Relation ends (`<relation>` XML only):
 
-## TSMetaRelation.TSMetaRelationElement
+- `.allRelationEnds: List<TSMetaRelationElement>` — own + inherited
+- `.relationEnds: List<TSMetaRelationElement>` — own only
+- `.allOrderingAttributes: Map<String, TSMetaOrderingAttribute>`
 
-`.qualifier: String?` (attribute name on this end), `.type: String` (other-end item type), `.cardinality: Cardinality`
-`.collectionType: Type` (collection kind for MANY end), `.end: RelationEnd` (`SOURCE`/`TARGET`)
+Other: `.allIndexes / .indexes`, `.allCustomProperties / .customProperties`, `.deployment: TSMetaDeployment?`
+
+Flags: `.isAbstract`, `.isAutoCreate`, `.isGenerate`, `.isSingleton`, `.isJaloOnly`, `.isCatalogAware`, `.isDeprecated`
+Meta: `.description: String?`, `.jaloClass: String?`, `.deprecatedSince: String?`
+
+### TSGlobalMetaItemAttribute
+
+Core: `.name`, `.type: String?`, `.owner: TSGlobalMetaItem`
+Flags: `.isLocalized`, `.isDynamic`, `.isDeprecated`, `.isAutoCreate`, `.isRedeclare`, `.isGenerate`
+Details: `.modifiers: TSMetaModifiers`, `.persistence: TSMetaPersistence`, `.defaultValue: String?`,
+`.isSelectionOf: String?`, `.description: String?`
+
+### TSMetaPersistence
+
+`.type: PersistenceType?` — `PROPERTY` (DB column) | `DYNAMIC` (computed, no DB) | `CMP` | `JALO`
+`.qualifier: String?` — DB column name override (default: `p_<attributeQualifier>`)
+`.attributeHandler: String?` — Spring bean id for `DYNAMIC` attributes
+
+### TSGlobalMetaItemIndex
+
+`.name`, `.keys: Set<String>`, `.includes: Set<String>`, `.isUnique`, `.isRemove`, `.isReplace`,
+`.creationMode: CreationMode?`
+
+## Relation Types
+
+### TSGlobalMetaRelation
+
+`.source: TSMetaRelationElement`, `.target: TSMetaRelationElement`
+`.deployment: TSMetaDeployment?` — junction table for many-to-many
+`.isLocalized`, `.isAutoCreate`, `.isGenerate`, `.description: String?`, `.orderingAttribute: TSMetaOrderingAttribute?`
+
+### TSMetaRelationElement
+
+Accessed via `item.allRelationEnds`. Represents one end of a `<relation>` as seen from the item on that end.
+
+`.qualifier: String?` — attribute name on this end
+`.type: String` — item type on the **other** end
+`.cardinality: Cardinality` — `ONE` (FK in this item's table) | `MANY` (junction table or other side)
+`.collectionType: Type`, `.end: RelationEnd` (`SOURCE`/`TARGET`)
 `.modifiers: TSMetaModifiers`, `.isNavigable`, `.isOrdered`, `.isDeprecated`, `.description: String?`
-`.metaType: String?`, `.customProperties`, `.customGetters`, `.customSetters`
 
-## TSGlobalMetaRelation
+FK rule: filter `.cardinality == Cardinality.ONE` for attributes with a physical FK column in this item's table.
 
-`.source: TSMetaRelationElement`, `.target: TSMetaRelationElement`, `.deployment: TSMetaDeployment?`
-`.isLocalized`, `.isAutoCreate`, `.isGenerate`, `.description: String?`
-`.orderingAttribute: TSMetaOrderingAttribute?`
+## Enum Types
 
-## TSMetaModifiers
+### TSGlobalMetaEnum
+
+`.name`, `.values: Map<String, TSMetaEnumValue>` — each: `.name`, `.description: String?`
+`.isDynamic`, `.isAutoCreate`, `.isGenerate`, `.isDeprecated`, `.description: String?`, `.deprecatedSince: String?`
+
+## Scalar Types
+
+| Type                     | Key fields                                                                     |
+|--------------------------|--------------------------------------------------------------------------------|
+| `TSGlobalMetaCollection` | `.elementType: String`, `.type: Type` (collection/list/set)                    |
+| `TSGlobalMetaMap`        | `.argumentType: String?` (key), `.returnType: String?` (value), `.isRedeclare` |
+| `TSGlobalMetaAtomic`     | `.extends: String` (Java class name)                                           |
+
+All have `.isAutoCreate`, `.isGenerate`.
+
+## Shared
+
+### TSMetaModifiers
 
 `.isOptional`, `.isUnique`, `.isInitial`, `.isPartOf`, `.isRead`, `.isWrite`, `.isSearch`, `.isEncrypted`
 
-## TSGlobalMetaEnum
-
-`.name`, `.values: Map<String, TSMetaEnumValue>` — each has `.name`, `.description: String?`
-`.isDynamic`, `.isAutoCreate`, `.isGenerate`, `.isDeprecated`, `.description: String?`, `.deprecatedSince: String?`
-
-## TSGlobalMetaCollection
-
-`.elementType: String`, `.type: Type` (collection kind: `collection`/`list`/`set`), `.isAutoCreate`, `.isGenerate`
-
-## TSGlobalMetaMap
-
-`.argumentType: String?` (key type), `.returnType: String?` (value type), `.isAutoCreate`, `.isGenerate`, `.isRedeclare`
-
-## TSGlobalMetaAtomic
-
-`.name`, `.extends: String` (Java class), `.isAutoCreate`, `.isGenerate`
-
-## TSMetaDeployment
+### TSMetaDeployment
 
 `.table: String?`, `.typeCode: String?`, `.propertyTable: String`
 
-## TSMetaCustomProperty
+### TSMetaCustomProperty
 
 `.name: String`, `.rawValue: String?`
 
-## TSGlobalMetaItemIndex
+## Non-obvious Behaviors
 
-`.name`, `.keys: Set<String>`, `.includes: Set<String>`, `.isUnique`, `.isRemove`, `.isReplace`, `.creationMode: CreationMode?`
+DB-storage implications not inferrable from field names:
 
-## Cache Keys
+- `localized="true"` on `<attribute>` → platform stores a separate DB column per language; NOT in the item's main table row.
+- Relation end `cardinality="one"` → FK column in that item's DB table row. Both ends `cardinality="many"` → junction table; relation needs its own `<deployment>`.
+- `atomictype` uses `class` attribute as its name (not `code` like all other types).
 
-`TSModificationTracker.getInstance(project)` — use for meta-model-backed PSI caches.
+## Caching
 
 ```kotlin
-CachedValueProvider.Result.create(value,
+CachedValueProvider.Result.create(
+    value,
     TSModificationTracker.getInstance(project),
-    PsiModificationTracker.MODIFICATION_COUNT)
+    PsiModificationTracker.MODIFICATION_COUNT
+)
 ```
-
-## items.xml → Meta Model Mapping
-
-```xml
-<!-- itemtype → TSGlobalMetaItem (name = code) -->
-<itemtype code="Product" extends="GenericItem"
-          abstract="false" singleton="false" jaloonly="false"
-          autocreate="true" generate="true">
-
-    <!-- attribute → allAttributes["code"] -->
-    <attribute qualifier="code" type="java.lang.String"
-               localized="false" autocreate="true" redeclare="false">
-        <!-- modifiers → .modifiers.isOptional / .isUnique / .isInitial / etc. -->
-        <modifiers optional="false" unique="true" read="true" write="true"
-                   search="true" initial="false" partof="false" encrypted="false"/>
-        <!-- persistence → .persistence (.type / .qualifier / .attributeHandler) -->
-        <!-- type="property" → isDynamic=false; type="dynamic" → isDynamic=true -->
-        <!-- qualifier="myCol" → DB column name override -->
-        <persistence type="property" qualifier="p_code"/>
-        <!-- defaultvalue → .defaultValue -->
-        <defaultvalue>""</defaultvalue>
-    </attribute>
-
-    <!-- indexes → .indexes / .allIndexes -->
-    <indexes>
-        <index name="ProductCodeIdx" unique="true" remove="false" replace="false">
-            <key attribute="code"/>
-            <include attribute="catalogVersion"/>
-        </index>
-    </indexes>
-
-    <!-- customproperties → .customProperties / .allCustomProperties -->
-    <customproperties>
-        <customproperty name="catalog.sync.default.root.type">
-            <value>true</value>
-        </customproperty>
-    </customproperties>
-
-    <!-- deployment → .deployment (.table / .typeCode / .propertyTable) -->
-    <deployment table="Products" typecode="1"/>
-
-</itemtype>
-
-<!-- relation → TSGlobalMetaRelation; also adds allRelationEnds on BOTH item types -->
-<relation code="CategoryProductRelation" localized="false"
-          autocreate="true" generate="true">
-    <!-- sourceElement → allRelationEnds entry on Category -->
-    <!--   .qualifier="supercategories", .type="Product", cardinality=MANY  -->
-    <sourceElement type="Category" qualifier="supercategories" cardinality="many"
-                   navigable="true" ordered="false">
-        <modifiers read="true" write="true" search="true" optional="true"/>
-    </sourceElement>
-    <!-- targetElement → allRelationEnds entry on Product -->
-    <!--   .qualifier="products", .type="Category", cardinality=MANY  -->
-    <targetElement type="Product" qualifier="products" cardinality="many"
-                   navigable="true" ordered="false">
-        <modifiers read="true" write="false"/>
-    </targetElement>
-    <!-- deployment → TSGlobalMetaRelation.deployment (junction table for many-to-many) -->
-    <deployment table="cat2prodrel" typecode="322"/>
-</relation>
-
-<!-- enumtype → TSGlobalMetaEnum (name = code) -->
-<enumtype code="ArticleApprovalStatus" dynamic="false"
-          autocreate="true" generate="true">
-    <!-- value → .values["APPROVED"] (.name / .description) -->
-    <value code="APPROVED"/>
-    <value code="CHECK"/>
-    <value code="UNAPPROVED"/>
-</enumtype>
-
-<!-- collectiontype → TSGlobalMetaCollection (name = code) -->
-<collectiontype code="StringList" elementtype="java.lang.String" type="list"
-                autocreate="true" generate="true"/>
-
-<!-- maptype → TSGlobalMetaMap (name = code) -->
-<maptype code="localized:java.lang.String"
-         argumenttype="java.util.Locale" returntype="java.lang.String"
-         autocreate="true" generate="false"/>
-
-<!-- atomictype → TSGlobalMetaAtomic (name = class) -->
-<atomictype class="java.lang.String" extends="java.lang.Object"
-            autocreate="true" generate="false"/>
-```
-
-Key rules:
-- `<attribute>` → `allAttributes`. `<relation>` → `allRelationEnds`. Never the other way.
-- A relation end with `cardinality="one"` → FK column in that item's DB table; no `<deployment>` on the relation needed.
-- A relation end with `cardinality="many"` on both sides → junction table (relation has `<deployment>`).
-- `localized="true"` on `<attribute>` → `.isLocalized = true`, separate DB table column per language.
-- `type="dynamic"` on `<persistence>` → `.isDynamic = true`; no DB column; `attributeHandler` is the Spring bean.
-- `qualifier` on `<persistence>` overrides the DB column name (otherwise it is `p_<qualifier>`).
-- Inherited attributes/relation-ends: `allAttributes`/`allRelationEnds` include inherited; `attributes`/`relationEnds` are own-only.
-- `extensionName` on any classifier tells which `*-items.xml` file declared it.
 
 ## Inspections
 
-Extend `TSInspection` (XML DOM-based). TypeSystem-specific item inspections go in `modules/typeSystem/core/src/.../codeInspection/`.
+Extend `TSInspection` (XML DOM-based). TypeSystem-specific item inspections go in
+`modules/typeSystem/core/src/.../codeInspection/`.
