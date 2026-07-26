@@ -30,7 +30,6 @@ import com.intellij.testFramework.LightVirtualFile
 import com.intellij.ui.jcef.JBCefApp
 import sap.commerce.toolset.Plugin
 import sap.commerce.toolset.isNotHybrisProject
-import java.io.IOException
 
 class WhatsNewStartupActivity : ProjectActivity {
 
@@ -42,13 +41,14 @@ class WhatsNewStartupActivity : ProjectActivity {
         val version = pluginDescriptor.version
 
         RunOnceUtil.runOnceForProject(project, "sapCX_showWhatsNew_$version") {
+            val title = "What's New in SAP Commerce Developers Toolset - $version"
             try {
                 val content = this.javaClass.getResourceAsStream("/releaseNotes.md").use { html ->
                     html
                         ?.let { String(StreamUtil.readBytes(it), Charsets.UTF_8) }
                 } ?: return@runOnceForProject
 
-                val lvf = LightVirtualFile("What's New in SAP Commerce Developers Toolset - $version").also {
+                val lvf = LightVirtualFile(title).also {
                     it.setContent(null, content, true)
                     it.fileType = FileTypeManagerEx.getInstance().getFileTypeByExtension("md")
                     it.isWritable = false
@@ -57,13 +57,13 @@ class WhatsNewStartupActivity : ProjectActivity {
                 runInEdt {
                     TextEditorWithPreview.openPreviewForFile(project, lvf)
                 }
-            } catch (_: IOException) {
+            } catch (_: Throwable) {
                 if (!JBCefApp.isSupported()) return@runOnceForProject
 
                 val request = HTMLEditorProvider.Request.url("https://github.com/epam/sap-commerce-intellij-idea-plugin/blob/main/CHANGELOG.md#$version")
 
                 runInEdt {
-                    HTMLEditorProvider.openEditor(project, "What's New in SAP Commerce Developers Toolset - $version", request)
+                    HTMLEditorProvider.openEditor(project, title, request)
                 }
             }
         }

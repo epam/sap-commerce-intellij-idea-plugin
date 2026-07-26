@@ -240,6 +240,7 @@ dependencies {
             useInstaller = false
         }
 
+        jetbrainsRuntime()
         pluginVerifier()
 
         rootProject.childProjects.keys
