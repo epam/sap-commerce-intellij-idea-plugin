@@ -70,16 +70,16 @@ class GroovyMcpService(private val project: Project) {
     }
 
     suspend fun transform(request: GroovyTransformMcpRequest): GroovyTransformResultDto {
+        val transformer = Transformer.EP.extensionList
+            .find { it.isApplicable(GroovyLanguage) && it.id.equals(request.transformerId, ignoreCase = true) }
+            ?: error("No applicable '${request.transformerId}' transformer found for Groovy")
+
         val psiFile = readAction {
             PsiFileFactory.getInstance(project)
                 .createFileFromText("transform.groovy", GroovyLanguage, request.script)
                 .asSafely<GroovyFile>()
                 ?: error("cannot create GroovyFile PSI from script")
         }
-
-        val transformer = Transformer.EP.extensionList
-            .find { it.isApplicable(psiFile) && it.id.equals(request.transformerId, ignoreCase = true) }
-            ?: error("No applicable '${request.transformerId}' transformer found for Groovy")
 
         psiFile.putUserData(GroovyConstants.Transform.SCRIPT_NAME, request.scriptName)
 
