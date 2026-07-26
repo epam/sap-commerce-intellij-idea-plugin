@@ -1,9 +1,8 @@
 # GitHub Actions Workflow is created for testing and preparing the plugin release in the following steps:
 # - Validate Gradle Wrapper.
-# - Run 'test' and 'verifyPlugin' tasks.
 # - Run the 'buildPlugin' task and prepare artifact for further tests.
 # - Run the 'runPluginVerifier' task.
-# - Create a draft release.
+# - Run 'test' tasks and generate test/coverage reports.
 #
 # The workflow is triggered on push and pull_request events.
 #
@@ -25,23 +24,12 @@ concurrency:
 
 jobs:
 
-  # Validate wrapper
-  gradleValidation:
-    name: Gradle Wrapper
-    runs-on: ubuntu-latest
-    steps:
-      - name: Fetch Sources
-        uses: actions/checkout@v4
-      - name: Gradle Wrapper Validation
-        uses: gradle/actions/wrapper-validation@v4
-
   # Prepare the environment and build the plugin
   build:
     name: Build
-    needs: [ gradleValidation ]
     runs-on: ubuntu-latest
+    timeout-minutes: 25
     steps:
-      # Free up disk space — lightweight cleanup
       - name: Free Disk Space
         uses: jlumbroso/free-disk-space@v1.3.1
         with:
@@ -56,11 +44,9 @@ jobs:
       - name: Fetch Sources
         uses: actions/checkout@v7
 
-      # Validate wrapper
       - name: Gradle Wrapper Validation
         uses: gradle/actions/wrapper-validation@v6
 
-      # Set up the Java environment for the next steps
       - name: Setup JBR 25
         uses: actions/setup-java@v5.5.0
         with:
@@ -71,7 +57,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # Setup Gradle — only the build job on main writes cache; PRs read-only
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v6
         with:
@@ -81,28 +66,76 @@ jobs:
             notifications
             jdks
           gradle-home-cache-excludes: |
-            caches/build-cache-*
             caches/*/transforms
             caches/transforms-*
 
       - name: Build plugin
         run: ./gradlew buildPlugin
 
+      - name: Prepare Plugin Artifact
+        id: artifact
+        shell: bash
+        run: |
+          cd ${{ github.workspace }}/build/distributions
+          FILENAME=`ls *.zip`
+          unzip "$FILENAME" -d content
+          echo "filename=${FILENAME:0:-4}" >> $GITHUB_OUTPUT
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.artifact.outputs.filename }}
+          path: ./build/distributions/content/*/*
+
+  # Run plugin structure verification along with IntelliJ Plugin Verifier
   verify:
     name: Verify Plugin
     needs: [ build ]
     runs-on: ubuntu-latest
+    timeout-minutes: 25
     steps:
+      - name: Fetch Sources
+        uses: actions/checkout@v7
+
+      - name: Setup JBR 25
+        uses: actions/setup-java@v5.5.0
+        with:
+          distribution: 'jetbrains'
+          java-version: 25
+          java-package: 'jdk+jcef'
+          check-latest: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v6
+        with:
+          cache-read-only: true
+          gradle-home-cache-includes: |
+            caches
+            notifications
+            jdks
+          gradle-home-cache-excludes: |
+            caches/*/transforms
+            caches/transforms-*
+
       - name: Verify Plugin
         run: ./gradlew verifyPlugin
 
-  # Run tests and upload a code coverage report
+      - name: Collect Plugin Verifier Result
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: pluginVerifier-result
+          path: ${{ github.workspace }}/build/reports/pluginVerifier
+
+  # Run tests and produce test/coverage report artifacts
   test:
     name: Test
     needs: [ build ]
     runs-on: ubuntu-latest
+    timeout-minutes: 40
     steps:
-      # Free up disk space — lightweight cleanup
       - name: Free Disk Space
         uses: jlumbroso/free-disk-space@v1.3.1
         with:
@@ -117,7 +150,6 @@ jobs:
       - name: Fetch Sources
         uses: actions/checkout@v7
 
-      # Set up the Java environment for the next steps
       - name: Setup JBR 25
         uses: actions/setup-java@v5.5.0
         with:
@@ -129,22 +161,101 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@v6
         with:
           cache-read-only: true
+          gradle-home-cache-includes: |
+            caches
+            notifications
+            jdks
+          gradle-home-cache-excludes: |
+            caches/*/transforms
+            caches/transforms-*
 
       - name: Run Tests
         run: ./gradlew check
 
       - name: Collect Tests Result
-        if: ${{ failure() }}
+        if: ${{ always() }}
         uses: actions/upload-artifact@v4
         with:
           name: tests-result
           path: ${{ github.workspace }}/build/reports/tests
+
+      - name: Collect Tests Report
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: tests-report
+          path: ${{ github.workspace }}/build/test-results/test/*.xml
+
+      - name: Collect Coverage Report
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: ${{ github.workspace }}/build/reports/kover/report.xml
+
+  # Render JUnit results as a GitHub Checks tab dashboard (viewable inline, no download)
+  testReport:
+    name: Test Report
+    if: ${{ !cancelled() && (needs.test.result == 'success' || needs.test.result == 'failure') }}
+    needs: [ test ]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      checks: write
+      pull-requests: write
+    steps:
+      - name: Download Test Report
+        uses: actions/download-artifact@v4
+        with:
+          name: tests-report
+          path: ~/test-results
+
+      - name: Generate Test Report
+        uses: dorny/test-reporter@v1
+        if: success() || failure()
+        with:
+          name: Test Report Dashboard
+          reporter: java-junit
+          path: '~/test-results/*.xml'
+          fail-on-error: 'true'
+
+  # Upload coverage to Codecov + post an inline summary on the run page
+  coverage:
+    name: Coverage
+    if: ${{ !cancelled() && needs.test.result == 'success' }}
+    needs: [ test ]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Download Coverage Report
+        uses: actions/download-artifact@v4
+        with:
+          name: coverage-report
+          path: ${{ github.workspace }}/build/reports/kover
 
       - name: Upload Code Coverage Report
         uses: codecov/codecov-action@v5
         with:
           files: ${{ github.workspace }}/build/reports/kover/report.xml
           token: ${{ secrets.CODECOV_TOKEN }}
+
+      - name: Coverage Summary
+        if: always()
+        run: |
+          echo "## Coverage Report" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          python3 -c "
+          import xml.etree.ElementTree as ET
+          tree = ET.parse('${{ github.workspace }}/build/reports/kover/report.xml')
+          root = tree.getroot()
+          counter = root.find(\".//counter[@type='LINE']\")
+          covered = int(counter.get('covered'))
+          missed = int(counter.get('missed'))
+          total = covered + missed
+          pct = round(100 * covered / total, 2) if total else 0
+          print(f'**Line coverage:** {pct}% ({covered}/{total} lines)')
+          " >> $GITHUB_STEP_SUMMARY
