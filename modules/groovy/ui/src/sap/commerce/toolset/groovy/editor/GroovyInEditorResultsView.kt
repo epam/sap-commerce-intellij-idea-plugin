@@ -39,9 +39,9 @@ import kotlin.let
 import kotlin.takeIf
 
 @Service(Service.Level.PROJECT)
-class GroovyInEditorResultsView(project: Project, coroutineScope: CoroutineScope) : InEditorResultsView<GroovySplitEditor, DefaultExecResult>(project, coroutineScope) {
+class GroovyInEditorResultsView(project: Project, coroutineScope: CoroutineScope) : InEditorResultsView<GroovySplitEditorEx, DefaultExecResult>(project, coroutineScope) {
 
-    override suspend fun render(fileEditor: GroovySplitEditor, execResults: Collection<DefaultExecResult>): JComponent {
+    override suspend fun render(fileEditor: GroovySplitEditorEx, execResults: Collection<DefaultExecResult>): JComponent {
         return execResults.firstOrNull()
             .takeIf { execResults.size == 1 }
             ?.let { result ->

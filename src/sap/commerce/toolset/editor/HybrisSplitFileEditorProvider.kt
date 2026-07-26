@@ -33,7 +33,7 @@ import sap.commerce.toolset.acl.editor.AclSplitEditorBase
 import sap.commerce.toolset.acl.file.AclFileType
 import sap.commerce.toolset.flexibleSearch.editor.FlexibleSearchSplitEditorEx
 import sap.commerce.toolset.flexibleSearch.file.FlexibleSearchFileType
-import sap.commerce.toolset.groovy.editor.GroovySplitEditor
+import sap.commerce.toolset.groovy.editor.GroovySplitEditorBase
 import sap.commerce.toolset.impex.editor.ImpExSplitEditorBase
 import sap.commerce.toolset.impex.file.ImpExFileType
 import sap.commerce.toolset.polyglotQuery.editor.PolyglotQuerySplitEditorEx
@@ -49,7 +49,7 @@ class HybrisSplitFileEditorProvider : FileEditorProvider, DumbAware {
                     is PolyglotQueryFileType -> PolyglotQuerySplitEditorEx(it, project)
                     is ImpExFileType -> ImpExSplitEditorBase(it, project)
                     is AclFileType -> AclSplitEditorBase(it, project)
-                    else -> if (Plugin.GROOVY.isActive() && file.fileType is GroovyFileType) GroovySplitEditor(it, project)
+                    else -> if (Plugin.GROOVY.isActive() && file.fileType is GroovyFileType) GroovySplitEditorBase(it, project)
                     else null
                 }
             }
