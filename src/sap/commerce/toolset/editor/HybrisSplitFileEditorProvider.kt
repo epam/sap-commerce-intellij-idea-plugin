@@ -31,7 +31,7 @@ import org.jetbrains.plugins.groovy.GroovyFileType
 import sap.commerce.toolset.Plugin
 import sap.commerce.toolset.acl.editor.AclSplitEditorBase
 import sap.commerce.toolset.acl.file.AclFileType
-import sap.commerce.toolset.flexibleSearch.editor.FlexibleSearchSplitEditorEx
+import sap.commerce.toolset.flexibleSearch.editor.FlexibleSearchSplitEditorBase
 import sap.commerce.toolset.flexibleSearch.file.FlexibleSearchFileType
 import sap.commerce.toolset.groovy.editor.GroovySplitEditorBase
 import sap.commerce.toolset.impex.editor.ImpExSplitEditorBase
@@ -45,7 +45,7 @@ class HybrisSplitFileEditorProvider : FileEditorProvider, DumbAware {
         asSafely<TextEditor>()
             ?.let {
                 when (file.fileType) {
-                    is FlexibleSearchFileType -> FlexibleSearchSplitEditorEx(it, project)
+                    is FlexibleSearchFileType -> FlexibleSearchSplitEditorBase(it, project)
                     is PolyglotQueryFileType -> PolyglotQuerySplitEditorEx(it, project)
                     is ImpExFileType -> ImpExSplitEditorBase(it, project)
                     is AclFileType -> AclSplitEditorBase(it, project)
