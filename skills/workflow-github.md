@@ -20,6 +20,7 @@
 - No `Co-Authored-By` for AI assistants.
 - Commit iterative progress to the feature branch as you work — don't accumulate all changes into a single uncommitted diff.
 - Multiple small commits on a branch are fine (squash-merged). Prefer follow-up commits over `--amend` + force-push on already-pushed branches.
+- **Before every commit, verify the affected modules compile**: run `GITHUB_SKIP_TASK_FETCH_PRS=true ./gradlew <module>:compileKotlin` for each modified module. Fix any errors before committing.
 
 Examples:
 - `ImpEx | Resolve external macros from included files`
