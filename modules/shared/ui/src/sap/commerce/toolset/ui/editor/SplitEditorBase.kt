@@ -20,7 +20,6 @@ package sap.commerce.toolset.ui.editor
 
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionManager
-import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.application.edtWriteAction
 import com.intellij.openapi.fileEditor.FileEditorState
 import com.intellij.openapi.fileEditor.TextEditor
@@ -38,6 +37,7 @@ import com.intellij.ui.dsl.builder.AlignX
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.util.ui.JBUI
 import kotlinx.coroutines.*
+import sap.commerce.toolset.editor.SplitEditor
 import sap.commerce.toolset.ui.actionButton
 import java.awt.BorderLayout
 import java.beans.PropertyChangeListener
@@ -72,12 +72,15 @@ abstract class SplitEditorBase(
 
     private fun buildResultsPanel(content: JComponent): JComponent {
         val leftActions = inEditorResultsActions()
-        val hideAction = ActionManager.getInstance().getAction("sap.commerce.toolset.editor.hideInEditorResults")
+        val hideAction = ActionManager.getInstance().getAction("sap.commerce.toolset.splitEditor.hideInEditorResults")
 
         val actionBar = panel {
             row {
                 leftActions.forEach { actionButton(it) }
-                actionButton(hideAction, sinkExtender = { sink -> sink.set(SplitEditorDataKeys.SPLIT_EDITOR, this@SplitEditorBase) }).align(AlignX.RIGHT)
+                actionButton(
+                    hideAction,
+                    sinkExtender = { sink -> sink.set(SplitEditor.DATA_KEY_SPLIT_EDITOR, this@SplitEditorBase) }
+                ).align(AlignX.RIGHT)
             }
         }.apply {
             border = JBUI.Borders.compound(
@@ -91,8 +94,6 @@ abstract class SplitEditorBase(
             add(content, BorderLayout.CENTER)
         }
     }
-
-    protected open fun inEditorResultsActions(): List<AnAction> = emptyList()
 
     protected val horizontalSplitter = OnePixelSplitter(false).apply {
         isShowDividerControls = true

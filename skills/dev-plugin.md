@@ -99,12 +99,15 @@ Never inline HAC calls — use `HacHttpClient.getInstance(project).post(...)`.
 
 Use this pattern when an action button in a `panel { row { ... } }` DSL needs context that is unavailable via the standard `DataContext` (e.g. a domain object tied to a specific Swing component instance).
 
-**1. Declare `DataKey` constants in a dedicated `object`, never in a registered action's `companion object`:**
+**1. Declare `DataKey` constants on the relevant interface's `companion object`, not on a registered action:**
 
 ```kotlin
-// e.g. SplitEditorDataKeys.kt
-object SplitEditorDataKeys {
-    val SPLIT_EDITOR: DataKey<ResultsSplitEditor> = DataKey.create("sap.commerce.toolset.splitEditor")
+// e.g. SplitEditor.kt (shared/core)
+interface SplitEditor : FileEditor, TextEditor {
+    companion object {
+        val DATA_KEY_SPLIT_EDITOR: DataKey<ResultsSplitEditor> =
+            DataKey.create("sap.commerce.toolset.splitEditor")
+    }
 }
 ```
 
@@ -115,13 +118,12 @@ class MyAction : DumbAwareAction(...) {
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     override fun update(e: AnActionEvent) {
-        e.presentation.isEnabledAndVisible = e.getData(SplitEditorDataKeys.SPLIT_EDITOR) != null
+        e.presentation.isEnabledAndVisible = e.getData(SplitEditor.DATA_KEY_SPLIT_EDITOR) != null
     }
 
     override fun actionPerformed(e: AnActionEvent) {
-        val editor = e.getData(SplitEditorDataKeys.SPLIT_EDITOR) ?: return
-        // operate on the domain object directly
-        editor.inEditorResults = !editor.inEditorResults
+        val editor = e.getData(SplitEditor.DATA_KEY_SPLIT_EDITOR) ?: return
+        editor.inEditorResults = false   // or any operation on the domain object
     }
 }
 ```
@@ -139,13 +141,13 @@ class MyAction : DumbAwareAction(...) {
 val action = ActionManager.getInstance().getAction("sap.commerce.toolset.myAction")
 // inside panel { row { ... } }:
 actionButton(action, sinkExtender = { sink ->
-    sink.set(SplitEditorDataKeys.SPLIT_EDITOR, this@MyComponent)
+    sink.set(SplitEditor.DATA_KEY_SPLIT_EDITOR, this@MyEditor)
 })
 ```
 
 `ActionButtonSink` (in `Dsl.kt`) implements `UiDataProvider`; `uiDataSnapshot` delegates to `sinkExtender`, making the key visible to `e.getData(key)` in `update` and `actionPerformed`.
 
-- **Never** put `DataKey` in a registered action's `companion object` — keep them in a standalone constants `object`.
+- **Never** put `DataKey` in a registered action's `companion object` — declare it on the domain interface's `companion object` (or a dedicated constants file for unrelated keys).
 - **Never** instantiate a registered action directly with a lambda constructor — use registration + `ActionManager`.
 - `update()` **must** guard `isEnabledAndVisible` on `e.getData(key) != null` so the same registered action stays disabled in other contexts that don't supply the key.
 

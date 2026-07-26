@@ -18,6 +18,28 @@
 
 package sap.commerce.toolset.editor
 
+import com.intellij.openapi.actionSystem.AnAction
+
 interface ResultsSplitEditor : SplitEditor {
+
+    /**
+     * Whether the in-editor results panel is currently visible.
+     *
+     * Setting this to `false` hides the panel without discarding its content,
+     * so it can be made visible again by setting it back to `true`.
+     */
     var inEditorResults: Boolean
+
+    /**
+     * Returns additional [AnAction]s contributed by the concrete editor to the
+     * in-editor results panel action bar.
+     *
+     * Actions are rendered on the **left** side of the bar, before the shared
+     * built-in controls (e.g. the Hide button on the right).
+     *
+     * Override in a language-specific split editor to expose result-related
+     * actions (export, copy, filter, …) directly inside the panel.
+     * The default implementation returns an empty list.
+     */
+    fun inEditorResultsActions(): List<AnAction> = emptyList()
 }
