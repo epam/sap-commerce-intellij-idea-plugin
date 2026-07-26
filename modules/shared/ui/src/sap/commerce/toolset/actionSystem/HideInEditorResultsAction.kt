@@ -30,7 +30,7 @@ class HideInEditorResultsAction : DumbAwareAction(
     HybrisIcons.Actions.HIDE
 ) {
 
-    override fun getActionUpdateThread() = ActionUpdateThread.BGT
+    override fun getActionUpdateThread() = ActionUpdateThread.EDT
 
     override fun update(e: AnActionEvent) {
         e.presentation.isEnabledAndVisible = e.getData(SplitEditor.DATA_KEY_SPLIT_EDITOR) != null
