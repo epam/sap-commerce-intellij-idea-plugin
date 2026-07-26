@@ -107,7 +107,7 @@ class FlexibleSearchTransformAction : AnAction() {
             separator()
 
             row {
-                comboBox(applicableTransformers.map { it.outputFileType.name })
+                comboBox(applicableTransformers.map { it.presentableTitle })
                     .label(i18n("hybris.fxs.actions.transform.dialog.transformer"))
                     .applyToComponent {
                         addActionListener {
