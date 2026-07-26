@@ -23,14 +23,12 @@ import com.intellij.openapi.application.readAction
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
-import com.intellij.psi.PsiFileFactory
-import com.intellij.util.asSafely
 import kotlinx.coroutines.currentCoroutineContext
 import org.apache.http.HttpStatus
 import org.jetbrains.plugins.groovy.GroovyLanguage
-import org.jetbrains.plugins.groovy.lang.psi.GroovyFile
 import sap.commerce.toolset.groovy.GroovyConstants
 import sap.commerce.toolset.groovy.exec.GroovyExecClient
+import sap.commerce.toolset.groovy.psi.GroovyElementFactory
 import sap.commerce.toolset.groovy.exec.context.GroovyExecContext
 import sap.commerce.toolset.groovy.mcp.context.GroovyExecMcpRequest
 import sap.commerce.toolset.groovy.mcp.context.GroovyTransformMcpRequest
@@ -74,12 +72,7 @@ class GroovyMcpService(private val project: Project) {
             .find { it.isApplicable(GroovyLanguage) && it.id.equals(request.transformerId, ignoreCase = true) }
             ?: error("No applicable '${request.transformerId}' transformer found for Groovy")
 
-        val psiFile = readAction {
-            PsiFileFactory.getInstance(project)
-                .createFileFromText("transform.groovy", GroovyLanguage, request.script)
-                .asSafely<GroovyFile>()
-                ?: error("cannot create GroovyFile PSI from script")
-        }
+        val psiFile = readAction { GroovyElementFactory.createFile(project, request.script) }
 
         psiFile.putUserData(GroovyConstants.Transform.SCRIPT_NAME, request.scriptName)
 
