@@ -56,17 +56,16 @@ internal class GroovyImpExScriptTransformationService(
         val scriptContent = readAction { psiFile.text }
         val escapedContent = scriptContent.replace("\"", "'")
 
-        val rawImpex = buildString {
+        val rawImpEx = buildString {
             appendLine("INSERT_UPDATE Script;code[unique=true];content")
             appendLine(";$scriptName;\"$escapedContent\"")
             appendLine()
-            appendLine("# JOB")
-            appendLine("INSERT_UPDATE ScriptingJob;code[unique=true];scriptURI;")
-            append(";${scriptName}Job;model://$scriptName;")
+            appendLine("INSERT_UPDATE ScriptingJob;code[unique=true];scriptURI")
+            append(";${scriptName}Job;model://$scriptName")
         }
 
-        val formattedImpex = edtWriteAction {
-            ImpExElementFactory.createFile(project, rawImpex)
+        val formattedImpEx = edtWriteAction {
+            ImpExElementFactory.createFile(project, rawImpEx)
                 .let { CodeStyleManager.getInstance(project).reformat(it) }
                 .text
         }
@@ -74,11 +73,11 @@ internal class GroovyImpExScriptTransformationService(
         val description = "$scriptName to ${outputFileType.name}"
 
         return TransformationResult(
-            content = formattedImpex,
+            content = formattedImpEx,
             description = description,
             handlers = listOf(
-                CopyToClipboardTransformResultHandler(formattedImpex),
-                CreateScratchFileTransformResultHandler(project, formattedImpex, outputFileType),
+                CopyToClipboardTransformResultHandler(formattedImpEx),
+                CreateScratchFileTransformResultHandler(project, formattedImpEx, outputFileType),
             ),
         )
     }

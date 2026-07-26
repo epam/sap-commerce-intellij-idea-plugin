@@ -20,9 +20,9 @@ package sap.commerce.toolset.groovy.actionSystem
 
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.actionSystem.ActionUpdateThread
-import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
+import com.intellij.openapi.project.DumbAwareAction
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.popup.*
@@ -42,7 +42,7 @@ import sap.commerce.toolset.transform.Transformer
 import java.awt.event.KeyEvent
 import kotlin.time.Duration.Companion.minutes
 
-class GroovyTransformAction : AnAction() {
+class GroovyTransformAction : DumbAwareAction() {
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
@@ -56,7 +56,6 @@ class GroovyTransformAction : AnAction() {
         }
 
         e.presentation.text = i18n("hybris.groovy.actions.transform")
-        e.presentation.description = i18n("hybris.groovy.actions.transform.description")
         val isDumb = e.project?.let { DumbService.isDumb(it) } ?: false
         e.presentation.icon = HybrisIcons.Groovy.Actions.TRANSFORM
         e.presentation.isEnabled = !isDumb
@@ -123,7 +122,9 @@ class GroovyTransformAction : AnAction() {
                         if (!event.isOk) return
                         content.apply()
 
-                        psiFile.putUserData(GroovyConstants.Transform.SCRIPT_NAME, scriptName.trim().ifEmpty { defaultName })
+                        psiFile.putUserData(
+                            GroovyConstants.Transform.SCRIPT_NAME,
+                            scriptName.trim().ifEmpty { defaultName })
 
                         val transformer = applicableTransformers[selectedTransformerIndex]
                         transformer.transform(psiFile) { result ->
