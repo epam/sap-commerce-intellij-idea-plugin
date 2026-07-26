@@ -79,7 +79,10 @@ abstract class SplitEditorBase(
                 actionButton(hideAction).align(AlignX.RIGHT)
             }
         }.apply {
-            border = JBUI.Borders.customLine(JBColor.border(), 0, 0, 1, 0)
+            border = JBUI.Borders.compound(
+                JBUI.Borders.customLine(JBColor.border(), 0, 0, 1, 0),
+                JBUI.Borders.empty(2, 4, 2, 4)
+            )
         }
 
         return JPanel(BorderLayout()).apply {

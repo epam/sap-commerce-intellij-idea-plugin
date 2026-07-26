@@ -24,7 +24,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 
 class HideInEditorResultsAction(private val onHide: () -> Unit) : AnAction(
     "Hide",
-    null,
+    "Hide in-editor results panel",
     AllIcons.Actions.Close
 ) {
     override fun actionPerformed(e: AnActionEvent) = onHide()
