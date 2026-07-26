@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,6 +18,11 @@
 
 package sap.commerce.toolset.acl.editor
 
-import sap.commerce.toolset.editor.SplitEditor
+import sap.commerce.toolset.exec.context.DefaultExecResult
+import sap.commerce.toolset.impex.exec.context.ImpExExecContext
+import sap.commerce.toolset.ui.editor.SplitEditorEx
 
-interface AclSplitEditor : SplitEditor
+interface AclSplitEditorEx : AclSplitEditor, SplitEditorEx {
+    fun showLoader(context: ImpExExecContext)
+    fun renderExecutionResult(result: DefaultExecResult)
+}
