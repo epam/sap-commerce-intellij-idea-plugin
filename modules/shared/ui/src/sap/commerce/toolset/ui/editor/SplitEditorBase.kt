@@ -37,6 +37,7 @@ import com.intellij.ui.dsl.builder.AlignX
 import com.intellij.ui.dsl.builder.TopGap
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.dsl.gridLayout.UnscaledGaps
+import com.intellij.util.application
 import com.intellij.util.ui.JBUI
 import kotlinx.coroutines.*
 import sap.commerce.toolset.editor.SplitEditor
@@ -69,7 +70,9 @@ abstract class SplitEditorBase(
     protected var inEditorResultsView: JComponent?
         get() = verticalSplitter.secondComponent
         set(view) {
-            verticalSplitter.secondComponent = view?.let { buildResultsPanel(it) }
+            application.invokeLater {
+                verticalSplitter.secondComponent = view?.let { buildResultsPanel(it) }
+            }
         }
 
     private fun buildResultsPanel(content: JComponent): JComponent {
