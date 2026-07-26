@@ -48,7 +48,7 @@ All versions in `gradle/libs.versions.toml` (use `libs.*` references).
 
 ### Code conventions
 Read `skills/lang-polyglot-query.md` before writing any PolyglotQuery code.
-Read `skills/lang-ImpEx.md` before writing any ImpEx code.
+Read `skills/lang-impex.md` before writing any ImpEx code.
 Read `skills/lang-flexible-search.md` before writing any FlexibleSearch code.
 Read `skills/dev-bean-system.md` before working on Bean System.
 Read `skills/dev-cockpit-ng.md` before working on Cockpit NG.
@@ -63,7 +63,7 @@ See `TECH_NOTES.md` for: action invocation, background-thread patterns, dialog s
 3. Implement focused change; commit iterative progress as you work — don't accumulate all changes into one diff.
 4. Run relevant tests.
 5. Review modified files — remove unrelated changes, no formatting noise.
-6. Commit message matches repository style (see `skills/github.md`).
+6. Commit message matches repository style (see `skills/workflow-github.md`).
 
 Because PRs are squash merged: intermediate commits are for convenience; do not create artificial micro-commits.
 
