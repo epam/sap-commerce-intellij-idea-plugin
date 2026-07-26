@@ -70,10 +70,7 @@ class FxSMcpService(private val project: Project) {
         val execRequest = request.execRequest
         val connection = execRequest.connection(project)
 
-        psiFile.putUserData(
-            FlexibleSearchConstants.Transform.INCLUDE_TYPE_SYSTEM_UNIQUE,
-            request.includeTypeSystemUnique
-        )
+        psiFile.putUserData(FlexibleSearchConstants.Transform.INCLUDE_TYPE_SYSTEM_UNIQUE, request.includeTypeSystemUnique)
         psiFile.putUserData(FlexibleSearchConstants.Transform.INCLUDE_DATA, request.includeData)
         psiFile.putUserData(FlexibleSearchExecConstants.Transform.CONNECTION, connection)
         psiFile.putUserData(FlexibleSearchExecConstants.Transform.EXEC_SETTINGS, execRequest.execSettings(connection))

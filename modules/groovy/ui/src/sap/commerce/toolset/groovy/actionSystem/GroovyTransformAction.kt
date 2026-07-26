@@ -122,12 +122,9 @@ class GroovyTransformAction : DumbAwareAction() {
                         if (!event.isOk) return
                         content.apply()
 
-                        psiFile.putUserData(
-                            GroovyConstants.Transform.SCRIPT_NAME,
-                            scriptName.trim().ifEmpty { defaultName })
+                        psiFile.putUserData(GroovyConstants.Transform.SCRIPT_NAME, scriptName.trim().ifEmpty { defaultName })
 
-                        val transformer = applicableTransformers[selectedTransformerIndex]
-                        transformer.transform(psiFile) { result ->
+                        applicableTransformers[selectedTransformerIndex].transform(psiFile) { result ->
                             notify(project, result)
                         }
                     }
