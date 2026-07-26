@@ -237,7 +237,7 @@ dependencies {
         // https://plugins.jetbrains.com/docs/intellij/tools-intellij-platform-gradle-plugin.html#dependenciesLocalPlatform
         // local("/Users/<user>/Applications/IntelliJ IDEA Community Edition 2025.1.4.1.app")
         intellijIdea(properties("intellij.version")) {
-            useInstaller = false
+            useInstaller = true
         }
 
         jetbrainsRuntime()

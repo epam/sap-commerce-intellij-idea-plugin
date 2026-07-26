@@ -1,7 +1,6 @@
 # GitHub Actions Workflow is created for testing and preparing the plugin release in the following steps:
 # - Validate Gradle Wrapper.
 # - Run 'test' and 'verifyPlugin' tasks.
-# - Run Qodana inspections.
 # - Run the 'buildPlugin' task and prepare artifact for further tests.
 # - Run the 'runPluginVerifier' task.
 # - Create a draft release.
@@ -16,10 +15,8 @@ name: Build
 env:
   GITHUB_SKIP_TASK_FETCH_PRS: true
 on:
-  # Trigger the workflow on pushes to only the 'main' branch (this avoids duplicate checks being run e.g., for dependabot pull requests)
   push:
     branches: [ main ]
-  # Trigger the workflow on any pull request
   pull_request:
 
 concurrency:
@@ -28,39 +25,66 @@ concurrency:
 
 jobs:
 
+  # Validate wrapper
+  gradleValidation:
+    name: Gradle Wrapper
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch Sources
+        uses: actions/checkout@v4
+      - name: Gradle Wrapper Validation
+        uses: gradle/actions/wrapper-validation@v4
+
   # Prepare the environment and build the plugin
   build:
     name: Build
+    needs: [ gradleValidation ]
     runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.properties.outputs.version }}
+      changelog: ${{ steps.properties.outputs.changelog }}
+      pluginVerifierHomeDir: ${{ steps.properties.outputs.pluginVerifierHomeDir }}
     steps:
 
-      # Free GitHub Actions Environment Disk Space
       - name: Maximize Build Space
         uses: jlumbroso/free-disk-space@v1.3.1
         with:
           tool-cache: false
           large-packages: false
 
-      # Check out the current repository
       - name: Fetch Sources
         uses: actions/checkout@v4
 
-      # Set up the Java environment for the next steps
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: zulu
           java-version: 25
 
-      # Setup Gradle
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
 
-      # Build plugin
-      - name: Build plugin
-        run: ./gradlew clean buildPlugin
+      - name: Export Properties
+        id: properties
+        shell: bash
+        run: |
+          PROPERTIES="$(./gradlew properties --console=plain -q)"
+          VERSION="$(echo "$PROPERTIES" | grep "^version:" | cut -f2- -d ' ')"
+          CHANGELOG="$(./gradlew getChangelog --unreleased --no-header --console=plain -q)"
+          CHANGELOG="${CHANGELOG//'%'/'%25'}"
+          CHANGELOG="${CHANGELOG//$'\n'/'%0A'}"
+          CHANGELOG="${CHANGELOG//$'\r'/'%0D'}"
 
-      # Prepare plugin archive content for creating artifact
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "changelog=$CHANGELOG" >> $GITHUB_OUTPUT
+          echo "pluginVerifierHomeDir=~/.pluginVerifier" >> $GITHUB_OUTPUT
+
+      - name: Verify Plugin
+        run: ./gradlew verifyPlugin
+
+      - name: Build plugin
+        run: ./gradlew buildPlugin
+
       - name: Prepare Plugin Artifact
         id: artifact
         shell: bash
@@ -71,7 +95,6 @@ jobs:
 
           echo "filename=${FILENAME:0:-4}" >> $GITHUB_OUTPUT
 
-      # Store an already-built plugin as an artifact for downloading
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
@@ -85,35 +108,29 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
-      # Free GitHub Actions Environment Disk Space
       - name: Maximize Build Space
         uses: jlumbroso/free-disk-space@v1.3.1
         with:
           tool-cache: false
           large-packages: false
 
-      # Check out the current repository
       - name: Fetch Sources
         uses: actions/checkout@v4
 
-      # Set up the Java environment for the next steps
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: zulu
           java-version: 25
 
-      # Setup Gradle
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
           cache-read-only: true
 
-      # Run tests
       - name: Run Tests
         run: ./gradlew check
 
-      # Collect Tests Result of failed tests
       - name: Collect Tests Result
         if: ${{ failure() }}
         uses: actions/upload-artifact@v4
@@ -121,7 +138,6 @@ jobs:
           name: tests-result
           path: ${{ github.workspace }}/build/reports/tests
 
-      # Upload the Kover report to CodeCov
       - name: Upload Code Coverage Report
         uses: codecov/codecov-action@v5
         with:
