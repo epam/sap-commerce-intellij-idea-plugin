@@ -47,12 +47,12 @@ class FxSTransformationService(
 ) {
 
     fun transform(
-        fileType: LanguageFileType,
+        outputFileType: LanguageFileType,
         element: ImpExValueLine,
         onComplete: (TransformationResult) -> Unit,
     ) {
         coroutineScope.launch {
-            val result = transform(fileType, element)
+            val result = transform(outputFileType, element)
             onComplete(result)
         }
     }
@@ -62,7 +62,7 @@ class FxSTransformationService(
      *
      * Behaves identically to the callback overload but returns the ImpEx string directly.
      */
-    suspend fun transform(fileType: LanguageFileType, element: ImpExValueLine): TransformationResult {
+    suspend fun transform(outputFileType: LanguageFileType, element: ImpExValueLine): TransformationResult {
         val data = readAction { buildTransformData(element) }
             ?: error("cannot extract PSI/meta data")
 
@@ -76,10 +76,10 @@ class FxSTransformationService(
 
         return TransformationResult(
             content = formattedText,
-            description = "${data.rootType} to ${fileType.name}",
+            description = "${data.rootType} to ${outputFileType.name}",
             handlers = listOf(
                 CopyToClipboardTransformResultHandler(formattedText),
-                CreateScratchFileTransformResultHandler(project, formattedText, fileType)
+                CreateScratchFileTransformResultHandler(project, formattedText, outputFileType)
             )
         )
     }
