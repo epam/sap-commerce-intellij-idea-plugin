@@ -39,6 +39,7 @@
 
 ### Other enhancements
 - Updated project libraries [#1955](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1955)
+- Unified split editor hierarchy with shared `SplitEditorBase` and capability interfaces (`ResultsSplitEditor`, `ParameterizedSplitEditor`) across all custom-language editors
 
 ## [2026.0.14]
 
