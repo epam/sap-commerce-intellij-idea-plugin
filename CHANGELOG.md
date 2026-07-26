@@ -1,7 +1,7 @@
 ## [2026.0.15]
 
 <cite>Release contributors</code>
-- 20 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.15+author%3Amlytvyn+is%3Apr)
+- 21 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.15+author%3Amlytvyn+is%3Apr)
 - 8 PR(s) by [Eugeni Kalenchuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.15+author%3Aekalenchuk+is%3Apr)
 
 ### `Project Import` enhancements
@@ -36,6 +36,7 @@
 - Improved resolution of the nested attributes in the generated FlexibleSearch query [#1974](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1974)
 - New ImpEx Value Line transformer into a Polyglot Query [#1977](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1977)
 - Inspection: Header mode is not uppercase [#1980](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1980)
+- Inspection: Header type is not uppercase [#1981](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1981)
 
 ### `FlexibleSearch` enhancements
 - New action to `Introduce Bind Parameters` for query with exact values in the expressions [#1962](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1962)

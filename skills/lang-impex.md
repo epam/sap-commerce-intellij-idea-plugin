@@ -70,3 +70,73 @@ CachedValueProvider.Result.create(value,
     PsiModificationTracker.MODIFICATION_COUNT,
     TSModificationTracker.getInstance(project))
 ```
+
+## Inspections
+
+Module: `modules/impex/core/src/.../codeInspection/`; fixes in `fix/` sub-package.
+Registration: `modules/impex/core/resources/META-INF/sap.commerce.toolset-impex-core.xml`.
+i18n: `modules/shared/core/resources/i18n/HybrisBundle.properties`.
+HTML descriptions: `modules/impex/core/resources/inspectionDescriptions/<ClassName>.html`.
+
+**Pattern:**
+```kotlin
+class ImpExXxxInspection : LocalInspectionTool() {
+    override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor = object : ImpExVisitor() {
+        override fun visitHeaderTypeName(element: ImpExHeaderTypeName) { ... }
+        override fun visitAnyHeaderMode(element: ImpExAnyHeaderMode) { ... }
+        // other visitXxx overrides
+    }
+}
+```
+
+**XML registration:**
+```xml
+<localInspection groupPath="SAP Commerce" shortName="ImpExXxxInspection" displayName="[y] ..."
+                 groupName="[y] ImpEx" level="WEAK WARNING" language="ImpEx" enabledByDefault="true"
+                 implementationClass="sap.commerce.toolset.impex.codeInspection.ImpExXxxInspection"/>
+```
+
+**Quick fix pattern** — extend `LocalQuickFixOnPsiElement`:
+```kotlin
+class ImpExXxxQuickFix(element: ImpExXxx, private val replacement: String) : LocalQuickFixOnPsiElement(element) {
+    override fun getFamilyName() = i18n("hybris.inspections.fix.impex.Xxx")
+    override fun getText() = i18n("hybris.inspections.fix.impex.Xxx.text", replacement)
+    override fun invoke(project: Project, file: PsiFile, startElement: PsiElement, endElement: PsiElement) {
+        val newElement = ImpExElementFactory.createXxx(project, replacement) ?: return
+        startElement.replace(newElement)
+    }
+}
+```
+
+**TypeSystem reference in inspections** — reuse reference infrastructure instead of calling TSMetaModelAccess directly:
+```kotlin
+val ref = element.references.firstOrNull() as? TSReferenceBase<*> ?: return
+if (ref.multiResolve(false).isEmpty()) // → unknown type (ImpExUnknownTypeNameInspection pattern)
+```
+Or call TSMetaModelAccess directly for case/name checks:
+```kotlin
+val meta = TSMetaModelAccess.getInstance(element.project).findMetaClassifierByName(element.text) ?: return
+// meta.name = canonical name; findMetaClassifierByName is case-insensitive
+```
+
+**`ImpExHeaderTypeName` specifics:**
+- `.macroUsageDecList` / `.possibleMacroUsageDecList` — non-empty means macro in type name; skip inspection
+- Backed by `ImpExHeaderTypeNameMixin` → `ImpExTSItemReference` (cache key `ImpExTSItemReference.CACHE_KEY`)
+
+## ImpExElementFactory
+
+`object ImpExElementFactory` in `modules/impex/core/src/.../psi/ImpExElementFactory.kt`. All methods create PSI from in-memory ImpEx text.
+
+| Method | Returns |
+|--------|---------|
+| `createHeaderMode(project, HeaderMode)` | first child of `ImpExAnyHeaderMode` token |
+| `createHeaderTypeName(project, typeName)` | `ImpExHeaderTypeName` |
+| `createParametersSeparator(project)` | last child of header line |
+| `createMacroName(project, value)` | `ImpExMacroNameDec` |
+| `createSingleQuotedString(project, value)` | `ImpExString` |
+| `createValueGroup(project, value?)` | first `ImpExValueGroup` |
+| `createFullHeaderParameter(project, headerTypeName, macros, parameterPlaceholder)` | `ImpExFullHeaderParameter` |
+| `createDocumentIdDecElement(project, text)` | `ImpExDocumentIdDec` |
+| `createValueElement(project, text)` | `ImpExValue` |
+| `createDocumentIdUsageElement(project, text)` | `ImpExDocumentIdUsage` |
+| `createFile(project, text)` | `ImpExFile` |
