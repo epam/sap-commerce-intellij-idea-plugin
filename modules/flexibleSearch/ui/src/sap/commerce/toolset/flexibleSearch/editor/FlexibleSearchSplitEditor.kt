@@ -55,6 +55,8 @@ class FlexibleSearchSplitEditorBase(textEditor: TextEditor, project: Project) : 
         private val KEY_LAST_EXEC_RESULT = Key.create<FlexibleSearchExecResult>("flexibleSearch.last_exec_result.key")
     }
 
+    override val inEditorResultsTitle = "FlexibleSearch Execution Results"
+
     override var virtualParameters: Map<String, FlexibleSearchVirtualParameter>?
         get() = getUserData(KEY_PARAMETERS)
         set(value) = putUserData(KEY_PARAMETERS, value)

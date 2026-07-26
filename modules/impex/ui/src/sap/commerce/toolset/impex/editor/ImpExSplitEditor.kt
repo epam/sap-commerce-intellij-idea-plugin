@@ -54,6 +54,8 @@ class ImpExSplitEditorBase(textEditor: TextEditor, project: Project) : SplitEdit
         private val KEY_PARAMETERS = Key.create<Map<SmartPsiElementPointer<ImpExMacroDeclaration>, ImpExVirtualParameter>>("impex.parameters.key")
     }
 
+    override val inEditorResultsTitle = "ImpEx Execution Results"
+
     override var virtualParameters: Map<SmartPsiElementPointer<ImpExMacroDeclaration>, ImpExVirtualParameter>?
         get() = getUserData(KEY_PARAMETERS)
         set(value) = putUserData(KEY_PARAMETERS, value)

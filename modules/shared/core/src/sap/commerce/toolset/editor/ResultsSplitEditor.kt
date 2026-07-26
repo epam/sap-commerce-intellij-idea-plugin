@@ -31,6 +31,14 @@ interface ResultsSplitEditor : SplitEditor {
     var inEditorResults: Boolean
 
     /**
+     * Title shown as a bold label on the left side of the in-editor results panel action bar.
+     *
+     * Each language-specific split editor provides a descriptive heading
+     * (e.g. "ImpEx Execution Results").
+     */
+    val inEditorResultsTitle: String
+
+    /**
      * Returns additional [AnAction]s contributed by the concrete editor to the
      * in-editor results panel action bar.
      *

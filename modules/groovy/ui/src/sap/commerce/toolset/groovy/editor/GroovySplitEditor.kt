@@ -42,6 +42,8 @@ class GroovySplitEditorBase(textEditor: TextEditor, project: Project) : SplitEdi
         private const val serialVersionUID: Long = -3770445176190649196L
     }
 
+    override val inEditorResultsTitle = "Groovy Execution Results"
+
     init {
         textEditor.editor.virtualFile
             ?.let {

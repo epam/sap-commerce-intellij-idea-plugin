@@ -48,6 +48,8 @@ class PolyglotQuerySplitEditorBase(textEditor: TextEditor, project: Project) : S
         private val KEY_RETRIEVE_ALL_DATA = Key.create<Boolean>("pgq.retrieve.all.data.key")
     }
 
+    override val inEditorResultsTitle = "Polyglot Query Execution Results"
+
     override var retrieveAllData: Boolean
         get() = getOrCreateUserData(KEY_RETRIEVE_ALL_DATA) { false }
         set(value) = putUserData(KEY_RETRIEVE_ALL_DATA, value)

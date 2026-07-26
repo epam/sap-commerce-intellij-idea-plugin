@@ -40,6 +40,8 @@ class AclSplitEditorBase(textEditor: TextEditor, project: Project) : SplitEditor
         private const val serialVersionUID: Long = -3770445176190649196L
     }
 
+    override val inEditorResultsTitle = "ACL Execution Results"
+
     override fun showLoader(context: ImpExExecContext) {
         inEditorResultsView = AclInEditorResultsView.getInstance(project).executingView(context.executionTitle)
     }

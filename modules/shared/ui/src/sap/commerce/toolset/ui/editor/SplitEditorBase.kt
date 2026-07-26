@@ -32,10 +32,7 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.pom.Navigatable
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.ui.OnePixelSplitter
-import com.intellij.ui.dsl.builder.Align
-import com.intellij.ui.dsl.builder.AlignX
-import com.intellij.ui.dsl.builder.TopGap
-import com.intellij.ui.dsl.builder.panel
+import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.gridLayout.UnscaledGaps
 import com.intellij.util.application
 import com.intellij.util.ui.JBUI
@@ -79,6 +76,9 @@ abstract class SplitEditorBase(
         return panel {
             panel {
                 row {
+                    label(inEditorResultsTitle)
+                        .bold()
+                        .gap(RightGap.SMALL)
                     inEditorResultsActions().forEach { actionButton(it) }
                     actionButton(
                         ActionManager.getInstance().getAction("sap.commerce.toolset.splitEditor.hideInEditorResults"),
