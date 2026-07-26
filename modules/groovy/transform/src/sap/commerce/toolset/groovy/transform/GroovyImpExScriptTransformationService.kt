@@ -18,18 +18,15 @@
 
 package sap.commerce.toolset.groovy.transform
 
-import com.intellij.openapi.application.edtWriteAction
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.fileTypes.LanguageFileType
 import com.intellij.openapi.project.Project
-import com.intellij.psi.codeStyle.CodeStyleManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile
 import sap.commerce.toolset.groovy.GroovyConstants
-import sap.commerce.toolset.impex.psi.ImpExElementFactory
 import sap.commerce.toolset.transform.TransformationResult
 import sap.commerce.toolset.transform.handlers.CopyToClipboardTransformResultHandler
 import sap.commerce.toolset.transform.handlers.CreateScratchFileTransformResultHandler
@@ -64,20 +61,14 @@ internal class GroovyImpExScriptTransformationService(
             append(";${scriptName}Job;model://$scriptName")
         }
 
-        val formattedImpEx = edtWriteAction {
-            ImpExElementFactory.createFile(project, rawImpEx)
-                .let { CodeStyleManager.getInstance(project).reformat(it) }
-                .text
-        }
-
         val description = "$scriptName to ${outputFileType.name}"
 
         return TransformationResult(
-            content = formattedImpEx,
+            content = rawImpEx,
             description = description,
             handlers = listOf(
-                CopyToClipboardTransformResultHandler(formattedImpEx),
-                CreateScratchFileTransformResultHandler(project, formattedImpEx, outputFileType),
+                CopyToClipboardTransformResultHandler(rawImpEx),
+                CreateScratchFileTransformResultHandler(project, rawImpEx, outputFileType),
             ),
         )
     }

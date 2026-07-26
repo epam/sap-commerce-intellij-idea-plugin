@@ -31,7 +31,7 @@ class GroovyToImpExScriptTransformer : Transformer<GroovyFile> {
     override val id: String
         get() = "groovy-to-impex-script"
     override val description: String
-        get() = "Converts a Groovy script into SAP Commerce ImpEx Script and ScriptingJob items"
+        get() = "Converts a Groovy script into SAP Commerce ImpEx Script and ScriptingJob"
     override val presentableTitle: String
         get() = "ImpEx - Script"
     override val outputFileType: LanguageFileType
@@ -39,9 +39,11 @@ class GroovyToImpExScriptTransformer : Transformer<GroovyFile> {
 
     override fun isApplicable(language: Language) = language === GroovyLanguage
 
-    override fun transform(psiElement: GroovyFile, onComplete: (TransformationResult) -> Unit) =
-        GroovyImpExScriptTransformationService.getInstance(psiElement.project)
-            .transform(outputFileType, psiElement, onComplete)
+    override fun transform(
+        psiElement: GroovyFile,
+        onComplete: (TransformationResult) -> Unit,
+    ) = GroovyImpExScriptTransformationService.getInstance(psiElement.project)
+        .transform(outputFileType, psiElement, onComplete)
 
     override suspend fun transform(psiElement: GroovyFile): TransformationResult =
         GroovyImpExScriptTransformationService.getInstance(psiElement.project)
