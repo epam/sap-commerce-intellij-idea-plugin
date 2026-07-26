@@ -31,13 +31,14 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.pom.Navigatable
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.ui.OnePixelSplitter
+import kotlinx.coroutines.*
 import java.awt.BorderLayout
 import java.beans.PropertyChangeListener
+import java.io.Serial
 import javax.swing.JComponent
 import javax.swing.JPanel
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
-import kotlinx.coroutines.*
 
 abstract class SplitEditorBase(
     override val textEditor: TextEditor,
@@ -45,6 +46,8 @@ abstract class SplitEditorBase(
 ) : UserDataHolderBase(), SplitEditorEx {
 
     companion object {
+        @Serial
+        private const val serialVersionUID: Long = 6131790789133766553L
         private val KEY_IN_EDITOR_RESULTS = Key.create<Boolean>("split_editor.in_editor_results.key")
     }
 
@@ -113,7 +116,7 @@ abstract class SplitEditorBase(
     /**
      * Reparse PsiFile in the related TextEditor to retrigger inline hints computation.
      */
-    fun reparseTextEditor(delayMs: Duration = 1000.milliseconds) {
+    override fun reparseTextEditor(delayMs: Duration) {
         reparseTextEditorJob?.cancel()
         reparseTextEditorJob = CoroutineScope(Dispatchers.Default).launch {
             delay(delayMs)
