@@ -19,6 +19,7 @@
 package sap.commerce.toolset.ui.editor
 
 import com.intellij.openapi.Disposable
+import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.application.edtWriteAction
 import com.intellij.openapi.fileEditor.FileEditorState
 import com.intellij.openapi.fileEditor.TextEditor
@@ -30,8 +31,13 @@ import com.intellij.openapi.util.getOrCreateUserData
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.pom.Navigatable
 import com.intellij.psi.PsiDocumentManager
+import com.intellij.ui.JBColor
 import com.intellij.ui.OnePixelSplitter
+import com.intellij.ui.dsl.builder.AlignX
+import com.intellij.ui.dsl.builder.panel
+import com.intellij.util.ui.JBUI
 import kotlinx.coroutines.*
+import sap.commerce.toolset.ui.actionButton
 import java.awt.BorderLayout
 import java.beans.PropertyChangeListener
 import java.io.Serial
@@ -60,8 +66,29 @@ abstract class SplitEditorBase(
     protected var inEditorResultsView: JComponent?
         get() = verticalSplitter.secondComponent
         set(view) {
-            verticalSplitter.secondComponent = view
+            verticalSplitter.secondComponent = view?.let { buildResultsPanel(it) }
         }
+
+    private fun buildResultsPanel(content: JComponent): JComponent {
+        val leftActions = inEditorResultsActions()
+        val hideAction = HideInEditorResultsAction { inEditorResultsView = null }
+
+        val actionBar = panel {
+            row {
+                leftActions.forEach { actionButton(it) }
+                actionButton(hideAction).align(AlignX.RIGHT)
+            }
+        }.apply {
+            border = JBUI.Borders.customLine(JBColor.border(), 0, 0, 1, 0)
+        }
+
+        return JPanel(BorderLayout()).apply {
+            add(actionBar, BorderLayout.NORTH)
+            add(content, BorderLayout.CENTER)
+        }
+    }
+
+    protected open fun inEditorResultsActions(): List<AnAction> = emptyList()
 
     protected val horizontalSplitter = OnePixelSplitter(false).apply {
         isShowDividerControls = true
