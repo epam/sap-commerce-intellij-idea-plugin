@@ -103,7 +103,7 @@ Never inline HAC calls — use `HacHttpClient.getInstance(project).post(...)`.
 - In-memory PSI: `psi/<Lang>ElementFactory.createFile(project, text)` when it exists; otherwise `PsiFileFactory`.
 - References: extend `<Lang>ReferenceBase`; `multiResolve` via `getParameterizedCachedValue` with companion `Key`. Cache on feature's modification tracker (meta-model-backed) or `PsiModificationTracker.MODIFICATION_COUNT` (pure-PSI).
 - Completion: one `<Lang>CompletionContributor` wiring in `init`; patterns in `<Lang>Patterns`; lookup elements via `object <Lang>LookupElementFactory`.
-- Meta-model: never read type-/bean-system model directly — `TSMetaModelAccess`/`BSMetaModelAccess.getInstance(project)`. Never swallow `ProcessCanceledException`. See `skills/dev-typeSystem.md` and `skills/dev-beanSystem.md` for full API.
+- Meta-model: never read type-/bean-system model directly — `TSMetaModelAccess`/`BSMetaModelAccess.getInstance(project)`. Never swallow `ProcessCanceledException`. See `skills/dev-type-system.md` and `skills/dev-bean-system.md` for full API.
 - Annotators: extend `AbstractAnnotator`.
 
 ## New module checklist
