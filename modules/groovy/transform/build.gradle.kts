@@ -16,14 +16,36 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.groovy
+fun properties(key: String) = providers.gradleProperty(key)
 
-import com.intellij.openapi.util.Key
+plugins {
+    id("org.jetbrains.intellij.platform.module")
+    alias(libs.plugins.kotlin) // Kotlin support
+}
 
-object GroovyConstants {
-    const val PATH_CONSOLES_GROOVY = "consoles/groovy/"
+sourceSets {
+    main {
+        java.srcDirs("src")
+        resources.srcDirs("resources")
+    }
+    test {
+        java.srcDirs("tests")
+    }
+}
 
-    object Transform {
-        val SCRIPT_NAME = Key.create<String>("groovy.transform.scriptName")
+dependencies {
+    implementation(project(":shared-core"))
+    implementation(project(":shared-transform"))
+    implementation(project(":groovy-core"))
+    implementation(project(":impex-core"))
+
+    intellijPlatform {
+        intellijIdea(properties("intellij.version")) {
+            useInstaller = false
+        }
+
+        bundledPlugins(
+            "org.intellij.groovy",
+        )
     }
 }
