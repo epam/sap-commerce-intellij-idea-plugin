@@ -34,7 +34,9 @@ import com.intellij.psi.PsiDocumentManager
 import com.intellij.ui.OnePixelSplitter
 import com.intellij.ui.dsl.builder.Align
 import com.intellij.ui.dsl.builder.AlignX
+import com.intellij.ui.dsl.builder.TopGap
 import com.intellij.ui.dsl.builder.panel
+import com.intellij.ui.dsl.gridLayout.UnscaledGaps
 import com.intellij.util.ui.JBUI
 import kotlinx.coroutines.*
 import sap.commerce.toolset.editor.SplitEditor
@@ -71,23 +73,20 @@ abstract class SplitEditorBase(
         }
 
     private fun buildResultsPanel(content: JComponent): JComponent {
-        val actionsBar = panel {
-            row {
-                inEditorResultsActions().forEach { actionButton(it) }
-                actionButton(
-                    ActionManager.getInstance().getAction("sap.commerce.toolset.splitEditor.hideInEditorResults"),
-                    sinkExtender = { sink -> sink[SplitEditor.DATA_KEY_SPLIT_EDITOR] = this@SplitEditorBase }
-                ).align(AlignX.RIGHT)
-            }
-        }.apply { border = JBUI.Borders.empty(0, 4) }
-
         return panel {
-            row {
-                cell(actionsBar)
-                    .align(AlignX.FILL)
-                    .resizableColumn()
-            }
+            panel {
+                row {
+                    inEditorResultsActions().forEach { actionButton(it) }
+                    actionButton(
+                        ActionManager.getInstance().getAction("sap.commerce.toolset.splitEditor.hideInEditorResults"),
+                        sinkExtender = { sink -> sink[SplitEditor.DATA_KEY_SPLIT_EDITOR] = this@SplitEditorBase }
+                    ).align(AlignX.RIGHT)
+                }
+                    .topGap(TopGap.SMALL)
+            }.customize(UnscaledGaps(0, 14, 0, 14))
+
             separator(JBUI.CurrentTheme.Banner.INFO_BORDER_COLOR)
+
             row {
                 cell(content)
                     .align(Align.FILL)

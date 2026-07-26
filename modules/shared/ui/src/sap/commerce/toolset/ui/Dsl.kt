@@ -62,7 +62,12 @@ import javax.swing.JLabel
 import javax.swing.ScrollPaneConstants
 import javax.swing.border.Border
 
-fun Row.previewEditor(project: Project, fileType: FileType, initialText: String = "", customizeEditor: EditorEx.() -> Unit = {}): Cell<EditorTextField> {
+fun Row.previewEditor(
+    project: Project,
+    fileType: FileType,
+    initialText: String = "",
+    customizeEditor: EditorEx.() -> Unit = {}
+): Cell<EditorTextField> {
     val document = EditorFactory.getInstance().createDocument(StringUtil.convertLineSeparators(initialText))
     val editorTextField = object : EditorTextField(document, project, fileType, true, false) {
         override fun createEditor(): EditorEx = super.createEditor()
@@ -80,7 +85,14 @@ fun Row.nullableIntTextField(range: IntRange? = null, keyboardStep: Int? = null)
             val value = it.text.toIntOrNull()
             when {
                 value == null -> null
-                range != null && value !in range -> error(UIBundle.message("please.enter.a.number.from.0.to.1", range.first, range.last))
+                range != null && value !in range -> error(
+                    UIBundle.message(
+                        "please.enter.a.number.from.0.to.1",
+                        range.first,
+                        range.last
+                    )
+                )
+
                 else -> null
             }
         }
@@ -111,7 +123,12 @@ fun Row.nullableIntTextField(range: IntRange? = null, keyboardStep: Int? = null)
     return result
 }
 
-fun Row.copyLink(project: Project, label: String?, value: String, confirmationMessage: String = "Copied to clipboard"): Cell<ActionLink> {
+fun Row.copyLink(
+    project: Project,
+    label: String?,
+    value: String,
+    confirmationMessage: String = "Copied to clipboard"
+): Cell<ActionLink> {
     return link(value) {
         CopyPasteManager.getInstance().setContents(StringSelection(value))
         Notifications.create(NotificationType.INFORMATION, confirmationMessage, "")
@@ -126,13 +143,21 @@ fun Row.copyLink(project: Project, label: String?, value: String, confirmationMe
         }
 }
 
-fun Panel.inlineBanner(message: String, status: EditorNotificationPanel.Status = EditorNotificationPanel.Status.Info, icon: Icon? = null) = row {
+fun Panel.inlineBanner(
+    message: String,
+    status: EditorNotificationPanel.Status = EditorNotificationPanel.Status.Info,
+    icon: Icon? = null
+) = row {
     inlineBanner(message, status, icon)
 }
     .resizableRow()
     .topGap(TopGap.MEDIUM)
 
-fun Row.inlineBanner(message: String, status: EditorNotificationPanel.Status = EditorNotificationPanel.Status.Info, icon: Icon? = null) = cell(
+fun Row.inlineBanner(
+    message: String,
+    status: EditorNotificationPanel.Status = EditorNotificationPanel.Status.Info,
+    icon: Icon? = null
+) = cell(
     InlineBanner(message, status)
         .showCloseButton(false)
         .setIcon(icon ?: status.icon)
@@ -166,10 +191,17 @@ fun <T : JComponent> Cell<T>.italic(): Cell<T> {
 }
 
 fun Row.actionButton(
-    action: AnAction, @NonNls actionPlace: String = ActionPlaces.UNKNOWN,
+    action: AnAction,
+    @NonNls actionPlace: String = ActionPlaces.UNKNOWN,
     sinkExtender: (DataSink) -> Unit = {},
 ): Cell<ActionButton> {
-    val component = ActionButtonSink(action, action.templatePresentation.clone(), actionPlace, ActionToolbar.DEFAULT_MINIMUM_BUTTON_SIZE, sinkExtender)
+    val component = ActionButtonSink(
+        action = action,
+        presentation = action.templatePresentation.clone(),
+        place = actionPlace,
+        minimumSize = ActionToolbar.DEFAULT_MINIMUM_BUTTON_SIZE,
+        sinkExtender = sinkExtender
+    )
 
     return cell(component)
 }
@@ -184,7 +216,13 @@ fun Row.actionsButton(
 ): Cell<ActionButton> {
     val actionGroup = PopupActionGroup(arrayOf(*actions), title, icon, showDisabledActions)
     val presentation = actionGroup.templatePresentation.clone()
-    val component = ActionButtonSink(actionGroup, presentation, actionPlace, ActionToolbar.DEFAULT_MINIMUM_BUTTON_SIZE, sinkExtender)
+    val component = ActionButtonSink(
+        action = actionGroup,
+        presentation = presentation,
+        place = actionPlace,
+        minimumSize = ActionToolbar.DEFAULT_MINIMUM_BUTTON_SIZE,
+        sinkExtender = sinkExtender
+    )
 
     return cell(component)
 }
@@ -259,6 +297,11 @@ fun Panel.scrollRow(
 fun <J : JComponent> Cell<J>.border(border: Border?): Cell<J> = this.apply { component.border = border }
 fun <J : JComponent> Cell<J>.background(background: Color?): Cell<J> = this.apply { component.background = background }
 fun <J : JComponent> Cell<J>.opaque(opaque: Boolean): Cell<J> = this.apply { component.isOpaque = opaque }
-fun <J : JComponent> Cell<J>.font(fontProvider: (Font) -> Font): Cell<J> = this.apply { component.font = fontProvider(component.font) }
-fun <J : Any> Cell<ComboBox<J>>.addItemListener(parentDisposable: Disposable? = null, listener: ItemListener): Cell<ComboBox<J>> = this
+fun <J : JComponent> Cell<J>.font(fontProvider: (Font) -> Font): Cell<J> =
+    this.apply { component.font = fontProvider(component.font) }
+
+fun <J : Any> Cell<ComboBox<J>>.addItemListener(
+    parentDisposable: Disposable? = null,
+    listener: ItemListener
+): Cell<ComboBox<J>> = this
     .apply { component.addItemListener(parentDisposable, listener) }

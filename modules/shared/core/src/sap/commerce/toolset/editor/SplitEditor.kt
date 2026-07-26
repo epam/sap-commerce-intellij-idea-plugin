@@ -18,9 +18,14 @@
 
 package sap.commerce.toolset.editor
 
+import com.intellij.openapi.actionSystem.DataKey
 import com.intellij.openapi.fileEditor.FileEditor
 import com.intellij.openapi.fileEditor.TextEditor
 
 interface SplitEditor : FileEditor, TextEditor {
     val textEditor: TextEditor
+
+    companion object {
+        val DATA_KEY_SPLIT_EDITOR: DataKey<ResultsSplitEditor> = DataKey.create("sap.commerce.toolset.splitEditor")
+    }
 }
