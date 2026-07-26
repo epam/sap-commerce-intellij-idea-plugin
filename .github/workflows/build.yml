@@ -175,6 +175,14 @@ jobs:
       - name: Run Tests
         run: ./gradlew check
 
+      # Debug step — confirms where Kover actually writes its XML report.
+      # Remove once the coverage path below is confirmed correct.
+      - name: Debug - Locate Kover Reports
+        if: ${{ always() }}
+        run: |
+          echo "Searching for Kover XML reports..."
+          find . -iname "*.xml" -path "*kover*" 2>/dev/null || echo "No Kover XML files found"
+
       - name: Collect Tests Result
         if: ${{ always() }}
         uses: actions/upload-artifact@v4
@@ -195,6 +203,7 @@ jobs:
         with:
           name: coverage-report
           path: ${{ github.workspace }}/build/reports/kover/report.xml
+          if-no-files-found: warn
 
   # Render JUnit results as a GitHub Checks tab dashboard (viewable inline, no download)
   testReport:
@@ -208,6 +217,9 @@ jobs:
       checks: write
       pull-requests: write
     steps:
+      - name: Fetch Sources
+        uses: actions/checkout@v7
+
       - name: Download Test Report
         uses: actions/download-artifact@v4
         with:
@@ -236,21 +248,31 @@ jobs:
         with:
           name: coverage-report
           path: ${{ github.workspace }}/build/reports/kover
+        continue-on-error: true
 
       - name: Upload Code Coverage Report
+        if: ${{ hashFiles(format('{0}/build/reports/kover/report.xml', github.workspace)) != '' }}
         uses: codecov/codecov-action@v5
         with:
           files: ${{ github.workspace }}/build/reports/kover/report.xml
           token: ${{ secrets.CODECOV_TOKEN }}
 
       - name: Coverage Summary
-        if: always()
+        if: ${{ always() }}
         run: |
+          REPORT="${{ github.workspace }}/build/reports/kover/report.xml"
+          if [ ! -f "$REPORT" ]; then
+            echo "## Coverage Report" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "⚠️ Coverage report not found at \`$REPORT\` — Kover XML report was not generated or uploaded." >> $GITHUB_STEP_SUMMARY
+            exit 0
+          fi
+
           echo "## Coverage Report" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           python3 -c "
           import xml.etree.ElementTree as ET
-          tree = ET.parse('${{ github.workspace }}/build/reports/kover/report.xml')
+          tree = ET.parse('$REPORT')
           root = tree.getroot()
           counter = root.find(\".//counter[@type='LINE']\")
           covered = int(counter.get('covered'))
