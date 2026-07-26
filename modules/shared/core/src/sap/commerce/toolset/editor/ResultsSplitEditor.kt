@@ -16,8 +16,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.ui.editor
+package sap.commerce.toolset.editor
 
-import sap.commerce.toolset.editor.ResultsSplitEditor
-
-interface SplitEditorEx : ResultsSplitEditor
+interface ResultsSplitEditor : SplitEditor {
+    var inEditorResults: Boolean
+}

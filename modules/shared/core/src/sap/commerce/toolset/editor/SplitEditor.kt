@@ -23,5 +23,4 @@ import com.intellij.openapi.fileEditor.TextEditor
 
 interface SplitEditor : FileEditor, TextEditor {
     val textEditor: TextEditor
-    var inEditorResults: Boolean
 }

@@ -19,17 +19,10 @@
 package sap.commerce.toolset.flexibleSearch.editor
 
 import com.intellij.openapi.Disposable
-import com.intellij.openapi.fileEditor.FileEditor
-import com.intellij.openapi.fileEditor.TextEditor
-import javax.swing.JComponent
+import sap.commerce.toolset.editor.ParameterizedSplitEditor
 
-interface FlexibleSearchSplitEditor : FileEditor, TextEditor {
-    val textEditor: TextEditor
+interface FlexibleSearchSplitEditor : ParameterizedSplitEditor {
     var csvResultsDisposable: Disposable?
-    var inEditorParameters: Boolean
-    var inEditorResults: Boolean
-    var inEditorParametersView: JComponent?
     var virtualParameters: Map<String, FlexibleSearchVirtualParameter>?
-    var virtualParametersDisposable: Disposable?
     val virtualText: String
 }

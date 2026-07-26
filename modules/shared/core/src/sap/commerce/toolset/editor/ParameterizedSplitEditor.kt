@@ -16,8 +16,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.ui.editor
+package sap.commerce.toolset.editor
 
-import sap.commerce.toolset.editor.ResultsSplitEditor
+import com.intellij.openapi.Disposable
+import javax.swing.JComponent
 
-interface SplitEditorEx : ResultsSplitEditor
+interface ParameterizedSplitEditor : ResultsSplitEditor {
+    var inEditorParameters: Boolean
+    var inEditorParametersView: JComponent?
+    var virtualParametersDisposable: Disposable?
+}

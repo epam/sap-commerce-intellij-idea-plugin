@@ -19,17 +19,10 @@
 package sap.commerce.toolset.polyglotQuery.editor
 
 import com.intellij.openapi.Disposable
-import com.intellij.openapi.fileEditor.FileEditor
-import com.intellij.openapi.fileEditor.TextEditor
-import javax.swing.JComponent
+import sap.commerce.toolset.editor.ParameterizedSplitEditor
 
-interface PolyglotQuerySplitEditor : FileEditor, TextEditor {
-    val textEditor: TextEditor
+interface PolyglotQuerySplitEditor : ParameterizedSplitEditor {
     var retrieveAllData: Boolean
     var csvResultsDisposable: Disposable?
-    var inEditorParameters: Boolean
-    var inEditorResults: Boolean
-    var inEditorParametersView: JComponent?
     var virtualParameters: Map<String, PolyglotQueryVirtualParameter>?
-    var virtualParametersDisposable: Disposable?
 }
