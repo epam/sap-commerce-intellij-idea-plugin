@@ -18,8 +18,8 @@
 <idea-plugin>
 
     <extensions defaultExtensionNs="sap.commerce.toolset">
-        <transformer implementation="sap.commerce.toolset.impex.transform.ImpExValueLineFxSTransformer"/>
-        <transformer implementation="sap.commerce.toolset.impex.transform.ImpExValueLinePgQTransformer"/>
+        <transformer implementation="sap.commerce.toolset.impex.transform.ImpExValueLineToFxSTransformer"/>
+        <transformer implementation="sap.commerce.toolset.impex.transform.ImpExValueLineToPgQTransformer"/>
     </extensions>
 
 </idea-plugin>

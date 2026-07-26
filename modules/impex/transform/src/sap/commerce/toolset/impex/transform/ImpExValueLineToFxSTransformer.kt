@@ -20,27 +20,27 @@ package sap.commerce.toolset.impex.transform
 
 import com.intellij.lang.Language
 import com.intellij.openapi.fileTypes.LanguageFileType
+import sap.commerce.toolset.flexibleSearch.file.FlexibleSearchFileType
 import sap.commerce.toolset.impex.ImpExLanguage
 import sap.commerce.toolset.impex.psi.ImpExValueLine
-import sap.commerce.toolset.impex.transform.polyglotQuery.PgQTransformationService
-import sap.commerce.toolset.polyglotQuery.file.PolyglotQueryFileType
+import sap.commerce.toolset.impex.transform.flexibleSearch.FxSTransformationService
 import sap.commerce.toolset.transform.TransformationResult
 import sap.commerce.toolset.transform.Transformer
 
-class ImpExValueLinePgQTransformer : Transformer<ImpExValueLine, TransformationResult> {
+class ImpExValueLineToFxSTransformer : Transformer<ImpExValueLine> {
 
     override val id: String
-        get() = "impexValueLine-to-pgq"
+        get() = "impexValueLine-to-fxs"
     override val description: String
-        get() = "Converts ImpEx Value Line statement to PolyglotQuery format"
+        get() = "Converts ImpEx Value Line statement to FlexibleSearch format"
     override val fileType: LanguageFileType
-        get() = PolyglotQueryFileType
+        get() = FlexibleSearchFileType
 
     override fun isApplicable(language: Language) = language is ImpExLanguage
 
-    override fun transform(psiElement: ImpExValueLine, onComplete: (TransformationResult) -> Unit) = PgQTransformationService.getInstance(psiElement.project)
+    override fun transform(psiElement: ImpExValueLine, onComplete: (TransformationResult) -> Unit) = FxSTransformationService.getInstance(psiElement.project)
         .transform(fileType, psiElement, onComplete)
 
-    override suspend fun transform(psiElement: ImpExValueLine): TransformationResult = PgQTransformationService.getInstance(psiElement.project)
+    override suspend fun transform(psiElement: ImpExValueLine): TransformationResult = FxSTransformationService.getInstance(psiElement.project)
         .transform(fileType, psiElement)
 }

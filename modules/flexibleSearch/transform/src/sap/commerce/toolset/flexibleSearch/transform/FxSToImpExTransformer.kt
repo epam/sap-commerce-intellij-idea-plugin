@@ -16,31 +16,31 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.impex.transform
+package sap.commerce.toolset.flexibleSearch.transform
 
 import com.intellij.lang.Language
 import com.intellij.openapi.fileTypes.LanguageFileType
-import sap.commerce.toolset.flexibleSearch.file.FlexibleSearchFileType
-import sap.commerce.toolset.impex.ImpExLanguage
-import sap.commerce.toolset.impex.psi.ImpExValueLine
-import sap.commerce.toolset.impex.transform.flexibleSearch.FxSTransformationService
+import sap.commerce.toolset.flexibleSearch.FlexibleSearchLanguage
+import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchPsiFile
+import sap.commerce.toolset.flexibleSearch.transform.impex.ImpExTransformationService
+import sap.commerce.toolset.impex.file.ImpExFileType
 import sap.commerce.toolset.transform.TransformationResult
 import sap.commerce.toolset.transform.Transformer
 
-class ImpExValueLineFxSTransformer : Transformer<ImpExValueLine, TransformationResult> {
+class FxSToImpExTransformer : Transformer<FlexibleSearchPsiFile> {
 
     override val id: String
-        get() = "impexValueLine-to-fxs"
+        get() = "fxs-to-impex"
     override val description: String
-        get() = "Converts ImpEx Value Line statement to FlexibleSearch format"
+        get() = "Converts FlexibleSearch query results to ImpEx format, resolving FK natural keys, enum codes, and localized attributes via the SAP Commerce type system"
     override val fileType: LanguageFileType
-        get() = FlexibleSearchFileType
+        get() = ImpExFileType
 
-    override fun isApplicable(language: Language) = language is ImpExLanguage
+    override fun isApplicable(language: Language) = language is FlexibleSearchLanguage
 
-    override fun transform(psiElement: ImpExValueLine, onComplete: (TransformationResult) -> Unit) = FxSTransformationService.getInstance(psiElement.project)
+    override fun transform(psiElement: FlexibleSearchPsiFile, onComplete: (TransformationResult) -> Unit) = ImpExTransformationService.getInstance(psiElement.project)
         .transform(fileType, psiElement, onComplete)
 
-    override suspend fun transform(psiElement: ImpExValueLine): TransformationResult = FxSTransformationService.getInstance(psiElement.project)
+    override suspend fun transform(psiElement: FlexibleSearchPsiFile): TransformationResult = ImpExTransformationService.getInstance(psiElement.project)
         .transform(fileType, psiElement)
 }

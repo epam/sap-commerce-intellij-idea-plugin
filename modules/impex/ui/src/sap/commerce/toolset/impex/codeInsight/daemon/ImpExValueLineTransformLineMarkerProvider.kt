@@ -72,7 +72,7 @@ class ImpExValueLineTransformLineMarkerProvider : LineMarkerProvider {
     private fun handler(
         event: MouseEvent,
         leaf: PsiElement?,
-        transformers: List<Transformer<in PsiElement, out TransformationResult>>
+        transformers: List<Transformer<in PsiElement>>
     ) {
         val element = leaf?.parentOfType<ImpExValueLine>() ?: return
         val project = element.project
@@ -150,7 +150,7 @@ class ImpExValueLineTransformLineMarkerProvider : LineMarkerProvider {
     }
 
     private inner class ImpExLineMarkerInfo(
-        transformers: List<Transformer<in PsiElement, out TransformationResult>>,
+        transformers: List<Transformer<in PsiElement>>,
         leaf: PsiElement,
         icon: Icon,
     ) : MergeableLineMarkerInfo<PsiElement?>(

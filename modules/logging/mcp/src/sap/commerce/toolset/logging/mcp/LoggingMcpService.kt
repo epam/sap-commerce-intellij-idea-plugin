@@ -31,8 +31,8 @@ import sap.commerce.toolset.groovy.exec.GroovyExecClient
 import sap.commerce.toolset.groovy.exec.context.GroovyExecContext
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
 import sap.commerce.toolset.logging.CxLogConstants
-import sap.commerce.toolset.logging.mcp.context.LoggersListMcpRequest
-import sap.commerce.toolset.logging.mcp.context.LoggingUpdateLoggerLevelMcpRequest
+import sap.commerce.toolset.logging.mcp.context.ListLoggersMcpRequest
+import sap.commerce.toolset.logging.mcp.context.UpdateLoggerLevelMcpRequest
 import sap.commerce.toolset.logging.mcp.dto.LoggerDto
 import sap.commerce.toolset.logging.mcp.dto.LoggerUpdateDto
 import sap.commerce.toolset.logging.mcp.dto.LoggersDto
@@ -42,7 +42,7 @@ import sap.commerce.toolset.settings.state.TransactionMode
 @Service(Service.Level.PROJECT)
 class LoggingMcpService(private val project: Project) {
 
-    suspend fun listLoggers(request: LoggersListMcpRequest): LoggersDto {
+    suspend fun listLoggers(request: ListLoggersMcpRequest): LoggersDto {
         val connection = request.connection(project)
         val scriptContent = readAction { ExtensionsService.getInstance().findResource(CxLogConstants.EXTENSION_STATE_SCRIPT) }
         val allLoggers = runScript(connection, scriptContent)
@@ -60,7 +60,7 @@ class LoggingMcpService(private val project: Project) {
         )
     }
 
-    suspend fun updateLoggerLevel(request: LoggingUpdateLoggerLevelMcpRequest): LoggerUpdateDto {
+    suspend fun updateLoggerLevel(request: UpdateLoggerLevelMcpRequest): LoggerUpdateDto {
         val connection = request.connection(project)
         val loggerEntry = "\"${escapeGroovyString(request.loggerName)}\" : \"${request.logLevel.name}\""
         val scriptContent = readAction { ExtensionsService.getInstance().findResource(CxLogConstants.UPDATE_CX_LOGGERS_STATE) }

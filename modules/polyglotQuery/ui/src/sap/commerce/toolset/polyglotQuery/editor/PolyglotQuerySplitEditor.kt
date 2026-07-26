@@ -139,7 +139,6 @@ class PolyglotQuerySplitEditorEx(override val textEditor: TextEditor, private va
                 }
             })
         }
-
     }
 
     fun renderExecutionResult(result: FlexibleSearchExecResult) = PolyglotQueryInEditorResultsView.getInstance(project).resultView(this, result) { coroutineScope, view ->

@@ -16,31 +16,31 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.flexibleSearch.transform
+package sap.commerce.toolset.impex.transform
 
 import com.intellij.lang.Language
 import com.intellij.openapi.fileTypes.LanguageFileType
-import sap.commerce.toolset.flexibleSearch.FlexibleSearchLanguage
-import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchPsiFile
-import sap.commerce.toolset.flexibleSearch.transform.impex.ImpExTransformationService
-import sap.commerce.toolset.impex.file.ImpExFileType
+import sap.commerce.toolset.impex.ImpExLanguage
+import sap.commerce.toolset.impex.psi.ImpExValueLine
+import sap.commerce.toolset.impex.transform.polyglotQuery.PgQTransformationService
+import sap.commerce.toolset.polyglotQuery.file.PolyglotQueryFileType
 import sap.commerce.toolset.transform.TransformationResult
 import sap.commerce.toolset.transform.Transformer
 
-class FxSImpExTransformer : Transformer<FlexibleSearchPsiFile, TransformationResult> {
+class ImpExValueLineToPgQTransformer : Transformer<ImpExValueLine> {
 
     override val id: String
-        get() = "fxs-to-impex"
+        get() = "impexValueLine-to-pgq"
     override val description: String
-        get() = "Converts FlexibleSearch query results to ImpEx format, resolving FK natural keys, enum codes, and localized attributes via the SAP Commerce type system"
+        get() = "Converts ImpEx Value Line statement to PolyglotQuery format"
     override val fileType: LanguageFileType
-        get() = ImpExFileType
+        get() = PolyglotQueryFileType
 
-    override fun isApplicable(language: Language) = language is FlexibleSearchLanguage
+    override fun isApplicable(language: Language) = language is ImpExLanguage
 
-    override fun transform(psiElement: FlexibleSearchPsiFile, onComplete: (TransformationResult) -> Unit) = ImpExTransformationService.getInstance(psiElement.project)
+    override fun transform(psiElement: ImpExValueLine, onComplete: (TransformationResult) -> Unit) = PgQTransformationService.getInstance(psiElement.project)
         .transform(fileType, psiElement, onComplete)
 
-    override suspend fun transform(psiElement: FlexibleSearchPsiFile): TransformationResult = ImpExTransformationService.getInstance(psiElement.project)
+    override suspend fun transform(psiElement: ImpExValueLine): TransformationResult = PgQTransformationService.getInstance(psiElement.project)
         .transform(fileType, psiElement)
 }

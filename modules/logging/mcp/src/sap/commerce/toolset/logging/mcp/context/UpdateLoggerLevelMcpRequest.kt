@@ -19,8 +19,10 @@
 package sap.commerce.toolset.logging.mcp.context
 
 import sap.commerce.toolset.hac.mcp.context.HacExecMcpRequest
+import sap.commerce.toolset.logging.CxLogLevel
 
-data class LoggersListMcpRequest(
+data class UpdateLoggerLevelMcpRequest(
     override val connectionName: String?,
-    val filter: String?,
+    val loggerName: String,
+    val logLevel: CxLogLevel,
 ) : HacExecMcpRequest

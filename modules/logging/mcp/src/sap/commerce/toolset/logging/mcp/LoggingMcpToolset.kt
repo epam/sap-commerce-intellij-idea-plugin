@@ -26,8 +26,8 @@ import sap.commerce.toolset.ai.mcp.map
 import sap.commerce.toolset.ai.mcp.resolveMapper
 import sap.commerce.toolset.logging.CxLogConstants
 import sap.commerce.toolset.logging.CxLogLevel
-import sap.commerce.toolset.logging.mcp.context.LoggersListMcpRequest
-import sap.commerce.toolset.logging.mcp.context.LoggingUpdateLoggerLevelMcpRequest
+import sap.commerce.toolset.logging.mcp.context.ListLoggersMcpRequest
+import sap.commerce.toolset.logging.mcp.context.UpdateLoggerLevelMcpRequest
 
 class LoggingMcpToolset : McpToolset {
 
@@ -53,7 +53,7 @@ class LoggingMcpToolset : McpToolset {
         outputFormat: String = McpConstants.Formats.JSON,
     ): String {
         val mapper = resolveMapper(outputFormat)
-        val request = LoggersListMcpRequest(connectionName, filter)
+        val request = ListLoggersMcpRequest(connectionName, filter)
         val loggers = LoggingMcpService.getInstance().listLoggers(request)
         return mapper.map(loggers)
     }
@@ -81,7 +81,7 @@ class LoggingMcpToolset : McpToolset {
         val normalizedLoggerName = getNormalizedLoggerName(loggerName)
         val logLevel = CxLogLevel.entries.find { it.name.equals(level.trim(), ignoreCase = true) }
             ?: error("Invalid log level '$level'. Valid levels: ${CxLogLevel.entries.joinToString { it.name }}")
-        val request = LoggingUpdateLoggerLevelMcpRequest(connectionName, normalizedLoggerName, logLevel)
+        val request = UpdateLoggerLevelMcpRequest(connectionName, normalizedLoggerName, logLevel)
         val result = LoggingMcpService.getInstance().updateLoggerLevel(request)
         return mapper.map(result)
     }

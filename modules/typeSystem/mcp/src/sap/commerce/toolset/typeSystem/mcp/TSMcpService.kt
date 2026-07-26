@@ -132,8 +132,10 @@ class TSMcpService(private val project: Project) {
         return TSItemAttributeDto(
             name = name,
             type = type?.takeIf { it.isNotBlank() },
-            declaredIn = if (full) (declared.firstOrNull()?.extensionName ?: extensionName)?.takeIf { it.isNotBlank() } else null,
-            redeclaredIn = if (full) redeclared.map { it.extensionName }.distinct().sorted().takeIf { it.isNotEmpty() } else null,
+            declaredIn = if (full) (declared.firstOrNull()?.extensionName
+                ?: extensionName)?.takeIf { it.isNotBlank() } else null,
+            redeclaredIn = if (full) redeclared.map { it.extensionName }.distinct().sorted()
+                .takeIf { it.isNotEmpty() } else null,
             localized = if (full) isLocalized.takeIf { it } else null,
             dynamic = if (full) isDynamic.takeIf { it } else null,
             deprecated = if (full) isDeprecated.takeIf { it } else null,
@@ -203,7 +205,7 @@ class TSMcpService(private val project: Project) {
         typeCode = deployment?.typeCode?.takeIf { it.isNotBlank() },
         source = source.toDto(),
         target = target.toDto(),
-        extension = extensionName?.takeIf { it.isNotBlank() },
+        extension = extensionName.takeIf { it.isNotBlank() },
         localized = isLocalized.takeIf { it },
         custom = isCustom.takeIf { it },
         autoCreate = isAutoCreate.takeIf { it },

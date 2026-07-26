@@ -57,7 +57,7 @@ class TransformerMcpService {
         return TransformersResultDto(transformers = transformers)
     }
 
-    val Transformer<in PsiFile, out TransformationResult>.mcpDto: TransformerDto
+    val Transformer<in PsiFile>.mcpDto: TransformerDto
         get() = TransformerDto(id, fileType.name, description)
 
     companion object {
