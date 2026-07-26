@@ -39,13 +39,9 @@ class GroovyToImpExScriptTransformer : Transformer<GroovyFile> {
 
     override fun isApplicable(language: Language) = language === GroovyLanguage
 
-    override fun transform(
-        psiElement: GroovyFile,
-        onComplete: (TransformationResult) -> Unit,
-    ) = GroovyImpExScriptTransformationService.getInstance(psiElement.project)
+    override fun transform(psiElement: GroovyFile, onComplete: (TransformationResult) -> Unit) = GroovyImpExScriptTransformationService.getInstance(psiElement.project)
         .transform(outputFileType, psiElement, onComplete)
 
-    override suspend fun transform(psiElement: GroovyFile): TransformationResult =
-        GroovyImpExScriptTransformationService.getInstance(psiElement.project)
-            .transform(outputFileType, psiElement)
+    override suspend fun transform(psiElement: GroovyFile): TransformationResult = GroovyImpExScriptTransformationService.getInstance(psiElement.project)
+        .transform(outputFileType, psiElement)
 }
