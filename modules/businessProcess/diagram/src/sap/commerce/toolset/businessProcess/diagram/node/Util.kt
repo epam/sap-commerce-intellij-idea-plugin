@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,7 +18,6 @@
 
 package sap.commerce.toolset.businessProcess.diagram.node
 
-import org.apache.commons.collections.CollectionUtils
 import sap.commerce.toolset.businessProcess.diagram.node.graph.*
 import sap.commerce.toolset.businessProcess.model.*
 import sap.commerce.toolset.i18n
@@ -99,7 +98,7 @@ private fun getTransitionIdsForAction(navigableElement: NavigableElement): Map<S
             "" to navigableElement.then.stringValue
         )
 
-        if (navigableElement.case.isValid && CollectionUtils.isNotEmpty(navigableElement.case.choices)) {
+        if (navigableElement.case.isValid && navigableElement.case.choices.isNotEmpty()) {
             navigableElement.case.choices
                 .filter { it.getId().stringValue != null }
                 .forEach { transitions[it.getId().stringValue!!] = it.then.stringValue }

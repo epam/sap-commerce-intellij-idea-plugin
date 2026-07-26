@@ -37,13 +37,16 @@ plugins {
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
+        languageVersion = JavaLanguageVersion.of(25)
         vendor = JvmVendorSpec.JETBRAINS
     }
 }
 
 kotlin {
-    jvmToolchain(21)
+    jvmToolchain {
+        languageVersion = JavaLanguageVersion.of(25)
+        vendor = JvmVendorSpec.JETBRAINS
+    }
 }
 
 sourceSets {
@@ -249,6 +252,7 @@ dependencies {
             "intellij.grid.impl",
             "intellij.spellchecker",
             "intellij.spellchecker.xml",
+            "intellij.platform.ui.jcef"
         )
 
         // printBundledPlugins for bundled plugins

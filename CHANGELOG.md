@@ -1,3 +1,8 @@
+## [2026.2.0]
+
+### Other enhancements
+- Compatibility release for IntelliJ IDEA `2026.2.0.1` [#1955](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1955)
+
 ## [2026.0.15]
 
 <cite>Release contributors</code>

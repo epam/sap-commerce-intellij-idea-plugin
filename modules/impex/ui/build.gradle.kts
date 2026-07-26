@@ -59,5 +59,9 @@ dependencies {
         intellijIdea(properties("intellij.version")) {
             useInstaller = false
         }
+
+        bundledModules(
+            "intellij.platform.structureView"
+        )
     }
 }
