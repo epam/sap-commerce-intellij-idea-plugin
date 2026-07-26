@@ -95,6 +95,8 @@ abstract class SplitEditorBase(
                     .align(Align.FILL)
                     .resizableColumn()
             }.resizableRow()
+        }.apply {
+            minimumSize = minimumSize.apply { height = JBUI.scale(100) }
         }
     }
 
