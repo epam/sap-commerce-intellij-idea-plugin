@@ -33,6 +33,9 @@
                              provider="sap.commerce.toolset.impex.options.ImpExProjectSettingsConfigurableProvider"/>
 
         <actionPromoter implementation="sap.commerce.toolset.impex.actionSystem.ImpExActionPromoter"/>
+
+        <codeInsight.lineMarkerProvider language="ImpEx" implementationClass="sap.commerce.toolset.impex.codeInsight.daemon.ImpExDataEditModeLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="ImpEx" implementationClass="sap.commerce.toolset.impex.codeInsight.daemon.ImpExValueLineTransformLineMarkerProvider"/>
     </extensions>
 
     <actions>

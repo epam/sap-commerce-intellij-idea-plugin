@@ -22,14 +22,10 @@ import com.intellij.codeHighlighting.HighlightDisplayLevel
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
-import com.intellij.lang.properties.PropertiesImplUtil
 import com.intellij.psi.PsiElementVisitor
-import com.intellij.psi.util.PsiTreeUtil
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.impex.ImpExConstants
-import sap.commerce.toolset.impex.psi.ImpExMacroDeclaration
 import sap.commerce.toolset.impex.psi.ImpExMacroUsageDec
-import sap.commerce.toolset.impex.psi.ImpExMacroValue
 import sap.commerce.toolset.impex.psi.ImpExVisitor
 import sap.commerce.toolset.project.PropertyService
 
@@ -47,7 +43,7 @@ class ImpExUnknownConfigPropertyInspection : LocalInspectionTool() {
             if (propertyName.isNotEmpty()) {
                 val isDeclarationExists = cachedProperties[propertyName]
                 if (isDeclarationExists == true) return
-                if (isDeclarationExists != null && isDeclarationExists == false) {
+                if (isDeclarationExists != null && !isDeclarationExists) {
                     problemsHolder.registerProblem(
                         usage,
                         i18n("hybris.inspections.impex.ImpExUnknownConfigPropertyInspection.param.key", propertyName),
@@ -69,25 +65,5 @@ class ImpExUnknownConfigPropertyInspection : LocalInspectionTool() {
                 }
             }
         }
-
-        override fun visitMacroDeclaration(declaration: ImpExMacroDeclaration) {
-            val macroValue = PsiTreeUtil.findChildOfType(declaration, ImpExMacroValue::class.java)
-            if (macroValue != null) {
-                val prevLeaf = PsiTreeUtil.prevLeaf(macroValue)
-                if (prevLeaf != null && prevLeaf.text.contains(ImpExConstants.MACRO_CONFIG_COMPLETE_MARKER)) {
-                    val key = macroValue.text
-                    // TODO: why not plugin-specific "PropertyService" ?
-                    val properties = PropertiesImplUtil.findPropertiesByKey(declaration.project, key)
-                    if (properties.isEmpty()) {
-                        problemsHolder.registerProblem(
-                            macroValue,
-                            i18n("hybris.inspections.impex.ImpExUnknownConfigPropertyInspection.key", key),
-                            ProblemHighlightType.ERROR
-                        )
-                    }
-                }
-            }
-        }
-
     }
 }

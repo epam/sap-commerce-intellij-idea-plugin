@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -29,7 +29,7 @@ class FlexibleSearchLanguageInjector : LanguageInjector {
         host: PsiLanguageInjectionHost,
         injectionPlacesRegistrar: InjectedLanguagePlaces
     ) {
-        FlexibleSearchToImpexInjectorProvider.getInstance()
+        FlexibleSearchToImpExInjectorProvider.getInstance()
             .inject(host, injectionPlacesRegistrar)
             ?: Plugin.KOTLIN.service(FlexibleSearchToKotlinInjectorProvider::class.java)
                 ?.inject(host, injectionPlacesRegistrar)

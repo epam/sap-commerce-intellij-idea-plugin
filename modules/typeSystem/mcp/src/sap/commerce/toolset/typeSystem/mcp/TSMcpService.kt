@@ -23,82 +23,76 @@ import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import kotlinx.coroutines.currentCoroutineContext
+import sap.commerce.toolset.typeSystem.mcp.context.*
 import sap.commerce.toolset.typeSystem.mcp.dto.*
-import sap.commerce.toolset.typeSystem.mcp.providers.TSMcpDataProvider
 import sap.commerce.toolset.typeSystem.meta.model.*
 
 @Service(Service.Level.PROJECT)
 class TSMcpService(private val project: Project) {
 
-    suspend fun searchItemTypes(context: TSMcpSearchContext): TSItemListResponse {
-        val result = TSMcpDataProvider.getInstance(project).search<TSGlobalMetaItem>(context)
-        val items = result.items.map { it.toDto(context.detailLevel) }
-        return TSItemListResponse(
-            detail = context.detailLevel.name,
-            filter = context.filter?.trim()?.takeIf { it.isNotEmpty() },
-            extensions = context.extensions?.sorted(),
-            matched = items.size,
+    suspend fun searchItems(request: TSSearchItemMcpRequest): TSItemsDto {
+        val result = TSMcpDataProvider.getInstance(project).search<TSGlobalMetaItem>(request)
+        val items = result.items.map { it.toDto(request.detailLevel) }
+        return TSItemsDto(
+            detail = request.detailLevel.name,
+            filter = request.filter?.trim()?.takeIf { it.isNotEmpty() },
+            extensions = request.extensions?.sorted(),
             total = result.total,
             items = items,
         )
     }
 
-    suspend fun searchAtomicTypes(context: TSMcpSearchContext): TSAtomicListResponse {
-        val result = TSMcpDataProvider.getInstance(project).search<TSGlobalMetaAtomic>(context)
+    suspend fun searchAtomics(request: TSSearchMcpRequest): TSAtomicsDto {
+        val result = TSMcpDataProvider.getInstance(project).search<TSGlobalMetaAtomic>(request)
         val items = result.items.map { it.toDto() }
-        return TSAtomicListResponse(
-            filter = context.filter?.trim()?.takeIf { it.isNotEmpty() },
-            extensions = context.extensions?.sorted(),
-            matched = items.size,
+        return TSAtomicsDto(
+            filter = request.filter?.trim()?.takeIf { it.isNotEmpty() },
+            extensions = request.extensions?.sorted(),
             total = result.total,
             items = items,
         )
     }
 
-    suspend fun searchCollectionTypes(context: TSMcpSearchContext): TSCollectionListResponse {
-        val result = TSMcpDataProvider.getInstance(project).search<TSGlobalMetaCollection>(context)
+    suspend fun searchCollections(request: TSSearchMcpRequest): TSCollectionsDto {
+        val result = TSMcpDataProvider.getInstance(project).search<TSGlobalMetaCollection>(request)
         val items = result.items.map { it.toDto() }
-        return TSCollectionListResponse(
-            filter = context.filter?.trim()?.takeIf { it.isNotEmpty() },
-            extensions = context.extensions?.sorted(),
-            matched = items.size,
+        return TSCollectionsDto(
+            filter = request.filter?.trim()?.takeIf { it.isNotEmpty() },
+            extensions = request.extensions?.sorted(),
             total = result.total,
             items = items,
         )
     }
 
-    suspend fun searchRelationTypes(context: TSMcpSearchContext): TSRelationListResponse {
-        val result = TSMcpDataProvider.getInstance(project).search<TSGlobalMetaRelation>(context)
+    suspend fun searchRelations(request: TSSearchMcpRequest): TSRelationsDto {
+        val result = TSMcpDataProvider.getInstance(project).search<TSGlobalMetaRelation>(request)
         val items = result.items.map { it.toDto() }
-        return TSRelationListResponse(
-            filter = context.filter?.trim()?.takeIf { it.isNotEmpty() },
-            extensions = context.extensions?.sorted(),
-            matched = items.size,
+        return TSRelationsDto(
+            filter = request.filter?.trim()?.takeIf { it.isNotEmpty() },
+            extensions = request.extensions?.sorted(),
             total = result.total,
             items = items,
         )
     }
 
-    suspend fun searchEnumTypes(context: TSMcpSearchContext, detail: EnumTypeDetail): TSEnumListResponse {
-        val result = TSMcpDataProvider.getInstance(project).search<TSGlobalMetaEnum>(context)
-        val items = result.items.map { it.toDto(detail) }
-        return TSEnumListResponse(
-            detail = detail.name,
-            filter = context.filter?.trim()?.takeIf { it.isNotEmpty() },
-            extensions = context.extensions?.sorted(),
-            matched = items.size,
-            total = result.total,
-            items = items,
-        )
-    }
-
-    suspend fun searchMapTypes(context: TSMcpSearchContext): TSMapListResponse {
-        val result = TSMcpDataProvider.getInstance(project).search<TSGlobalMetaMap>(context)
+    suspend fun searchMaps(request: TSSearchMcpRequest): TSMapsDto {
+        val result = TSMcpDataProvider.getInstance(project).search<TSGlobalMetaMap>(request)
         val items = result.items.map { it.toDto() }
-        return TSMapListResponse(
-            filter = context.filter?.trim()?.takeIf { it.isNotEmpty() },
-            extensions = context.extensions?.sorted(),
-            matched = items.size,
+        return TSMapsDto(
+            filter = request.filter?.trim()?.takeIf { it.isNotEmpty() },
+            extensions = request.extensions?.sorted(),
+            total = result.total,
+            items = items,
+        )
+    }
+
+    suspend fun searchEnums(request: TSSearchEnumMcpRequest): TSEnumsDto {
+        val result = TSMcpDataProvider.getInstance(project).search<TSGlobalMetaEnum>(request)
+        val items = result.items.map { it.toDto(request.detailLevel) }
+        return TSEnumsDto(
+            detail = request.detailLevel.name,
+            filter = request.filter?.trim()?.takeIf { it.isNotEmpty() },
+            extensions = request.extensions?.sorted(),
             total = result.total,
             items = items,
         )
@@ -114,9 +108,9 @@ class TSMcpService(private val project: Project) {
             extends = extendedMetaItemName?.takeIf { it.isNotBlank() },
             typeCode = deployment?.typeCode?.takeIf { it.isNotBlank() },
             extension = extensionName.takeIf { it.isNotBlank() },
-            isAbstract = isAbstract.takeIf { it },
-            isCustom = isCustom.takeIf { it },
-            isDeprecated = isDeprecated.takeIf { it },
+            abstract = isAbstract.takeIf { it },
+            custom = isCustom.takeIf { it },
+            deprecated = isDeprecated.takeIf { it },
             attributes = attrs,
         )
     }
@@ -138,8 +132,10 @@ class TSMcpService(private val project: Project) {
         return TSItemAttributeDto(
             name = name,
             type = type?.takeIf { it.isNotBlank() },
-            declaredIn = if (full) (declared.firstOrNull()?.extensionName ?: extensionName)?.takeIf { it.isNotBlank() } else null,
-            redeclaredIn = if (full) redeclared.map { it.extensionName }.distinct().sorted().takeIf { it.isNotEmpty() } else null,
+            declaredIn = if (full) (declared.firstOrNull()?.extensionName
+                ?: extensionName)?.takeIf { it.isNotBlank() } else null,
+            redeclaredIn = if (full) redeclared.map { it.extensionName }.distinct().sorted()
+                .takeIf { it.isNotEmpty() } else null,
             localized = if (full) isLocalized.takeIf { it } else null,
             dynamic = if (full) isDynamic.takeIf { it } else null,
             deprecated = if (full) isDeprecated.takeIf { it } else null,
@@ -209,7 +205,7 @@ class TSMcpService(private val project: Project) {
         typeCode = deployment?.typeCode?.takeIf { it.isNotBlank() },
         source = source.toDto(),
         target = target.toDto(),
-        extension = extensionName?.takeIf { it.isNotBlank() },
+        extension = extensionName.takeIf { it.isNotBlank() },
         localized = isLocalized.takeIf { it },
         custom = isCustom.takeIf { it },
         autoCreate = isAutoCreate.takeIf { it },
@@ -226,7 +222,6 @@ class TSMcpService(private val project: Project) {
     )
 
     companion object {
-        fun getInstance(project: Project): TSMcpService = project.service()
         suspend fun getInstance(): TSMcpService = currentCoroutineContext().project.service()
     }
 }

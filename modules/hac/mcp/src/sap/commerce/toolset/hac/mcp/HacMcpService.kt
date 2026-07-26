@@ -18,14 +18,16 @@
 
 package sap.commerce.toolset.hac.mcp
 
+import com.intellij.mcpserver.project
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
+import kotlinx.coroutines.currentCoroutineContext
 import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import sap.commerce.toolset.hac.exec.settings.state.AuthMode
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
 import sap.commerce.toolset.hac.mcp.dto.HacConnectionDto
-import sap.commerce.toolset.hac.mcp.dto.HacConnectionListResponse
+import sap.commerce.toolset.hac.mcp.dto.HacConnectionsDto
 
 @Service(Service.Level.PROJECT)
 class HacMcpService(private val project: Project) {
@@ -36,7 +38,7 @@ class HacMcpService(private val project: Project) {
      * the active connection when [connectionName] is null/blank. Errors with the list of available
      * connection names when no match is found.
      */
-    fun resolveConnection(connectionName: String?): HacConnectionSettingsState {
+    internal fun resolveConnection(connectionName: String?): HacConnectionSettingsState {
         val connectionService = HacExecConnectionService.getInstance(project)
 
         val connection = if (connectionName.isNullOrBlank()) connectionService.activeConnection
@@ -56,7 +58,7 @@ class HacMcpService(private val project: Project) {
     }
 
 
-    fun listConnections(): HacConnectionListResponse {
+    fun listConnections(): HacConnectionsDto {
         val connectionService = HacExecConnectionService.getInstance(project)
         val activeUuid = connectionService.activeConnection.uuid
         val items = connectionService.connections.map { conn ->
@@ -68,10 +70,11 @@ class HacMcpService(private val project: Project) {
                 supportedByMcp = conn.authMode == AuthMode.AUTOMATIC,
             )
         }
-        return HacConnectionListResponse(matched = items.size, total = items.size, items = items)
+        return HacConnectionsDto(matched = items.size, total = items.size, items = items)
     }
 
     companion object {
         fun getInstance(project: Project): HacMcpService = project.service()
+        suspend fun getInstance(): HacMcpService = currentCoroutineContext().project.service()
     }
 }

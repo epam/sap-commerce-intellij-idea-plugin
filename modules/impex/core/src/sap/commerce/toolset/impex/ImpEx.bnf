@@ -307,7 +307,7 @@ private double_quoted_string_content ::=
 // Value line rules
 value_line ::= (sub_type_name value_group*) | (value_group+) {
     mixin="sap.commerce.toolset.impex.psi.impl.ImpExValueLineMixin"
-    methods=[getHeaderLine getValueGroup addValueGroups]
+    methods=[getHeaderLine getValueGroup getMetaType addValueGroups]
 }
 
 value_group ::= FIELD_VALUE_SEPARATOR value? MULTILINE_SEPARATOR?
@@ -377,7 +377,11 @@ full_header_parameter ::= any_header_parameter_name parameters? modifiers* param
     pin=1
     recoverWhile=not_line_break_or_parameters_separator
     mixin="sap.commerce.toolset.impex.psi.impl.ImpExFullHeaderParameterMixin"
-    methods=[getHeaderLine getColumnNumber getAttribute getAttributeValue getValueGroups isUnique getTypeSystemContext collectDocIdReferences collectTSReferences resolveDefaultValue getParametersContext]
+    methods=[
+                getHeaderLine getColumnNumber getAttribute getAttributeValue getValueGroups
+                isUnique getTypeSystemContext getDocIdUsages
+                collectDocIdReferences collectTSReferences resolveDefaultValue getParametersContext
+            ]
 }
 
 any_header_parameter_name ::= document_id_dec

@@ -19,7 +19,7 @@
 <idea-plugin>
 
     <extensions defaultExtensionNs="com.intellij">
-        <mcpServer.mcpToolset implementation="sap.commerce.toolset.beanSystem.mcp.BeanSystemMcpToolset"/>
+        <mcpServer.mcpToolset implementation="sap.commerce.toolset.beanSystem.mcp.BSMcpToolset"/>
     </extensions>
 
 </idea-plugin>

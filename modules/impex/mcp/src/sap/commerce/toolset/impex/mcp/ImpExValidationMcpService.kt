@@ -24,6 +24,7 @@ import com.intellij.codeInspection.InspectionProfile
 import com.intellij.codeInspection.ProblemDescriptorUtil
 import com.intellij.codeInspection.ex.LocalInspectionToolWrapper
 import com.intellij.lang.annotation.HighlightSeverity
+import com.intellij.mcpserver.project
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
@@ -39,8 +40,11 @@ import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.endOffset
 import com.intellij.psi.util.startOffset
 import com.intellij.util.application
+import kotlinx.coroutines.currentCoroutineContext
+import sap.commerce.toolset.impex.mcp.context.ImpExIssue
+import sap.commerce.toolset.impex.mcp.context.ImpExValidationMcpRequest
 import sap.commerce.toolset.impex.mcp.dto.ImpExSyntaxIssueDto
-import sap.commerce.toolset.impex.mcp.dto.ImpExValidationResult
+import sap.commerce.toolset.impex.mcp.dto.ImpExValidationResultDto
 import sap.commerce.toolset.impex.psi.ImpExElementFactory
 import sap.commerce.toolset.path
 import java.nio.file.Path
@@ -48,10 +52,10 @@ import java.nio.file.Path
 @Service(Service.Level.PROJECT)
 class ImpExValidationMcpService(private val project: Project) {
 
-    suspend fun validate(context: ImpExValidationContext): ImpExValidationResult {
+    suspend fun validate(request: ImpExValidationMcpRequest): ImpExValidationResultDto {
         if (DumbService.isDumb(project)) error("Project indexing is in progress; retry once indexing completes.")
 
-        val (psiFile, document, file) = resolveTarget(context)
+        val (psiFile, document, file) = resolveTarget(request)
 
         val issues = collectIssues(psiFile, document)
             .filter { it.severity >= HighlightSeverity.WEAK_WARNING }
@@ -67,27 +71,27 @@ class ImpExValidationMcpService(private val project: Project) {
                 )
             }
 
-        return ImpExValidationResult(
+        return ImpExValidationResultDto(
             file = file,
             issues = issues,
         )
     }
 
-    private suspend fun collectIssues(psiFile: PsiFile, document: Document): List<ImpexIssue> {
+    private suspend fun collectIssues(psiFile: PsiFile, document: Document): List<ImpExIssue> {
         val syntaxIssues = collectSyntaxIssues(psiFile, document)
         val inspectionIssues = collectInspectionIssues(psiFile, document)
 
         return syntaxIssues + inspectionIssues
     }
 
-    private suspend fun collectSyntaxIssues(psiFile: PsiFile, document: Document): List<ImpexIssue> = readAction {
+    private suspend fun collectSyntaxIssues(psiFile: PsiFile, document: Document): List<ImpExIssue> = readAction {
         PsiTreeUtil
             .collectElementsOfType(psiFile, PsiErrorElement::class.java)
-            .map { it.toImpexIssue(document, HighlightSeverity.ERROR, it.errorDescription) }
+            .map { it.toImpExIssue(document, HighlightSeverity.ERROR, it.errorDescription) }
     }
 
-    private suspend fun collectInspectionIssues(psiFile: PsiFile, document: Document): List<ImpexIssue> = coroutineToIndicator {
-        application.runReadAction<List<ImpexIssue>> {
+    private suspend fun collectInspectionIssues(psiFile: PsiFile, document: Document): List<ImpExIssue> = coroutineToIndicator {
+        application.runReadAction<List<ImpExIssue>> {
             val profile: InspectionProfile = InspectionProjectProfileManager.getInstance(project).currentProfile
             val manager = InspectionManager.getInstance(project)
             val severityRegistrar = SeverityRegistrar.getSeverityRegistrar(project)
@@ -102,17 +106,17 @@ class ImpExValidationMcpService(private val project: Project) {
                         val baseSeverity = profile.getErrorLevel(displayKey, psiFile).severity
                         val severity = ProblemDescriptorUtil.highlightTypeFromDescriptor(descriptor, baseSeverity, severityRegistrar)
                             .getSeverity(element)
-                        element.toImpexIssue(document, severity, descriptor.descriptionTemplate)
+                        element.toImpExIssue(document, severity, descriptor.descriptionTemplate)
                     }
                 }
         }
     }
 
-    private fun PsiElement.toImpexIssue(document: Document, severity: HighlightSeverity, message: String): ImpexIssue {
+    private fun PsiElement.toImpExIssue(document: Document, severity: HighlightSeverity, message: String): ImpExIssue {
         val line = document.getLineNumber(startOffset)
         val column = startOffset - document.getLineStartOffset(line)
 
-        return ImpexIssue(
+        return ImpExIssue(
             startOffset = startOffset,
             endOffset = endOffset,
             severity = severity,
@@ -122,7 +126,7 @@ class ImpExValidationMcpService(private val project: Project) {
         )
     }
 
-    private suspend fun resolveTarget(context: ImpExValidationContext): Triple<PsiFile, Document, String?> {
+    private suspend fun resolveTarget(context: ImpExValidationMcpRequest): Triple<PsiFile, Document, String?> {
         context.filePath
             ?.let { resolveVirtualFile(it) }
             ?.let { virtualFile ->
@@ -150,6 +154,6 @@ class ImpExValidationMcpService(private val project: Project) {
     }
 
     companion object {
-        fun getInstance(project: Project): ImpExValidationMcpService = project.service()
+        suspend fun getInstance(): ImpExValidationMcpService = currentCoroutineContext().project.service()
     }
 }

@@ -20,6 +20,7 @@ package sap.commerce.toolset.flexibleSearch.transform.impex
 
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
+import com.intellij.openapi.fileTypes.LanguageFileType
 import com.intellij.openapi.project.Project
 import com.intellij.platform.ide.progress.withBackgroundProgress
 import kotlinx.coroutines.*
@@ -30,10 +31,13 @@ import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecContex
 import sap.commerce.toolset.flexibleSearch.exec.context.QueryMode
 import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchPsiFile
 import sap.commerce.toolset.flexibleSearch.transform.FxSQueryAnalyzer
-import sap.commerce.toolset.flexibleSearch.transform.context.FxSTransformationResult
 import sap.commerce.toolset.flexibleSearch.transform.impex.context.ImpExTransformationContext
 import sap.commerce.toolset.flexibleSearch.transform.impex.context.ImpExTransformationDescriptor
 import sap.commerce.toolset.hac.exec.HacExecConnectionService
+import sap.commerce.toolset.i18n
+import sap.commerce.toolset.transform.TransformationResult
+import sap.commerce.toolset.transform.handlers.CopyToClipboardTransformResultHandler
+import sap.commerce.toolset.transform.handlers.CreateScratchFileTransformResultHandler
 import sap.commerce.toolset.typeSystem.TSConstants
 
 /**
@@ -57,12 +61,12 @@ internal class ImpExTransformationService(
      * is called before this function returns.
      */
     fun transform(
-        transformerName: String,
+        outputFileType: LanguageFileType,
         psiFile: FlexibleSearchPsiFile,
-        onComplete: (FxSTransformationResult) -> Unit,
+        onComplete: (TransformationResult) -> Unit,
     ) {
         coroutineScope.launch {
-            val result = transform(transformerName, psiFile)
+            val result = transform(outputFileType, psiFile)
             onComplete(result)
         }
     }
@@ -72,32 +76,39 @@ internal class ImpExTransformationService(
      *
      * Behaves identically to the callback overload but returns the ImpEx string directly.
      */
-    suspend fun transform(transformerName: String, psiFile: FlexibleSearchPsiFile): FxSTransformationResult {
+    suspend fun transform(outputFileType: LanguageFileType, psiFile: FlexibleSearchPsiFile): TransformationResult {
         val descriptor = psiFile.transformationDescriptor()
         val connection = descriptor.connection
             ?: HacExecConnectionService.getInstance(project).activeConnection
         val enumSourceIndicesByType = ImpExHeaderBuilder.enumSourceIndicesByType(descriptor)
         val fkSourceIndicesByResolutionInfo = ImpExHeaderBuilder.fkSourceIndicesByResolutionInfo(descriptor)
 
+        val description = if (descriptor.rows.isEmpty()) "${descriptor.typeName} to ${outputFileType.name}"
+        else "${descriptor.typeName} to ${outputFileType.name} (${i18n("hybris.fxs.actions.transform.notification.rows", descriptor.rows.size)})"
+
         if (descriptor.rows.isEmpty() || enumSourceIndicesByType.isEmpty() && fkSourceIndicesByResolutionInfo.isEmpty()) {
             val content = ImpExConverter.buildImpEx(descriptor)
 
-            return FxSTransformationResult(
-                transformerName = transformerName,
+            return TransformationResult(
                 content = content,
-                exportType = descriptor.typeName,
-                exportRows = descriptor.rows,
+                description = description,
+                handlers = listOf(
+                    CopyToClipboardTransformResultHandler(content),
+                    CreateScratchFileTransformResultHandler(project, content, outputFileType)
+                ),
             )
         }
 
         val context = ImpExTransformationContext(descriptor, connection, enumSourceIndicesByType, fkSourceIndicesByResolutionInfo)
         val content = resolveAndBuild(context)
 
-        return FxSTransformationResult(
-            transformerName = transformerName,
+        return TransformationResult(
             content = content,
-            exportType = descriptor.typeName,
-            exportRows = descriptor.rows,
+            description = description,
+            handlers = listOf(
+                CopyToClipboardTransformResultHandler(content),
+                CreateScratchFileTransformResultHandler(project, content, outputFileType)
+            )
         )
     }
 

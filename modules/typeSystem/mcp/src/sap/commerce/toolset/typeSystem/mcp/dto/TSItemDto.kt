@@ -18,17 +18,18 @@
 
 package sap.commerce.toolset.typeSystem.mcp.dto
 
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class TSItemDto(
-    val name: String,
+    override val name: String,
+    override val extension: String? = null,
+    override val custom: Boolean? = null,
+    override val autoCreate: Boolean? = null,
+    override val generate: Boolean? = null,
+    val abstract: Boolean? = null,
+    val deprecated: Boolean? = null,
     val extends: String? = null,
     val typeCode: String? = null,
-    val extension: String? = null,
-    @SerialName("abstract") val isAbstract: Boolean? = null,
-    @SerialName("custom") val isCustom: Boolean? = null,
-    @SerialName("deprecated") val isDeprecated: Boolean? = null,
     val attributes: List<TSItemAttributeDto>? = null,
-)
+) : TSClassifierDto

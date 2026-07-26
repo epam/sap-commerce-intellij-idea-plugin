@@ -50,7 +50,7 @@ class FxSQueryAnalyzerTest {
     /**
      * Example 2 from the reported issue:
      * `GenericVariantProduct JOIN CatalogVersion t0 ON {t0.pk}={t.catalogversion} JOIN Catalog t1 ON {t1.pk}={t0.catalog}`
-     * with `{t1.id}='mcProductCatalog'` and `{t0.version}='Staged'`.
+     * with `{t1.id}='productCatalog'` and `{t0.version}='Staged'`.
      *
      * `{t1.id}` contributes `[catalog, id]`, `{t0.version}` contributes `[version]` →
      * merged nested path `catalog(id),version` — NOT the flat (and wrong) `id,version`.

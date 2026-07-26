@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -65,12 +65,12 @@ class ImpExColumnBreadcrumbsProvider : BreadcrumbsProvider {
         return when (val adjustedPsi = adjustWhiteSpaceAndSeparator(element)) {
             is ImpExAnyHeaderMode -> adjustedPsi
             is ImpExFullHeaderParameter -> {
-                val line = getImpexHeaderLine(adjustedPsi)
+                val line = getImpExHeaderLine(adjustedPsi)
                 line?.fullHeaderType
                     ?: line?.anyHeaderMode
             }
 
-            is ImpExFullHeaderType -> getImpexHeaderLine(adjustedPsi)
+            is ImpExFullHeaderType -> getImpExHeaderLine(adjustedPsi)
                 ?.anyHeaderMode
 
             else -> {
@@ -85,7 +85,7 @@ class ImpExColumnBreadcrumbsProvider : BreadcrumbsProvider {
         }
     }
 
-    private fun getImpexHeaderLine(adjustedPsi: PsiElement) = PsiTreeUtil
+    private fun getImpExHeaderLine(adjustedPsi: PsiElement) = PsiTreeUtil
         .getParentOfType(adjustedPsi, ImpExHeaderLine::class.java, false)
 
     private fun getLinkedHeaderParameter(psi: PsiElement): ImpExFullHeaderParameter? = ImpExPsiUtils

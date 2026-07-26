@@ -54,7 +54,6 @@ open class ImpExDocumentIdUsageReference private constructor(
         private val KEY_LOOKUP_ELEMENTS = Key.create<ParameterizedCachedValue<Array<LookupElementBuilder>, ImpExDocumentIdUsageReference>>("LOOKUP_ELEMENTS")
 
         private val PROVIDER_LOOKUP_ELEMENTS = ParameterizedCachedValueProvider<Array<LookupElementBuilder>, ImpExDocumentIdUsageReference> { ref ->
-            val project = ref.fullHeaderParameter.project
             val lookupElements = ref.fullHeaderParameter
                 .parametersList
                 .firstOrNull()

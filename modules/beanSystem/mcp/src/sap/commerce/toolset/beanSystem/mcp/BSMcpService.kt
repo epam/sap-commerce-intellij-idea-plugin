@@ -23,10 +23,12 @@ import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import kotlinx.coroutines.currentCoroutineContext
+import sap.commerce.toolset.beanSystem.mcp.context.BSDetail
+import sap.commerce.toolset.beanSystem.mcp.context.BSSearchMcpRequest
 import sap.commerce.toolset.beanSystem.mcp.dto.BSBeanDto
 import sap.commerce.toolset.beanSystem.mcp.dto.BSBeanPropertyDto
+import sap.commerce.toolset.beanSystem.mcp.dto.BSBeansDto
 import sap.commerce.toolset.beanSystem.mcp.dto.BSEnumDto
-import sap.commerce.toolset.beanSystem.mcp.dto.BSListResponse
 import sap.commerce.toolset.beanSystem.mcp.providers.BSMcpDataProvider
 import sap.commerce.toolset.beanSystem.meta.model.BSGlobalMetaBean
 import sap.commerce.toolset.beanSystem.meta.model.BSGlobalMetaClassifier
@@ -36,24 +38,23 @@ import sap.commerce.toolset.beanSystem.meta.model.BSMetaProperty
 @Service(Service.Level.PROJECT)
 class BSMcpService(private val project: Project) {
 
-    suspend fun searchBeans(context: BSMcpSearchContext, detail: BSDetail): BSListResponse<BSBeanDto> =
-        search(context, detail) { bean: BSGlobalMetaBean -> bean.toDto(detail) }
+    suspend fun searchBeans(request: BSSearchMcpRequest): BSBeansDto<BSBeanDto> =
+        search(request) { bean: BSGlobalMetaBean -> bean.toDto(request.detail) }
 
-    suspend fun searchEnums(context: BSMcpSearchContext, detail: BSDetail): BSListResponse<BSEnumDto> =
-        search(context, detail) { enum: BSGlobalMetaEnum -> enum.toDto(detail) }
+    suspend fun searchEnums(request: BSSearchMcpRequest): BSBeansDto<BSEnumDto> =
+        search(request) { enum: BSGlobalMetaEnum -> enum.toDto(request.detail) }
 
     private suspend fun <T : BSGlobalMetaClassifier<*>, D> search(
-        context: BSMcpSearchContext,
-        detail: BSDetail,
+        request: BSSearchMcpRequest,
         toDto: (T) -> D,
-    ): BSListResponse<D> {
-        val result = BSMcpDataProvider.getInstance(project).search<T>(context)
+    ): BSBeansDto<D> {
+        val result = BSMcpDataProvider.getInstance(project).search<T>(request)
         val items = result.items.map(toDto)
 
-        return BSListResponse(
-            detail = detail.name,
-            filter = context.filter?.trim()?.takeIf { it.isNotEmpty() },
-            extensions = context.extensions?.sorted(),
+        return BSBeansDto(
+            detail = request.detail.name,
+            filter = request.filter?.trim()?.takeIf { it.isNotEmpty() },
+            extensions = request.extensions?.sorted(),
             matched = items.size,
             total = result.total,
             items = items,
@@ -101,7 +102,6 @@ class BSMcpService(private val project: Project) {
     )
 
     companion object {
-        fun getInstance(project: Project): BSMcpService = project.service()
         suspend fun getInstance(): BSMcpService = currentCoroutineContext().project.service()
     }
 }

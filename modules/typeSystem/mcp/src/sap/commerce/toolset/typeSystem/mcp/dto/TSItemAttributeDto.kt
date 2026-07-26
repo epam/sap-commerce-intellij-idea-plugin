@@ -21,13 +21,6 @@ package sap.commerce.toolset.typeSystem.mcp.dto
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class TSAttributePersistenceDto(
-    val type: String? = null,
-    val qualifier: String? = null,
-    val attributeHandler: String? = null,
-)
-
-@Serializable
 data class TSItemAttributeDto(
     val name: String,
     val type: String? = null,

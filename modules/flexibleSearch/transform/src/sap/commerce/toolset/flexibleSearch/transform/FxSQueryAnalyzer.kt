@@ -361,8 +361,8 @@ object FxSQueryAnalyzer {
      * Collects JOIN-resolved unique attributes whose values come from WHERE clause literal equality
      * conditions but whose FK column is NOT in the SELECT list.
      *
-     * Example: `{t0.identifier} = 'mcProductType'` with `t0 → (solrIndexedType, [])` in [joinAliasMap]
-     * produces `FxSJoinUniqueColumn(fkAttributeName="solrIndexedType", naturalKeyAttr="identifier", constantValue="mcProductType")`.
+     * Example: `{t0.identifier} = 'productType'` with `t0 → (solrIndexedType, [])` in [joinAliasMap]
+     * produces `FxSJoinUniqueColumn(fkAttributeName="solrIndexedType", naturalKeyAttr="identifier", constantValue="productType")`.
      *
      * All conditions on the same FK's JOIN chain are merged into one nested path; their values are
      * `:`-joined in the path's depth-first leaf order (`catalog(id),version` → `'x:y'`), or null

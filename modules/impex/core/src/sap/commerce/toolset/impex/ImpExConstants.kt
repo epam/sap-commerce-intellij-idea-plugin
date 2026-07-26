@@ -18,6 +18,7 @@
 
 package sap.commerce.toolset.impex
 
+import com.intellij.openapi.util.Key
 import com.intellij.psi.tree.IFileElementType
 
 object ImpExConstants {
@@ -44,5 +45,9 @@ object ImpExConstants {
 
     object Value {
         const val IGNORE = "<ignore>"
+    }
+
+    object Transform {
+        val INCLUDE_ALL_ATTRIBUTES = Key.create<Boolean>("impex.transform.includeAllAttributes")
     }
 }

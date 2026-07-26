@@ -56,6 +56,8 @@ public interface ImpExFullHeaderParameter extends PsiElement {
 
   @Nullable ImpExHeaderParameterTSContext getTypeSystemContext();
 
+  @NotNull List<@NotNull ImpExDocumentIdUsage> getDocIdUsages();
+
   @NotNull PsiReference @Nullable [] collectDocIdReferences(@NotNull PsiElement targetElement, @NotNull ImpExHeaderParameterTSContext tsContext);
 
   @NotNull PsiReference @Nullable [] collectTSReferences(@NotNull PsiElement targetElement, @NotNull ImpExHeaderParameterTSContext tsContext, @NotNull Function0<@NotNull PsiElement @NotNull []> valuesProvider);

@@ -21,7 +21,7 @@ package sap.commerce.toolset.settings.state
 import com.intellij.util.xmlb.annotations.OptionTag
 import com.intellij.util.xmlb.annotations.Tag
 
-@Tag("ImpexSettings")
+@Tag("ImpExSettings")
 data class ImpExSettingsState(
     @JvmField @OptionTag val groupLocalizedFiles: Boolean = true,
     @JvmField @OptionTag val editMode: ImpExEditModeSettingsState = ImpExEditModeSettingsState(),

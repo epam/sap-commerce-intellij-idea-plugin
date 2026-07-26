@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -63,7 +63,7 @@ class SearchScopeConfigurator : ProjectPostImportConfigurator {
 
             newScopes += NamedScope(
                 "${HybrisConstants.SEARCH_SCOPE_Y_PREFIX} ${i18n("hybris.scope.editable.custom.ts.beans.impex.files")}",
-                createCustomTsImpexBeansFilesPattern(applicationSettings)
+                createCustomTsImpExBeansFilesPattern(applicationSettings)
             )
         }
 
@@ -111,7 +111,7 @@ class SearchScopeConfigurator : ProjectPostImportConfigurator {
         }
     }
 
-    private fun createCustomTsImpexBeansFilesPattern(importSettings: ProjectImportSettings) = importSettings.groupCustom.let { customGroupName ->
+    private fun createCustomTsImpExBeansFilesPattern(importSettings: ProjectImportSettings) = importSettings.groupCustom.let { customGroupName ->
         UnionPackageSet.create(
             UnionPackageSet.create(
                 FilePatternPackageSet("$customGroupName*", "*//*${HybrisConstants.HYBRIS_ITEMS_XML_FILE_ENDING}"),

@@ -45,7 +45,7 @@ class GroovyLanguageInjector : LanguageInjector {
     ) {
         if (Plugin.GROOVY.isDisabled()) return
 
-        handleImpex(host, injectionPlacesRegistrar)
+        handleImpEx(host, injectionPlacesRegistrar)
         handleBusinessProcess(host, injectionPlacesRegistrar)
     }
 
@@ -58,7 +58,7 @@ class GroovyLanguageInjector : LanguageInjector {
         }
     }
 
-    private fun handleImpex(host: PsiLanguageInjectionHost, injectionPlacesRegistrar: InjectedLanguagePlaces) {
+    private fun handleImpEx(host: PsiLanguageInjectionHost, injectionPlacesRegistrar: InjectedLanguagePlaces) {
         when (host) {
             is ImpExString -> {
                 val hostString = StringUtil.unquoteString(host.text).lowercase()

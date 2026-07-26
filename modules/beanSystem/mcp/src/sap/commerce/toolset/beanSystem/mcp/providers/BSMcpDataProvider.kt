@@ -24,12 +24,11 @@ import com.intellij.openapi.components.service
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import sap.commerce.toolset.ai.mcp.regexOrContainsMatcher
-import sap.commerce.toolset.beanSystem.mcp.BSMcpSearchContext
+import sap.commerce.toolset.beanSystem.mcp.context.BSMcpSearchResult
+import sap.commerce.toolset.beanSystem.mcp.context.BSSearchMcpRequest
 import sap.commerce.toolset.beanSystem.meta.BSMetaModelAccess
 import sap.commerce.toolset.beanSystem.meta.BSMetaModelStateService
 import sap.commerce.toolset.beanSystem.meta.model.BSGlobalMetaClassifier
-
-data class BSMcpSearchResult<out T>(val items: Collection<T>, val total: Int)
 
 /**
  * Strategy behind the `sap_commerce_list_*` bean-system tools. [search] holds the shared pipeline:
@@ -42,7 +41,7 @@ data class BSMcpSearchResult<out T>(val items: Collection<T>, val total: Int)
 @Service(Service.Level.PROJECT)
 class BSMcpDataProvider(private val project: Project) {
 
-    suspend fun <T : BSGlobalMetaClassifier<*>> search(context: BSMcpSearchContext): BSMcpSearchResult<T> {
+    suspend fun <T : BSGlobalMetaClassifier<*>> search(context: BSSearchMcpRequest): BSMcpSearchResult<T> {
         ensureBeanSystemReady(project)
 
         val normalizedFilter = context.filter?.trim()?.takeIf { it.isNotEmpty() }

@@ -18,7 +18,7 @@
 <idea-plugin>
 
     <extensions defaultExtensionNs="sap.commerce.toolset">
-        <transformer implementation="sap.commerce.toolset.flexibleSearch.transform.FxSImpExTransformer"/>
+        <transformer implementation="sap.commerce.toolset.flexibleSearch.transform.FxSToImpExTransformer"/>
     </extensions>
 
 </idea-plugin>

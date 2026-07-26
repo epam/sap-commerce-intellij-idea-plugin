@@ -22,13 +22,13 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class TSRelationDto(
-    val name: String,
-    val typeCode: String? = null,
+    override val name: String,
+    override val extension: String? = null,
+    override val custom: Boolean? = null,
+    override val autoCreate: Boolean? = null,
+    override val generate: Boolean? = null,
     val source: TSRelationEndDto,
     val target: TSRelationEndDto,
-    val extension: String? = null,
+    val typeCode: String? = null,
     val localized: Boolean? = null,
-    val custom: Boolean? = null,
-    val autoCreate: Boolean? = null,
-    val generate: Boolean? = null,
-)
+) : TSClassifierDto

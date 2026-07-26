@@ -1,7 +1,7 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -20,7 +20,6 @@
 package sap.commerce.toolset.impex.utils;
 
 import com.intellij.openapi.editor.Editor;
-import com.intellij.psi.PsiComment;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiWhiteSpace;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -33,7 +32,6 @@ import sap.commerce.toolset.impex.psi.*;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Predicate;
 
 @Deprecated(since = "Convert to kotlin and move to psi package")
 public final class ImpExPsiUtils {
@@ -53,7 +51,7 @@ public final class ImpExPsiUtils {
     }
 
     @Contract(value = "null -> false", pure = true)
-    public static boolean isImpexValueLine(@Nullable final PsiElement psiElement) {
+    public static boolean isImpExValueLine(@Nullable final PsiElement psiElement) {
         return psiElement instanceof ImpExValueLine;
     }
 
@@ -67,24 +65,9 @@ public final class ImpExPsiUtils {
         return ImpExTypes.CRLF == ImpExCommonPsiUtils.getNullSafeElementType(psiElement);
     }
 
-    @Contract(pure = true)
-    public static boolean isLastElement(final PsiElement element) {
-        return element.getNextSibling() == null;
-    }
-
     @Contract(value = "null -> false", pure = true)
     public static boolean isFieldValueSeparator(@Nullable final PsiElement psiElement) {
         return ImpExTypes.FIELD_VALUE_SEPARATOR == ImpExCommonPsiUtils.getNullSafeElementType(psiElement);
-    }
-
-    @Contract(value = "null -> false", pure = true)
-    public static boolean isParameterSeparator(@Nullable final PsiElement psiElement) {
-        return ImpExTypes.PARAMETERS_SEPARATOR == ImpExCommonPsiUtils.getNullSafeElementType(psiElement);
-    }
-
-    @Contract(value = "null -> false", pure = true)
-    public static boolean isHeaderLine(@Nullable final PsiElement psiElement) {
-        return Objects.equals(ImpExTypes.HEADER_LINE, ImpExCommonPsiUtils.getNullSafeElementType(psiElement));
     }
 
     @Contract(value = "null -> false", pure = true)
@@ -97,191 +80,8 @@ public final class ImpExPsiUtils {
     }
 
 
-    @Nullable
-    @Contract("null, _ -> null")
-    public static <T extends PsiElement> T getNextSiblingOfAnyType(
-        @Nullable final PsiElement sibling,
-        @NotNull final Class... aClasses
-    ) {
-        if (sibling == null) {
-            return null;
-        } else {
-            for (PsiElement child = sibling.getNextSibling(); child != null; child = child.getNextSibling()) {
-                for (final Class<T> aClass : aClasses) {
-                    if (aClass.isInstance(child)) {
-                        return (T) child;
-                    }
-                }
-            }
-
-            return null;
-        }
-    }
-
-    @Nullable
-    @Contract("null, _ -> null")
-    public static PsiElement findSiblingByPredicate(
-        @Nullable final PsiElement sibling,
-        @NotNull final Predicate<PsiElement> predicate
-    ) {
-        if (sibling == null) {
-            return null;
-        } else {
-            for (PsiElement child = sibling.getNextSibling(); child != null; child = child.getNextSibling()) {
-                if (predicate.test(child)) {
-                    return child;
-                }
-            }
-
-            return null;
-        }
-    }
-
-
-    @Contract(pure = true)
-    public static boolean aroundIsValueLine(@Nullable final PsiElement element) {
-        if (element == null) {
-            return false;
-        }
-
-        if (isImpexValueLine(element)
-            || isImpexValueLine(element.getParent())
-            || isImpexValueLine(element.getParent().getParent())) {
-            return true;
-        }
-
-        boolean prevElementIsValueLine = false;
-        PsiElement prevSibling = PsiTreeUtil.skipSiblingsBackward(
-            element,
-            PsiWhiteSpace.class,
-            PsiComment.class,
-            ImpExBeanShell.class,
-            ImpExComment.class
-        );
-        while (null != prevSibling) {
-            if (isHeaderLine(prevSibling) || isImpexValueLine(prevSibling) || isUserRightsMacros(prevSibling)) {
-                prevElementIsValueLine = true;
-                break;
-            }
-            prevSibling = PsiTreeUtil.skipSiblingsBackward(
-                prevSibling,
-                PsiWhiteSpace.class,
-                PsiComment.class,
-                ImpExBeanShell.class,
-                ImpExComment.class
-            );
-        }
-
-
-        boolean nextElementIsValueLine = false;
-        PsiElement nextSibling = PsiTreeUtil.skipSiblingsForward(element,
-                                                                 PsiWhiteSpace.class, ImpExBeanShell.class,
-                                                                 ImpExComment.class
-        );
-
-        while (null != nextSibling) {
-            if (isImpexValueLine(nextSibling)) {
-                nextElementIsValueLine = true;
-                break;
-            }
-            if (isHeaderLine(nextSibling)) {
-                nextElementIsValueLine = false;
-                break;
-            }
-            if (isUserRightsMacros(nextSibling)) {
-                nextElementIsValueLine = false;
-                break;
-            }
-            nextSibling = PsiTreeUtil.skipSiblingsForward(nextSibling,
-                                                          PsiWhiteSpace.class, ImpExBeanShell.class,
-                                                          ImpExComment.class
-            );
-        }
-
-        return nextElementIsValueLine && prevElementIsValueLine;
-    }
-
-    @Nullable
-    @Contract(pure = true)
-    public static boolean nextElementIsHeaderLine(@NotNull final PsiElement element) {
-        PsiElement nextSibling = element.getNextSibling();
-
-        while (null != nextSibling) {
-            if (isImpexValueLine(nextSibling)) {
-                return false;
-            }
-            if (isUserRightsMacros(nextSibling)) {
-                return false;
-            }
-            if (isHeaderLine(nextSibling)) {
-                return true;
-            }
-            nextSibling = nextSibling.getNextSibling();
-        }
-
-        return true;
-    }
-
-    @Nullable
-    @Contract(pure = true)
-    public static boolean nextElementIsUserRightsMacros(@NotNull final PsiElement element) {
-        PsiElement nextSibling = element.getNextSibling();
-
-        while (null != nextSibling) {
-            if (isHeaderLine(nextSibling)) {
-                return false;
-            }
-            if (isImpexValueLine(nextSibling)) {
-                return false;
-            }
-            if (isUserRightsMacros(nextSibling)) {
-                return true;
-            }
-            nextSibling = nextSibling.getNextSibling();
-        }
-
-        return true;
-    }
-
     public static boolean prevElementIsUserRightsMacros(@NotNull final PsiElement element) {
         return PsiTreeUtil.getParentOfType(element, ImpExUserRights.class) != null;
-    }
-
-    @Nullable
-    @Contract(pure = true)
-    public static PsiElement getPrevNonWhitespaceElement(@NotNull final PsiElement element) {
-        PsiElement prevSibling = element.getPrevSibling();
-
-        while ((isWhiteSpace(prevSibling) || isLineBreak(prevSibling))) {
-            prevSibling = prevSibling.getPrevSibling();
-        }
-
-        return prevSibling;
-    }
-
-    @Nullable
-    @Contract(pure = true)
-    public static PsiElement getNextNonWhitespaceElement(@NotNull final PsiElement element) {
-        PsiElement nextSibling = element.getNextSibling();
-
-        while ((isWhiteSpace(nextSibling) || isLineBreak(nextSibling))) {
-            nextSibling = nextSibling.getNextSibling();
-        }
-
-        return nextSibling;
-    }
-
-
-    @Nullable
-    @Contract(pure = true)
-    public static PsiElement getPrevValueLine(@NotNull final PsiElement element) {
-        PsiElement prevSibling = element.getPrevSibling();
-
-        while (null != prevSibling && !isImpexValueLine(prevSibling)) {
-            prevSibling = prevSibling.getPrevSibling();
-        }
-
-        return prevSibling;
     }
 
 
@@ -330,14 +130,14 @@ public final class ImpExPsiUtils {
             }
 
             if (null == valueGroup) {
-                valueGroup = skipAllExceptLineBreaksAndGetImpexValueGroup(psiElementUnderCaret);
+                valueGroup = skipAllExceptLineBreaksAndGetImpExValueGroup(psiElementUnderCaret);
             }
 
             return valueGroup;
 
         } else if (isLineBreak(psiElementUnderCaret)) {
 
-            return skipAllExceptLineBreaksAndGetImpexValueGroup(psiElementUnderCaret);
+            return skipAllExceptLineBreaksAndGetImpExValueGroup(psiElementUnderCaret);
 
         } else {
             return PsiTreeUtil.getParentOfType(psiElementUnderCaret, ImpExValueGroup.class);
@@ -372,7 +172,7 @@ public final class ImpExPsiUtils {
 
     @Nullable
     @Contract(pure = true)
-    public static ImpExValueGroup skipAllExceptLineBreaksAndGetImpexValueGroup(
+    public static ImpExValueGroup skipAllExceptLineBreaksAndGetImpExValueGroup(
         @NotNull final PsiElement psiElement
     ) {
         if (isLineBreak(psiElement.getPrevSibling())) {
@@ -380,7 +180,7 @@ public final class ImpExPsiUtils {
         }
 
         PsiElement prevSibling = psiElement.getPrevSibling();
-        while (!isImpexValueLine(prevSibling)) {
+        while (!isImpExValueLine(prevSibling)) {
             if (null == prevSibling || isLineBreak(prevSibling)) {
                 return null;
             }
@@ -388,7 +188,7 @@ public final class ImpExPsiUtils {
             prevSibling = prevSibling.getPrevSibling();
         }
 
-        if (!isImpexValueLine(prevSibling)) {
+        if (!isImpExValueLine(prevSibling)) {
             return null;
         }
 
@@ -427,29 +227,6 @@ public final class ImpExPsiUtils {
         }
 
         return -1;
-    }
-
-    @Nullable
-    @Contract(pure = true)
-    public static ImpExFullHeaderParameter getImpexFullHeaderParameterFromHeaderLineByNumber(
-        @NotNull final ImpExHeaderLine impexHeaderLine, final int columnNumber
-    ) {
-        Validate.isTrue(columnNumber >= 0);
-        final var columnSeparator = getHeaderParametersSeparatorFromHeaderLineByNumber(
-            columnNumber,
-            impexHeaderLine
-        );
-        if (columnSeparator == null) return null;
-
-        var nextSibling = ImpExCommonPsiUtils.getNextNonWhitespaceElement(columnSeparator);
-
-        if (ImpExTypes.MULTILINE_SEPARATOR == ImpExCommonPsiUtils.getNullSafeElementType(nextSibling)) {
-            nextSibling = ImpExCommonPsiUtils.getNextNonWhitespaceElement(nextSibling);
-        }
-
-        return ImpExTypes.FULL_HEADER_PARAMETER == ImpExCommonPsiUtils.getNullSafeElementType(nextSibling)
-            ? (ImpExFullHeaderParameter) nextSibling
-            : null;
     }
 
     @Nullable

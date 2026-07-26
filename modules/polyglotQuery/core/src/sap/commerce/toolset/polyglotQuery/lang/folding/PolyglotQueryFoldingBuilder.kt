@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -30,6 +30,7 @@ import com.intellij.psi.SyntaxTraverser
 import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
 import sap.commerce.toolset.polyglotQuery.psi.PolyglotQueryTypes
+import sap.commerce.toolset.polyglotQuery.psi.PolyglotQueryWhereClause
 import sap.commerce.toolset.polyglotQuery.settings.PolyglotQueryFoldingSettings
 
 class PolyglotQueryFoldingBuilder : FoldingBuilderEx(), DumbAware {
@@ -98,7 +99,10 @@ class PolyglotQueryFoldingBuilder : FoldingBuilderEx(), DumbAware {
     }
         ?: FALLBACK_PLACEHOLDER
 
-    override fun isCollapsedByDefault(node: ASTNode) = true
+    override fun isCollapsedByDefault(node: ASTNode) = when (node.psi) {
+        is PolyglotQueryWhereClause -> false
+        else -> true
+    }
 
     companion object {
         private const val GROUP_NAME = "PolyglotQuery"

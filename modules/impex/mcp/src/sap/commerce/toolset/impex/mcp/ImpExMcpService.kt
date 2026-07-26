@@ -18,44 +18,44 @@
 
 package sap.commerce.toolset.impex.mcp
 
+import com.intellij.mcpserver.project
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
+import kotlinx.coroutines.currentCoroutineContext
 import org.apache.http.HttpStatus
-import sap.commerce.toolset.hac.mcp.HacMcpService
 import sap.commerce.toolset.impex.exec.ImpExExecClient
 import sap.commerce.toolset.impex.exec.context.ImpExExecContext
 import sap.commerce.toolset.impex.exec.context.ImpExExecutionMode
-import sap.commerce.toolset.impex.mcp.dto.ImpExResult
+import sap.commerce.toolset.impex.mcp.context.ImpExExecMcpRequest
+import sap.commerce.toolset.impex.mcp.dto.ImpExExecResultDto
 
 @Service(Service.Level.PROJECT)
 class ImpExMcpService(private val project: Project) {
 
-    suspend fun execute(
-        context: ImpExMcpContext,
-    ): ImpExResult {
-        val connection = HacMcpService.getInstance(project).resolveConnection(context.connectionName)
+    suspend fun execute(request: ImpExExecMcpRequest): ImpExExecResultDto {
+        val connection = request.connection(project)
         val execContext = ImpExExecContext(
             connection = connection,
-            content = context.content,
-            executionMode = if (context.validate) ImpExExecutionMode.VALIDATE else ImpExExecutionMode.IMPORT,
+            content = request.content,
+            executionMode = if (request.validate) ImpExExecutionMode.VALIDATE else ImpExExecutionMode.IMPORT,
             settings = ImpExExecContext.defaultSettings(connection),
         )
 
         val result = ImpExExecClient.getInstance(project).execute(execContext)
-        val action = if (context.validate) "Validation" else "Import"
+        val action = if (request.validate) "Validation" else "Import"
 
         return if (result.statusCode != HttpStatus.SC_OK) {
-            ImpExResult(
-                connection = connection.connectionName,
+            ImpExExecResultDto(
+                connectionName = connection.connectionName,
                 action = action,
                 success = false,
                 error = result.errorMessage,
                 errorDetail = result.errorDetailMessage,
             )
         } else {
-            ImpExResult(
-                connection = connection.connectionName,
+            ImpExExecResultDto(
+                connectionName = connection.connectionName,
                 action = action,
                 success = true,
                 output = result.output?.takeIf { it.isNotBlank() },
@@ -64,6 +64,6 @@ class ImpExMcpService(private val project: Project) {
     }
 
     companion object {
-        fun getInstance(project: Project): ImpExMcpService = project.service()
+        suspend fun getInstance(): ImpExMcpService = currentCoroutineContext().project.service()
     }
 }

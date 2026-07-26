@@ -38,6 +38,13 @@ dependencies {
     implementation(project(":shared-transform"))
     implementation(project(":impex-core"))
     implementation(project(":flexibleSearch-core"))
+    implementation(project(":polyglotQuery-core"))
+    implementation(project(":typeSystem-core"))
+    implementation(project(":exec-core"))
+    implementation(project(":hac-exec"))
+    implementation(project(":flexibleSearch-exec"))
+
+    testImplementation(kotlin("test"))
 
     intellijPlatform {
         intellijIdea(properties("intellij.version")) {

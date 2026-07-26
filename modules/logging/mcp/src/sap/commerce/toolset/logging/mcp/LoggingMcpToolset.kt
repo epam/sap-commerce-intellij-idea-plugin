@@ -21,12 +21,13 @@ package sap.commerce.toolset.logging.mcp
 import com.intellij.mcpserver.McpToolset
 import com.intellij.mcpserver.annotations.McpDescription
 import com.intellij.mcpserver.annotations.McpTool
-import com.intellij.mcpserver.project
-import kotlinx.coroutines.currentCoroutineContext
+import sap.commerce.toolset.ai.mcp.McpConstants
 import sap.commerce.toolset.ai.mcp.map
 import sap.commerce.toolset.ai.mcp.resolveMapper
 import sap.commerce.toolset.logging.CxLogConstants
 import sap.commerce.toolset.logging.CxLogLevel
+import sap.commerce.toolset.logging.mcp.context.ListLoggersMcpRequest
+import sap.commerce.toolset.logging.mcp.context.UpdateLoggerLevelMcpRequest
 
 class LoggingMcpToolset : McpToolset {
 
@@ -49,12 +50,11 @@ class LoggingMcpToolset : McpToolset {
         )
         filter: String? = null,
         @McpDescription("Output format for the response. Supported formats: JSON. Default: JSON.")
-        outputFormat: String = "JSON",
+        outputFormat: String = McpConstants.Formats.JSON,
     ): String {
         val mapper = resolveMapper(outputFormat)
-        val project = currentCoroutineContext().project
-        val context = LoggingListLoggersMcpContext(connectionName, filter)
-        val loggers = LoggingMcpService.getInstance(project).listLoggers(context)
+        val request = ListLoggersMcpRequest(connectionName, filter)
+        val loggers = LoggingMcpService.getInstance().listLoggers(request)
         return mapper.map(loggers)
     }
 
@@ -75,15 +75,14 @@ class LoggingMcpToolset : McpToolset {
         @McpDescription("Optional HAC connection name. Uses the active connection if not specified. Must refer to a connection with AUTOMATIC authentication; MANUAL (browser) connections are rejected")
         connectionName: String? = null,
         @McpDescription("Output format for the response. Supported formats: JSON. Default: JSON.")
-        outputFormat: String = "JSON",
+        outputFormat: String = McpConstants.Formats.JSON,
     ): String {
         val mapper = resolveMapper(outputFormat)
-        val project = currentCoroutineContext().project
         val normalizedLoggerName = getNormalizedLoggerName(loggerName)
         val logLevel = CxLogLevel.entries.find { it.name.equals(level.trim(), ignoreCase = true) }
             ?: error("Invalid log level '$level'. Valid levels: ${CxLogLevel.entries.joinToString { it.name }}")
-        val context = LoggingUpdateLoggerLevelMcpContext(connectionName, normalizedLoggerName, logLevel)
-        val result = LoggingMcpService.getInstance(project).updateLoggerLevel(context)
+        val request = UpdateLoggerLevelMcpRequest(connectionName, normalizedLoggerName, logLevel)
+        val result = LoggingMcpService.getInstance().updateLoggerLevel(request)
         return mapper.map(result)
     }
 

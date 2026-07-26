@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -38,7 +38,7 @@ class JavaScriptLanguageInjector : LanguageInjector {
     ) {
         if (Plugin.JAVASCRIPT.isDisabled()) return
 
-        handleImpex(host, injectionPlacesRegistrar)
+        handleImpEx(host, injectionPlacesRegistrar)
         handleBusinessProcess(host, injectionPlacesRegistrar)
     }
 
@@ -49,7 +49,7 @@ class JavaScriptLanguageInjector : LanguageInjector {
         tryInject(xmlFile, host, ScriptType.JAVASCRIPT) { length, offset -> injectLanguage(injectionPlacesRegistrar, length, offset) }
     }
 
-    private fun handleImpex(host: PsiLanguageInjectionHost, injectionPlacesRegistrar: InjectedLanguagePlaces) {
+    private fun handleImpEx(host: PsiLanguageInjectionHost, injectionPlacesRegistrar: InjectedLanguagePlaces) {
         val impexString = host as? ImpExString
             ?: return
 

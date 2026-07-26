@@ -21,14 +21,13 @@ package sap.commerce.toolset.flexibleSearch.mcp
 import com.intellij.mcpserver.McpToolset
 import com.intellij.mcpserver.annotations.McpDescription
 import com.intellij.mcpserver.annotations.McpTool
-import com.intellij.mcpserver.project
-import kotlinx.coroutines.currentCoroutineContext
+import sap.commerce.toolset.ai.mcp.McpConstants
 import sap.commerce.toolset.ai.mcp.map
 import sap.commerce.toolset.ai.mcp.resolveMapper
 import sap.commerce.toolset.flexibleSearch.exec.FlexibleSearchExecConstants
 import sap.commerce.toolset.flexibleSearch.exec.context.QueryMode
-import sap.commerce.toolset.flexibleSearch.mcp.context.FxSMcpExecRequest
-import sap.commerce.toolset.flexibleSearch.mcp.context.FxSTransformMcpContext
+import sap.commerce.toolset.flexibleSearch.mcp.context.FxSExecMcpRequest
+import sap.commerce.toolset.flexibleSearch.mcp.context.FxSTransformMcpRequest
 
 class FxSMcpToolset : McpToolset {
 
@@ -55,12 +54,11 @@ class FxSMcpToolset : McpToolset {
         @McpDescription("Optional HAC connection name. Uses the active connection if not specified")
         connectionName: String? = null,
         @McpDescription("Output format for the response. Supported formats: JSON. Default: JSON.")
-        outputFormat: String = "JSON",
+        outputFormat: String = McpConstants.Formats.JSON,
     ): String {
         val mapper = resolveMapper(outputFormat)
-        val project = currentCoroutineContext().project
-        val execRequest = FxSMcpExecRequest(connectionName, QueryMode.FlexibleSearch, query, maxCount, locale, dataSource, user, timeout)
-        val result = FxSMcpService.getInstance(project).execute(execRequest)
+        val request = FxSExecMcpRequest(connectionName, QueryMode.FlexibleSearch, query, maxCount, locale, dataSource, user, timeout)
+        val result = FxSMcpService.getInstance().execute(request)
         return mapper.map(result)
     }
 
@@ -87,12 +85,11 @@ class FxSMcpToolset : McpToolset {
         @McpDescription("Optional HAC connection name. Uses the active connection if not specified")
         connectionName: String? = null,
         @McpDescription("Output format for the response. Supported formats: JSON. Default: JSON.")
-        outputFormat: String = "JSON",
+        outputFormat: String = McpConstants.Formats.JSON,
     ): String {
         val mapper = resolveMapper(outputFormat)
-        val project = currentCoroutineContext().project
-        val execRequest = FxSMcpExecRequest(connectionName, QueryMode.SQL, query, maxCount, locale, dataSource, user, timeout)
-        val result = FxSMcpService.getInstance(project).execute(execRequest)
+        val request = FxSExecMcpRequest(connectionName, QueryMode.SQL, query, maxCount, locale, dataSource, user, timeout)
+        val result = FxSMcpService.getInstance().execute(request)
         return mapper.map(result)
     }
 
@@ -129,19 +126,18 @@ class FxSMcpToolset : McpToolset {
         @McpDescription("Flag to include result data rows in the output. Set to 'true' whenever the user wants actual data (not just the ImpEx header). Default is 'true'.")
         includeData: Boolean = true,
         @McpDescription("Output format for the response. Supported formats: JSON. Default: JSON.")
-        outputFormat: String = "JSON",
+        outputFormat: String = McpConstants.Formats.JSON,
     ): String {
         val mapper = resolveMapper(outputFormat)
-        val project = currentCoroutineContext().project
-        val execRequest = FxSMcpExecRequest(connectionName, QueryMode.FlexibleSearch, query, maxCount, locale, dataSource, user, timeout)
-        val transformContext = FxSTransformMcpContext(
+        val execRequest = FxSExecMcpRequest(connectionName, QueryMode.FlexibleSearch, query, maxCount, locale, dataSource, user, timeout)
+        val request = FxSTransformMcpRequest(
             transformerId = transformerId,
             query = query,
             includeTypeSystemUnique = includeTypeSystemUnique,
             includeData = includeData,
             execRequest = execRequest,
         )
-        val result = FxSMcpService.getInstance(project).transform(transformContext)
+        val result = FxSMcpService.getInstance().transform(request)
         return mapper.map(result)
     }
 }

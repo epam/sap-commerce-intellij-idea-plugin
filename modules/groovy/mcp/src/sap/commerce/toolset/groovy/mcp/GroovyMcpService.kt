@@ -18,39 +18,41 @@
 
 package sap.commerce.toolset.groovy.mcp
 
+import com.intellij.mcpserver.project
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
+import kotlinx.coroutines.currentCoroutineContext
 import org.apache.http.HttpStatus
 import sap.commerce.toolset.groovy.exec.GroovyExecClient
 import sap.commerce.toolset.groovy.exec.context.GroovyExecContext
-import sap.commerce.toolset.groovy.mcp.dto.GroovyResult
-import sap.commerce.toolset.hac.mcp.HacMcpService
+import sap.commerce.toolset.groovy.mcp.context.GroovyExecMcpRequest
+import sap.commerce.toolset.groovy.mcp.dto.GroovyExecResultDto
 
 @Service(Service.Level.PROJECT)
 class GroovyMcpService(private val project: Project) {
 
-    suspend fun execute(context: GroovyMcpContext): GroovyResult {
-        val connection = HacMcpService.getInstance(project).resolveConnection(context.connectionName)
+    suspend fun execute(request: GroovyExecMcpRequest): GroovyExecResultDto {
+        val connection = request.connection(project)
         val execContext = GroovyExecContext(
             connection = connection,
-            content = context.script,
+            content = request.script,
             timeout = connection.timeout,
-            transactionMode = context.transactionMode,
+            transactionMode = request.transactionMode,
         )
 
         val result = GroovyExecClient.getInstance(project).execute(execContext)
 
         return if (result.statusCode != HttpStatus.SC_OK) {
-            GroovyResult(
-                connection = connection.connectionName,
+            GroovyExecResultDto(
+                connectionName = connection.connectionName,
                 success = false,
                 error = result.errorMessage,
                 errorDetail = result.errorDetailMessage,
             )
         } else {
-            GroovyResult(
-                connection = connection.connectionName,
+            GroovyExecResultDto(
+                connectionName = connection.connectionName,
                 success = true,
                 output = result.output?.takeIf { it.isNotBlank() },
                 result = result.result?.takeIf { it.isNotBlank() },
@@ -59,6 +61,6 @@ class GroovyMcpService(private val project: Project) {
     }
 
     companion object {
-        fun getInstance(project: Project): GroovyMcpService = project.service()
+        suspend fun getInstance(): GroovyMcpService = currentCoroutineContext().project.service()
     }
 }

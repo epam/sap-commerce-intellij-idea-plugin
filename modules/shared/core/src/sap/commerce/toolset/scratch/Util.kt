@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,6 +22,7 @@ import com.intellij.ide.scratch.ScratchRootType
 import com.intellij.lang.Language
 import com.intellij.openapi.application.EDT
 import com.intellij.openapi.application.edtWriteAction
+import com.intellij.openapi.fileEditor.FileEditor
 import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.fileTypes.FileTypeRegistry
 import com.intellij.openapi.fileTypes.LanguageFileType
@@ -55,7 +56,8 @@ fun createScratchFile(
 fun createScratchFile(
     project: Project,
     text: String,
-    fileExtension: String
+    fileExtension: String,
+    onOpen: FileEditor.() -> Unit = {}
 ) {
     CoroutineScope(Dispatchers.Default).launch {
         val scratchRoot = ScratchRootType.getInstance()
@@ -65,21 +67,13 @@ fun createScratchFile(
         val fileName = "scratch.${fileType.defaultExtension}"
         val language = fileType.language
 
-        createAndOpenScratchFile(scratchRoot, project, fileName, language, text)
-    }
-}
+        val vf = edtWriteAction { scratchRoot.createScratchFile(project, fileName, language, text) }
+            ?: return@launch
 
-private suspend fun createAndOpenScratchFile(
-    scratchRoot: ScratchRootType,
-    project: Project,
-    fileName: String,
-    language: Language,
-    text: String
-) {
-    val vf = edtWriteAction { scratchRoot.createScratchFile(project, fileName, language, text) }
-        ?: return
-
-    withContext(Dispatchers.EDT) {
-        FileEditorManager.getInstance(project).openFile(vf, true)
+        withContext(Dispatchers.EDT) {
+            FileEditorManager.getInstance(project).openFile(vf, true)
+                .firstOrNull()
+                ?.let { onOpen(it) }
+        }
     }
 }

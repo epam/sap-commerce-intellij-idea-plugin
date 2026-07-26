@@ -18,8 +18,10 @@
 
 package sap.commerce.toolset.transform
 
-abstract class TransformationResult(
-    val content: String
-) {
-    abstract val description: String
-}
+import sap.commerce.toolset.transform.handlers.TransformResultHandler
+
+class TransformationResult(
+    val content: String,
+    val description: String,
+    val handlers: Collection<TransformResultHandler>
+)
