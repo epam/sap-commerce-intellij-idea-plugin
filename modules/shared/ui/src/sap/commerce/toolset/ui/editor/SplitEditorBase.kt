@@ -34,8 +34,8 @@ import com.intellij.psi.PsiDocumentManager
 import com.intellij.ui.OnePixelSplitter
 import com.intellij.ui.dsl.builder.Align
 import com.intellij.ui.dsl.builder.AlignX
-import com.intellij.ui.dsl.builder.Panel
 import com.intellij.ui.dsl.builder.panel
+import com.intellij.util.ui.JBUI
 import kotlinx.coroutines.*
 import sap.commerce.toolset.editor.SplitEditor
 import sap.commerce.toolset.ui.actionButton
@@ -70,35 +70,30 @@ abstract class SplitEditorBase(
             verticalSplitter.secondComponent = view?.let { buildResultsPanel(it) }
         }
 
-    private fun buildResultsPanel(content: JComponent): JComponent = panel {
-        row {
-            val leftActions = inEditorResultsActions()
-            leftActions.forEach { actionButton(it) }
-            actionButton(
-                ActionManager.getInstance().getAction("sap.commerce.toolset.splitEditor.hideInEditorResults"),
-                sinkExtender = { sink -> sink[SplitEditor.DATA_KEY_SPLIT_EDITOR] = this@SplitEditorBase }
-            ).align(AlignX.RIGHT)
-        }
-        separator()
-        inEditorResultsComponents(content)
-    }
+    private fun buildResultsPanel(content: JComponent): JComponent {
+        val actionsBar = panel {
+            row {
+                inEditorResultsActions().forEach { actionButton(it) }
+                actionButton(
+                    ActionManager.getInstance().getAction("sap.commerce.toolset.splitEditor.hideInEditorResults"),
+                    sinkExtender = { sink -> sink[SplitEditor.DATA_KEY_SPLIT_EDITOR] = this@SplitEditorBase }
+                ).align(AlignX.RIGHT)
+            }
+        }.apply { border = JBUI.Borders.empty(0, 4) }
 
-    /**
-     * Populates the area below the action bar inside the in-editor results panel.
-     *
-     * Called within the outer `panel { }` DSL block, so all DSL methods on [Panel]
-     * are available: add extra rows (filters, status bars, …) before or after the
-     * main [content] component.
-     *
-     * The default implementation renders [content] filling all remaining space.
-     * Override in a language-specific split editor to contribute additional rows.
-     */
-    protected open fun Panel.inEditorResultsComponents(content: JComponent) {
-        row {
-            cell(content)
-                .align(Align.FILL)
-                .resizableColumn()
-        }.resizableRow()
+        return panel {
+            row {
+                cell(actionsBar)
+                    .align(AlignX.FILL)
+                    .resizableColumn()
+            }
+            separator(JBUI.CurrentTheme.Banner.INFO_BORDER_COLOR)
+            row {
+                cell(content)
+                    .align(Align.FILL)
+                    .resizableColumn()
+            }.resizableRow()
+        }
     }
 
     protected val horizontalSplitter = OnePixelSplitter(false).apply {
