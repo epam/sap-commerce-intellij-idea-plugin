@@ -228,6 +228,10 @@
         <localInspection groupPath="SAP Commerce" shortName="ImpExHeaderTypeCaseInspection" displayName="[y] Header type name case does not match Type System"
                          groupName="[y] ImpEx" level="WEAK WARNING" language="ImpEx" enabledByDefault="true"
                          implementationClass="sap.commerce.toolset.impex.codeInspection.ImpExHeaderTypeCaseInspection"/>
+
+        <localInspection groupPath="SAP Commerce" shortName="ImpExHeaderParameterNameCaseInspection" displayName="[y] Attribute name case does not match Type System"
+                         groupName="[y] ImpEx" level="WEAK WARNING" language="ImpEx" enabledByDefault="true"
+                         implementationClass="sap.commerce.toolset.impex.codeInspection.ImpExHeaderParameterNameCaseInspection"/>
     </extensions>
 
 </idea-plugin>

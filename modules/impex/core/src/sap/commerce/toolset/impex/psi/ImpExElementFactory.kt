@@ -39,6 +39,13 @@ object ImpExElementFactory {
         ?.fullHeaderType
         ?.headerTypeName
 
+    fun createAnyHeaderParameterName(project: Project, attrName: String) = createFile(project, "INSERT Product;$attrName")
+        .childrenOfType<ImpExHeaderLine>()
+        .firstOrNull()
+        ?.fullHeaderParameterList
+        ?.firstOrNull()
+        ?.anyHeaderParameterName
+
     fun createParametersSeparator(project: Project) = createFile(project, "INSERT Product;")
         .childrenOfType<ImpExHeaderLine>()
         .firstOrNull()

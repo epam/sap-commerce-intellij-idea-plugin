@@ -123,6 +123,34 @@ val meta = TSMetaModelAccess.getInstance(element.project).findMetaClassifierByNa
 - `.macroUsageDecList` / `.possibleMacroUsageDecList` — non-empty means macro in type name; skip inspection
 - Backed by `ImpExHeaderTypeNameMixin` → `ImpExTSItemReference` (cache key `ImpExTSItemReference.CACHE_KEY`)
 
+**`ImpExAnyHeaderParameterName` specifics** (gen'd interface):
+- `.documentIdDec: ImpExDocumentIdDec?` — skip inspection if non-null (or if `firstChild is ImpExDocumentIdUsage`)
+- `.macroUsageDecList` / `.possibleMacroUsageDecList` — skip if non-empty (or `firstChild is ImpExMacroUsageDec`)
+- `.specialParameter: ImpExSpecialParameter?` — special tokens; no TS reference
+- `.headerItemTypeName: ImpExHeaderTypeName?` — returns the type name of the containing header line
+- `.isHeaderAbbreviation(): Boolean` — abbreviation uses `ImpExHeaderAbbreviationReference`, not `ImpExTSAttributeReference`
+- Backed by `ImpExAnyHeaderParameterNameMixin` → reference is `ImpExTSAttributeReference` when leaf is `HEADER_PARAMETER_NAME` and not abbreviation
+
+**Attribute case inspection pattern** (find `ImpExTSAttributeReference`, get canonical name from resolve result):
+```kotlin
+override fun visitAnyHeaderParameterName(element: ImpExAnyHeaderParameterName) {
+    if (element.firstChild is ImpExMacroUsageDec || element.firstChild is ImpExDocumentIdUsage) return
+    val ref = element.references.find { it is ImpExTSAttributeReference }.asSafely<ImpExTSAttributeReference>() ?: return
+    val resolveResults = ref.multiResolve(false)
+    if (resolveResults.isEmpty()) return  // unknown — other inspection handles it
+    val canonicalName = resolveResults.first().asSafely<TSResolveResult<*>>()?.meta?.name ?: return
+    if (canonicalName == ref.value) return
+    // register problem ...
+}
+```
+
+**`TSResolveResult` for attribute resolution** (`TSResolveResultUtil.tryResolveAttribute`):
+- `AttributeResolveResult.meta: TSGlobalMetaItemAttribute` → `.name: String` (canonical qualifier)
+- `RelationEndResolveResult.meta: TSMetaRelationElement` → `.name = qualifier` (overridden in impl)
+- `OrderingAttributeResolveResult.meta: TSMetaOrderingAttribute` → `.name: String`
+- All lookups case-insensitive (`allAttributes`, `allRelationEnds` use `CaseInsensitiveConcurrentHashMap` / `.equals(ignoreCase=true)`)
+- `(resolveResult as? TSResolveResult<*>)?.meta?.name` works uniformly across all three types
+
 ## ImpExElementFactory
 
 `object ImpExElementFactory` in `modules/impex/core/src/.../psi/ImpExElementFactory.kt`. All methods create PSI from in-memory ImpEx text.
@@ -131,6 +159,7 @@ val meta = TSMetaModelAccess.getInstance(element.project).findMetaClassifierByNa
 |--------|---------|
 | `createHeaderMode(project, HeaderMode)` | first child of `ImpExAnyHeaderMode` token |
 | `createHeaderTypeName(project, typeName)` | `ImpExHeaderTypeName` |
+| `createAnyHeaderParameterName(project, attrName)` | `ImpExAnyHeaderParameterName` |
 | `createParametersSeparator(project)` | last child of header line |
 | `createMacroName(project, value)` | `ImpExMacroNameDec` |
 | `createSingleQuotedString(project, value)` | `ImpExString` |
