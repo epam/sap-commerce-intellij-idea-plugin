@@ -22,13 +22,13 @@ import com.intellij.psi.SmartPsiElementPointer
 import sap.commerce.toolset.exec.context.DefaultExecResult
 import sap.commerce.toolset.impex.exec.context.ImpExExecContext
 import sap.commerce.toolset.impex.psi.ImpExMacroDeclaration
+import sap.commerce.toolset.ui.editor.SplitEditorEx
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
-interface ImpExSplitEditorEx : ImpExSplitEditor {
+interface ImpExSplitEditorEx : ImpExSplitEditor, SplitEditorEx {
     fun showLoader(context: ImpExExecContext)
     fun refreshParameters(delayMs: Duration = 500.milliseconds)
-    fun reparseTextEditor(delayMs: Duration = 1000.milliseconds)
     fun renderExecutionResult(result: DefaultExecResult)
     fun resetVirtualParameter(pointer: SmartPsiElementPointer<ImpExMacroDeclaration>)
 }

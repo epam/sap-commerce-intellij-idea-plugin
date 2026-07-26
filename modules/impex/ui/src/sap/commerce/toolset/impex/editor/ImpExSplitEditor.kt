@@ -18,35 +18,25 @@
 
 package sap.commerce.toolset.impex.editor
 
-import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.actionSystem.PlatformDataKeys
 import com.intellij.openapi.application.edtWriteAction
-import com.intellij.openapi.fileEditor.FileEditorState
 import com.intellij.openapi.fileEditor.TextEditor
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.util.Key
-import com.intellij.openapi.util.UserDataHolderBase
-import com.intellij.openapi.util.getOrCreateUserData
-import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.pom.Navigatable
-import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.SmartPsiElementPointer
-import com.intellij.ui.OnePixelSplitter
 import com.intellij.util.asSafely
 import kotlinx.coroutines.*
 import sap.commerce.toolset.exec.context.DefaultExecResult
 import sap.commerce.toolset.impex.exec.context.ImpExExecContext
 import sap.commerce.toolset.impex.exec.impexExecContextSettings
 import sap.commerce.toolset.impex.psi.ImpExMacroDeclaration
-import java.awt.BorderLayout
-import java.beans.PropertyChangeListener
+import sap.commerce.toolset.ui.editor.SplitEditorBase
 import java.io.Serial
-import javax.swing.JComponent
-import javax.swing.JPanel
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 
 fun AnActionEvent.impexSplitEditorEx() = this.getData(PlatformDataKeys.FILE_EDITOR)
     ?.asSafely<ImpExSplitEditorEx>()
@@ -55,32 +45,14 @@ fun AnActionEvent.impexExecutionContextSettings(fallback: () -> ImpExExecContext
     ?.impexExecContextSettings(fallback)
     ?: fallback()
 
-class ImpExSplitEditorBase(override val textEditor: TextEditor, private val project: Project) : UserDataHolderBase(), ImpExSplitEditorEx {
+class ImpExSplitEditorBase(textEditor: TextEditor, project: Project) : SplitEditorBase(textEditor, project), ImpExSplitEditorEx {
 
     companion object {
         @Serial
         private const val serialVersionUID: Long = -3770395176190649196L
 
         private val KEY_PARAMETERS = Key.create<Map<SmartPsiElementPointer<ImpExMacroDeclaration>, ImpExVirtualParameter>>("impex.parameters.key")
-        private val KEY_IN_EDITOR_RESULTS = Key.create<Boolean>("impex.in_editor_results.key")
     }
-
-    override var inEditorParameters: Boolean
-        get() = inEditorParametersView != null
-        set(state) {
-            if (state) {
-                ImpExInEditorParametersView.getInstance(project).renderParameters(this)
-            } else {
-                virtualParametersDisposable?.apply { Disposer.dispose(this) }
-                virtualParametersDisposable = null
-                inEditorParametersView = null
-            }
-
-            component.requestFocus()
-            horizontalSplitter.firstComponent.requestFocus()
-
-            reparseTextEditor()
-        }
 
     override var virtualParameters: Map<SmartPsiElementPointer<ImpExMacroDeclaration>, ImpExVirtualParameter>?
         get() = getUserData(KEY_PARAMETERS)
@@ -91,48 +63,8 @@ class ImpExSplitEditorBase(override val textEditor: TextEditor, private val proj
             ?.let { getParametrizedText(it) }
             ?: getText()
 
-    override var inEditorResults: Boolean
-        get() = getOrCreateUserData(KEY_IN_EDITOR_RESULTS) { true }
-        set(state) {
-            putUserData(KEY_IN_EDITOR_RESULTS, state)
-            verticalSplitter.secondComponent?.isVisible = state
-        }
-
-    override var inEditorParametersView: JComponent?
-        get() = horizontalSplitter.secondComponent
-        set(view) {
-            horizontalSplitter.secondComponent = view
-        }
-
-    override var virtualParametersDisposable: Disposable? = null
-
-    private var inEditorResultsView: JComponent?
-        get() = verticalSplitter.secondComponent
-        set(view) {
-            verticalSplitter.secondComponent = view
-        }
-
-    private var renderParametersJob: Job? = null
-    private var reparseTextEditorJob: Job? = null
-
-    private val horizontalSplitter = OnePixelSplitter(false).apply {
-        isShowDividerControls = true
-        splitterProportionKey = "$javaClass.horizontalSplitter"
-        setHonorComponentsMinimumSize(true)
-
-        firstComponent = textEditor.component
-    }
-
-    private val verticalSplitter = OnePixelSplitter(true).apply {
-        isShowDividerControls = true
-        splitterProportionKey = "$javaClass.verticalSplitter"
-        setHonorComponentsMinimumSize(true)
-
-        firstComponent = horizontalSplitter
-    }
-
-    private val rootPanel = JPanel(BorderLayout()).apply {
-        add(verticalSplitter, BorderLayout.CENTER)
+    override fun renderInEditorParameters() {
+        ImpExInEditorParametersView.getInstance(project).renderParameters(this)
     }
 
     override fun virtualParameter(element: ImpExMacroDeclaration): ImpExVirtualParameter? = virtualParameters
@@ -166,6 +98,8 @@ class ImpExSplitEditorBase(override val textEditor: TextEditor, private val proj
         inEditorResultsView = ImpExInEditorResultsView.getInstance(project).executingView(context.executionTitle)
     }
 
+    private var renderParametersJob: Job? = null
+
     override fun refreshParameters(delayMs: Duration) {
         renderParametersJob?.cancel()
         renderParametersJob = CoroutineScope(Dispatchers.Default).launch {
@@ -177,48 +111,11 @@ class ImpExSplitEditorBase(override val textEditor: TextEditor, private val proj
         }
     }
 
-    /**
-     * Reparse PsiFile in the related TextEditor to retrigger inline hints computation
-     */
-    override fun reparseTextEditor(delayMs: Duration) {
-        reparseTextEditorJob?.cancel()
-        reparseTextEditorJob = CoroutineScope(Dispatchers.Default).launch {
-            delay(delayMs)
-
-            if (project.isDisposed) return@launch
-
-            edtWriteAction {
-                PsiDocumentManager.getInstance(project).reparseFiles(listOf(file), false)
-            }
-        }
-    }
-
-    override fun addPropertyChangeListener(listener: PropertyChangeListener) {
-        textEditor.addPropertyChangeListener(listener)
-        component.addPropertyChangeListener(listener)
-    }
-
-    override fun removePropertyChangeListener(listener: PropertyChangeListener) {
-        textEditor.removePropertyChangeListener(listener)
-        component.removePropertyChangeListener(listener)
-    }
-
-    override fun getPreferredFocusedComponent(): JComponent? = verticalSplitter.firstComponent
-
-    override fun getComponent() = rootPanel
     override fun getName() = "ImpEx Split Editor"
-    override fun setState(state: FileEditorState) = textEditor.setState(state)
-    override fun isModified() = textEditor.isModified
-    override fun isValid() = textEditor.isValid && component.isValid
-    override fun dispose() = Disposer.dispose(textEditor)
-    override fun getEditor() = textEditor.editor
-    override fun canNavigateTo(navigatable: Navigatable) = textEditor.canNavigateTo(navigatable)
-    override fun navigateTo(navigatable: Navigatable) = textEditor.navigateTo(navigatable)
-    override fun getFile(): VirtualFile? = editor.virtualFile
 
-    private fun getText(): String = editor.selectionModel.selectedText
-        .takeIf { selectedText -> selectedText != null && selectedText.trim { it <= ' ' }.isNotEmpty() }
-        ?: editor.document.text
+    init {
+        verticalSplitter.firstComponent = horizontalSplitter
+    }
 
     private fun getParametrizedText(virtualParameters: Map<SmartPsiElementPointer<ImpExMacroDeclaration>, ImpExVirtualParameter>): String {
         var text = editor.document.text
