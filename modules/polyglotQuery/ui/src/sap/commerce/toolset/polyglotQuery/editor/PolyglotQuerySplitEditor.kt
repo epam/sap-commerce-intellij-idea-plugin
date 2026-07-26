@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,45 +18,33 @@
 
 package sap.commerce.toolset.polyglotQuery.editor
 
-import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.PlatformDataKeys
 import com.intellij.openapi.application.edtWriteAction
-import com.intellij.openapi.fileEditor.FileEditorState
 import com.intellij.openapi.fileEditor.TextEditor
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.util.Key
-import com.intellij.openapi.util.UserDataHolderBase
 import com.intellij.openapi.util.getOrCreateUserData
-import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.pom.Navigatable
-import com.intellij.psi.PsiDocumentManager
-import com.intellij.ui.OnePixelSplitter
 import com.intellij.util.asSafely
 import kotlinx.coroutines.*
 import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecResult
 import sap.commerce.toolset.typeSystem.meta.TSGlobalMetaModel
 import sap.commerce.toolset.typeSystem.meta.event.TSMetaModelChangeListener
-import java.awt.BorderLayout
-import java.beans.PropertyChangeListener
+import sap.commerce.toolset.ui.editor.SplitEditorBase
 import java.io.Serial
-import javax.swing.JComponent
-import javax.swing.JPanel
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
 fun AnActionEvent.polyglotQuerySplitEditor() = this.getData(PlatformDataKeys.FILE_EDITOR)
     ?.asSafely<PolyglotQuerySplitEditorEx>()
 
-class PolyglotQuerySplitEditorEx(override val textEditor: TextEditor, private val project: Project) : UserDataHolderBase(), PolyglotQuerySplitEditor {
+class PolyglotQuerySplitEditorBase(textEditor: TextEditor, project: Project) : SplitEditorBase(textEditor, project), PolyglotQuerySplitEditorEx {
 
     companion object {
         @Serial
         private const val serialVersionUID: Long = -3770395176190649196L
 
         private val KEY_PARAMETERS = Key.create<Map<String, PolyglotQueryVirtualParameter>>("pgq.parameters.key")
-        private val KEY_IN_EDITOR_RESULTS = Key.create<Boolean>("pgq.in_editor_results.key")
         private val KEY_RETRIEVE_ALL_DATA = Key.create<Boolean>("pgq.retrieve.all.data.key")
     }
 
@@ -64,73 +52,46 @@ class PolyglotQuerySplitEditorEx(override val textEditor: TextEditor, private va
         get() = getOrCreateUserData(KEY_RETRIEVE_ALL_DATA) { false }
         set(value) = putUserData(KEY_RETRIEVE_ALL_DATA, value)
 
-    override var inEditorParameters: Boolean
-        get() = inEditorParametersView != null
-        set(state) {
-            if (state) {
-                PolyglotQueryInEditorParametersView.getInstance(project).renderParameters(this)
-            } else {
-                virtualParametersDisposable?.apply { Disposer.dispose(this) }
-                virtualParametersDisposable = null
-                inEditorParametersView = null
-            }
-
-            component.requestFocus()
-            horizontalSplitter.firstComponent.requestFocus()
-
-            reparseTextEditor()
-        }
-
     override var virtualParameters: Map<String, PolyglotQueryVirtualParameter>?
         get() = getUserData(KEY_PARAMETERS)
         set(value) = putUserData(KEY_PARAMETERS, value)
 
-    override var inEditorResults: Boolean
-        get() = getOrCreateUserData(KEY_IN_EDITOR_RESULTS) { true }
-        set(state) {
-            putUserData(KEY_IN_EDITOR_RESULTS, state)
-            verticalSplitter.secondComponent?.isVisible = state
-        }
-
-    private var inEditorResultsView: JComponent?
-        get() = verticalSplitter.secondComponent
-        set(view) {
-            verticalSplitter.secondComponent = view
-        }
-
-    override var inEditorParametersView: JComponent?
-        get() = horizontalSplitter.secondComponent
-        set(view) {
-            horizontalSplitter.secondComponent = view
-        }
-
-    override var virtualParametersDisposable: Disposable? = null
-    override var csvResultsDisposable: Disposable? = null
+    override var csvResultsDisposable: com.intellij.openapi.Disposable? = null
 
     private var renderParametersJob: Job? = null
-    private var reparseTextEditorJob: Job? = null
 
-    private val horizontalSplitter = OnePixelSplitter(false).apply {
-        isShowDividerControls = true
-        splitterProportionKey = "$javaClass.horizontalSplitter"
-        setHonorComponentsMinimumSize(true)
-
-        firstComponent = textEditor.component
+    override fun renderInEditorParameters() {
+        PolyglotQueryInEditorParametersView.getInstance(project).renderParameters(this)
     }
 
-    private val verticalSplitter = OnePixelSplitter(true).apply {
-        isShowDividerControls = true
-        splitterProportionKey = "$javaClass.verticalSplitter"
-        setHonorComponentsMinimumSize(true)
-
-        firstComponent = horizontalSplitter
+    override fun renderExecutionResult(result: FlexibleSearchExecResult) = PolyglotQueryInEditorResultsView.getInstance(project).resultView(this, result) { coroutineScope, view ->
+        coroutineScope.launch {
+            edtWriteAction {
+                inEditorResultsView = view
+            }
+        }
     }
 
-    private val rootPanel = JPanel(BorderLayout()).apply {
-        add(verticalSplitter, BorderLayout.CENTER)
+    override fun showLoader(richMessage: String) {
+        inEditorResultsView = PolyglotQueryInEditorResultsView.getInstance(project).executingView(richMessage)
     }
+
+    override fun refreshParameters(delayMs: Duration) {
+        renderParametersJob?.cancel()
+        renderParametersJob = CoroutineScope(Dispatchers.Default).launch {
+            delay(delayMs)
+
+            if (project.isDisposed || !inEditorParameters) return@launch
+
+            PolyglotQueryInEditorParametersView.getInstance(project).renderParameters(this@PolyglotQuerySplitEditorBase)
+        }
+    }
+
+    override fun getName() = "Polyglot Query Split Editor"
 
     init {
+        verticalSplitter.firstComponent = horizontalSplitter
+
         with(project.messageBus.connect(this)) {
             subscribe(TSMetaModelChangeListener.TOPIC, object : TSMetaModelChangeListener {
                 override fun onChanged(globalMetaModel: TSGlobalMetaModel) {
@@ -140,67 +101,4 @@ class PolyglotQuerySplitEditorEx(override val textEditor: TextEditor, private va
             })
         }
     }
-
-    fun renderExecutionResult(result: FlexibleSearchExecResult) = PolyglotQueryInEditorResultsView.getInstance(project).resultView(this, result) { coroutineScope, view ->
-        coroutineScope.launch {
-            edtWriteAction {
-                inEditorResultsView = view
-            }
-        }
-    }
-
-    fun showLoader(richMessage: String) {
-        inEditorResultsView = PolyglotQueryInEditorResultsView.getInstance(project).executingView(richMessage)
-    }
-
-    fun refreshParameters(delayMs: Duration = 500.milliseconds) {
-        renderParametersJob?.cancel()
-        renderParametersJob = CoroutineScope(Dispatchers.Default).launch {
-            delay(delayMs)
-
-            if (project.isDisposed || !inEditorParameters) return@launch
-
-            PolyglotQueryInEditorParametersView.getInstance(project).renderParameters(this@PolyglotQuerySplitEditorEx)
-        }
-    }
-
-    /**
-     * Reparse PsiFile in the related TextEditor to retrigger inline hints computation
-     */
-    internal fun reparseTextEditor(delayMs: Duration = 1000.milliseconds) {
-        reparseTextEditorJob?.cancel()
-        reparseTextEditorJob = CoroutineScope(Dispatchers.Default).launch {
-            delay(delayMs)
-
-            if (project.isDisposed) return@launch
-
-            edtWriteAction {
-                PsiDocumentManager.getInstance(project).reparseFiles(listOf(file), false)
-            }
-        }
-    }
-
-    override fun addPropertyChangeListener(listener: PropertyChangeListener) {
-        textEditor.addPropertyChangeListener(listener)
-        component.addPropertyChangeListener(listener)
-    }
-
-    override fun removePropertyChangeListener(listener: PropertyChangeListener) {
-        textEditor.removePropertyChangeListener(listener)
-        component.removePropertyChangeListener(listener)
-    }
-
-    override fun getPreferredFocusedComponent(): JComponent? = verticalSplitter.firstComponent
-
-    override fun getComponent() = rootPanel
-    override fun getName() = "Polyglot Query Split Editor"
-    override fun setState(state: FileEditorState) = textEditor.setState(state)
-    override fun isModified() = textEditor.isModified
-    override fun isValid() = textEditor.isValid && component.isValid
-    override fun dispose() = Disposer.dispose(textEditor)
-    override fun getEditor() = textEditor.editor
-    override fun canNavigateTo(navigatable: Navigatable) = textEditor.canNavigateTo(navigatable)
-    override fun navigateTo(navigatable: Navigatable) = textEditor.navigateTo(navigatable)
-    override fun getFile(): VirtualFile? = editor.virtualFile
-
 }

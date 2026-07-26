@@ -36,7 +36,7 @@ import sap.commerce.toolset.flexibleSearch.file.FlexibleSearchFileType
 import sap.commerce.toolset.groovy.editor.GroovySplitEditorBase
 import sap.commerce.toolset.impex.editor.ImpExSplitEditorBase
 import sap.commerce.toolset.impex.file.ImpExFileType
-import sap.commerce.toolset.polyglotQuery.editor.PolyglotQuerySplitEditorEx
+import sap.commerce.toolset.polyglotQuery.editor.PolyglotQuerySplitEditorBase
 import sap.commerce.toolset.polyglotQuery.file.PolyglotQueryFileType
 
 class HybrisSplitFileEditorProvider : FileEditorProvider, DumbAware {
@@ -46,7 +46,7 @@ class HybrisSplitFileEditorProvider : FileEditorProvider, DumbAware {
             ?.let {
                 when (file.fileType) {
                     is FlexibleSearchFileType -> FlexibleSearchSplitEditorBase(it, project)
-                    is PolyglotQueryFileType -> PolyglotQuerySplitEditorEx(it, project)
+                    is PolyglotQueryFileType -> PolyglotQuerySplitEditorBase(it, project)
                     is ImpExFileType -> ImpExSplitEditorBase(it, project)
                     is AclFileType -> AclSplitEditorBase(it, project)
                     else -> if (Plugin.GROOVY.isActive() && file.fileType is GroovyFileType) GroovySplitEditorBase(it, project)
