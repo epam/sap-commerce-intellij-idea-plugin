@@ -52,5 +52,9 @@ dependencies {
         bundledModules(
             "intellij.platform.ui.jcef"
         )
+
+        bundledPlugins(
+            "com.intellij.modules.jcef"
+        )
     }
 }

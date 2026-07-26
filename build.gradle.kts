@@ -258,6 +258,7 @@ dependencies {
 
         // printBundledPlugins for bundled plugins
         bundledPlugins(
+            "com.intellij.modules.jcef",
             "intellij.grid.plugin",
             "com.intellij.java",
             "org.jetbrains.java.decompiler",
