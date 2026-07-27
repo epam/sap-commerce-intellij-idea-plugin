@@ -150,7 +150,7 @@ object CCv2EnvironmentsDataView : CCv2DataView<CCv2EnvironmentDto>() {
                         .comment("Build name")
                         .applyToComponent {
                             HelpTooltip()
-                                .setTitle("Show build details")
+                                .setPlainTextTitle { "Show build details" }
                                 .installOn(this)
                         }
                 }

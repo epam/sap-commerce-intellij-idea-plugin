@@ -1,3 +1,11 @@
+## [2026.2.1]
+
+<cite>Release contributors</code>
+- 1 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.2.1+author%3Amlytvyn+is%3Apr)
+
+### `CCv2` enhancements
+- Show informative message when authentication failed [#1984](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1984)
+
 ## [2026.2.0]
 
 <cite>Release contributors</code>

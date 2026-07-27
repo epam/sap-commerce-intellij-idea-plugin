@@ -412,6 +412,7 @@ object HybrisIcons {
         val SCHEDULED_ACTIVITIES = getIcon("/icons/ccv2/scheduledActivities.svg")
         val BACKUPS = AllIcons.Nodes.Undeploy
         val ENDPOINTS = AllIcons.General.Web
+        val UNABLED_TO_FETCH = AllIcons.Ide.FatalErrorRead
         val SHOW = AllIcons.Actions.Show
 
         object Actions {
