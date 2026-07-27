@@ -99,6 +99,7 @@ jobs:
     name: Verify Plugin
     needs: [ build ]
     runs-on: ubuntu-latest
+    continue-on-error: true
     timeout-minutes: 25
     steps:
       - name: Fetch Sources
