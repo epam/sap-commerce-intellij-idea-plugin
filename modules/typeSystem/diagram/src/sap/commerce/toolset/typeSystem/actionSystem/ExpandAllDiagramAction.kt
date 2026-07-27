@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,15 +18,15 @@
 package sap.commerce.toolset.typeSystem.actionSystem
 
 import com.intellij.diagram.DiagramAction
-import com.intellij.idea.ActionsBundle
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.util.asSafely
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.actionSystem.triggerAction
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.typeSystem.diagram.node.TSDiagramDataModel
 
 class ExpandAllDiagramAction : DiagramAction(
-    ActionsBundle.message("action.ExpandAll.text"),
+    i18n("action.ExpandAll.text"),
     null,
     HybrisIcons.Actions.EXPAND_ALL
 ) {
@@ -41,5 +41,5 @@ class ExpandAllDiagramAction : DiagramAction(
         triggerAction("Diagram.RefreshDataModelManually", event)
     }
 
-    override fun getActionName(): String = ActionsBundle.message("action.ExpandAll.text")
+    override fun getActionName(): String = i18n("action.ExpandAll.text")
 }
