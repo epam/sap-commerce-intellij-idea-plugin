@@ -32,9 +32,7 @@ abstract class GroovyReplicaSelectionModeAction(private val replicaSelectionMode
     null
 ) {
 
-    override fun update(e: AnActionEvent) {
-        super.update(e)
-
+    override fun update(e: AnActionEvent) = super.update(e).also {
         e.presentation.keepPopupOnPerform = KeepPopupOnPerform.Never
     }
 

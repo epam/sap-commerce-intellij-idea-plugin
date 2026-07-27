@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -21,11 +21,11 @@ package sap.commerce.toolset.project.descriptor
 import sap.commerce.toolset.HybrisIcons
 import javax.swing.Icon
 
-enum class SubModuleDescriptorType(val icon: Icon) {
-    HAC(HybrisIcons.Extension.HAC),
-    HMC(HybrisIcons.Extension.HMC),
-    BACKOFFICE(HybrisIcons.Extension.BACKOFFICE),
-    ADDON(HybrisIcons.Extension.ADDON),
-    COMMON_WEB(HybrisIcons.Extension.COMMON_WEB),
-    WEB(HybrisIcons.Extension.WEB),
+enum class SubModuleDescriptorType(val lazyIcon: () -> Icon) {
+    HAC({ HybrisIcons.Extension.HAC }),
+    HMC({ HybrisIcons.Extension.HMC }),
+    BACKOFFICE({ HybrisIcons.Extension.BACKOFFICE }),
+    ADDON({ HybrisIcons.Extension.ADDON }),
+    COMMON_WEB({ HybrisIcons.Extension.COMMON_WEB }),
+    WEB({ HybrisIcons.Extension.WEB }),
 }

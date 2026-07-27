@@ -59,7 +59,7 @@ class YFacetEditorTab(
             row {
                 label("Type:")
                 label(extensionDescriptor.type.title)
-                icon(extensionDescriptor.type.icon)
+                icon(extensionDescriptor.type.lazyIcon())
             }.layout(RowLayout.PARENT_GRID)
 
             extensionDescriptor.subModuleType
@@ -67,7 +67,7 @@ class YFacetEditorTab(
                     row {
                         label("Sub-type:")
                         label(it.name)
-                        icon(it.icon)
+                        icon(it.lazyIcon())
                     }.layout(RowLayout.PARENT_GRID)
                 }
 
@@ -79,14 +79,14 @@ class YFacetEditorTab(
         }
 
         if (extensionDescriptor.subModuleType == SubModuleDescriptorType.ADDON && extensionDescriptor.installedIntoExtensions.isNotEmpty()) {
-            group("Installed Into Extensions") {
+            group("Installed into Extensions") {
                 ModuleManager.getInstance(editorContext.project)
                     .modules
                     .mapNotNull { it.yExtensionDescriptor }
                     .filter { this@YFacetEditorTab.extensionDescriptor.installedIntoExtensions.contains(it.name) }
                     .forEach {
                         row {
-                            icon(it.type.icon)
+                            icon(it.type.lazyIcon())
                             label(it.name)
                                 .bold()
                         }

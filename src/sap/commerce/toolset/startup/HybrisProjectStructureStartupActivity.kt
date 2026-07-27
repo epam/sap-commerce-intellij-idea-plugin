@@ -45,7 +45,7 @@ class HybrisProjectStructureStartupActivity : ProjectActivity {
         if (project.isDisposed) return
         val isHybrisProject = project.isHybrisProject
         if (!isHybrisProject) return
-        val currentVersion = Plugin.HYBRIS.pluginDescriptor?.version ?: return
+        val currentVersion = Plugin.HYBRIS.details?.version ?: return
         val workspaceSettings = WorkspaceSettings.getInstance(project)
         val importedByVersion = workspaceSettings.importedByVersion
         logVersion(project, importedByVersion)
@@ -124,8 +124,7 @@ class HybrisProjectStructureStartupActivity : ProjectActivity {
     private fun logVersion(project: Project, importedByVersion: String?) {
         val settings = ProjectSettings.getInstance(project)
         val hybrisVersion = settings.hybrisVersion
-        val plugin = Plugin.HYBRIS.pluginDescriptor ?: return
-        val pluginVersion = plugin.version
+        val pluginVersion = Plugin.HYBRIS.details?.version ?: return
         thisLogger().info("Opening hybris version $hybrisVersion which was imported by $importedByVersion. Current plugin is $pluginVersion")
     }
 

@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -21,20 +21,20 @@ package sap.commerce.toolset.project.descriptor
 import sap.commerce.toolset.HybrisIcons
 import javax.swing.Icon
 
-enum class ModuleDescriptorType(val icon: Icon = HybrisIcons.Y.LOGO_BLUE, val title: String) {
-    CONFIG(HybrisIcons.Extension.CONFIG, "Config"),
-    CUSTOM(HybrisIcons.Extension.CUSTOM, "Custom"),
-    EXT(HybrisIcons.Extension.EXT, "Ext"),
-    NONE(HybrisIcons.Module.NONE, "None"),
-    OOTB(HybrisIcons.Extension.OOTB, "Ootb"),
-    PLATFORM(HybrisIcons.Extension.PLATFORM, "Platform"),
-    ECLIPSE(HybrisIcons.Module.ECLIPSE, "Eclipse"),
-    MAVEN(HybrisIcons.Module.MAVEN, "Maven"),
-    GRADLE(HybrisIcons.Module.GRADLE, "Gradle"),
-    CCV2_EXTERNAL(HybrisIcons.Extension.CLOUD, "CCv2 External"),
-    CCV2_STOREFRONT(HybrisIcons.Module.CCV2, "CCv2 Storefront"),
-    CCV2_CORE(HybrisIcons.Module.CCV2, "CCv2 Core"),
-    CCV2_DATAHUB(HybrisIcons.Module.CCV2, "CCv2 DataHub"),
-    ANGULAR(HybrisIcons.Module.ANGULAR, "Angular"),
-    ROOT(HybrisIcons.Module.ROOT, "Root"),
+enum class ModuleDescriptorType(val title: String, val lazyIcon: () -> Icon = { HybrisIcons.Y.LOGO_BLUE }) {
+    CONFIG("Config", { HybrisIcons.Extension.CONFIG }),
+    CUSTOM("Custom", { HybrisIcons.Extension.CUSTOM }),
+    EXT("Ext", { HybrisIcons.Extension.EXT }),
+    NONE("None", { HybrisIcons.Module.NONE }),
+    OOTB("Ootb", { HybrisIcons.Extension.OOTB }),
+    PLATFORM("Platform", { HybrisIcons.Extension.PLATFORM }),
+    ECLIPSE("Eclipse", { HybrisIcons.Module.ECLIPSE }),
+    MAVEN("Maven", { HybrisIcons.Module.MAVEN }),
+    GRADLE("Gradle", HybrisIcons.Module.GRADLE),
+    CCV2_EXTERNAL("CCv2 External", { HybrisIcons.Extension.CLOUD }),
+    CCV2_STOREFRONT("CCv2 Storefront", { HybrisIcons.Module.CCV2 }),
+    CCV2_CORE("CCv2 Core", { HybrisIcons.Module.CCV2 }),
+    CCV2_DATAHUB("CCv2 DataHub", { HybrisIcons.Module.CCV2 }),
+    ANGULAR("Angular", HybrisIcons.Module.ANGULAR),
+    ROOT("Root", { HybrisIcons.Module.ROOT }),
 }

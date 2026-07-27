@@ -31,9 +31,8 @@ import java.awt.Component
 
 class CCv2GroovyReplicaSelectionModeAction : GroovyReplicaSelectionModeAction(CCv2ExecConstants.ccv2) {
 
-    override fun update(e: AnActionEvent) {
+    override fun update(e: AnActionEvent) = super.update(e).also {
         e.presentation.isEnabledAndVisible = Plugin.GROOVY.isActive()
-        super.update(e)
     }
 
     override fun setSelected(e: AnActionEvent, state: Boolean) {

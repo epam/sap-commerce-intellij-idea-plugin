@@ -56,7 +56,7 @@ class ModuleNotFoundDialog(
 
             moduleDescriptors.groupBy { it.type }
                 .forEach { (type, descriptors) ->
-                    group(JBLabel(type.title, type.icon, SwingConstants.LEFT)) {
+                    group(JBLabel(type.title, type.lazyIcon(), SwingConstants.LEFT)) {
                         descriptors.forEach { descriptor ->
                             row {
                                 label(descriptor.name)

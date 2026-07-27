@@ -39,7 +39,10 @@ import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.context.ModuleGroup
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.project.settings.ySettings
-import sap.commerce.toolset.project.view.nodes.*
+import sap.commerce.toolset.project.view.nodes.ExternalProjectViewNode
+import sap.commerce.toolset.project.view.nodes.HybrisProjectViewProjectNode
+import sap.commerce.toolset.project.view.nodes.JunkProjectViewNode
+import sap.commerce.toolset.project.view.nodes.YProjectViewModuleGroupNode
 import sap.commerce.toolset.project.yExtensionDescriptor
 import sap.commerce.toolset.project.yExtensionName
 import sap.commerce.toolset.settings.ApplicationSettings
@@ -57,10 +60,10 @@ open class HybrisProjectView(val project: Project) : TreeStructureProvider, Dumb
     private val customGroupName = ApplicationSettings.toIdeaGroup(applicationSettings.groupCustom)
         ?.firstOrNull()
     private val groupToIcon = mapOf(
-        customGroupName to HybrisIcons.Module.CUSTOM_GROUP,
-        platformGroupName to HybrisIcons.Module.PLATFORM_GROUP,
-        commerceGroupName to HybrisIcons.Module.COMMERCE_GROUP,
-        ccv2GroupName to HybrisIcons.Module.CCV2_GROUP,
+        customGroupName to { HybrisIcons.Module.CUSTOM_GROUP },
+        platformGroupName to { HybrisIcons.Module.PLATFORM_GROUP },
+        commerceGroupName to { HybrisIcons.Module.COMMERCE_GROUP },
+        ccv2GroupName to { HybrisIcons.Module.CCV2_GROUP },
     )
     private val hideModuleLibraries = setOf(
         JavaConstants.ModuleLibrary.COMPILE,
@@ -163,7 +166,7 @@ open class HybrisProjectView(val project: Project) : TreeStructureProvider, Dumb
                             groupToIcon
                                 .firstNotNullOfOrNull { if (groupName.equals(it.key, true)) it.value else null }
                         }
-                        ?.let { yNode.icon = it }
+                        ?.let { yNode.icon = it() }
 
                     yNode
                 }
@@ -203,7 +206,7 @@ open class HybrisProjectView(val project: Project) : TreeStructureProvider, Dumb
     }
 
     private fun isCompactEmptyMiddleFoldersEnabled(settings: ViewSettings) = applicationSettings.hideEmptyMiddleFolders
-        && settings.isHideEmptyMiddlePackages
+            && settings.isHideEmptyMiddlePackages
 
     private fun modifyExternalLibrariesNodes(
         children: Collection<AbstractTreeNode<*>>
@@ -334,11 +337,11 @@ open class HybrisProjectView(val project: Project) : TreeStructureProvider, Dumb
     }
 
     private fun isSrcOrClassesDirectory(file: VirtualFile) = ProjectConstants.Directory.ADDON_SRC == file.name
-        || ProjectConstants.Directory.CLASSES == file.name
-        || ProjectConstants.Directory.TEST_CLASSES == file.name
+            || ProjectConstants.Directory.CLASSES == file.name
+            || ProjectConstants.Directory.TEST_CLASSES == file.name
 
     private fun isJunk(virtualFile: VirtualFile, junkFileNames: List<String>) = junkFileNames.contains(virtualFile.name)
-        || isIdeaModuleFile(virtualFile)
+            || isIdeaModuleFile(virtualFile)
 
     private fun isIdeaModuleFile(virtualFile: VirtualFile) = virtualFile
         .name

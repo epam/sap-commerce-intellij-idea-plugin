@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -62,13 +62,13 @@ class HybrisProjectViewNodeDecorator : ProjectViewNodeDecorator {
         val extensionDescriptor = module.yExtensionDescriptor
 
         if (EiConstants.Extension.KOTLIN_NATURE == extensionDescriptor?.name && Plugin.KOTLIN.isActive()) {
-            data.setIcon(HybrisIcons.Extension.KOTLIN_NATURE)
+            data.setIcon(HybrisIcons.Extension.KOTLIN_NATURE())
             return
         }
 
         val subModuleType = extensionDescriptor?.subModuleType
         if (subModuleType != null) {
-            data.setIcon(subModuleType.icon)
+            data.setIcon(subModuleType.lazyIcon())
             return
         }
 
@@ -83,9 +83,9 @@ class HybrisProjectViewNodeDecorator : ProjectViewNodeDecorator {
                     else null
                 }
             }
-            descriptorType?.icon?.let { data.setIcon(it) }
+            descriptorType?.lazyIcon()?.let { data.setIcon(it) }
         } else if (extensionDescriptor.type != ModuleDescriptorType.NONE) {
-            data.setIcon(extensionDescriptor.type.icon)
+            data.setIcon(extensionDescriptor.type.lazyIcon())
         }
     }
 }
