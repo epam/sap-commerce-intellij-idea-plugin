@@ -243,7 +243,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: tests-report
-          path: ~/build/test-results
+          path: ${{ github.workspace }}/test-results
 
       - name: Generate Test Report
         uses: dorny/test-reporter@v1
@@ -251,7 +251,7 @@ jobs:
         with:
           name: Test Report Dashboard
           reporter: java-junit
-          path: '~/build/test-results/**/*.xml'
+          path: 'test-results/**/*.xml'
           fail-on-error: 'true'
 
   # Upload coverage to Codecov + post an inline summary on the run page
