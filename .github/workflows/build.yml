@@ -70,7 +70,14 @@ jobs:
             caches/transforms-*
 
       - name: Build plugin
-        run: ./gradlew buildPlugin
+        run: ./gradlew buildPlugin --build-cache
+
+      - name: Upload Gradle Build Cache
+        uses: actions/upload-artifact@v4
+        with:
+          name: gradle-build-cache
+          path: ~/.gradle/caches/build-cache-1
+          retention-days: 1
 
       - name: Prepare Plugin Artifact
         id: artifact
@@ -119,8 +126,14 @@ jobs:
             caches/*/transforms
             caches/transforms-*
 
+      - name: Restore Gradle Build Cache
+        uses: actions/download-artifact@v4
+        with:
+          name: gradle-build-cache
+          path: ~/.gradle/caches/build-cache-1
+
       - name: Verify Plugin
-        run: ./gradlew verifyPlugin
+        run: ./gradlew verifyPlugin --build-cache
 
       - name: Collect Plugin Verifier Result
         if: ${{ always() }}
@@ -172,8 +185,14 @@ jobs:
             caches/*/transforms
             caches/transforms-*
 
+      - name: Restore Gradle Build Cache
+        uses: actions/download-artifact@v4
+        with:
+          name: gradle-build-cache
+          path: ~/.gradle/caches/build-cache-1
+
       - name: Run Tests
-        run: ./gradlew check
+        run: ./gradlew check --build-cache
 
       # Debug step — confirms where Kover actually writes its XML report.
       # Remove once the coverage path below is confirmed correct.
