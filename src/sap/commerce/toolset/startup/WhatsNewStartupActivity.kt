@@ -17,7 +17,6 @@
  */
 package sap.commerce.toolset.startup
 
-import com.intellij.ide.plugins.PluginManager
 import com.intellij.ide.util.RunOnceUtil
 import com.intellij.openapi.application.runInEdt
 import com.intellij.openapi.fileEditor.TextEditorWithPreview
@@ -36,7 +35,7 @@ class WhatsNewStartupActivity : ProjectActivity {
     override suspend fun execute(project: Project) {
         if (project.isNotHybrisProject) return
 
-        val pluginDescriptor = PluginManager.getInstance().findEnabledPlugin(Plugin.HYBRIS.pluginId)
+        val pluginDescriptor = Plugin.HYBRIS.details
             ?: return
         val version = pluginDescriptor.version
 
