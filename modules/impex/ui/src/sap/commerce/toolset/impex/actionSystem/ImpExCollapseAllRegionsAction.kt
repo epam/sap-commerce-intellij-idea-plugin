@@ -20,7 +20,6 @@ package sap.commerce.toolset.impex.actionSystem
 
 import com.intellij.codeInsight.folding.CodeFoldingManager
 import com.intellij.codeInsight.folding.impl.actions.BaseFoldingHandler
-import com.intellij.codeInsight.folding.impl.actions.ExpandAllRegionsAction
 import com.intellij.openapi.actionSystem.DataContext
 import com.intellij.openapi.editor.Caret
 import com.intellij.openapi.editor.Editor
@@ -40,12 +39,34 @@ class ImpExCollapseAllRegionsAction : EditorAction(object : BaseFoldingHandler()
         else getFoldRegionsForSelection(editor, caret)
             .filterNot { region -> region.group?.toString()?.startsWith(ImpExConstants.Folding.GROUP_PREFIX) ?: false }
 
-        ExpandAllRegionsAction.twoStepFoldToggling(
-            editor,
-            regions,
-            { region -> collapseInFirstStep(codeFoldingManager, region) },
-            false
-        )
+        // Copy-paste from the @Intenral API - ExpandAllRegionsAction.twoStepFoldToggling
+        val foldingModel = editor.foldingModel
+        val expandedRegions = mutableListOf<FoldRegion>()
+        foldingModel.runBatchFoldingOperation(Runnable {
+            for (region in regions) {
+                // apply step 1: (un-)fold those AST elements according to toggleFoldingInFirstStep()
+                if (collapseInFirstStep(codeFoldingManager, region)) {
+                    region.isExpanded = false
+                    expandedRegions.add(region)
+                }
+            }
+        })
+
+        for (expandedRegion in expandedRegions) {
+            val collapsedRegion = foldingModel.getCollapsedRegionAtOffset(expandedRegion.startOffset)
+            if (collapsedRegion == null || !collapsedRegion.shouldNeverExpand()) {
+                // step 1 produced visible changes
+                return
+            }
+        }
+
+
+        // apply step 2: (un-)fold _all_ AST elements
+        foldingModel.runBatchFoldingOperation {
+            for (region in regions) {
+                region.isExpanded = false
+            }
+        }
     }
 
     private fun collapseInFirstStep(codeFoldingManager: CodeFoldingManager, region: FoldRegion): Boolean {
