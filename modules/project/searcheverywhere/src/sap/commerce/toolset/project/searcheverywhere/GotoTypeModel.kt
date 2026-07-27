@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,13 +18,13 @@
 
 package sap.commerce.toolset.project.searcheverywhere
 
-import com.intellij.ide.IdeBundle
 import com.intellij.ide.util.gotoByName.FilteringGotoByModel
 import com.intellij.navigation.ChooseByNameContributor
 import com.intellij.navigation.NavigationItem
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.ui.IdeUICustomization
+import sap.commerce.toolset.i18n
 
 class GotoTypeModel(private val project: Project, contributors: List<ChooseByNameContributor>) : FilteringGotoByModel<SystemRef>(project, contributors) {
 
@@ -32,7 +32,7 @@ class GotoTypeModel(private val project: Project, contributors: List<ChooseByNam
     override fun getNotInMessage() = IdeUICustomization.getInstance().projectMessage("label.no.matches.found.in.project", project.name)
     override fun willOpenEditor() = true
 
-    override fun getNotFoundMessage(): String = IdeBundle.message("label.no.matches.found")
+    override fun getNotFoundMessage(): String = i18n("label.no.matches.found")
     override fun getCheckBoxName(): String? = null
     override fun loadInitialCheckBoxState(): Boolean = false
 

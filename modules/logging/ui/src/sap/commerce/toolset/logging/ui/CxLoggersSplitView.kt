@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,7 +18,6 @@
 
 package sap.commerce.toolset.logging.ui
 
-import com.intellij.ide.IdeBundle
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.application.EDT
 import com.intellij.openapi.project.Project
@@ -33,6 +32,7 @@ import kotlinx.coroutines.*
 import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import sap.commerce.toolset.hac.exec.settings.event.HacConnectionSettingsListener
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.logging.CxRemoteLogStateService
 import sap.commerce.toolset.logging.custom.settings.event.CxCustomLogTemplateStateListener
 import sap.commerce.toolset.logging.exec.event.CxRemoteLogStateListener
@@ -65,7 +65,7 @@ class CxLoggersSplitView(private val project: Project) : OnePixelSplitter(false,
     private val customLogTemplatesView by lazy { CxCustomLogTemplatesView(project).also { Disposer.register(this, it) } }
     private val nothingSelectedPanel = panel {
         row {
-            label(IdeBundle.message("empty.text.nothing.selected"))
+            label(i18n("empty.text.nothing.selected"))
                 .resizableColumn()
                 .align(Align.CENTER)
         }

@@ -195,7 +195,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: tests-report
-          path: ${{ github.workspace }}/build/test-results/test/*.xml
+          path: '**/build/test-results/test/*.xml'
 
       - name: Collect Coverage Report
         if: ${{ always() }}
@@ -232,7 +232,7 @@ jobs:
         with:
           name: Test Report Dashboard
           reporter: java-junit
-          path: '~/test-results/*.xml'
+          path: '~/test-results/**/*.xml'
           fail-on-error: 'true'
 
   # Upload coverage to Codecov + post an inline summary on the run page

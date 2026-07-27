@@ -19,7 +19,6 @@
 package sap.commerce.toolset.ccv2.ui
 
 import com.intellij.icons.AllIcons
-import com.intellij.ide.IdeBundle
 import com.intellij.openapi.observable.properties.AtomicBooleanProperty
 import com.intellij.openapi.observable.properties.AtomicProperty
 import com.intellij.openapi.project.Project
@@ -40,6 +39,7 @@ import sap.commerce.toolset.ccv2.dto.*
 import sap.commerce.toolset.ccv2.settings.CCv2DeveloperSettings
 import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
 import sap.commerce.toolset.ccv2.ui.components.CCv2SubscriptionsComboBoxModelFactory
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.ui.banner
 import sap.commerce.toolset.ui.scrollPanel
 import java.awt.Dimension
@@ -140,8 +140,8 @@ class CCv2CleanupBuildsDialog(
 
         row {
             totalLabel = label("").component
-            button(IdeBundle.message("command.select.all")) { cleanableBuilds.values.forEach { it.set(true) } }
-            button(IdeBundle.message("command.unselect.all")) { cleanableBuilds.values.forEach { it.set(false) } }
+            button(i18n("command.select.all")) { cleanableBuilds.values.forEach { it.set(true) } }
+            button(i18n("command.unselect.all")) { cleanableBuilds.values.forEach { it.set(false) } }
         }.visibleIf(resultsHeaderToggle)
 
         row {
