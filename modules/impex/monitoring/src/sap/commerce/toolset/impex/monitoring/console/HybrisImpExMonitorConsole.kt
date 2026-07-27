@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -23,8 +23,8 @@ import com.intellij.openapi.fileTypes.PlainTextFileType
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
 import com.intellij.openapi.util.io.FileUtil
-import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.dsl.builder.panel
+import com.intellij.ui.dsl.listCellRenderer.textListCellRenderer
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.console.HybrisConsole
 import sap.commerce.toolset.exec.context.ConsoleAwareExecResult
@@ -58,7 +58,7 @@ class HybrisImpExMonitorConsole(project: Project) : HybrisConsole<ImpExMonitorEx
                         TimeOption("in the last 30 minutes", 30, TimeUnit.MINUTES),
                         TimeOption("in the last 1 hour", 1, TimeUnit.HOURS)
                     ),
-                    renderer = SimpleListCellRenderer.create("...") { cell -> cell.name }
+                    renderer = textListCellRenderer("...") { cell -> cell.name }
                 )
                     .label("Show last:")
                     .component

@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -30,9 +30,9 @@ import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.ui.CollectionComboBoxModel
 import com.intellij.ui.EditorNotificationPanel
-import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.components.JBLoadingPanel
 import com.intellij.ui.dsl.builder.*
+import com.intellij.ui.dsl.listCellRenderer.listCellRenderer
 import com.intellij.util.asSafely
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.ccv2.CCv2Service
@@ -113,11 +113,9 @@ class CCv2HacConnectionSettingsProviderDialog(
         row {
             subscriptionComboBox = comboBox(
                 subscriptionsComboBoxModel,
-                renderer = SimpleListCellRenderer.create { label, value, _ ->
-                    if (value != null) {
-                        label.icon = HybrisIcons.Module.CCV2
-                        label.text = value.presentableName
-                    }
+                renderer = listCellRenderer("?") {
+                    icon(HybrisIcons.Module.CCV2)
+                    text(value.presentableName)
                 }
             )
                 .label("Subscription:")
@@ -146,11 +144,9 @@ class CCv2HacConnectionSettingsProviderDialog(
         row {
             environmentComboBox = comboBox(
                 environmentModel,
-                renderer = SimpleListCellRenderer.create { label, value, _ ->
-                    if (value != null) {
-                        label.icon = value.type.icon
-                        label.text = value.name
-                    }
+                renderer = listCellRenderer("?") {
+                    icon(value.type.icon)
+                    text(value.name)
                 }
             )
                 .label("Environment:")
@@ -168,11 +164,9 @@ class CCv2HacConnectionSettingsProviderDialog(
         row {
             endpointComboBox = comboBox(
                 endpointModel,
-                renderer = SimpleListCellRenderer.create { label, value, _ ->
-                    if (value != null) {
-                        label.icon = HybrisIcons.CCv2.ENDPOINTS
-                        label.text = value.name
-                    }
+                renderer = listCellRenderer("?") {
+                    icon(HybrisIcons.CCv2.ENDPOINTS)
+                    text(value.name)
                 }
             )
                 .label("Endpoint:")

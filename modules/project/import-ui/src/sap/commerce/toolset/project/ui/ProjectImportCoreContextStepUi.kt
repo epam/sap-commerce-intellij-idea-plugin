@@ -26,10 +26,10 @@ import com.intellij.openapi.observable.properties.ObservableProperty
 import com.intellij.openapi.observable.util.and
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.ui.EnumComboBoxModel
-import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.components.textFieldWithBrowseButton
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.gridLayout.UnscaledGaps
+import com.intellij.ui.dsl.listCellRenderer.textListCellRenderer
 import com.intellij.util.ui.JBUI
 import org.intellij.images.fileTypes.impl.SvgFileType
 import sap.commerce.toolset.HybrisIcons
@@ -317,7 +317,7 @@ private fun contentPane(context: ProjectImportCoreContext, rightGaps: UnscaledGa
         row {
             comboBox(
                 model = EnumComboBoxModel(LibrarySourcesFetchMode::class.java),
-                renderer = SimpleListCellRenderer.create("?") { it.presentationText }
+                renderer = textListCellRenderer("?") { it.presentationText }
             )
                 .bindItem(context.importSettings.librarySourcesFetchMode)
 

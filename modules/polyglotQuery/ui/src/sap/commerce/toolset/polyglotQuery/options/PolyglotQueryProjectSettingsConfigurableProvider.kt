@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -24,11 +24,11 @@ import com.intellij.openapi.project.Project
 import com.intellij.ui.EditorNotificationProvider
 import com.intellij.ui.EditorNotifications
 import com.intellij.ui.EnumComboBoxModel
-import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.dsl.builder.bindItem
 import com.intellij.ui.dsl.builder.bindSelected
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.dsl.builder.toNullableProperty
+import com.intellij.ui.dsl.listCellRenderer.textListCellRenderer
 import com.intellij.ui.layout.selected
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.isHybrisProject
@@ -64,7 +64,7 @@ class PolyglotQueryProjectSettingsConfigurableProvider(private val project: Proj
                 row {
                     comboBox(
                         reservedWordsModel,
-                        renderer = SimpleListCellRenderer.create("?") { i18n("hybris.pgq.notification.provider.keywords.case.$it") }
+                        renderer = textListCellRenderer("?") { i18n("hybris.pgq.notification.provider.keywords.case.$it") }
                     )
                         .label("Default case for reserved words")
                         .bindItem(mutable::defaultCaseForReservedWords.toNullableProperty())

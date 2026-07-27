@@ -24,12 +24,12 @@ import com.intellij.openapi.ui.ComboBox
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.AnimatedIcon
 import com.intellij.ui.CollectionComboBoxModel
-import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.dsl.builder.AlignX
 import com.intellij.ui.dsl.builder.RowLayout
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.dsl.builder.selected
+import com.intellij.ui.dsl.listCellRenderer.listCellRenderer
 import com.intellij.util.asSafely
 import com.intellij.util.ui.JBUI
 import sap.commerce.toolset.HybrisIcons
@@ -117,9 +117,9 @@ class CCv2DeployBuildDialog(
             row {
                 subscriptionComboBox = comboBox(
                     model = CCv2SubscriptionsComboBoxModelFactory.create(project, subscription),
-                    renderer = SimpleListCellRenderer.create { label, value, _ ->
-                        label.icon = HybrisIcons.Module.CCV2
-                        label.text = value.presentableName
+                    renderer = listCellRenderer("?") {
+                        icon(HybrisIcons.Module.CCV2)
+                        text(value.presentableName)
                     }
                 )
                     .label("Subscription:")
@@ -136,11 +136,9 @@ class CCv2DeployBuildDialog(
             row {
                 environmentComboBox = comboBox(
                     environmentModel,
-                    renderer = SimpleListCellRenderer.create { label, value, _ ->
-                        if (value != null) {
-                            label.icon = value.type.icon
-                            label.text = value.name
-                        }
+                    renderer = listCellRenderer("?") {
+                        icon(value.type.icon)
+                        text(value.name)
                     }
                 )
                     .align(AlignX.FILL)
@@ -152,9 +150,9 @@ class CCv2DeployBuildDialog(
             row {
                 modeComboBox = comboBox(
                     modeModel,
-                    renderer = SimpleListCellRenderer.create { label, value, _ ->
-                        label.text = value.title
-                        label.icon = value.icon
+                    renderer = listCellRenderer("?") {
+                        icon(value.icon)
+                        text(value.title)
                     }
                 )
                     .align(AlignX.FILL)
@@ -165,9 +163,9 @@ class CCv2DeployBuildDialog(
             row {
                 strategyComboBox = comboBox(
                     strategyModel,
-                    renderer = SimpleListCellRenderer.create { label, value, _ ->
-                        label.text = value.title
-                        label.icon = value.icon
+                    renderer = listCellRenderer("?") {
+                        icon(value.icon)
+                        text(value.title)
                     }
                 )
                     .align(AlignX.FILL)

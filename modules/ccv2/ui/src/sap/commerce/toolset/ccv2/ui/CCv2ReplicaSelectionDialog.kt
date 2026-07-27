@@ -28,9 +28,9 @@ import com.intellij.openapi.ui.ComboBox
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.components.JBLoadingPanel
 import com.intellij.ui.dsl.builder.*
+import com.intellij.ui.dsl.listCellRenderer.listCellRenderer
 import com.intellij.util.asSafely
 import com.intellij.util.ui.JBUI
 import sap.commerce.toolset.HybrisIcons
@@ -117,11 +117,9 @@ class CCv2ReplicaSelectionDialog(
         row {
             ccv2SubscriptionComboBox = comboBox(
                 ccv2SubscriptionsComboBoxModel,
-                renderer = SimpleListCellRenderer.create { label, value, _ ->
-                    if (value != null) {
-                        label.icon = HybrisIcons.Module.CCV2
-                        label.text = value.presentableName
-                    }
+                renderer = listCellRenderer("?") {
+                    icon(HybrisIcons.Module.CCV2)
+                    text(value.presentableName)
                 }
             )
                 .label("Subscription:")

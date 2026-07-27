@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -21,11 +21,15 @@ package sap.commerce.toolset.flexibleSearch.options
 import com.intellij.openapi.options.BoundSearchableConfigurable
 import com.intellij.openapi.options.ConfigurableProvider
 import com.intellij.openapi.project.Project
-import com.intellij.ui.*
+import com.intellij.ui.CollectionComboBoxModel
+import com.intellij.ui.EditorNotificationProvider
+import com.intellij.ui.EditorNotifications
+import com.intellij.ui.EnumComboBoxModel
 import com.intellij.ui.dsl.builder.bindItem
 import com.intellij.ui.dsl.builder.bindSelected
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.dsl.builder.toNullableProperty
+import com.intellij.ui.dsl.listCellRenderer.textListCellRenderer
 import com.intellij.ui.layout.selected
 import sap.commerce.toolset.flexibleSearch.editor.FxSReservedWordsCaseEditorNotificationProvider
 import sap.commerce.toolset.i18n
@@ -73,7 +77,7 @@ class FlexibleSearchProjectSettingsConfigurableProvider(private val project: Pro
                 row {
                     comboBox(
                         reservedWordsModel,
-                        renderer = SimpleListCellRenderer.create("?") { i18n("hybris.fxs.notification.provider.keywords.case.$it") }
+                        renderer = textListCellRenderer("?") { i18n("hybris.fxs.notification.provider.keywords.case.$it") }
                     )
                         .label("Default case for reserved words")
                         .bindItem(mutable::defaultCaseForReservedWords.toNullableProperty())
@@ -101,7 +105,7 @@ class FlexibleSearchProjectSettingsConfigurableProvider(private val project: Pro
                 row {
                     comboBox(
                         tableAliasSeparatorsModel,
-                        renderer = SimpleListCellRenderer.create("?") {
+                        renderer = textListCellRenderer("?") {
                             when (it) {
                                 "." -> i18n("hybris.settings.project.fxs.code.completion.separator.dot")
                                 ":" -> i18n("hybris.settings.project.fxs.code.completion.separator.colon")

@@ -21,9 +21,9 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.UIBundle
 import com.intellij.ui.dsl.builder.*
+import com.intellij.ui.dsl.listCellRenderer.textListCellRenderer
 import com.intellij.util.application
 import com.intellij.util.asSafely
 import com.intellij.util.ui.JBUI
@@ -117,7 +117,7 @@ class FlexibleSearchExecutionContextSettingsAction : ExecutionContextSettingsAct
             row {
                 comboBox(
                     dataSources,
-                    renderer = SimpleListCellRenderer.create("?") { it }
+                    renderer = textListCellRenderer("?") { it }
                 )
                     .label("Tenant:")
                     .align(AlignX.FILL)

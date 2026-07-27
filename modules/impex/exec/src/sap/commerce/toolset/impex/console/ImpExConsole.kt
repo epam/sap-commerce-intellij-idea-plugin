@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,10 +22,10 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
 import com.intellij.ui.EnumComboBoxModel
 import com.intellij.ui.JBIntSpinner
-import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.dsl.builder.selected
+import com.intellij.ui.dsl.listCellRenderer.textListCellRenderer
 import sap.commerce.toolset.console.HybrisConsole
 import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import sap.commerce.toolset.impex.ImpExConstants
@@ -56,7 +56,7 @@ class ImpExConsole(project: Project) : HybrisConsole<ImpExExecContext>(
 
                 importModeComboBox = comboBox(
                     model = EnumComboBoxModel(ImpExValidationMode::class.java),
-                    renderer = SimpleListCellRenderer.create("...") { value -> value.name }
+                    renderer = textListCellRenderer("...") { value -> value.name }
                 )
                     .label("Validation mode:")
                     .component

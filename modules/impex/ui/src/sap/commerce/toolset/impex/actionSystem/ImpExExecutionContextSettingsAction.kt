@@ -22,9 +22,9 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.ui.EnumComboBoxModel
-import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.UIBundle
 import com.intellij.ui.dsl.builder.*
+import com.intellij.ui.dsl.listCellRenderer.textListCellRenderer
 import com.intellij.util.ui.JBUI
 import sap.commerce.toolset.hac.actionSystem.ExecutionContextSettingsAction
 import sap.commerce.toolset.hac.exec.HacExecConnectionService
@@ -69,15 +69,17 @@ class ImpExExecutionContextSettingsAction : ExecutionContextSettingsAction<ImpEx
         row {
             comboBox(
                 EnumComboBoxModel(ImpExValidationMode::class.java),
-                renderer = SimpleListCellRenderer.create { label, value, _ ->
-                    label.text = value.title
-                })
+                renderer = textListCellRenderer("?") { it.title }
+            )
                 .focused()
                 .align(AlignX.FILL)
                 .label("Validation mode:")
                 .comment("Read more about ImpEx validation modes <a href='link'>here</a>.")
                 { BrowserUtil.browse("https://help.sap.com/docs/SAP_COMMERCE_CLOUD_PUBLIC_CLOUD/aa417173fe4a4ba5a473c93eb730a417/c703c0bd88bd4281a09163658c66fac8.html?locale=en-US") }
-                .bindItem({ settings.validationMode }, { value -> settings.validationMode = value ?: ImpExValidationMode.IMPORT_STRICT })
+                .bindItem(
+                    { settings.validationMode },
+                    { value -> settings.validationMode = value ?: ImpExValidationMode.IMPORT_STRICT }
+                )
         }.layout(RowLayout.PARENT_GRID)
 
         row {

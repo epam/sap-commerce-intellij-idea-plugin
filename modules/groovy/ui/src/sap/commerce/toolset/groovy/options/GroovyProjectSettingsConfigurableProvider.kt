@@ -22,8 +22,8 @@ import com.intellij.openapi.options.BoundSearchableConfigurable
 import com.intellij.openapi.options.ConfigurableProvider
 import com.intellij.openapi.project.Project
 import com.intellij.ui.EnumComboBoxModel
-import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.dsl.builder.*
+import com.intellij.ui.dsl.listCellRenderer.textListCellRenderer
 import com.intellij.ui.layout.selected
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.Plugin
@@ -60,7 +60,7 @@ class GroovyProjectSettingsConfigurableProvider(private val project: Project) : 
             row {
                 comboBox(
                     EnumComboBoxModel(SpringContextMode::class.java),
-                    renderer = SimpleListCellRenderer.create("?") { it.presentationText }
+                    renderer = textListCellRenderer("?") { it.presentationText }
                 )
                     .label("Spring context mode:")
                     .comment(
@@ -77,7 +77,7 @@ class GroovyProjectSettingsConfigurableProvider(private val project: Project) : 
             row {
                 comboBox(
                     EnumComboBoxModel(TransactionMode::class.java),
-                    renderer = SimpleListCellRenderer.create("?") { it.presentationText }
+                    renderer = textListCellRenderer("?") { it.presentationText }
                 )
                     .label("Transaction mode:")
                     .comment("Defines default transaction mode for each new Editor.")
@@ -88,7 +88,7 @@ class GroovyProjectSettingsConfigurableProvider(private val project: Project) : 
             row {
                 comboBox(
                     EnumComboBoxModel(GroovyExecMode::class.java),
-                    renderer = SimpleListCellRenderer.create("?") { it.presentationText }
+                    renderer = textListCellRenderer("?") { it.presentationText }
                 )
                     .label("Exec mode:")
                     .comment(
@@ -105,7 +105,7 @@ class GroovyProjectSettingsConfigurableProvider(private val project: Project) : 
             row {
                 comboBox(
                     EnumComboBoxModel(GroovyExecExceptionHandling::class.java),
-                    renderer = SimpleListCellRenderer.create("?") { it.presentationText }
+                    renderer = textListCellRenderer("?") { it.presentationText }
                 )
                     .label("Exception handling:")
                     .comment("Defines default exception handling mode for each new Editor.")
