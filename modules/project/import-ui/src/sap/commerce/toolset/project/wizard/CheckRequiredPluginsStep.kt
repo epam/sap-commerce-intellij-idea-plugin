@@ -128,7 +128,6 @@ class CheckRequiredPluginsStep(context: WizardContext) : ProjectImportWizardStep
         val pluginDetailsService = PluginDetailsService.getInstance()
         hybrisPlugin.dependencies
             .asSequence()
-            .filter { it.isOptional }
             .filterIsInstance<PluginDetailsService.ModuleDependencyInfo.OnPlugin>()
             .distinctBy { it.pluginId }
             .onEach { pluginDependency ->
