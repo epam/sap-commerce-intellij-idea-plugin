@@ -25,7 +25,6 @@ import com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode
 import com.intellij.ide.projectView.impl.nodes.PsiFileNode
 import com.intellij.ide.util.treeView.AbstractTreeNode
 import com.intellij.openapi.module.ModuleUtilCore
-import com.intellij.openapi.module.impl.LoadedModuleDescriptionImpl
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ProjectFileIndex
 import com.intellij.openapi.vfs.LocalFileSystem
@@ -49,7 +48,7 @@ class HybrisProjectViewProjectNode(project: Project, viewSettings: ViewSettings)
 
         val modules = HybrisProjectViewDirectoryHelper.getInstance(project).getTopLevelRoots()
             .mapNotNull { ModuleUtilCore.findModuleForFile(it, project) }
-            .map { LoadedModuleDescriptionImpl(it) }
+            .map { HybrisLoadedModuleDescription(it) }
 
         val nodes = modulesAndGroups(modules).toMutableList()
 
