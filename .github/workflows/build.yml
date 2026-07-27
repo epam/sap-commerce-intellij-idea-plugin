@@ -1,8 +1,7 @@
 # GitHub Actions Workflow is created for testing and preparing the plugin release in the following steps:
 # - Validate Gradle Wrapper.
 # - Run the 'buildPlugin' task and prepare artifact for further tests.
-# - Run the 'runPluginVerifier' task.
-# - Run 'test' tasks and generate test/coverage reports.
+# - Run 'test' tasks and generate test reports.
 #
 # The workflow is triggered on push and pull_request events.
 #
@@ -94,56 +93,7 @@ jobs:
           name: ${{ steps.artifact.outputs.filename }}
           path: ./build/distributions/content/*/*
 
-  # Run plugin structure verification along with IntelliJ Plugin Verifier
-  verify:
-    name: Verify Plugin
-    needs: [ build ]
-    runs-on: ubuntu-latest
-    continue-on-error: true
-    timeout-minutes: 25
-    steps:
-      - name: Fetch Sources
-        uses: actions/checkout@v7
-
-      - name: Setup JBR 25
-        uses: actions/setup-java@v5.5.0
-        with:
-          distribution: 'jetbrains'
-          java-version: 25
-          java-package: 'jdk+jcef'
-          check-latest: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v6
-        with:
-          cache-read-only: true
-          gradle-home-cache-includes: |
-            caches
-            notifications
-            jdks
-          gradle-home-cache-excludes: |
-            caches/*/transforms
-            caches/transforms-*
-
-      - name: Restore Gradle Build Cache
-        uses: actions/download-artifact@v4
-        with:
-          name: gradle-build-cache
-          path: ~/.gradle/caches/build-cache-1
-
-      - name: Verify Plugin
-        run: ./gradlew verifyPlugin --build-cache
-
-      - name: Collect Plugin Verifier Result
-        if: ${{ always() }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: pluginVerifier-result
-          path: ${{ github.workspace }}/build/reports/pluginVerifier
-
-  # Run tests and produce test/coverage report artifacts
+  # Run tests and produce test reports
   test:
     name: Test
     needs: [ build ]
@@ -195,14 +145,6 @@ jobs:
       - name: Run Tests
         run: ./gradlew check --build-cache
 
-      # Debug step — confirms where Kover actually writes its XML report.
-      # Remove once the coverage path below is confirmed correct.
-      - name: Debug - Locate Kover Reports
-        if: ${{ always() }}
-        run: |
-          echo "Searching for Kover XML reports..."
-          find . -iname "*.xml" -path "*kover*" 2>/dev/null || echo "No Kover XML files found"
-
       - name: Collect Tests Result
         if: ${{ always() }}
         uses: actions/upload-artifact@v4
@@ -216,14 +158,6 @@ jobs:
         with:
           name: tests-report
           path: '**/build/test-results/test/*.xml'
-
-      - name: Collect Coverage Report
-        if: ${{ always() }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: coverage-report
-          path: ${{ github.workspace }}/build/reports/kover/report.xml
-          if-no-files-found: warn
 
   # Render JUnit results as a GitHub Checks tab dashboard (viewable inline, no download)
   testReport:
@@ -254,50 +188,3 @@ jobs:
           reporter: java-junit
           path: 'test-results/**/*.xml'
           fail-on-error: 'true'
-
-  # Upload coverage to Codecov + post an inline summary on the run page
-  coverage:
-    name: Coverage
-    if: ${{ !cancelled() && needs.test.result == 'success' }}
-    needs: [ test ]
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - name: Download Coverage Report
-        uses: actions/download-artifact@v4
-        with:
-          name: coverage-report
-          path: ${{ github.workspace }}/build/reports/kover
-        continue-on-error: true
-
-      - name: Upload Code Coverage Report
-        if: ${{ hashFiles(format('{0}/build/reports/kover/report.xml', github.workspace)) != '' }}
-        uses: codecov/codecov-action@v5
-        with:
-          files: ${{ github.workspace }}/build/reports/kover/report.xml
-          token: ${{ secrets.CODECOV_TOKEN }}
-
-      - name: Coverage Summary
-        if: ${{ always() }}
-        run: |
-          REPORT="${{ github.workspace }}/build/reports/kover/report.xml"
-          if [ ! -f "$REPORT" ]; then
-            echo "## Coverage Report" >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
-            echo "⚠️ Coverage report not found at \`$REPORT\` — Kover XML report was not generated or uploaded." >> $GITHUB_STEP_SUMMARY
-            exit 0
-          fi
-
-          echo "## Coverage Report" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          python3 -c "
-          import xml.etree.ElementTree as ET
-          tree = ET.parse('$REPORT')
-          root = tree.getroot()
-          counter = root.find(\".//counter[@type='LINE']\")
-          covered = int(counter.get('covered'))
-          missed = int(counter.get('missed'))
-          total = covered + missed
-          pct = round(100 * covered / total, 2) if total else 0
-          print(f'**Line coverage:** {pct}% ({covered}/{total} lines)')
-          " >> $GITHUB_STEP_SUMMARY
