@@ -32,9 +32,9 @@ import com.intellij.openapi.util.ClearableLazyValue
 import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.ui.EditorNotificationPanel
 import com.intellij.ui.EnumComboBoxModel
-import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.components.JBScrollPane
 import com.intellij.ui.dsl.builder.*
+import com.intellij.ui.dsl.listCellRenderer.textListCellRenderer
 import com.intellij.ui.scale.JBUIScale
 import com.intellij.ui.table.JBTable
 import com.intellij.util.asSafely
@@ -122,7 +122,7 @@ class ProjectRefreshDialog(
                 row {
                     comboBox(
                         model = EnumComboBoxModel(LibrarySourcesFetchMode::class.java),
-                        renderer = SimpleListCellRenderer.create("?") { it.presentationText }
+                        renderer = textListCellRenderer("?") { it.presentationText }
                     )
                         .bindItem(refreshContext.importSettings.librarySourcesFetchMode)
 

@@ -41,7 +41,6 @@ import com.intellij.ui.components.JBScrollPane
 import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.builder.Cell
-import com.intellij.ui.dsl.builder.impl.DslComponentPropertyInternal
 import com.intellij.util.MathUtil
 import com.intellij.util.asSafely
 import com.intellij.util.ui.JBEmptyBorder
@@ -82,10 +81,12 @@ fun Row.previewEditor(
 fun Row.nullableIntTextField(range: IntRange? = null, keyboardStep: Int? = null): Cell<JBTextField> {
     val result = cell(JBTextField())
         .validationOnInput {
-            val value = it.text.toIntOrNull()
+            val textValue = it.text.takeIf { it.isNotBlank() }
+            val intValue = it.text.toIntOrNull()
             when {
-                value == null -> null
-                range != null && value !in range -> error(
+                textValue == null -> null
+                intValue == null -> error(UIBundle.message("please.enter.a.number"))
+                range != null && intValue !in range -> error(
                     UIBundle.message(
                         "please.enter.a.number.from.0.to.1",
                         range.first,
@@ -97,7 +98,6 @@ fun Row.nullableIntTextField(range: IntRange? = null, keyboardStep: Int? = null)
             }
         }
     result.columns(COLUMNS_TINY)
-    result.component.putClientProperty(DslComponentPropertyInternal.INT_TEXT_RANGE, range)
 
     keyboardStep?.let {
         result.component.addKeyListener(object : KeyAdapter() {

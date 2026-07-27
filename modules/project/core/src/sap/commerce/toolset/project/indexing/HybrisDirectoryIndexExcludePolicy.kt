@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,27 +18,22 @@
 
 package sap.commerce.toolset.project.indexing
 
-import com.intellij.openapi.Disposable
-import com.intellij.openapi.components.Service
-import com.intellij.openapi.components.service
-import com.intellij.openapi.roots.ModuleRootModel
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.roots.ProjectRootManager
 import com.intellij.openapi.roots.impl.DirectoryIndexExcludePolicy
 import com.intellij.openapi.vfs.VfsUtilCore
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.VirtualFileVisitor
-import com.intellij.openapi.vfs.pointers.VirtualFilePointer
-import com.intellij.openapi.vfs.pointers.VirtualFilePointerManager
-import com.intellij.util.application
 import sap.commerce.toolset.settings.ApplicationSettings
 
-class HybrisDirectoryIndexExcludePolicy : DirectoryIndexExcludePolicy {
+class HybrisDirectoryIndexExcludePolicy(private val project: Project) : DirectoryIndexExcludePolicy {
 
-    override fun getExcludeRootsForModule(rootModel: ModuleRootModel) = rootModel.contentRoots
+    override fun getExcludeUrlsForProject(): Array<String> = ProjectRootManager.getInstance(project).contentRootsFromAllModules
         .flatMap { getExcludedFoldersFromIndex(it) }
         .toTypedArray()
 
-    private fun getExcludedFoldersFromIndex(contentRoot: VirtualFile): List<VirtualFilePointer> {
-        val excludedFoldersFromIndex = mutableListOf<VirtualFilePointer>()
+    private fun getExcludedFoldersFromIndex(contentRoot: VirtualFile): List<String> {
+        val excludedFoldersFromIndex = mutableListOf<String>()
         val excludedFromIndexList = ApplicationSettings.getInstance().excludedFromIndexList
 
         excludedFromIndexList.forEach { excludedFolderPath ->
@@ -51,16 +46,16 @@ class HybrisDirectoryIndexExcludePolicy : DirectoryIndexExcludePolicy {
 
     internal class HybrisExcludeFromIndexFileVisitor(
         excludedFolderPath: String,
-        private val excludedFoldersFromIndex: MutableList<VirtualFilePointer>,
+        private val excludedFoldersFromIndex: MutableList<String>,
         vararg options: Option?,
     ) : VirtualFileVisitor<VirtualFile>(*options) {
 
-        private val virtualFilePointerProvider = HybrisVirtualFilePointerProvider.getInstance()
         private val pathFragments: List<String> = excludedFolderPath.split("/")
         private var currentDepth = 0
 
-        override fun visitFile(file: VirtualFile) = file.isDirectory && pathFragments.size > currentDepth &&
-            isFolderNameEqualToPathFragment(file, currentDepth)
+        override fun visitFile(file: VirtualFile) = file.isDirectory
+                && pathFragments.size > currentDepth
+                && isFolderNameEqualToPathFragment(file, currentDepth)
 
         override fun visitFileEx(file: VirtualFile): Result {
             if (visitFile(file)) {
@@ -83,24 +78,11 @@ class HybrisDirectoryIndexExcludePolicy : DirectoryIndexExcludePolicy {
 
         override fun afterChildrenVisited(file: VirtualFile) {
             if (isFolderNameEqualToPathFragment(file, pathFragments.size - 1)) {
-                excludedFoldersFromIndex.add(virtualFilePointerProvider.createVirtualFilePointer(file))
+                excludedFoldersFromIndex.add(file.url)
             }
         }
 
         private fun isFolderNameEqualToPathFragment(file: VirtualFile, fragmentIndex: Int) = file.name == pathFragments[fragmentIndex]
         private fun isFolderNameUndefined(fragmentIndex: Int) = pathFragments.size > fragmentIndex && pathFragments[fragmentIndex] == "**"
-    }
-
-    @Service
-    internal class HybrisVirtualFilePointerProvider() : Disposable {
-
-        fun createVirtualFilePointer(vf: VirtualFile): VirtualFilePointer = VirtualFilePointerManager.getInstance()
-            .create(vf.url, this, null)
-
-        override fun dispose() = Unit
-
-        companion object {
-            fun getInstance(): HybrisVirtualFilePointerProvider = application.service()
-        }
     }
 }

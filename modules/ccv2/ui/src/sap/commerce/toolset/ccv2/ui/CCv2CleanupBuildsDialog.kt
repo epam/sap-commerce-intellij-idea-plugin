@@ -19,7 +19,6 @@
 package sap.commerce.toolset.ccv2.ui
 
 import com.intellij.icons.AllIcons
-import com.intellij.ide.IdeBundle
 import com.intellij.openapi.observable.properties.AtomicBooleanProperty
 import com.intellij.openapi.observable.properties.AtomicProperty
 import com.intellij.openapi.project.Project
@@ -29,9 +28,10 @@ import com.intellij.openapi.util.text.StringUtil
 import com.intellij.ui.AnimatedIcon
 import com.intellij.ui.EditorNotificationPanel
 import com.intellij.ui.EnumComboBoxModel
-import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.dsl.builder.*
+import com.intellij.ui.dsl.listCellRenderer.listCellRenderer
+import com.intellij.ui.dsl.listCellRenderer.textListCellRenderer
 import com.intellij.util.asSafely
 import com.intellij.util.ui.JBUI
 import sap.commerce.toolset.HybrisIcons
@@ -40,6 +40,7 @@ import sap.commerce.toolset.ccv2.dto.*
 import sap.commerce.toolset.ccv2.settings.CCv2DeveloperSettings
 import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
 import sap.commerce.toolset.ccv2.ui.components.CCv2SubscriptionsComboBoxModelFactory
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.ui.banner
 import sap.commerce.toolset.ui.scrollPanel
 import java.awt.Dimension
@@ -64,9 +65,11 @@ class CCv2CleanupBuildsDialog(
     private val ccv2DeveloperSettings = CCv2DeveloperSettings.getInstance(project)
     private val top = AtomicProperty(ccv2DeveloperSettings.cleanupBuildsSettings.top)
         .also { it.afterChange { saveSettings() } }
-    private val sortByField = AtomicProperty(ccv2DeveloperSettings.cleanupBuildsSettings.sortBy.firstOrNull()?.sortBy ?: CCv2BuildSortBy.START_TIME)
+    private val sortByField = AtomicProperty(ccv2DeveloperSettings.cleanupBuildsSettings.sortBy.firstOrNull()?.sortBy
+        ?: CCv2BuildSortBy.START_TIME)
         .also { it.afterChange { saveSettings() } }
-    private val sortDirection = AtomicProperty(ccv2DeveloperSettings.cleanupBuildsSettings.sortBy.firstOrNull()?.sortDirection ?: CCv2BuildSortDirection.ASC)
+    private val sortDirection = AtomicProperty(ccv2DeveloperSettings.cleanupBuildsSettings.sortBy.firstOrNull()?.sortDirection
+        ?: CCv2BuildSortDirection.ASC)
         .also { it.afterChange { saveSettings() } }
 
     private val fetchBuildsButton = object : DialogWrapperAction("Fetch Builds") {
@@ -101,11 +104,9 @@ class CCv2CleanupBuildsDialog(
         row {
             subscriptionComboBox = comboBox(
                 CCv2SubscriptionsComboBoxModelFactory.create(project, subscription),
-                renderer = SimpleListCellRenderer.create { label, value, _ ->
-                    if (value != null) {
-                        label.icon = HybrisIcons.Module.CCV2
-                        label.text = value.presentableName
-                    }
+                renderer = listCellRenderer("?") {
+                    icon(HybrisIcons.Module.CCV2)
+                    text(value.presentableName)
                 }
             )
                 .label("Subscription:")
@@ -124,14 +125,14 @@ class CCv2CleanupBuildsDialog(
 
             comboBox(
                 model = EnumComboBoxModel(CCv2BuildSortBy::class.java),
-                renderer = SimpleListCellRenderer.create("...") { value -> value.title }
+                renderer = textListCellRenderer("...") { value -> value.title }
             )
                 .label("Sort by:")
                 .bindItem(sortByField)
 
             comboBox(
                 model = EnumComboBoxModel(CCv2BuildSortDirection::class.java),
-                renderer = SimpleListCellRenderer.create("...") { value -> value.title }
+                renderer = textListCellRenderer("...") { value -> value.title }
             )
                 .bindItem(sortDirection)
         }.layout(RowLayout.PARENT_GRID)
@@ -140,8 +141,8 @@ class CCv2CleanupBuildsDialog(
 
         row {
             totalLabel = label("").component
-            button(IdeBundle.message("command.select.all")) { cleanableBuilds.values.forEach { it.set(true) } }
-            button(IdeBundle.message("command.unselect.all")) { cleanableBuilds.values.forEach { it.set(false) } }
+            button(i18n("command.select.all")) { cleanableBuilds.values.forEach { it.set(true) } }
+            button(i18n("command.unselect.all")) { cleanableBuilds.values.forEach { it.set(false) } }
         }.visibleIf(resultsHeaderToggle)
 
         row {

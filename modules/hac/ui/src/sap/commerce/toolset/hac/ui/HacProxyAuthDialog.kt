@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -19,7 +19,6 @@
 package sap.commerce.toolset.hac.ui
 
 import com.intellij.credentialStore.Credentials
-import com.intellij.ide.IdeBundle
 import com.intellij.openapi.observable.properties.AtomicProperty
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogWrapper
@@ -28,6 +27,7 @@ import com.intellij.ui.dsl.builder.AlignX
 import com.intellij.ui.dsl.builder.RowLayout
 import com.intellij.ui.dsl.builder.bindText
 import com.intellij.ui.dsl.builder.panel
+import sap.commerce.toolset.i18n
 
 class HacProxyAuthDialog(
     project: Project,
@@ -46,24 +46,24 @@ class HacProxyAuthDialog(
     init {
         super.init()
 
-        title = IdeBundle.message("dialog.title.jcef.proxyAuthentication")
+        title = i18n("dialog.title.jcef.proxyAuthentication")
         isResizable = false
 
-        setOKButtonText(IdeBundle.message("dialog.button.ok.jcef.signIn"))
+        setOKButtonText(i18n("dialog.button.ok.jcef.signIn"))
     }
 
     override fun getPreferredFocusedComponent() = usernameTextField
 
     override fun createCenterPanel() = panel {
         row {
-            label(IdeBundle.message("dialog.content.jcef.proxyServer", proxy))
+            label(i18n("dialog.content.jcef.proxyServer", proxy))
         }
 
         separator()
 
         row {
             usernameTextField = textField()
-                .label(IdeBundle.message("dialog.content.label.jcef.login"))
+                .label(i18n("dialog.content.label.jcef.login"))
                 .bindText(username)
                 .align(AlignX.FILL)
                 .component
@@ -72,7 +72,7 @@ class HacProxyAuthDialog(
 
         row {
             passwordField()
-                .label(IdeBundle.message("dialog.content.label.jcef.password"))
+                .label(i18n("dialog.content.label.jcef.password"))
                 .bindText(password)
                 .align(AlignX.FILL)
         }

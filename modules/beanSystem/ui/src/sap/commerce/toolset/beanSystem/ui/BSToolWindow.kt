@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -19,7 +19,6 @@
 package sap.commerce.toolset.beanSystem.ui
 
 import com.intellij.ide.CommonActionsManager
-import com.intellij.ide.IdeBundle
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.DefaultActionGroup
@@ -64,7 +63,7 @@ class BSToolWindow(private val project: Project, parentDisposable: Disposable) :
 
         when {
             DumbService.isDumb(project) -> with(JBPanel<JBPanel<*>>(GridBagLayout())) {
-                add(JBLabel(i18n("hybris.toolwindow.bs.suspended.text", IdeBundle.message("progress.performing.indexing.tasks"))))
+                add(JBLabel(i18n("hybris.toolwindow.bs.suspended.text", i18n("progress.performing.indexing.tasks"))))
                 setContent(this)
             }
 

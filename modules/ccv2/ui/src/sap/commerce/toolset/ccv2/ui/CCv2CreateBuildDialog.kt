@@ -25,10 +25,10 @@ import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.AnimatedIcon
 import com.intellij.ui.CollectionComboBoxModel
-import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.*
+import com.intellij.ui.dsl.listCellRenderer.listCellRenderer
 import com.intellij.ui.layout.selected
 import com.intellij.util.ui.JBUI
 import sap.commerce.toolset.HybrisIcons
@@ -82,11 +82,9 @@ class CCv2CreateBuildDialog(
             row {
                 subscriptionComboBox = comboBox(
                     CCv2SubscriptionsComboBoxModelFactory.create(project, subscription),
-                    renderer = SimpleListCellRenderer.create { label, value, _ ->
-                        if (value != null) {
-                            label.icon = HybrisIcons.Module.CCV2
-                            label.text = value.presentableName
-                        }
+                    renderer = listCellRenderer("?") {
+                        icon(HybrisIcons.Module.CCV2)
+                        text(value.presentableName)
                     }
                 )
                     .label("Subscription:")
@@ -230,9 +228,9 @@ class CCv2CreateBuildDialog(
                             row {
                                 modeComboBox = comboBox(
                                     CollectionComboBoxModel(CCv2DeploymentDatabaseUpdateModeEnum.allowedOptions()),
-                                    renderer = SimpleListCellRenderer.create { label, value, _ ->
-                                        label.text = value.title
-                                        label.icon = value.icon
+                                    renderer = listCellRenderer("?") {
+                                        icon(value.icon)
+                                        text(value.title)
                                     }
                                 )
                                     .enabledIf(deployCheckBox!!.selected)
@@ -245,9 +243,9 @@ class CCv2CreateBuildDialog(
                             row {
                                 strategyComboBox = comboBox(
                                     CollectionComboBoxModel(CCv2DeploymentStrategy.allowedOptions()),
-                                    renderer = SimpleListCellRenderer.create { label, value, _ ->
-                                        label.text = value.title
-                                        label.icon = value.icon
+                                    renderer = listCellRenderer("?") {
+                                        icon(value.icon)
+                                        text(value.title)
                                     }
                                 )
                                     .enabledIf(deployCheckBox!!.selected)

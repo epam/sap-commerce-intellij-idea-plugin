@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -19,8 +19,8 @@
 package sap.commerce.toolset.project.wizard
 
 import com.intellij.ide.BrowserUtil
+import com.intellij.ide.plugins.PluginDetailsService
 import com.intellij.ide.plugins.PluginManager
-import com.intellij.ide.plugins.PluginManagerCore
 import com.intellij.ide.util.projectWizard.WizardContext
 import com.intellij.openapi.extensions.PluginId
 import com.intellij.projectImport.ProjectImportWizardStep
@@ -122,24 +122,27 @@ class CheckRequiredPluginsStep(context: WizardContext) : ProjectImportWizardStep
         notInstalledModel.removeAll()
         notEnabledModel.removeAll()
 
-        val hybrisPlugin = Plugin.HYBRIS.pluginDescriptor
+        val hybrisPlugin = Plugin.HYBRIS.details
             ?: return false
 
+        val pluginDetailsService = PluginDetailsService.getInstance()
         hybrisPlugin.dependencies
-            .filter { it.isOptional }
-            .map { it.pluginId }.distinct()
-            .onEach { pluginId ->
+            .asSequence()
+            .filterIsInstance<PluginDetailsService.ModuleDependencyInfo.OnPlugin>()
+            .distinctBy { it.pluginId }
+            .onEach { pluginDependency ->
+                val pluginId = pluginDependency.pluginId
                 if (!PluginManager.isPluginInstalled(pluginId)) {
                     notInstalledModel.add(pluginId)
                     return@onEach
                 }
-                PluginManagerCore.getPlugin(pluginId)
-                    ?.takeIf {
-                        Plugin.of(pluginId.idString)?.isDisabled()
-                            ?: (!PluginManagerCore.isLoaded(pluginId) || PluginManagerCore.isDisabled(pluginId))
-                    }
-                    ?.let { notEnabledModel.add(pluginId) }
+
+                val notEnabled = Plugin.of(pluginId.idString)?.isDisabled()
+                    ?: (!pluginDetailsService.isLoaded(pluginId) || pluginDetailsService.isDisabled(pluginId))
+
+                if (notEnabled) notEnabledModel.add(pluginId)
             }
+            .toList()
 
         return !notInstalledModel.isEmpty || !notEnabledModel.isEmpty
     }

@@ -37,7 +37,7 @@ class ProjectSettingsConfigurator : ProjectImportConfigurator {
         val projectSettings = ProjectSettings.getInstance(project)
         workspaceSettings.hybrisProject = true
 
-        Plugin.HYBRIS.pluginDescriptor
+        Plugin.HYBRIS.details
             ?.let { workspaceSettings.importedByVersion = it.version }
 
         applySettings(context)

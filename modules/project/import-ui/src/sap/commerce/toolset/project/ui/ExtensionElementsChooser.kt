@@ -26,8 +26,8 @@ class ExtensionElementsChooser : ElementsChooser<ExtensionDescriptor>(true) {
 
     override fun getItemText(value: ExtensionDescriptor) = value.name
 
-    override fun getItemIcon(value: ExtensionDescriptor) = value.subModuleType?.icon
-        ?: value.type.icon
+    override fun getItemIcon(value: ExtensionDescriptor) = value.subModuleType?.lazyIcon()
+        ?: value.type.lazyIcon()
 
     companion object {
         @Serial

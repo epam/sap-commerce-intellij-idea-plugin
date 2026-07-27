@@ -17,30 +17,18 @@
  */
 package sap.commerce.toolset.java.codeInsight.template
 
-import com.intellij.codeInsight.template.TemplateSubstitutor
-import com.intellij.codeInsight.template.impl.TemplateImpl
-import com.intellij.codeInsight.template.impl.TemplateSubstitutionContext
+import com.intellij.codeInsight.template.*
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.projectRoots.JavaSdkVersion
 import com.intellij.openapi.roots.ProjectRootManager
-import sap.commerce.toolset.java.JavaConstants
 
-class JavaTemplateSubstitutor : TemplateSubstitutor {
+class JavaResourceLiveTemplateMacro : Macro() {
 
-    override fun substituteTemplate(
-        substitutionContext: TemplateSubstitutionContext,
-        template: TemplateImpl
-    ): TemplateImpl? {
-        if (template.key != JavaConstants.LiveTemplates.YSRI) return null
-        if (!isJava21Plus(substitutionContext.project)) return null
+    override fun getName() = "jakartaOrJavax"
 
-        return template.copy()
-            .apply {
-                this.string = this.string.replace(
-                    "javax.annotation.Resource",
-                    "jakarta.annotation.Resource"
-                )
-            }
+    override fun calculateResult(params: Array<out Expression>, context: ExpressionContext): Result? {
+        return if (isJava21Plus(context.project)) TextResult("jakarta.annotation.Resource")
+        else TextResult("javax.annotation.Resource")
     }
 
     fun isJava21Plus(project: Project): Boolean {

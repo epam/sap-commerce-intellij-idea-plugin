@@ -28,10 +28,14 @@ import com.intellij.openapi.observable.util.transform
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
 import com.intellij.openapi.util.registry.Registry
-import com.intellij.ui.*
+import com.intellij.ui.EditorNotificationPanel
+import com.intellij.ui.EnumComboBoxModel
+import com.intellij.ui.GotItTooltip
+import com.intellij.ui.JBIntSpinner
 import com.intellij.ui.components.JBPasswordField
 import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.*
+import com.intellij.ui.dsl.listCellRenderer.textListCellRenderer
 import com.intellij.ui.jcef.JBCefApp
 import com.intellij.ui.layout.selected
 import sap.commerce.toolset.GotItTooltips
@@ -93,7 +97,8 @@ class HacConnectionSettingsDialog(
             sslProtocol = sslProtocolComboBox.selectedItem?.toString() ?: "",
             webroot = webrootTextField.text,
             timeout = timeoutIntSpinner.number,
-            sessionCookieName = sessionCookieNameTextField.text.takeUnless { it.isNullOrBlank() } ?: ExecConstants.DEFAULT_SESSION_COOKIE_NAME,
+            sessionCookieName = sessionCookieNameTextField.text.takeUnless { it.isNullOrBlank() }
+                ?: ExecConstants.DEFAULT_SESSION_COOKIE_NAME,
             proxyAuthMode = mutable.proxyAuthMode.get()
         ),
         mutable.username.get(),
@@ -142,7 +147,7 @@ class HacConnectionSettingsDialog(
                 .comment("Non-personal settings will be stored in the <strong>hybrisProjectSettings.xml</strong> and can be shared via VCS.")
             comboBox(
                 EnumComboBoxModel(ExecConnectionScope::class.java),
-                renderer = SimpleListCellRenderer.create("?") { it.title }
+                renderer = textListCellRenderer("?") { it.title }
             )
                 .bindItem(mutable::scope.toNullableProperty(ExecConnectionScope.PROJECT_PERSONAL))
         }.layout(RowLayout.PARENT_GRID)
@@ -214,7 +219,7 @@ class HacConnectionSettingsDialog(
                         "TLSv1.2",
                         "TLSv1.3",
                     ),
-                    renderer = SimpleListCellRenderer.create("?") { it }
+                    renderer = textListCellRenderer("?") { it }
                 )
                     .enabledIf(sslProtocolCheckBox.selected)
                     .bindItem(mutable.sslProtocol)
@@ -397,9 +402,8 @@ class HacConnectionSettingsDialog(
             val model = DefaultComboBoxModel(wslDistributions.get().toTypedArray())
             wslDistributionComboBox = comboBox(
                 model = model,
-                renderer = SimpleListCellRenderer.create { label, value, _ ->
-                    label.text = value?.msId
-                })
+                renderer = textListCellRenderer { it?.msId }
+            )
                 .label("WSL distribution:")
                 .visibleIf(mutable.wsl)
                 .enabledIf(wslDistributions.transform { it.isNotEmpty() })

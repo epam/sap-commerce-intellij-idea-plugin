@@ -33,12 +33,12 @@ okhttp = "5.4.0"
 gson = "2.14.0"
 # https://mvnrepository.com/artifact/org.jetbrains.kotlinx/kotlinx-serialization-json
 # validate kotlin-stdlib version before updating
-kotlinxJson = "1.9.0"
+kotlinxJson = "1.11.0"
 
 # plugins
 # https://plugins.gradle.org/plugin/org.jetbrains.kotlin.jvm
 # https://plugins.jetbrains.com/docs/intellij/using-kotlin.html#stdlib-miscellaneous
-kotlin = "2.2.20"
+kotlin = "2.4.0"
 # https://plugins.gradle.org/plugin/org.jetbrains.changelog
 changelog = "2.5.0"
 # Dependency: https://plugins.gradle.org/plugin/org.openapi.generator

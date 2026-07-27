@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,7 +18,6 @@
 
 package sap.commerce.toolset.typeSystem.ui.components
 
-import com.intellij.ide.IdeBundle
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Disposer
@@ -26,6 +25,7 @@ import com.intellij.ui.OnePixelSplitter
 import com.intellij.ui.PopupHandler
 import com.intellij.ui.components.JBPanelWithEmptyText
 import com.intellij.ui.components.JBScrollPane
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.typeSystem.meta.TSGlobalMetaModel
 import sap.commerce.toolset.typeSystem.settings.state.ChangeType
 import sap.commerce.toolset.typeSystem.ui.forms.*
@@ -43,7 +43,7 @@ class TSTreePanel(
 ) : OnePixelSplitter(false, 0.25f), Disposable {
 
     val tree: TSTree = TSTree(myProject).apply { registerListeners(this) }
-    private val myDefaultPanel = JBPanelWithEmptyText().withEmptyText(IdeBundle.message("empty.text.nothing.selected"))
+    private val myDefaultPanel = JBPanelWithEmptyText().withEmptyText(i18n("empty.text.nothing.selected"))
     private val myMetaItemView: TSMetaItemView by lazy { TSMetaItemView(myProject) }
     private val myMetaEnumView: TSMetaEnumView by lazy { TSMetaEnumView(myProject) }
     private val myMetaAtomicView: TSMetaAtomicView by lazy { TSMetaAtomicView(myProject) }

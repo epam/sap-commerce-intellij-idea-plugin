@@ -38,7 +38,7 @@ dependencies {
     implementation(libs.dtdparser)
     intellijPlatform {
         intellijIdea(properties("intellij.version")) {
-            useInstaller = false
+            useInstaller = true
         }
 
         bundledPlugins(

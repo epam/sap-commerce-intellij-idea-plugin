@@ -2,7 +2,7 @@
 
 ## Project
 IntelliJ IDEA plugin · id `com.intellij.idea.plugin.sap.commerce` · marketplace `12867`
-Kotlin (K2) · JDK 21 (JetBrains runtime) · IntelliJ Platform Gradle Plugin 2.x
+Kotlin (K2) · JDK 25 (JetBrains runtime) · IntelliJ Platform Gradle Plugin 2.x
 
 ## Build & Test
 ```bash

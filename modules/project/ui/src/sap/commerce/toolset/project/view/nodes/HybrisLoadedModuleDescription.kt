@@ -16,31 +16,20 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-fun properties(key: String) = providers.gradleProperty(key)
+package sap.commerce.toolset.project.view.nodes
 
-plugins {
-    id("org.jetbrains.intellij.platform.module")
-    alias(libs.plugins.kotlin) // Kotlin support
-}
+import com.intellij.openapi.module.LoadedModuleDescription
+import com.intellij.openapi.module.Module
+import com.intellij.openapi.roots.ModuleRootManager
 
-sourceSets {
-    main {
-        java.srcDirs("src")
-        resources.srcDirs("resources")
-    }
-    test {
-        java.srcDirs("tests")
-    }
-}
+class HybrisLoadedModuleDescription(private val module: Module): LoadedModuleDescription {
+    override fun getModule(): Module = module
 
-dependencies {
-    implementation(project(":shared-core"))
-    implementation(project(":shared-ui"))
-    implementation(project(":welcomescreen-core"))
+    override fun getName(): String = module.name
 
-    intellijPlatform {
-        intellijIdea(properties("intellij.version")) {
-            useInstaller = true
-        }
-    }
+    override fun getDependencyModuleNames(): List<String> = ModuleRootManager.getInstance(module).dependencyModuleNames.asList()
+
+    override fun equals(other: Any?): Boolean = other is HybrisLoadedModuleDescription && module == other.module
+
+    override fun hashCode(): Int = module.hashCode()
 }

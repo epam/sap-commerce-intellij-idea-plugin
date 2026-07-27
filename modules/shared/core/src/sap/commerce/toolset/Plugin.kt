@@ -18,8 +18,8 @@
 
 package sap.commerce.toolset
 
-import com.intellij.ide.plugins.IdeaPluginDescriptor
-import com.intellij.ide.plugins.PluginManagerCore
+import com.intellij.ide.plugins.PluginDetailsService
+import com.intellij.ide.plugins.PluginDetailsService.PluginDetails
 import com.intellij.openapi.extensions.PluginId
 import com.intellij.openapi.project.Project
 import com.intellij.util.application
@@ -55,13 +55,15 @@ enum class Plugin(val id: String, val url: String? = null, val dependencies: Set
     val pluginId: PluginId
         get() = PluginId.getId(id)
 
-    val pluginDescriptor: IdeaPluginDescriptor?
+    val details: PluginDetails?
         @Nullable
-        get() = PluginManagerCore.getPlugin(pluginId)
+        get() = PluginDetailsService.getInstance().findDetails(pluginId)
 
     fun isActive() = isActive(pluginId) && dependencies.all { isActive(it.pluginId) }
 
-    private fun isActive(pluginId: PluginId): Boolean = PluginManagerCore.isLoaded(pluginId) && !PluginManagerCore.isDisabled(pluginId)
+    private fun isActive(pluginId: PluginId): Boolean = with (PluginDetailsService.getInstance()) {
+        isLoaded(pluginId) && !isDisabled(pluginId)
+    }
 
     fun <T> ifActive(operation: () -> T): T? = if (isActive()) operation() else null
 

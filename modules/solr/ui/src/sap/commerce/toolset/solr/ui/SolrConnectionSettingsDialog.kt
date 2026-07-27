@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -21,10 +21,10 @@ package sap.commerce.toolset.solr.ui
 import com.intellij.openapi.project.Project
 import com.intellij.ui.EnumComboBoxModel
 import com.intellij.ui.JBIntSpinner
-import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.components.JBPasswordField
 import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.*
+import com.intellij.ui.dsl.listCellRenderer.textListCellRenderer
 import sap.commerce.toolset.exec.settings.state.ExecConnectionScope
 import sap.commerce.toolset.exec.ui.ConnectionSettingsDialog
 import sap.commerce.toolset.solr.exec.SolrExecClient
@@ -86,7 +86,7 @@ class SolrConnectionSettingsDialog(
                 .comment("Non-personal settings will be stored in the <strong>hybrisProjectSettings.xml</strong> and can be shared via VCS.")
             comboBox(
                 EnumComboBoxModel(ExecConnectionScope::class.java),
-                renderer = SimpleListCellRenderer.create("?") { it.title }
+                renderer = textListCellRenderer("?") { it.title }
             )
                 .bindItem(mutable::scope.toNullableProperty(ExecConnectionScope.PROJECT_PERSONAL))
         }.layout(RowLayout.PARENT_GRID)

@@ -31,9 +31,9 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
 import com.intellij.ui.JBIntSpinner
 import com.intellij.ui.MutableCollectionComboBoxModel
-import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.dsl.builder.whenItemSelectedFromUi
+import com.intellij.ui.dsl.listCellRenderer.textListCellRenderer
 import com.intellij.util.asSafely
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.Notifications
@@ -66,7 +66,7 @@ class HybrisSolrSearchConsole(project: Project) : HybrisConsole<SolrQueryExecCon
             row {
                 coresComboBox = comboBox(
                     model = coresComboBoxModel,
-                    renderer = SimpleListCellRenderer.create("...") { cell -> cell.core }
+                    renderer = textListCellRenderer("...") { cell -> cell.core }
                 )
                     .label("Select core: ")
                     .whenItemSelectedFromUi(this@HybrisSolrSearchConsole) { setDocsLabelCount(it) }

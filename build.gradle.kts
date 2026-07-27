@@ -37,13 +37,16 @@ plugins {
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
+        languageVersion = JavaLanguageVersion.of(25)
         vendor = JvmVendorSpec.JETBRAINS
     }
 }
 
 kotlin {
-    jvmToolchain(21)
+    jvmToolchain {
+        languageVersion = JavaLanguageVersion.of(25)
+        vendor = JvmVendorSpec.JETBRAINS
+    }
 }
 
 sourceSets {
@@ -234,9 +237,10 @@ dependencies {
         // https://plugins.jetbrains.com/docs/intellij/tools-intellij-platform-gradle-plugin.html#dependenciesLocalPlatform
         // local("/Users/<user>/Applications/IntelliJ IDEA Community Edition 2025.1.4.1.app")
         intellijIdea(properties("intellij.version")) {
-            useInstaller = false
+            useInstaller = true
         }
 
+        jetbrainsRuntime()
         pluginVerifier()
 
         rootProject.childProjects.keys
@@ -249,10 +253,12 @@ dependencies {
             "intellij.grid.impl",
             "intellij.spellchecker",
             "intellij.spellchecker.xml",
+            "intellij.platform.ui.jcef"
         )
 
         // printBundledPlugins for bundled plugins
         bundledPlugins(
+            "com.intellij.modules.jcef",
             "intellij.grid.plugin",
             "com.intellij.java",
             "org.jetbrains.java.decompiler",

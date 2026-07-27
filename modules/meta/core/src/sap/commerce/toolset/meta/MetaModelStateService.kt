@@ -25,7 +25,6 @@ import com.intellij.openapi.project.Project
 import com.intellij.platform.ide.progress.withBackgroundProgress
 import com.intellij.platform.util.progress.reportProgressScope
 import com.intellij.platform.util.progress.withProgressText
-import com.intellij.util.indexing.IndexingBundle
 import com.intellij.util.xml.DomElement
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
@@ -33,6 +32,7 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import sap.commerce.toolset.i18n
 
 abstract class MetaModelStateService<G, M, D : DomElement>(
     protected val project: Project,
@@ -79,7 +79,7 @@ abstract class MetaModelStateService<G, M, D : DomElement>(
         coroutineScope.launch {
             val newState = withBackgroundProgress(project, "Re-building $systemName System...", true) {
 
-                val collectedDependencies = withProgressText(IndexingBundle.message("progress.indexing.waiting.for.scanning.to.complete")) {
+                val collectedDependencies = withProgressText(i18n("progress.indexing.waiting.for.scanning.to.complete")) {
                     metaCollector.collectDependencies()
                 }
 

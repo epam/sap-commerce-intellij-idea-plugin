@@ -35,9 +35,12 @@ import com.intellij.psi.PsiPackage
 import com.intellij.psi.SmartPointerManager
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.startOffset
-import com.intellij.ui.*
+import com.intellij.ui.AnimatedIcon
+import com.intellij.ui.EditorNotificationPanel
+import com.intellij.ui.EnumComboBoxModel
+import com.intellij.ui.InlineBanner
 import com.intellij.ui.dsl.builder.*
-import com.intellij.ui.dsl.builder.Cell
+import com.intellij.ui.dsl.listCellRenderer.listCellRenderer
 import kotlinx.coroutines.*
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.Notifications
@@ -213,11 +216,9 @@ internal suspend fun lazyLoggerDetails(
 
 internal fun Row.logLevelComboBox(): Cell<ComboBox<CxLogLevel>> = comboBox(
     model = EnumComboBoxModel(CxLogLevel::class.java),
-    renderer = SimpleListCellRenderer.create { label, value, _ ->
-        if (value != null) {
-            label.icon = value.icon
-            label.text = value.name
-        }
+    renderer = listCellRenderer("?") {
+        icon(value.icon)
+        text(value.name)
     }
 )
 

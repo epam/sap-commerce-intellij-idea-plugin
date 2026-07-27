@@ -26,12 +26,12 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.wm.ToolWindowManager
-import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.components.JBTabbedPane
 import com.intellij.ui.dsl.builder.Align
 import com.intellij.ui.dsl.builder.BottomGap
 import com.intellij.ui.dsl.builder.TopGap
 import com.intellij.ui.dsl.builder.panel
+import com.intellij.ui.dsl.listCellRenderer.listCellRenderer
 import com.intellij.util.asSafely
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisIcons
@@ -84,13 +84,9 @@ class CCv2ToolWindow(private val project: Project, parentDisposable: Disposable)
             row {
                 comboBox(
                     ccv2SubscriptionsModel,
-                    renderer = SimpleListCellRenderer.create { label, value, _ ->
-                        if (value != null) {
-                            label.icon = HybrisIcons.Module.CCV2
-                            label.text = value.presentableName
-                        } else {
-                            label.text = "-- all subscriptions --"
-                        }
+                    renderer = listCellRenderer("-- all subscriptions --") {
+                        icon(HybrisIcons.Module.CCV2)
+                        text(value.presentableName)
                     }
                 )
                     .label("Subscription:")

@@ -21,9 +21,9 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.ui.EnumComboBoxModel
-import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.UIBundle
 import com.intellij.ui.dsl.builder.*
+import com.intellij.ui.dsl.listCellRenderer.textListCellRenderer
 import com.intellij.util.ui.JBUI
 import sap.commerce.toolset.groovy.exec.GroovyExecService
 import sap.commerce.toolset.groovy.exec.context.GroovyExecContext
@@ -54,7 +54,7 @@ class GroovyExecutionContextSettingsAction : ExecutionContextSettingsAction<Groo
         row {
             comboBox(
                 model = EnumComboBoxModel(GroovyExecMode::class.java),
-                renderer = SimpleListCellRenderer.create("...") { value -> value.presentationText }
+                renderer = textListCellRenderer("...") { value -> value.presentationText }
             )
                 .label("Exec mode:")
                 .align(AlignX.FILL)
@@ -72,7 +72,7 @@ class GroovyExecutionContextSettingsAction : ExecutionContextSettingsAction<Groo
         row {
             comboBox(
                 model = EnumComboBoxModel(GroovyExecExceptionHandling::class.java),
-                renderer = SimpleListCellRenderer.create("...") { value -> value.presentationText }
+                renderer = textListCellRenderer("...") { value -> value.presentationText }
             )
                 .label("Exception handling:")
                 .comment("Used in case of Template exec mode.")

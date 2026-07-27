@@ -32,7 +32,7 @@ interface ModuleDescriptor : Comparable<ModuleDescriptor> {
     var readonly: Boolean
 
     val icon: Icon
-        get() = type.icon
+        get() = type.lazyIcon()
 
     val extensionDescriptor: ExtensionDescriptor
     fun ideaModuleName(): String = (if (groupNames.isEmpty()) "" else groupNames.joinToString(separator = ".", postfix = ".")) + name

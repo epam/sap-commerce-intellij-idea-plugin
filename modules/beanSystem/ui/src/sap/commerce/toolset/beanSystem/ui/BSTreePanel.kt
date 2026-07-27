@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,7 +18,6 @@
 
 package sap.commerce.toolset.beanSystem.ui
 
-import com.intellij.ide.IdeBundle
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Disposer
@@ -32,6 +31,7 @@ import sap.commerce.toolset.beanSystem.ui.forms.BSMetaBeanView
 import sap.commerce.toolset.beanSystem.ui.forms.BSMetaEnumView
 import sap.commerce.toolset.beanSystem.ui.tree.BSTree
 import sap.commerce.toolset.beanSystem.ui.tree.nodes.*
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.ui.addTreeModelListener
 import sap.commerce.toolset.ui.addTreeSelectionListener
 import sap.commerce.toolset.ui.event.TreeModelListener
@@ -44,7 +44,7 @@ class BSTreePanel(
 ) : OnePixelSplitter(false, 0.25f), Disposable {
 
     val tree: BSTree = BSTree(myProject).apply { registerListeners(this) }
-    private val myDefaultPanel = JBPanelWithEmptyText().withEmptyText(IdeBundle.message("empty.text.nothing.selected"))
+    private val myDefaultPanel = JBPanelWithEmptyText().withEmptyText(i18n("empty.text.nothing.selected"))
     private val myMetaEnumView: BSMetaEnumView by lazy { BSMetaEnumView(myProject) }
     private val myMetaBeanView: BSMetaBeanView by lazy { BSMetaBeanView(myProject) }
 

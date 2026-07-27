@@ -25,10 +25,10 @@ import com.intellij.openapi.options.ConfigurableProvider
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
 import com.intellij.openapi.ui.DialogPanel
-import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.components.JBPasswordField
 import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.*
+import com.intellij.ui.dsl.listCellRenderer.listCellRenderer
 import com.intellij.util.asSafely
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.ccv2.CCv2Service
@@ -100,13 +100,9 @@ class CCv2ProjectSettingsConfigurableProvider(private val project: Project) : Co
                 row {
                     activeCCv2SubscriptionComboBox = comboBox(
                         subscriptionsComboBoxModel,
-                        renderer = SimpleListCellRenderer.create { label, value, _ ->
-                            if (value != null) {
-                                label.icon = HybrisIcons.Module.CCV2
-                                label.text = value.presentableName
-                            } else {
-                                label.text = "-- all subscriptions --"
-                            }
+                        renderer = listCellRenderer("-- all subscriptions --") {
+                            icon(HybrisIcons.Module.CCV2)
+                            text(value.presentableName)
                         }
                     )
                         .onIsModified { originalActiveSubscription?.uuid != activeCCv2SubscriptionComboBox.selectedItem?.asSafely<CCv2Subscription>()?.uuid }
@@ -135,7 +131,7 @@ class CCv2ProjectSettingsConfigurableProvider(private val project: Project) : Co
                         cell(subscriptionListPanel)
                             .onIsModified {
                                 subscriptionListPanel.data.size != originalSubscriptionsSize
-                                    || subscriptionListPanel.data.any { it.modified }
+                                        || subscriptionListPanel.data.any { it.modified }
                             }
                             .align(AlignX.FILL)
                     }

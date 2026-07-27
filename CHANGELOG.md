@@ -1,3 +1,11 @@
+## [2026.2.0]
+
+<cite>Release contributors</code>
+- 1 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.2.0+author%3Amlytvyn+is%3Apr)
+
+### Other enhancements
+- Compatibility release for IntelliJ IDEA `2026.2.0.1` [#1983](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1983)
+
 ## [2026.0.15]
 
 <cite>Release contributors</code>
