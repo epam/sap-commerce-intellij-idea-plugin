@@ -43,11 +43,11 @@ import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
 import com.intellij.util.application
 import com.intellij.util.asSafely
-import com.intellij.util.indexing.IndexingBundle
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.extensioninfo.EiConstants
+import sap.commerce.toolset.i18n
 import java.io.File
 import java.util.*
 import java.util.regex.Pattern
@@ -67,7 +67,7 @@ class PropertyService(private val project: Project, private val coroutineScope: 
 
     fun initCache() = coroutineScope.launch {
         withBackgroundProgress(project, "Init properties cache", true) {
-            withProgressText(IndexingBundle.message("progress.indexing.waiting.for.scanning.to.complete")) {
+            withProgressText(i18n("progress.indexing.waiting.for.scanning.to.complete")) {
                 smartReadAction(project) { findAllIProperties() }
             }
         }
