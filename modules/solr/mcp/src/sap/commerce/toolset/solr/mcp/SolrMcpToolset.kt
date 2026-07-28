@@ -42,7 +42,7 @@ class SolrMcpToolset : McpToolset {
         core: String,
         @McpDescription("Maximum number of rows to return. Default is 10, max is 500")
         rows: Int = 10,
-        @McpDescription(McpConstants.Descriptions.SOLR_CONNECTION_NAME)
+        @McpDescription(SolrMcpConstants.Descriptions.CONNECTION_NAME)
         connectionName: String? = null,
         @McpDescription(McpConstants.Descriptions.OUTPUT_FORMAT)
         outputFormat: String = McpConstants.Formats.JSON,
@@ -60,7 +60,7 @@ class SolrMcpToolset : McpToolset {
         |Requires a configured Solr connection with valid credentials."""
     )
     suspend fun solrListCores(
-        @McpDescription(McpConstants.Descriptions.SOLR_CONNECTION_NAME)
+        @McpDescription(SolrMcpConstants.Descriptions.CONNECTION_NAME)
         connectionName: String? = null,
         @McpDescription(McpConstants.Descriptions.OUTPUT_FORMAT)
         outputFormat: String = McpConstants.Formats.JSON,

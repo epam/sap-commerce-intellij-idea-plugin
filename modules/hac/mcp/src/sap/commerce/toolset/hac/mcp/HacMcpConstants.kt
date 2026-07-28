@@ -16,18 +16,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.ai.mcp
+package sap.commerce.toolset.hac.mcp
 
-object McpConstants {
-
-    object Formats {
-        const val JSON = "JSON"
-        const val FILE = "FILE"
-    }
+object HacMcpConstants {
 
     object Descriptions {
-        const val OUTPUT_FORMAT = """Output format for the response. Supported formats: JSON, FILE.
-            |Use FILE to write the result to a temporary file and return its absolute path — avoids inline token limits for large responses.
-            |Default: JSON."""
+        const val CONNECTION_NAME = "Optional HAC connection name. Uses the active connection if not specified"
+        const val CONNECTION_NAME_AUTH = "Optional HAC connection name. Uses the active connection if not specified. Must refer to a connection with AUTOMATIC authentication; MANUAL (browser) connections are rejected"
     }
 }

@@ -24,6 +24,7 @@ import com.intellij.mcpserver.annotations.McpTool
 import sap.commerce.toolset.ai.mcp.McpConstants
 import sap.commerce.toolset.ai.mcp.map
 import sap.commerce.toolset.ai.mcp.resolveMapper
+import sap.commerce.toolset.hac.mcp.HacMcpConstants
 import sap.commerce.toolset.impex.mcp.context.ImpExExecMcpRequest
 import sap.commerce.toolset.impex.mcp.context.ImpExValidationMcpRequest
 
@@ -47,7 +48,7 @@ class ImpExMcpToolset : McpToolset {
         content: String,
         @McpDescription("Whether to only validate the ImpEx without importing. Default is false (import)")
         validate: Boolean = false,
-        @McpDescription(McpConstants.Descriptions.HAC_CONNECTION_NAME)
+        @McpDescription(HacMcpConstants.Descriptions.CONNECTION_NAME)
         connectionName: String? = null,
         @McpDescription(McpConstants.Descriptions.OUTPUT_FORMAT)
         outputFormat: String = McpConstants.Formats.JSON,

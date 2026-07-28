@@ -28,6 +28,7 @@ import sap.commerce.toolset.flexibleSearch.exec.FlexibleSearchExecConstants
 import sap.commerce.toolset.flexibleSearch.exec.context.QueryMode
 import sap.commerce.toolset.flexibleSearch.mcp.context.FxSExecMcpRequest
 import sap.commerce.toolset.flexibleSearch.mcp.context.FxSTransformMcpRequest
+import sap.commerce.toolset.hac.mcp.HacMcpConstants
 
 class FxSMcpToolset : McpToolset {
 
@@ -51,7 +52,7 @@ class FxSMcpToolset : McpToolset {
         user: String? = null,
         @McpDescription(FxSMcpConstants.Descriptions.TIMEOUT)
         timeout: Int? = null,
-        @McpDescription(McpConstants.Descriptions.HAC_CONNECTION_NAME)
+        @McpDescription(HacMcpConstants.Descriptions.CONNECTION_NAME)
         connectionName: String? = null,
         @McpDescription(McpConstants.Descriptions.OUTPUT_FORMAT)
         outputFormat: String = McpConstants.Formats.JSON,
@@ -82,7 +83,7 @@ class FxSMcpToolset : McpToolset {
         user: String? = null,
         @McpDescription(FxSMcpConstants.Descriptions.TIMEOUT)
         timeout: Int? = null,
-        @McpDescription(McpConstants.Descriptions.HAC_CONNECTION_NAME)
+        @McpDescription(HacMcpConstants.Descriptions.CONNECTION_NAME)
         connectionName: String? = null,
         @McpDescription(McpConstants.Descriptions.OUTPUT_FORMAT)
         outputFormat: String = McpConstants.Formats.JSON,
@@ -119,7 +120,7 @@ class FxSMcpToolset : McpToolset {
         user: String? = null,
         @McpDescription(FxSMcpConstants.Descriptions.TIMEOUT)
         timeout: Int? = null,
-        @McpDescription(McpConstants.Descriptions.HAC_CONNECTION_NAME)
+        @McpDescription(HacMcpConstants.Descriptions.CONNECTION_NAME)
         connectionName: String? = null,
         @McpDescription("Optional flag to include all unique attributes from the type. Default is 'false'")
         includeTypeSystemUnique: Boolean = false,

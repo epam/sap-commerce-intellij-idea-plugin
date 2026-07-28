@@ -26,6 +26,7 @@ import sap.commerce.toolset.ai.mcp.map
 import sap.commerce.toolset.ai.mcp.resolveMapper
 import sap.commerce.toolset.groovy.mcp.context.GroovyExecMcpRequest
 import sap.commerce.toolset.groovy.mcp.context.GroovyTransformMcpRequest
+import sap.commerce.toolset.hac.mcp.HacMcpConstants
 
 class GroovyMcpToolset : McpToolset {
 
@@ -41,7 +42,7 @@ class GroovyMcpToolset : McpToolset {
         script: String,
         @McpDescription("Whether to commit the transaction after execution. Default is false (rollback)")
         commit: Boolean = false,
-        @McpDescription(McpConstants.Descriptions.HAC_CONNECTION_NAME)
+        @McpDescription(HacMcpConstants.Descriptions.CONNECTION_NAME)
         connectionName: String? = null,
         @McpDescription(McpConstants.Descriptions.OUTPUT_FORMAT)
         outputFormat: String = McpConstants.Formats.JSON,
