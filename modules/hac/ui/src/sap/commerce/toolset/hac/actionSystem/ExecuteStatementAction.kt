@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -23,6 +23,7 @@ import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
+import com.intellij.openapi.actionSystem.ex.TooltipDescriptionProvider
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.fileEditor.FileEditor
 import com.intellij.openapi.project.DumbAware
@@ -42,7 +43,7 @@ abstract class ExecuteStatementAction<C : HybrisConsole<out ExecContext>, F : Fi
     private val name: String,
     private val description: String,
     private val icon: Icon
-) : AnAction(), DumbAware {
+) : AnAction(), DumbAware, TooltipDescriptionProvider {
 
     abstract fun actionPerformed(e: AnActionEvent, project: Project, content: String)
     abstract fun fileEditor(e: AnActionEvent): F?

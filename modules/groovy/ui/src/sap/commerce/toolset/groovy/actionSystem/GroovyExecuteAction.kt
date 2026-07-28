@@ -126,12 +126,14 @@ class GroovyExecuteAction : ExecuteStatementAction<HybrisGroovyConsole, GroovySp
         when (transactionMode) {
             TransactionMode.ROLLBACK -> {
                 e.presentation.icon = HybrisIcons.Console.Actions.EXECUTE_ROLLBACK
-                e.presentation.text = "Execute Groovy Script<br/>Commit Mode <strong><font color='#C75450'>OFF</font></strong>"
+                e.presentation.text = "Execute Groovy Script"
+                e.presentation.description = "Commit Mode <strong><font color='#C75450'>OFF</font></strong>"
             }
 
             TransactionMode.COMMIT -> {
                 e.presentation.icon = HybrisIcons.Console.Actions.EXECUTE
-                e.presentation.text = "Execute Groovy Script<br/>Commit Mode <strong><font color='#57965C'>ON</font></strong>"
+                e.presentation.text = "Execute Groovy Script"
+                e.presentation.description = "Commit Mode <strong><font color='#57965C'>ON</font></strong>"
             }
         }
     }
