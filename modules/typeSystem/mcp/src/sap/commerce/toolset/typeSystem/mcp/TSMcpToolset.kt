@@ -59,7 +59,7 @@ class TSMcpToolset : McpToolset {
             |Default: TYPES. Prefer the smallest level that answers the question. Attributes are the type's DECLARED attributes, not inherited ones."""
         )
         detail: String = ItemTypeDetail.TYPES.name,
-        @McpDescription("Output format for the response. Supported formats: JSON. Default: JSON.")
+        @McpDescription(McpConstants.Descriptions.OUTPUT_FORMAT)
         outputFormat: String = McpConstants.Formats.JSON,
     ): String {
         val mapper = resolveMapper(outputFormat)
@@ -90,7 +90,7 @@ class TSMcpToolset : McpToolset {
             |Omit to include atomic types from all extensions."""
         )
         extensions: String? = null,
-        @McpDescription("Output format for the response. Supported formats: JSON. Default: JSON.")
+        @McpDescription(McpConstants.Descriptions.OUTPUT_FORMAT)
         outputFormat: String = McpConstants.Formats.JSON,
     ): String {
         val mapper = resolveMapper(outputFormat)
@@ -120,7 +120,7 @@ class TSMcpToolset : McpToolset {
             |Omit to include collection types from all extensions."""
         )
         extensions: String? = null,
-        @McpDescription("Output format for the response. Supported formats: JSON. Default: JSON.")
+        @McpDescription(McpConstants.Descriptions.OUTPUT_FORMAT)
         outputFormat: String = McpConstants.Formats.JSON,
     ): String {
         val mapper = resolveMapper(outputFormat)
@@ -157,7 +157,7 @@ class TSMcpToolset : McpToolset {
             |Default: TYPES. Prefer the smallest level that answers the question. Dynamic enums may declare no values in the local model."""
         )
         detail: String = EnumTypeDetail.TYPES.name,
-        @McpDescription("Output format for the response. Supported formats: JSON. Default: JSON.")
+        @McpDescription(McpConstants.Descriptions.OUTPUT_FORMAT)
         outputFormat: String = McpConstants.Formats.JSON,
     ): String {
         val mapper = resolveMapper(outputFormat)
@@ -188,7 +188,7 @@ class TSMcpToolset : McpToolset {
             |Omit to include map types from all extensions."""
         )
         extensions: String? = null,
-        @McpDescription("Output format for the response. Supported formats: JSON. Default: JSON.")
+        @McpDescription(McpConstants.Descriptions.OUTPUT_FORMAT)
         outputFormat: String = McpConstants.Formats.JSON,
     ): String {
         val mapper = resolveMapper(outputFormat)
@@ -227,7 +227,7 @@ class TSMcpToolset : McpToolset {
             |Default: VALUES."""
         )
         enumDetail: String = EnumTypeDetail.VALUES.name,
-        @McpDescription("Output format for the response. Supported formats: JSON. Default: JSON.")
+        @McpDescription(McpConstants.Descriptions.OUTPUT_FORMAT)
         outputFormat: String = McpConstants.Formats.JSON,
     ): String {
         val mapper = resolveMapper(outputFormat)
@@ -258,7 +258,7 @@ class TSMcpToolset : McpToolset {
             |Omit to include relation types from all extensions."""
         )
         extensions: String? = null,
-        @McpDescription("Output format for the response. Supported formats: JSON. Default: JSON.")
+        @McpDescription(McpConstants.Descriptions.OUTPUT_FORMAT)
         outputFormat: String = McpConstants.Formats.JSON,
     ): String {
         val mapper = resolveMapper(outputFormat)

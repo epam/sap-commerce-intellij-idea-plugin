@@ -49,7 +49,7 @@ class LoggingMcpToolset : McpToolset {
             |Omit to return all loggers."""
         )
         filter: String? = null,
-        @McpDescription("Output format for the response. Supported formats: JSON. Default: JSON.")
+        @McpDescription(McpConstants.Descriptions.OUTPUT_FORMAT)
         outputFormat: String = McpConstants.Formats.JSON,
     ): String {
         val mapper = resolveMapper(outputFormat)
@@ -74,7 +74,7 @@ class LoggingMcpToolset : McpToolset {
         level: String,
         @McpDescription("Optional HAC connection name. Uses the active connection if not specified. Must refer to a connection with AUTOMATIC authentication; MANUAL (browser) connections are rejected")
         connectionName: String? = null,
-        @McpDescription("Output format for the response. Supported formats: JSON. Default: JSON.")
+        @McpDescription(McpConstants.Descriptions.OUTPUT_FORMAT)
         outputFormat: String = McpConstants.Formats.JSON,
     ): String {
         val mapper = resolveMapper(outputFormat)

@@ -38,7 +38,7 @@ class HacMcpToolset : McpToolset {
         |IMPORTANT: connections with authMode "MANUAL" are NOT supported for LLM/MCP usage right now (supportedByMcp = false), because they require an interactive browser login that the model cannot perform; calling other HAC tools against such a connection will fail. Support for MANUAL authentication is planned for a later version of the plugin."""
     )
     suspend fun listHacConnections(
-        @McpDescription("Output format for the response. Supported formats: JSON. Default: JSON.")
+        @McpDescription(McpConstants.Descriptions.OUTPUT_FORMAT)
         outputFormat: String = McpConstants.Formats.JSON,
     ): String {
         val mapper = resolveMapper(outputFormat)
