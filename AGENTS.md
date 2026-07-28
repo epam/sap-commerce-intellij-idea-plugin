@@ -80,6 +80,9 @@ Read each applicable skill **completely and sequentially** before opening any fi
 
 Because PRs are squash merged: intermediate commits are for convenience; do not create artificial micro-commits.
 
+## Maintenance
+Whenever `AGENTS.md` is modified, update the agent's persistent memory (`MEMORY.md`) to reflect the change so that in-context guidance stays consistent with the file.
+
 ## Code Quality
 - No secrets, credentials, or local env files.
 - No hand-editing `gen/` files.
