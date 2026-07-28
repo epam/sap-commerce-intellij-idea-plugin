@@ -28,12 +28,12 @@ import org.apache.http.HttpStatus
 import org.jetbrains.plugins.groovy.GroovyLanguage
 import sap.commerce.toolset.groovy.GroovyConstants
 import sap.commerce.toolset.groovy.exec.GroovyExecClient
-import sap.commerce.toolset.groovy.psi.GroovyElementFactory
 import sap.commerce.toolset.groovy.exec.context.GroovyExecContext
 import sap.commerce.toolset.groovy.mcp.context.GroovyExecMcpRequest
 import sap.commerce.toolset.groovy.mcp.context.GroovyTransformMcpRequest
 import sap.commerce.toolset.groovy.mcp.dto.GroovyExecResultDto
 import sap.commerce.toolset.groovy.mcp.dto.GroovyTransformResultDto
+import sap.commerce.toolset.groovy.psi.GroovyElementFactory
 import sap.commerce.toolset.transform.Transformer
 
 @Service(Service.Level.PROJECT)
@@ -76,7 +76,7 @@ class GroovyMcpService(private val project: Project) {
 
         psiFile.putUserData(GroovyConstants.Transform.SCRIPT_NAME, request.scriptName)
 
-        val result = transformer.transform(psiFile)
+        val result = transformer.transform(project, psiFile)
 
         return GroovyTransformResultDto(
             success = true,

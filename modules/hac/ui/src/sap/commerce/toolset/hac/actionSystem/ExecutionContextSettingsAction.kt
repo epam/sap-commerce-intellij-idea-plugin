@@ -21,6 +21,7 @@ package sap.commerce.toolset.hac.actionSystem
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
+import com.intellij.openapi.actionSystem.ex.TooltipDescriptionProvider
 import com.intellij.openapi.project.DumbAwareAction
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogPanel
@@ -31,7 +32,7 @@ import sap.commerce.toolset.exec.context.ExecContext
 import sap.commerce.toolset.ifNotFromSearchPopup
 import java.awt.event.KeyEvent
 
-abstract class ExecutionContextSettingsAction<M : ExecContext.Settings.Mutable> : DumbAwareAction() {
+abstract class ExecutionContextSettingsAction<M : ExecContext.Settings.Mutable> : DumbAwareAction(), TooltipDescriptionProvider {
 
     protected abstract fun previewSettings(e: AnActionEvent, project: Project, virtualFile: VirtualFile): String
     protected abstract fun settings(e: AnActionEvent, project: Project, virtualFile: VirtualFile): M
@@ -45,7 +46,8 @@ abstract class ExecutionContextSettingsAction<M : ExecContext.Settings.Mutable> 
         val virtualFile = e.getData(CommonDataKeys.VIRTUAL_FILE) ?: return@ifNotFromSearchPopup
 
         e.presentation.icon = HybrisIcons.Connection.CONTEXT
-        e.presentation.text = "Execution Context Settings<br>" + previewSettings(e, project, virtualFile)
+        e.presentation.text = "Execution Context Settings"
+        e.presentation.description = previewSettings(e, project, virtualFile)
     }
 
     override fun actionPerformed(e: AnActionEvent) {

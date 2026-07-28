@@ -1,13 +1,16 @@
 ## [2026.2.1]
 
 <cite>Release contributors</code>
-- 2 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.2.1+author%3Amlytvyn+is%3Apr)
+- 3 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.2.1+author%3Amlytvyn+is%3Apr)
 
 ### `CCv2` enhancements
 - Show informative message when authentication failed [#1984](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1984)
 
 ### `Spring` enhancements
 - Improved "Simple Spring" and added parent beans resolution in Non-Ultimate edition [#1985](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1985)
+
+### `Other` enhancements
+- Updated tooltip according to new 2026.2 API to render html-description [#1986](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1986)
 
 ## [2026.2.0]
 

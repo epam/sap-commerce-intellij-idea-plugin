@@ -22,6 +22,7 @@ import com.intellij.ide.DataManager
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.actionSystem.ex.ActionUtil
 import com.intellij.openapi.actionSystem.ex.CustomComponentAction
+import com.intellij.openapi.util.Disposer
 import com.intellij.ui.GotItTooltip
 import sap.commerce.toolset.GotItTooltips
 import sap.commerce.toolset.actionSystem.triggerAction
@@ -29,6 +30,7 @@ import sap.commerce.toolset.groovy.exec.GroovyExecService
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.settings.state.TransactionMode
 import sap.commerce.toolset.ui.ActionButtonWithTextAndDescriptionComponent
+import java.awt.event.HierarchyEvent
 
 class GroovyTransactionModeActionGroup : DefaultActionGroup(), CustomComponentAction {
 
@@ -54,7 +56,13 @@ class GroovyTransactionModeActionGroup : DefaultActionGroup(), CustomComponentAc
         place = place,
         title = "Transaction Mode"
     )
-        .also {
+        .also { component ->
+            val disposable = Disposer.newDisposable()
+            component.addHierarchyListener { e ->
+                if (e.changeFlags and HierarchyEvent.DISPLAYABILITY_CHANGED.toLong() != 0L && !component.isDisplayable) {
+                    Disposer.dispose(disposable)
+                }
+            }
             GotItTooltip(
                 id = GotItTooltips.Groovy.TRANSACTION_MODE,
                 textSupplier = {
@@ -64,16 +72,16 @@ class GroovyTransactionModeActionGroup : DefaultActionGroup(), CustomComponentAc
                     <br>If you want to ensure that no modifications are persisted, switch the mode to ${icon(TransactionMode.ROLLBACK.icon)} ${code(TransactionMode.ROLLBACK.presentationText)}.
                     <br><br>Rollback is the default for newly opened editors, but this behavior can be adjusted in the ${
                         link("Groovy settings") {
-                            DataManager.getInstance().getDataContext(it).getData(CommonDataKeys.PROJECT)
+                            DataManager.getInstance().getDataContext(component).getData(CommonDataKeys.PROJECT)
                                 ?.triggerAction("hybris.groovy.openSettings")
                         }
                     }.
                 """.trimIndent()
                 },
-                parentDisposable = null
+                parentDisposable = disposable
             )
                 .withHeader("Transaction modes for Groovy!")
-                .show(it, GotItTooltip.BOTTOM_MIDDLE)
+                .show(component, GotItTooltip.BOTTOM_MIDDLE)
         }
 
 }

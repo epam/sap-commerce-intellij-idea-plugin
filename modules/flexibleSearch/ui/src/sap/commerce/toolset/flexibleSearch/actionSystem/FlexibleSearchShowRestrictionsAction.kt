@@ -26,6 +26,7 @@ import com.intellij.openapi.actionSystem.impl.ActionButton
 import com.intellij.openapi.application.EDT
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.util.Disposer
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.lastLeaf
@@ -51,6 +52,7 @@ import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import sap.commerce.toolset.settings.state.TransactionMode
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelStateService
 import java.awt.Dimension
+import java.awt.event.HierarchyEvent
 
 class FlexibleSearchShowRestrictionsAction : AnAction(
     "Show Search Restrictions",
@@ -149,7 +151,13 @@ class FlexibleSearchShowRestrictionsAction : AnAction(
     }
 
     override fun createCustomComponent(presentation: Presentation, place: String) = ActionButton(this, presentation, place, Dimension())
-        .also {
+        .also { component ->
+            val disposable = Disposer.newDisposable()
+            component.addHierarchyListener { e ->
+                if (e.changeFlags and HierarchyEvent.DISPLAYABILITY_CHANGED.toLong() != 0L && !component.isDisplayable) {
+                    Disposer.dispose(disposable)
+                }
+            }
             GotItTooltip(
                 id = GotItTooltips.FlexibleSearch.SEARCH_RESTRICTIONS,
                 textSupplier = {
@@ -158,16 +166,16 @@ class FlexibleSearchShowRestrictionsAction : AnAction(
                     <br><br>You can copy the detected restrictions as an ${code("ImpEx")} file or open them directly in a new Scratch File.
                     <br><br>A running SAP Commerce server and valid ${
                         link("connection configuration") {
-                            DataManager.getInstance().getDataContext(it).getData(CommonDataKeys.PROJECT)
+                            DataManager.getInstance().getDataContext(component).getData(CommonDataKeys.PROJECT)
                                 ?.triggerAction("sap.commerce.toolset.hac.openSettings")
                         }
                     } are required.
                 """.trimIndent()
                 },
-                parentDisposable = null
+                parentDisposable = disposable
             )
                 .withHeader("Search restrictions for FlexibleSearch!")
-                .show(it, GotItTooltip.BOTTOM_MIDDLE)
+                .show(component, GotItTooltip.BOTTOM_MIDDLE)
         }
 
     private fun showNoRestrictions(editor: Editor, userUid: String) {

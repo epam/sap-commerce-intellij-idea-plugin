@@ -20,6 +20,7 @@ package sap.commerce.toolset.groovy.transform
 
 import com.intellij.lang.Language
 import com.intellij.openapi.fileTypes.LanguageFileType
+import com.intellij.openapi.project.Project
 import org.jetbrains.plugins.groovy.GroovyLanguage
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile
 import sap.commerce.toolset.impex.file.ImpExFileType
@@ -39,9 +40,9 @@ class GroovyToImpExScriptTransformer : Transformer<GroovyFile> {
 
     override fun isApplicable(language: Language) = language === GroovyLanguage
 
-    override fun transform(psiElement: GroovyFile, onComplete: (TransformationResult) -> Unit) = GroovyImpExScriptTransformationService.getInstance(psiElement.project)
+    override fun transform(project: Project, psiElement: GroovyFile, onComplete: (TransformationResult) -> Unit) = GroovyImpExScriptTransformationService.getInstance(project)
         .transform(outputFileType, psiElement, onComplete)
 
-    override suspend fun transform(psiElement: GroovyFile): TransformationResult = GroovyImpExScriptTransformationService.getInstance(psiElement.project)
+    override suspend fun transform(project: Project, psiElement: GroovyFile): TransformationResult = GroovyImpExScriptTransformationService.getInstance(project)
         .transform(outputFileType, psiElement)
 }

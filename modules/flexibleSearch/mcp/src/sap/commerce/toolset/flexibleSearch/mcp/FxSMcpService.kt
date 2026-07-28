@@ -80,7 +80,7 @@ class FxSMcpService(private val project: Project) {
             psiFile.putUserData(FlexibleSearchExecConstants.Transform.EXEC_RESULTS, result)
         }
 
-        val transformationResult = transformer.transform(psiFile)
+        val transformationResult = transformer.transform(project, psiFile)
 
         return FxSExecResultDto(
             connectionName = connection.connectionName,
