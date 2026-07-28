@@ -41,17 +41,17 @@ class FxSMcpToolset : McpToolset {
     suspend fun executeFlexibleSearch(
         @McpDescription("FlexibleSearch query to execute, e.g. 'SELECT {pk}, {uid} FROM {User} WHERE {uid} = 'admin''")
         query: String,
-        @McpDescription("Maximum number of result rows to return. Default is 200")
+        @McpDescription(FxSMcpConstants.Descriptions.MAX_COUNT)
         maxCount: Int = FlexibleSearchExecConstants.Defaults.MAX_COUNT,
-        @McpDescription("Optional locale for the query. Default is 'en'")
+        @McpDescription(FxSMcpConstants.Descriptions.LOCALE)
         locale: String = FlexibleSearchExecConstants.Defaults.LOCALE,
-        @McpDescription("Optional data source for the query. Default is 'master'")
+        @McpDescription(FxSMcpConstants.Descriptions.DATA_SOURCE)
         dataSource: String = FlexibleSearchExecConstants.Defaults.DATA_SOURCE,
-        @McpDescription("Optional user to execute the query as. Default uses the current session user")
+        @McpDescription(FxSMcpConstants.Descriptions.USER)
         user: String? = null,
-        @McpDescription("Optional timeout. Default uses timeout of the connection")
+        @McpDescription(FxSMcpConstants.Descriptions.TIMEOUT)
         timeout: Int? = null,
-        @McpDescription("Optional HAC connection name. Uses the active connection if not specified")
+        @McpDescription(McpConstants.Descriptions.HAC_CONNECTION_NAME)
         connectionName: String? = null,
         @McpDescription(McpConstants.Descriptions.OUTPUT_FORMAT)
         outputFormat: String = McpConstants.Formats.JSON,
@@ -72,17 +72,17 @@ class FxSMcpToolset : McpToolset {
     suspend fun executeSql(
         @McpDescription("SQL query to execute against the underlying database")
         query: String,
-        @McpDescription("Maximum number of result rows to return. Default is 200")
+        @McpDescription(FxSMcpConstants.Descriptions.MAX_COUNT)
         maxCount: Int = FlexibleSearchExecConstants.Defaults.MAX_COUNT,
-        @McpDescription("Optional locale for the query. Default is 'en'")
+        @McpDescription(FxSMcpConstants.Descriptions.LOCALE)
         locale: String = FlexibleSearchExecConstants.Defaults.LOCALE,
-        @McpDescription("Optional data source for the query. Default is 'master'")
+        @McpDescription(FxSMcpConstants.Descriptions.DATA_SOURCE)
         dataSource: String = FlexibleSearchExecConstants.Defaults.DATA_SOURCE,
-        @McpDescription("Optional user to execute the query as. Default uses the current session user")
+        @McpDescription(FxSMcpConstants.Descriptions.USER)
         user: String? = null,
-        @McpDescription("Optional timeout. Default uses timeout of the connection")
+        @McpDescription(FxSMcpConstants.Descriptions.TIMEOUT)
         timeout: Int? = null,
-        @McpDescription("Optional HAC connection name. Uses the active connection if not specified")
+        @McpDescription(McpConstants.Descriptions.HAC_CONNECTION_NAME)
         connectionName: String? = null,
         @McpDescription(McpConstants.Descriptions.OUTPUT_FORMAT)
         outputFormat: String = McpConstants.Formats.JSON,
@@ -109,17 +109,17 @@ class FxSMcpToolset : McpToolset {
         transformerId: String,
         @McpDescription("FlexibleSearch query to execute and convert, e.g. 'SELECT {pk}, {code}, {catalogVersion} FROM {Product}'")
         query: String,
-        @McpDescription("Maximum number of result rows to return. Default is 200")
+        @McpDescription(FxSMcpConstants.Descriptions.MAX_COUNT)
         maxCount: Int = FlexibleSearchExecConstants.Defaults.MAX_COUNT,
-        @McpDescription("Optional locale for the query. Default is 'en'")
+        @McpDescription(FxSMcpConstants.Descriptions.LOCALE)
         locale: String = FlexibleSearchExecConstants.Defaults.LOCALE,
-        @McpDescription("Optional data source for the query. Default is 'master'")
+        @McpDescription(FxSMcpConstants.Descriptions.DATA_SOURCE)
         dataSource: String = FlexibleSearchExecConstants.Defaults.DATA_SOURCE,
-        @McpDescription("Optional user to execute the query as. Default uses the current session user")
+        @McpDescription(FxSMcpConstants.Descriptions.USER)
         user: String? = null,
-        @McpDescription("Optional timeout. Default uses timeout of the connection")
+        @McpDescription(FxSMcpConstants.Descriptions.TIMEOUT)
         timeout: Int? = null,
-        @McpDescription("Optional HAC connection name. Uses the active connection if not specified")
+        @McpDescription(McpConstants.Descriptions.HAC_CONNECTION_NAME)
         connectionName: String? = null,
         @McpDescription("Optional flag to include all unique attributes from the type. Default is 'false'")
         includeTypeSystemUnique: Boolean = false,

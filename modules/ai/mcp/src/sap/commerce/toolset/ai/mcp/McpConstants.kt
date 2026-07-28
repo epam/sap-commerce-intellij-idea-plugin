@@ -29,5 +29,8 @@ object McpConstants {
         const val OUTPUT_FORMAT = """Output format for the response. Supported formats: JSON, FILE.
             |Use FILE to write the result to a temporary file and return its absolute path — avoids inline token limits for large responses.
             |Default: JSON."""
+        const val HAC_CONNECTION_NAME = "Optional HAC connection name. Uses the active connection if not specified"
+        const val HAC_CONNECTION_NAME_AUTH = "Optional HAC connection name. Uses the active connection if not specified. Must refer to a connection with AUTOMATIC authentication; MANUAL (browser) connections are rejected"
+        const val SOLR_CONNECTION_NAME = "Optional Solr connection name. Uses the active connection if not specified"
     }
 }

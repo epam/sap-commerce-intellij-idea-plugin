@@ -47,7 +47,7 @@ class ImpExMcpToolset : McpToolset {
         content: String,
         @McpDescription("Whether to only validate the ImpEx without importing. Default is false (import)")
         validate: Boolean = false,
-        @McpDescription("Optional HAC connection name. Uses the active connection if not specified")
+        @McpDescription(McpConstants.Descriptions.HAC_CONNECTION_NAME)
         connectionName: String? = null,
         @McpDescription(McpConstants.Descriptions.OUTPUT_FORMAT)
         outputFormat: String = McpConstants.Formats.JSON,

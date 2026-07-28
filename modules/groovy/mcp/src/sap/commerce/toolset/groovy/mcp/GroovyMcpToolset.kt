@@ -41,7 +41,7 @@ class GroovyMcpToolset : McpToolset {
         script: String,
         @McpDescription("Whether to commit the transaction after execution. Default is false (rollback)")
         commit: Boolean = false,
-        @McpDescription("Optional HAC connection name. Uses the active connection if not specified")
+        @McpDescription(McpConstants.Descriptions.HAC_CONNECTION_NAME)
         connectionName: String? = null,
         @McpDescription(McpConstants.Descriptions.OUTPUT_FORMAT)
         outputFormat: String = McpConstants.Formats.JSON,

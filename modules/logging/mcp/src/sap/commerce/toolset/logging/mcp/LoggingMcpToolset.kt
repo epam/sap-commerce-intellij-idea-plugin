@@ -40,7 +40,7 @@ class LoggingMcpToolset : McpToolset {
         |PRECONDITION: only call this tool against a connection whose authMode is AUTOMATIC (supportedByMcp = true in sap_commerce_list_hac_connections). If the user asks to use a connection that uses MANUAL (browser) authentication, do NOT call this tool — instead tell the user that connection is not supported by MCP tools yet and offer an AUTOMATIC one. Calling it against a MANUAL connection will fail."""
     )
     suspend fun listLoggers(
-        @McpDescription("Optional HAC connection name. Uses the active connection if not specified. Must refer to a connection with AUTOMATIC authentication; MANUAL (browser) connections are rejected")
+        @McpDescription(McpConstants.Descriptions.HAC_CONNECTION_NAME_AUTH)
         connectionName: String? = null,
         @McpDescription(
             """Optional logger-name filter used to shrink the response and save tokens.
@@ -72,7 +72,7 @@ class LoggingMcpToolset : McpToolset {
         loggerName: String,
         @McpDescription("New log level. One of: ALL, OFF, TRACE, DEBUG, INFO, WARN, ERROR, FATAL")
         level: String,
-        @McpDescription("Optional HAC connection name. Uses the active connection if not specified. Must refer to a connection with AUTOMATIC authentication; MANUAL (browser) connections are rejected")
+        @McpDescription(McpConstants.Descriptions.HAC_CONNECTION_NAME_AUTH)
         connectionName: String? = null,
         @McpDescription(McpConstants.Descriptions.OUTPUT_FORMAT)
         outputFormat: String = McpConstants.Formats.JSON,

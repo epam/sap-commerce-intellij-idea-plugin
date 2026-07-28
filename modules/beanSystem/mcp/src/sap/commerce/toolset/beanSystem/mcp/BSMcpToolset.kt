@@ -28,22 +28,6 @@ import sap.commerce.toolset.beanSystem.mcp.context.BSDetail
 import sap.commerce.toolset.beanSystem.mcp.context.BSSearchMcpRequest
 import sap.commerce.toolset.beanSystem.meta.model.BSMetaType
 
-private const val BS_BEAN_DETAIL = """Controls how much information is returned per bean, to balance completeness against token usage:
-            |- BASIC: bean identity only (name, shortName, extends, template, extension, and the custom/abstract/deprecated flags). No properties.
-            |- MEMBERS: the above plus each bean's declared properties as {name, type, referencedType}.
-            |- FULL: the above plus description, deprecatedSince, superEquals, imports, annotations, and per-property description/deprecated. Only non-empty values are included.
-            |Default: BASIC. Prefer the smallest level that answers the question. Properties are the bean's DECLARED properties, not inherited ones."""
-private const val BS_ENUM_DETAIL = """Controls how much information is returned per enum, to balance completeness against token usage:
-            |- BASIC: enum identity only (name, shortName, extension, and the custom/deprecated flags). No values.
-            |- MEMBERS: the above plus the enum's value names.
-            |- FULL: the above plus description and deprecatedSince. Only non-empty values are included.
-            |Default: BASIC. Prefer the smallest level that answers the question."""
-private const val BS_ENUM_DETAIL_MEMBERS_DEFAULT = """Controls how much information is returned per enum, to balance completeness against token usage:
-            |- BASIC: enum identity only (name, shortName, extension, and the custom/deprecated flags). No values.
-            |- MEMBERS: the above plus the enum's value names.
-            |- FULL: the above plus description and deprecatedSince. Only non-empty values are included.
-            |Default: MEMBERS. Prefer the smallest level that answers the question."""
-
 class BSMcpToolset : McpToolset {
 
     @McpTool(name = "sap_commerce_list_dto_beans")
@@ -67,7 +51,7 @@ class BSMcpToolset : McpToolset {
             |Omit to include beans from all extensions."""
         )
         extensions: String? = null,
-        @McpDescription(BS_BEAN_DETAIL)
+        @McpDescription(BSMcpConstants.Descriptions.BEAN_DETAIL)
         detail: String = BSDetail.BASIC.name,
         @McpDescription(McpConstants.Descriptions.OUTPUT_FORMAT)
         outputFormat: String = McpConstants.Formats.JSON,
@@ -100,7 +84,7 @@ class BSMcpToolset : McpToolset {
             |Omit to include beans from all extensions."""
         )
         extensions: String? = null,
-        @McpDescription(BS_BEAN_DETAIL)
+        @McpDescription(BSMcpConstants.Descriptions.BEAN_DETAIL)
         detail: String = BSDetail.BASIC.name,
         @McpDescription(McpConstants.Descriptions.OUTPUT_FORMAT)
         outputFormat: String = McpConstants.Formats.JSON,
@@ -133,7 +117,7 @@ class BSMcpToolset : McpToolset {
             |Omit to include event beans from all extensions."""
         )
         extensions: String? = null,
-        @McpDescription(BS_BEAN_DETAIL)
+        @McpDescription(BSMcpConstants.Descriptions.BEAN_DETAIL)
         detail: String = BSDetail.BASIC.name,
 
         @McpDescription(McpConstants.Descriptions.OUTPUT_FORMAT)
@@ -167,7 +151,7 @@ class BSMcpToolset : McpToolset {
             |Omit to include enums from all extensions."""
         )
         extensions: String? = null,
-        @McpDescription(BS_ENUM_DETAIL)
+        @McpDescription(BSMcpConstants.Descriptions.ENUM_DETAIL)
         detail: String = BSDetail.BASIC.name,
         @McpDescription(McpConstants.Descriptions.OUTPUT_FORMAT)
         outputFormat: String = McpConstants.Formats.JSON,
@@ -194,9 +178,9 @@ class BSMcpToolset : McpToolset {
             |Omit to include the entire bean system."""
         )
         extensions: String? = null,
-        @McpDescription(BS_BEAN_DETAIL)
+        @McpDescription(BSMcpConstants.Descriptions.BEAN_DETAIL)
         beanDetail: String = BSDetail.BASIC.name,
-        @McpDescription(BS_ENUM_DETAIL_MEMBERS_DEFAULT)
+        @McpDescription(BSMcpConstants.Descriptions.ENUM_DETAIL_MEMBERS_DEFAULT)
         enumDetail: String = BSDetail.MEMBERS.name,
         @McpDescription(McpConstants.Descriptions.OUTPUT_FORMAT)
         outputFormat: String = McpConstants.Formats.FILE,
