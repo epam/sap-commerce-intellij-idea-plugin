@@ -151,7 +151,7 @@ class BSMcpToolset : McpToolset {
             |Omit to include enums from all extensions."""
         )
         extensions: String? = null,
-        @McpDescription(BSMcpConstants.Descriptions.ENUM_DETAIL)
+        @McpDescription(BSMcpConstants.Descriptions.ENUM_DETAIL_BASIC)
         detail: String = BSDetail.BASIC.name,
         @McpDescription(McpConstants.Descriptions.OUTPUT_FORMAT)
         outputFormat: String = McpConstants.Formats.JSON,
@@ -180,7 +180,7 @@ class BSMcpToolset : McpToolset {
         extensions: String? = null,
         @McpDescription(BSMcpConstants.Descriptions.BEAN_DETAIL)
         beanDetail: String = BSDetail.BASIC.name,
-        @McpDescription(BSMcpConstants.Descriptions.ENUM_DETAIL_MEMBERS_DEFAULT)
+        @McpDescription(BSMcpConstants.Descriptions.ENUM_DETAIL_MEMBERS)
         enumDetail: String = BSDetail.MEMBERS.name,
         @McpDescription(McpConstants.Descriptions.OUTPUT_FORMAT)
         outputFormat: String = McpConstants.Formats.FILE,

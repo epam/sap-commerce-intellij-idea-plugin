@@ -21,20 +21,18 @@ package sap.commerce.toolset.beanSystem.mcp
 object BSMcpConstants {
 
     object Descriptions {
+        private const val ENUM_DETAIL = """Controls how much information is returned per enum, to balance completeness against token usage:
+            |- BASIC: enum identity only (name, shortName, extension, and the custom/deprecated flags). No values.
+            |- MEMBERS: the above plus the enum's value names.
+            |- FULL: the above plus description and deprecatedSince. Only non-empty values are included."""
+        const val ENUM_DETAIL_BASIC = """$ENUM_DETAIL
+            |Default: BASIC. Prefer the smallest level that answers the question."""
+        const val ENUM_DETAIL_MEMBERS = """$ENUM_DETAIL
+            |Default: MEMBERS. Prefer the smallest level that answers the question."""
         const val BEAN_DETAIL = """Controls how much information is returned per bean, to balance completeness against token usage:
             |- BASIC: bean identity only (name, shortName, extends, template, extension, and the custom/abstract/deprecated flags). No properties.
             |- MEMBERS: the above plus each bean's declared properties as {name, type, referencedType}.
             |- FULL: the above plus description, deprecatedSince, superEquals, imports, annotations, and per-property description/deprecated. Only non-empty values are included.
             |Default: BASIC. Prefer the smallest level that answers the question. Properties are the bean's DECLARED properties, not inherited ones."""
-        const val ENUM_DETAIL = """Controls how much information is returned per enum, to balance completeness against token usage:
-            |- BASIC: enum identity only (name, shortName, extension, and the custom/deprecated flags). No values.
-            |- MEMBERS: the above plus the enum's value names.
-            |- FULL: the above plus description and deprecatedSince. Only non-empty values are included.
-            |Default: BASIC. Prefer the smallest level that answers the question."""
-        const val ENUM_DETAIL_MEMBERS_DEFAULT = """Controls how much information is returned per enum, to balance completeness against token usage:
-            |- BASIC: enum identity only (name, shortName, extension, and the custom/deprecated flags). No values.
-            |- MEMBERS: the above plus the enum's value names.
-            |- FULL: the above plus description and deprecatedSince. Only non-empty values are included.
-            |Default: MEMBERS. Prefer the smallest level that answers the question."""
     }
 }
