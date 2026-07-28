@@ -98,6 +98,27 @@ class TSMcpService(private val project: Project) {
         )
     }
 
+    suspend fun getTypeSystem(rawExtensions: String?, itemDetail: ItemTypeDetail, enumDetail: EnumTypeDetail): TSTypeSystemDto {
+        val provider = TSMcpDataProvider.getInstance(project)
+
+        val items = provider.search<TSGlobalMetaItem>(TSSearchItemMcpRequest(null, rawExtensions, itemDetail))
+        val enums = provider.search<TSGlobalMetaEnum>(TSSearchEnumMcpRequest(null, rawExtensions, enumDetail))
+        val relations = provider.search<TSGlobalMetaRelation>(TSSearchMcpRequest(TSMetaType.META_RELATION, null, rawExtensions))
+        val collections = provider.search<TSGlobalMetaCollection>(TSSearchMcpRequest(TSMetaType.META_COLLECTION, null, rawExtensions))
+        val maps = provider.search<TSGlobalMetaMap>(TSSearchMcpRequest(TSMetaType.META_MAP, null, rawExtensions))
+        val atomics = provider.search<TSGlobalMetaAtomic>(TSSearchMcpRequest(TSMetaType.META_ATOMIC, null, rawExtensions))
+
+        return TSTypeSystemDto(
+            extensions = TSSearchMcpRequest(TSMetaType.META_ITEM, null, rawExtensions).extensions?.sorted(),
+            items = items.items.map { it.toDto(itemDetail) },
+            enums = enums.items.map { it.toDto(enumDetail) },
+            relations = relations.items.map { it.toDto() },
+            collections = collections.items.map { it.toDto() },
+            maps = maps.items.map { it.toDto() },
+            atomics = atomics.items.map { it.toDto() },
+        )
+    }
+
     private fun TSGlobalMetaItem.toDto(detail: ItemTypeDetail): TSItemDto {
         val attrs = if (detail != ItemTypeDetail.TYPES) {
             attributes.values.sortedBy { it.name }.map { it.toAttributeDto(detail) }
@@ -106,11 +127,20 @@ class TSMcpService(private val project: Project) {
         return TSItemDto(
             name = name!!,
             extends = extendedMetaItemName?.takeIf { it.isNotBlank() },
-            typeCode = deployment?.typeCode?.takeIf { it.isNotBlank() },
+            description = description?.takeIf { it.isNotBlank() },
+            jaloClass = jaloClass?.takeIf { it.isNotBlank() },
             extension = extensionName.takeIf { it.isNotBlank() },
             abstract = isAbstract.takeIf { it },
             custom = isCustom.takeIf { it },
+            autoCreate = isAutoCreate.takeIf { it },
+            generate = isGenerate.takeIf { it },
             deprecated = isDeprecated.takeIf { it },
+            deprecatedSince = deprecatedSince?.takeIf { it.isNotBlank() },
+            singleton = isSingleton.takeIf { it },
+            jaloOnly = isJaloOnly.takeIf { it },
+            catalogAware = isCatalogAware.takeIf { it },
+            flattenType = flattenType?.takeIf { it.isNotBlank() },
+            deployment = deployment?.toDto(),
             attributes = attrs,
         )
     }
@@ -133,7 +163,7 @@ class TSMcpService(private val project: Project) {
             name = name,
             type = type?.takeIf { it.isNotBlank() },
             declaredIn = if (full) (declared.firstOrNull()?.extensionName
-                ?: extensionName)?.takeIf { it.isNotBlank() } else null,
+                ?: extensionName).takeIf { it.isNotBlank() } else null,
             redeclaredIn = if (full) redeclared.map { it.extensionName }.distinct().sorted()
                 .takeIf { it.isNotEmpty() } else null,
             localized = if (full) isLocalized.takeIf { it } else null,
@@ -157,6 +187,7 @@ class TSMcpService(private val project: Project) {
         custom = isCustom.takeIf { it },
         autoCreate = isAutoCreate.takeIf { it },
         generate = isGenerate.takeIf { it },
+        flattenType = flattenType?.takeIf { it.isNotBlank() },
     )
 
     private fun TSGlobalMetaCollection.toDto() = TSCollectionDto(
@@ -167,6 +198,7 @@ class TSMcpService(private val project: Project) {
         custom = isCustom.takeIf { it },
         autoCreate = isAutoCreate.takeIf { it },
         generate = isGenerate.takeIf { it },
+        flattenType = flattenType?.takeIf { it.isNotBlank() },
     )
 
     private fun TSGlobalMetaEnum.toDto(detail: EnumTypeDetail): TSEnumDto {
@@ -179,6 +211,7 @@ class TSMcpService(private val project: Project) {
             autoCreate = isAutoCreate.takeIf { it },
             generate = isGenerate.takeIf { it },
             deprecated = isDeprecated.takeIf { it },
+            deprecatedSince = if (full) deprecatedSince?.takeIf { it.isNotBlank() } else null,
             description = if (full) description?.takeIf { it.isNotBlank() } else null,
             values = if (full) values.values.map { it.toDto() } else null,
         )
@@ -198,11 +231,13 @@ class TSMcpService(private val project: Project) {
         autoCreate = isAutoCreate.takeIf { it },
         generate = isGenerate.takeIf { it },
         redeclare = isRedeclare.takeIf { it },
+        flattenType = flattenType?.takeIf { it.isNotBlank() },
     )
 
     private fun TSGlobalMetaRelation.toDto() = TSRelationDto(
         name = name!!,
-        typeCode = deployment?.typeCode?.takeIf { it.isNotBlank() },
+        description = description?.takeIf { it.isNotBlank() },
+        deployment = deployment?.toDto(),
         source = source.toDto(),
         target = target.toDto(),
         extension = extensionName.takeIf { it.isNotBlank() },
@@ -219,7 +254,15 @@ class TSMcpService(private val project: Project) {
         collectionType = collectionType.value?.takeIf { it.isNotBlank() },
         ordered = isOrdered.takeIf { it },
         navigable = isNavigable.takeIf { it },
+        deprecated = isDeprecated.takeIf { it },
+        description = description?.takeIf { it.isNotBlank() },
     )
+
+    private fun TSMetaDeployment.toDto(): TSDeploymentDto? {
+        val t = table?.takeIf { it.isNotBlank() }
+        val tc = typeCode?.takeIf { it.isNotBlank() }
+        return if (t != null || tc != null) TSDeploymentDto(table = t, typeCode = tc) else null
+    }
 
     companion object {
         suspend fun getInstance(): TSMcpService = currentCoroutineContext().project.service()
