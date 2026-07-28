@@ -29,6 +29,7 @@ data class TSRelationDto(
     override val generate: Boolean? = null,
     val source: TSRelationEndDto,
     val target: TSRelationEndDto,
-    val typeCode: String? = null,
+    val description: String? = null,
+    val deployment: TSDeploymentDto? = null,
     val localized: Boolean? = null,
 ) : TSClassifierDto

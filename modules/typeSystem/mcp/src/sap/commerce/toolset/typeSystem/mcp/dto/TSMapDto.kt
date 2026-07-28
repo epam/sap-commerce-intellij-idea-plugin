@@ -30,4 +30,5 @@ data class TSMapDto(
     val returnType: String? = null,
     val argumentType: String? = null,
     val redeclare: Boolean? = null,
+    val flattenType: String? = null,
 ) : TSClassifierDto

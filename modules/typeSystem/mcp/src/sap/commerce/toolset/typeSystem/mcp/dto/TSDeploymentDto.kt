@@ -21,15 +21,7 @@ package sap.commerce.toolset.typeSystem.mcp.dto
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class TSEnumDto(
-    override val name: String,
-    override val extension: String? = null,
-    override val custom: Boolean? = null,
-    override val autoCreate: Boolean? = null,
-    override val generate: Boolean? = null,
-    val dynamic: Boolean? = null,
-    val deprecated: Boolean? = null,
-    val deprecatedSince: String? = null,
-    val description: String? = null,
-    val values: List<TSEnumValueDto>? = null,
-) : TSClassifierDto
+data class TSDeploymentDto(
+    val table: String? = null,
+    val typeCode: String? = null,
+)

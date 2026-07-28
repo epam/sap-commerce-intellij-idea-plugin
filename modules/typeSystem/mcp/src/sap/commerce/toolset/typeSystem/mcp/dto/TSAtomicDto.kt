@@ -28,4 +28,5 @@ data class TSAtomicDto(
     override val autoCreate: Boolean? = null,
     override val generate: Boolean? = null,
     val extends: String? = null,
+    val flattenType: String? = null,
 ) : TSClassifierDto

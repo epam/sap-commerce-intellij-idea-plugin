@@ -29,4 +29,5 @@ data class TSCollectionDto(
     override val generate: Boolean? = null,
     val kind: String,
     val elementType: String? = null,
+    val flattenType: String? = null,
 ) : TSClassifierDto
