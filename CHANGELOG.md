@@ -6,6 +6,7 @@
 ### `AI` capabilities
 - Expose the complete Type System as MCP tool [#1987](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1987)
 - Expose the complete Bean System as MCP tool [#1988](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1988)
+- Expose CCv2 management operations as MCP tools
 
 ### `CCv2` enhancements
 - Show informative message when authentication failed [#1984](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1984)
