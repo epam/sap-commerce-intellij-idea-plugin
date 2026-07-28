@@ -28,6 +28,22 @@ import sap.commerce.toolset.beanSystem.mcp.context.BSDetail
 import sap.commerce.toolset.beanSystem.mcp.context.BSSearchMcpRequest
 import sap.commerce.toolset.beanSystem.meta.model.BSMetaType
 
+private const val BS_BEAN_DETAIL = """Controls how much information is returned per bean, to balance completeness against token usage:
+            |- BASIC: bean identity only (name, shortName, extends, template, extension, and the custom/abstract/deprecated flags). No properties.
+            |- MEMBERS: the above plus each bean's declared properties as {name, type, referencedType}.
+            |- FULL: the above plus description, deprecatedSince, superEquals, imports, annotations, and per-property description/deprecated. Only non-empty values are included.
+            |Default: BASIC. Prefer the smallest level that answers the question. Properties are the bean's DECLARED properties, not inherited ones."""
+private const val BS_ENUM_DETAIL = """Controls how much information is returned per enum, to balance completeness against token usage:
+            |- BASIC: enum identity only (name, shortName, extension, and the custom/deprecated flags). No values.
+            |- MEMBERS: the above plus the enum's value names.
+            |- FULL: the above plus description and deprecatedSince. Only non-empty values are included.
+            |Default: BASIC. Prefer the smallest level that answers the question."""
+private const val BS_ENUM_DETAIL_MEMBERS_DEFAULT = """Controls how much information is returned per enum, to balance completeness against token usage:
+            |- BASIC: enum identity only (name, shortName, extension, and the custom/deprecated flags). No values.
+            |- MEMBERS: the above plus the enum's value names.
+            |- FULL: the above plus description and deprecatedSince. Only non-empty values are included.
+            |Default: MEMBERS. Prefer the smallest level that answers the question."""
+
 class BSMcpToolset : McpToolset {
 
     @McpTool(name = "sap_commerce_list_dto_beans")
@@ -51,13 +67,7 @@ class BSMcpToolset : McpToolset {
             |Omit to include beans from all extensions."""
         )
         extensions: String? = null,
-        @McpDescription(
-            """Controls how much information is returned per bean, to balance completeness against token usage:
-            |- BASIC: bean identity only (name, shortName, extends, template, extension, and the custom/abstract/deprecated flags). No properties.
-            |- MEMBERS: the above plus each bean's declared properties as {name, type, referencedType}.
-            |- FULL: the above plus description, deprecatedSince, superEquals, imports, annotations, and per-property description/deprecated. Only non-empty values are included.
-            |Default: BASIC. Prefer the smallest level that answers the question. Properties are the bean's DECLARED properties, not inherited ones."""
-        )
+        @McpDescription(BS_BEAN_DETAIL)
         detail: String = BSDetail.BASIC.name,
         @McpDescription(McpConstants.Descriptions.OUTPUT_FORMAT)
         outputFormat: String = McpConstants.Formats.JSON,
@@ -90,13 +100,7 @@ class BSMcpToolset : McpToolset {
             |Omit to include beans from all extensions."""
         )
         extensions: String? = null,
-        @McpDescription(
-            """Controls how much information is returned per bean, to balance completeness against token usage:
-            |- BASIC: bean identity only (name, shortName, extends, template, extension, and the custom/abstract/deprecated flags). No properties.
-            |- MEMBERS: the above plus each bean's declared properties as {name, type, referencedType}.
-            |- FULL: the above plus description, deprecatedSince, superEquals, imports, annotations, and per-property description/deprecated. Only non-empty values are included.
-            |Default: BASIC. Prefer the smallest level that answers the question. Properties are the bean's DECLARED properties, not inherited ones."""
-        )
+        @McpDescription(BS_BEAN_DETAIL)
         detail: String = BSDetail.BASIC.name,
         @McpDescription(McpConstants.Descriptions.OUTPUT_FORMAT)
         outputFormat: String = McpConstants.Formats.JSON,
@@ -129,13 +133,7 @@ class BSMcpToolset : McpToolset {
             |Omit to include event beans from all extensions."""
         )
         extensions: String? = null,
-        @McpDescription(
-            """Controls how much information is returned per event bean, to balance completeness against token usage:
-            |- BASIC: bean identity only (name, shortName, extends, template, extension, and the custom/abstract/deprecated flags). No properties.
-            |- MEMBERS: the above plus each bean's declared properties as {name, type, referencedType}.
-            |- FULL: the above plus description, deprecatedSince, superEquals, imports, annotations, and per-property description/deprecated. Only non-empty values are included.
-            |Default: BASIC. Prefer the smallest level that answers the question. Properties are the bean's DECLARED properties, not inherited ones."""
-        )
+        @McpDescription(BS_BEAN_DETAIL)
         detail: String = BSDetail.BASIC.name,
 
         @McpDescription(McpConstants.Descriptions.OUTPUT_FORMAT)
@@ -169,13 +167,7 @@ class BSMcpToolset : McpToolset {
             |Omit to include enums from all extensions."""
         )
         extensions: String? = null,
-        @McpDescription(
-            """Controls how much information is returned per enum, to balance completeness against token usage:
-            |- BASIC: enum identity only (name, shortName, extension, and the custom/deprecated flags). No values.
-            |- MEMBERS: the above plus the enum's value names.
-            |- FULL: the above plus description and deprecatedSince. Only non-empty values are included.
-            |Default: BASIC. Prefer the smallest level that answers the question."""
-        )
+        @McpDescription(BS_ENUM_DETAIL)
         detail: String = BSDetail.BASIC.name,
         @McpDescription(McpConstants.Descriptions.OUTPUT_FORMAT)
         outputFormat: String = McpConstants.Formats.JSON,
@@ -185,5 +177,34 @@ class BSMcpToolset : McpToolset {
         val request = BSSearchMcpRequest(BSMetaType.META_ENUM, filter, enumDetail, extensions)
         val enums = BSMcpService.getInstance().searchEnums(request)
         return mapper.map(enums)
+    }
+
+    @McpTool(name = "sap_commerce_get_bean_system")
+    @McpDescription(
+        """Returns the complete SAP Commerce (Hybris) bean system in a single call — all DTO beans, WS beans, event beans, and enums defined in `*-beans.xml` files, as shown in the "Bean System" tool window.
+        |Use this tool when you need a broad view of the bean system (e.g. finding all beans in a set of extensions, building a dependency graph, or exporting the full model). For targeted lookups use the focused tools: 'sap_commerce_list_dto_beans', 'sap_commerce_list_ws_beans', 'sap_commerce_list_event_beans', 'sap_commerce_list_bean_enums'.
+        |This is the project's LOCAL model, parsed from the `*-beans.xml` definitions — it does NOT query a remote server and does NOT require a HAC connection.
+        |Returns a JSON object: {"extensions", "beans": [...], "wsBeans": [...], "events": [...], "enums": [...]}.
+        |The response can be large for big projects — use 'extensions' to narrow scope, 'beanDetail'/'enumDetail' to control per-item verbosity, and 'outputFormat=FILE' to avoid inline token limits."""
+    )
+    suspend fun getBeanSystem(
+        @McpDescription(
+            """Optional comma-separated list of extension names to restrict the result to beans and enums owned by those extensions (e.g. 'commercefacades,core').
+            |Matched case-insensitively and exactly against each classifier's owning 'extension'.
+            |Omit to include the entire bean system."""
+        )
+        extensions: String? = null,
+        @McpDescription(BS_BEAN_DETAIL)
+        beanDetail: String = BSDetail.BASIC.name,
+        @McpDescription(BS_ENUM_DETAIL_MEMBERS_DEFAULT)
+        enumDetail: String = BSDetail.MEMBERS.name,
+        @McpDescription(McpConstants.Descriptions.OUTPUT_FORMAT)
+        outputFormat: String = McpConstants.Formats.FILE,
+    ): String {
+        val mapper = resolveMapper(outputFormat)
+        val resolvedBeanDetail = BSDetail.resolve(beanDetail)
+        val resolvedEnumDetail = BSDetail.resolve(enumDetail)
+        val result = BSMcpService.getInstance().getBeanSystem(extensions, resolvedBeanDetail, resolvedEnumDetail)
+        return mapper.map(result)
     }
 }

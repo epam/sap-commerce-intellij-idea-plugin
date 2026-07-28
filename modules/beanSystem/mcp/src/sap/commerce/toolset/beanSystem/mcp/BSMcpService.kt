@@ -27,6 +27,7 @@ import sap.commerce.toolset.beanSystem.mcp.context.BSDetail
 import sap.commerce.toolset.beanSystem.mcp.context.BSSearchMcpRequest
 import sap.commerce.toolset.beanSystem.mcp.dto.BSBeanDto
 import sap.commerce.toolset.beanSystem.mcp.dto.BSBeanPropertyDto
+import sap.commerce.toolset.beanSystem.mcp.dto.BSBeanSystemDto
 import sap.commerce.toolset.beanSystem.mcp.dto.BSBeansDto
 import sap.commerce.toolset.beanSystem.mcp.dto.BSEnumDto
 import sap.commerce.toolset.beanSystem.mcp.providers.BSMcpDataProvider
@@ -34,6 +35,7 @@ import sap.commerce.toolset.beanSystem.meta.model.BSGlobalMetaBean
 import sap.commerce.toolset.beanSystem.meta.model.BSGlobalMetaClassifier
 import sap.commerce.toolset.beanSystem.meta.model.BSGlobalMetaEnum
 import sap.commerce.toolset.beanSystem.meta.model.BSMetaProperty
+import sap.commerce.toolset.beanSystem.meta.model.BSMetaType
 
 @Service(Service.Level.PROJECT)
 class BSMcpService(private val project: Project) {
@@ -43,6 +45,21 @@ class BSMcpService(private val project: Project) {
 
     suspend fun searchEnums(request: BSSearchMcpRequest): BSBeansDto<BSEnumDto> =
         search(request) { enum: BSGlobalMetaEnum -> enum.toDto(request.detail) }
+
+    suspend fun getBeanSystem(extensions: String?, beanDetail: BSDetail, enumDetail: BSDetail): BSBeanSystemDto {
+        val beanRequest = BSSearchMcpRequest(BSMetaType.META_BEAN, null, beanDetail, extensions)
+        val beans = search(beanRequest) { bean: BSGlobalMetaBean -> bean.toDto(beanDetail) }
+        val wsBeans = search(BSSearchMcpRequest(BSMetaType.META_WS_BEAN, null, beanDetail, extensions)) { bean: BSGlobalMetaBean -> bean.toDto(beanDetail) }
+        val events = search(BSSearchMcpRequest(BSMetaType.META_EVENT, null, beanDetail, extensions)) { bean: BSGlobalMetaBean -> bean.toDto(beanDetail) }
+        val enums = search(BSSearchMcpRequest(BSMetaType.META_ENUM, null, enumDetail, extensions)) { enum: BSGlobalMetaEnum -> enum.toDto(enumDetail) }
+        return BSBeanSystemDto(
+            extensions = beanRequest.extensions?.sorted(),
+            beans = beans.items,
+            wsBeans = wsBeans.items,
+            events = events.items,
+            enums = enums.items,
+        )
+    }
 
     private suspend fun <T : BSGlobalMetaClassifier<*>, D> search(
         request: BSSearchMcpRequest,
