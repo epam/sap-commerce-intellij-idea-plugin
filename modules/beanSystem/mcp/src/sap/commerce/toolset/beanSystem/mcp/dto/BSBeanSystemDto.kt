@@ -16,21 +16,19 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.beanSystem.mcp.context
+package sap.commerce.toolset.beanSystem.mcp.dto
 
-import sap.commerce.toolset.beanSystem.meta.model.BSMetaType
+import kotlinx.serialization.Serializable
 
-data class BSSearchMcpRequest(
-    val metaType: BSMetaType,
-    val filter: String? = null,
-    val detail: BSDetail,
-    private val rawExtensions: String? = null
-) {
-    val extensions: Set<String>?
-        get() = rawExtensions
-            ?.split(',')
-            ?.map { it.trim().lowercase() }
-            ?.filter { it.isNotEmpty() }
-            ?.toSet()
-            ?.takeIf { it.isNotEmpty() }
-}
+/**
+ * Response envelope of the `sap_commerce_get_bean_system` tool — the complete bean system in one
+ * response, optionally filtered by extension.
+ */
+@Serializable
+data class BSBeanSystemDto(
+    val extensions: List<String>? = null,
+    val beans: List<BSBeanDto>,
+    val wsBeans: List<BSBeanDto>,
+    val events: List<BSBeanDto>,
+    val enums: List<BSEnumDto>,
+)

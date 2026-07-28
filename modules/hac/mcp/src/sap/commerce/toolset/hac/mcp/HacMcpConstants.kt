@@ -16,21 +16,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.beanSystem.mcp.context
+package sap.commerce.toolset.hac.mcp
 
-import sap.commerce.toolset.beanSystem.meta.model.BSMetaType
+object HacMcpConstants {
 
-data class BSSearchMcpRequest(
-    val metaType: BSMetaType,
-    val filter: String? = null,
-    val detail: BSDetail,
-    private val rawExtensions: String? = null
-) {
-    val extensions: Set<String>?
-        get() = rawExtensions
-            ?.split(',')
-            ?.map { it.trim().lowercase() }
-            ?.filter { it.isNotEmpty() }
-            ?.toSet()
-            ?.takeIf { it.isNotEmpty() }
+    object Descriptions {
+        const val CONNECTION_NAME = "Optional HAC connection name. Uses the active connection if not specified"
+        const val CONNECTION_NAME_AUTH = "Optional HAC connection name. Uses the active connection if not specified. Must refer to a connection with AUTOMATIC authentication; MANUAL (browser) connections are rejected"
+    }
 }

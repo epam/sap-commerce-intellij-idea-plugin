@@ -1,10 +1,11 @@
 ## [2026.2.1]
 
 <cite>Release contributors</code>
-- 4 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.2.1+author%3Amlytvyn+is%3Apr)
+- 5 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.2.1+author%3Amlytvyn+is%3Apr)
 
 ### `AI` capabilities
-- Expose the complete TypeSystem as MCP tool [#1987](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1987)
+- Expose the complete Type System as MCP tool [#1987](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1987)
+- Expose the complete Bean System as MCP tool [#1988](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1988)
 
 ### `CCv2` enhancements
 - Show informative message when authentication failed [#1984](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1984)

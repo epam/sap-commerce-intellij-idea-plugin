@@ -25,24 +25,30 @@ import com.intellij.openapi.project.Project
 import kotlinx.coroutines.currentCoroutineContext
 import sap.commerce.toolset.beanSystem.mcp.context.BSDetail
 import sap.commerce.toolset.beanSystem.mcp.context.BSSearchMcpRequest
-import sap.commerce.toolset.beanSystem.mcp.dto.BSBeanDto
-import sap.commerce.toolset.beanSystem.mcp.dto.BSBeanPropertyDto
-import sap.commerce.toolset.beanSystem.mcp.dto.BSBeansDto
-import sap.commerce.toolset.beanSystem.mcp.dto.BSEnumDto
+import sap.commerce.toolset.beanSystem.mcp.dto.*
 import sap.commerce.toolset.beanSystem.mcp.providers.BSMcpDataProvider
-import sap.commerce.toolset.beanSystem.meta.model.BSGlobalMetaBean
-import sap.commerce.toolset.beanSystem.meta.model.BSGlobalMetaClassifier
-import sap.commerce.toolset.beanSystem.meta.model.BSGlobalMetaEnum
-import sap.commerce.toolset.beanSystem.meta.model.BSMetaProperty
+import sap.commerce.toolset.beanSystem.meta.model.*
 
 @Service(Service.Level.PROJECT)
 class BSMcpService(private val project: Project) {
 
-    suspend fun searchBeans(request: BSSearchMcpRequest): BSBeansDto<BSBeanDto> =
-        search(request) { bean: BSGlobalMetaBean -> bean.toDto(request.detail) }
+    suspend fun searchBeans(request: BSSearchMcpRequest): BSBeansDto<BSBeanDto> = search(request) { bean: BSGlobalMetaBean -> bean.toDto(request.detail) }
+    suspend fun searchEnums(request: BSSearchMcpRequest): BSBeansDto<BSEnumDto> = search(request) { enum: BSGlobalMetaEnum -> enum.toDto(request.detail) }
 
-    suspend fun searchEnums(request: BSSearchMcpRequest): BSBeansDto<BSEnumDto> =
-        search(request) { enum: BSGlobalMetaEnum -> enum.toDto(request.detail) }
+    suspend fun getBeanSystem(extensions: String?, beanDetail: BSDetail, enumDetail: BSDetail): BSBeanSystemDto {
+        val beanRequest = BSSearchMcpRequest(metaType = BSMetaType.META_BEAN, detail = beanDetail, rawExtensions = extensions)
+        val beans = searchBeans(beanRequest)
+        val wsBeans = searchBeans(BSSearchMcpRequest(metaType = BSMetaType.META_WS_BEAN, detail = beanDetail, rawExtensions = extensions))
+        val events = searchBeans(BSSearchMcpRequest(metaType = BSMetaType.META_EVENT, detail = beanDetail, rawExtensions = extensions))
+        val enums = searchEnums(BSSearchMcpRequest(metaType = BSMetaType.META_ENUM, detail = enumDetail, rawExtensions = extensions))
+        return BSBeanSystemDto(
+            extensions = beanRequest.extensions?.sorted(),
+            beans = beans.items,
+            wsBeans = wsBeans.items,
+            events = events.items,
+            enums = enums.items,
+        )
+    }
 
     private suspend fun <T : BSGlobalMetaClassifier<*>, D> search(
         request: BSSearchMcpRequest,

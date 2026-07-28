@@ -16,21 +16,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.beanSystem.mcp.context
+package sap.commerce.toolset.solr.mcp
 
-import sap.commerce.toolset.beanSystem.meta.model.BSMetaType
-
-data class BSSearchMcpRequest(
-    val metaType: BSMetaType,
-    val filter: String? = null,
-    val detail: BSDetail,
-    private val rawExtensions: String? = null
-) {
-    val extensions: Set<String>?
-        get() = rawExtensions
-            ?.split(',')
-            ?.map { it.trim().lowercase() }
-            ?.filter { it.isNotEmpty() }
-            ?.toSet()
-            ?.takeIf { it.isNotEmpty() }
+object SolrMcpConstants {
+    object Descriptions {
+        const val CONNECTION_NAME = "Optional Solr connection name. Uses the active connection if not specified"
+    }
 }

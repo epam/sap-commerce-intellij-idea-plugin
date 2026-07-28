@@ -16,21 +16,15 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.beanSystem.mcp.context
+package sap.commerce.toolset.flexibleSearch.mcp
 
-import sap.commerce.toolset.beanSystem.meta.model.BSMetaType
+object FxSMcpConstants {
 
-data class BSSearchMcpRequest(
-    val metaType: BSMetaType,
-    val filter: String? = null,
-    val detail: BSDetail,
-    private val rawExtensions: String? = null
-) {
-    val extensions: Set<String>?
-        get() = rawExtensions
-            ?.split(',')
-            ?.map { it.trim().lowercase() }
-            ?.filter { it.isNotEmpty() }
-            ?.toSet()
-            ?.takeIf { it.isNotEmpty() }
+    object Descriptions {
+        const val MAX_COUNT = "Maximum number of result rows to return. Default is 200"
+        const val LOCALE = "Optional locale for the query. Default is 'en'"
+        const val DATA_SOURCE = "Optional data source for the query. Default is 'master'"
+        const val USER = "Optional user to execute the query as. Default uses the current session user"
+        const val TIMEOUT = "Optional timeout. Default uses timeout of the connection"
+    }
 }
