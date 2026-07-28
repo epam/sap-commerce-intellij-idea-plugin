@@ -59,7 +59,7 @@ See `TECH_NOTES.md` for: action invocation, background-thread patterns, dialog s
 
 ## Workflow
 1. Identify affected area.
-2. Create a feature branch: `git checkout -b feature/<short-topic>`.
+2. Create a feature branch: `git checkout -b <area>-<short-topic>`.
 3. Implement focused change; commit iterative progress as you work — don't accumulate all changes into one diff.
 4. Run relevant tests.
 5. Review modified files — remove unrelated changes, no formatting noise.
