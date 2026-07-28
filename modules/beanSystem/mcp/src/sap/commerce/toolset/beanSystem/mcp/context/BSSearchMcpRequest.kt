@@ -24,10 +24,10 @@ data class BSSearchMcpRequest(
     val metaType: BSMetaType,
     val filter: String? = null,
     val detail: BSDetail,
-    private val _extensions: String? = null
+    private val rawExtensions: String? = null
 ) {
     val extensions: Set<String>?
-        get() = _extensions
+        get() = rawExtensions
             ?.split(',')
             ?.map { it.trim().lowercase() }
             ?.filter { it.isNotEmpty() }
