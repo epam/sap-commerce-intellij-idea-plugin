@@ -228,7 +228,7 @@ class TSMcpToolset : McpToolset {
         )
         enumDetail: String = EnumTypeDetail.VALUES.name,
         @McpDescription(McpConstants.Descriptions.OUTPUT_FORMAT)
-        outputFormat: String = McpConstants.Formats.JSON,
+        outputFormat: String = McpConstants.Formats.FILE,
     ): String {
         val mapper = resolveMapper(outputFormat)
         val itemDetailLevel = ItemTypeDetail.resolve(itemDetail)

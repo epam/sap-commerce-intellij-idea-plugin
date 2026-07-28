@@ -101,12 +101,12 @@ class TSMcpService(private val project: Project) {
     suspend fun getTypeSystem(rawExtensions: String?, itemDetail: ItemTypeDetail, enumDetail: EnumTypeDetail): TSTypeSystemDto {
         val provider = TSMcpDataProvider.getInstance(project)
 
-        val items = provider.search<TSGlobalMetaItem>(TSSearchItemMcpRequest(null, rawExtensions, itemDetail))
-        val enums = provider.search<TSGlobalMetaEnum>(TSSearchEnumMcpRequest(null, rawExtensions, enumDetail))
-        val relations = provider.search<TSGlobalMetaRelation>(TSSearchMcpRequest(TSMetaType.META_RELATION, null, rawExtensions))
-        val collections = provider.search<TSGlobalMetaCollection>(TSSearchMcpRequest(TSMetaType.META_COLLECTION, null, rawExtensions))
-        val maps = provider.search<TSGlobalMetaMap>(TSSearchMcpRequest(TSMetaType.META_MAP, null, rawExtensions))
-        val atomics = provider.search<TSGlobalMetaAtomic>(TSSearchMcpRequest(TSMetaType.META_ATOMIC, null, rawExtensions))
+        val items = provider.search<TSGlobalMetaItem>(TSSearchItemMcpRequest(extensions = rawExtensions, detailLevel = itemDetail))
+        val enums = provider.search<TSGlobalMetaEnum>(TSSearchEnumMcpRequest(extensions = rawExtensions, detailLevel = enumDetail))
+        val relations = provider.search<TSGlobalMetaRelation>(TSSearchMcpRequest(metaType = TSMetaType.META_RELATION, rawExtensions = rawExtensions))
+        val collections = provider.search<TSGlobalMetaCollection>(TSSearchMcpRequest(metaType = TSMetaType.META_COLLECTION, rawExtensions = rawExtensions))
+        val maps = provider.search<TSGlobalMetaMap>(TSSearchMcpRequest(metaType = TSMetaType.META_MAP, rawExtensions = rawExtensions))
+        val atomics = provider.search<TSGlobalMetaAtomic>(TSSearchMcpRequest(metaType = TSMetaType.META_ATOMIC, rawExtensions = rawExtensions))
 
         return TSTypeSystemDto(
             extensions = TSSearchMcpRequest(TSMetaType.META_ITEM, null, rawExtensions).extensions?.sorted(),
