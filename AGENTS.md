@@ -47,20 +47,33 @@ All versions in `gradle/libs.versions.toml` (use `libs.*` references).
 - `jps-plugin/` — JPS module for SAP Commerce compilation; excluded from `pluginComposedModule`.
 
 ### Code conventions
-Read `skills/lang-polyglot-query.md` before writing any PolyglotQuery code.
-Read `skills/lang-impex.md` before writing any ImpEx code.
-Read `skills/lang-flexible-search.md` before writing any FlexibleSearch code.
-Read `skills/dev-bean-system.md` before working on Bean System.
-Read `skills/dev-cockpit-ng.md` before working on Cockpit NG.
-Read `skills/dev-type-system.md` before working on Type System.
-Read `skills/dev-plugin.md` before modifying Kotlin source.
-Read `skills/workflow-github.md` before committing or opening a PR.
 See `TECH_NOTES.md` for: action invocation, background-thread patterns, dialog sizing, GotItTooltip.
 
 ## Workflow
-1. Identify affected area.
-2. Create a feature branch: `git checkout -b <area>-<short-topic>`.
-3. Implement focused change; commit iterative progress as you work — don't accumulate all changes into one diff.
+
+### Phase 1 — Read skills first (mandatory; no exploration or coding before this is done)
+
+Read each applicable skill **completely and sequentially** before opening any file, running any search, or writing any code. Reading in parallel with exploration defeats the purpose — skills exist to replace exploration.
+
+| Always read | Skill |
+|---|---|
+| Any Kotlin change | `skills/dev-plugin.md` |
+| Any commit or PR | `skills/workflow-github.md` |
+
+| Area | Skill |
+|---|---|
+| ImpEx | `skills/lang-impex.md` |
+| FlexibleSearch | `skills/lang-flexible-search.md` |
+| Polyglot Query | `skills/lang-polyglot-query.md` |
+| Type System (items.xml, MCP, TSMeta*) | `skills/dev-type-system.md` |
+| Bean System (beans.xml, BSMeta*) | `skills/dev-bean-system.md` |
+| Cockpit NG | `skills/dev-cockpit-ng.md` |
+
+### Phase 2 — Implementation
+
+1. Identify the affected area and create a feature branch: `git checkout -b <area>-<short-topic>`.
+2. Implement focused change; commit iterative progress as you work — don't accumulate all changes into one diff.
+3. Before each commit verify affected modules compile: `GITHUB_SKIP_TASK_FETCH_PRS=true ./gradlew <module>:compileKotlin`.
 4. Run relevant tests.
 5. Review modified files — remove unrelated changes, no formatting noise.
 6. Commit message matches repository style (see `skills/workflow-github.md`).
