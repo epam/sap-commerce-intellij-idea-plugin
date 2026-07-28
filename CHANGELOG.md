@@ -1,10 +1,13 @@
 ## [2026.2.1]
 
 <cite>Release contributors</code>
-- 1 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.2.1+author%3Amlytvyn+is%3Apr)
+- 2 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.2.1+author%3Amlytvyn+is%3Apr)
 
 ### `CCv2` enhancements
 - Show informative message when authentication failed [#1984](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1984)
+
+### `Spring` enhancements
+- Improved "Simple Spring" and added parent beans resolution in Non-Ultimate edition [#1985](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1985)
 
 ## [2026.2.0]
 
@@ -26,9 +29,9 @@
 
 ### `AI` capabilities
 - Expose local ImpEx syntax/inspection validation as MCP tool [#1950](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1950)
-- Expose type system Enum types as MCP tool [#1952](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1952)
-- Expose type system Map types as MCP tool [#1953](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1953)
-- Expose type system Relation types as MCP tool [#1954](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1954)
+- Expose Type System Enum types as MCP tool [#1952](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1952)
+- Expose Type System Map types as MCP tool [#1953](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1953)
+- Expose Type System Relation types as MCP tool [#1954](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1954)
 - Expose Bean System DTO beans as MCP tool [#1956](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1956)
 - Expose Bean System WS beans as MCP tool [#1957](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1957)
 - Expose Bean System event beans as MCP tool [#1958](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1958)

@@ -25,6 +25,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.ModificationTracker
 import com.intellij.platform.ide.progress.withBackgroundProgress
 import com.intellij.psi.JavaPsiFacade
+import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiManager
 import com.intellij.psi.search.FileTypeIndex
@@ -39,7 +40,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.Plugin
-import java.io.Serial
 
 /**
  * Incredibly simple handling of the Spring beans.
@@ -82,11 +82,23 @@ class SimpleSpringService(private val project: Project, private val coroutineSco
 
     override fun resolveBeanDeclaration(element: PsiElement, beanId: String, fallback: SpringFallbackScope) = findBean(beanId)
 
-    override fun resolveBeanClass(element: PsiElement, beanId: String, fallback: SpringFallbackScope) = findBean(beanId)
-        ?.getAttributeValue("class")
-        ?.let {
-            JavaPsiFacade.getInstance(element.project).findClass(it, GlobalSearchScope.allScope(element.project))
-        }
+    override fun resolveBeanClass(element: PsiElement, beanId: String, fallback: SpringFallbackScope): PsiClass? {
+        val beanClassName = findBeanClass(beanId, mutableListOf()) ?: return null
+        return JavaPsiFacade.getInstance(project).findClass(beanClassName, GlobalSearchScope.allScope(project))
+    }
+
+    // Get bean's class or class of its parent
+    private fun findBeanClass(beanId: String, visited: MutableList<String>): String? {
+        // prevent recursion or too nested beans
+        if (visited.contains(beanId) || visited.size > 10) return null
+        visited.add(beanId)
+
+        val bean = findBean(beanId)
+        return bean?.getAttributeValue("class")
+            ?: bean?.getAttributeValue("parent")
+                ?.let { findBeanClass(it, visited) }
+
+    }
 
     private fun findBean(id: String) = cache.value[id]
 
@@ -97,7 +109,9 @@ class SimpleSpringService(private val project: Project, private val coroutineSco
                 .filter { tag -> tag.localName == "bean" }
                 .mapNotNull { tag ->
                     val id = tag.getAttributeValue("id") ?: return@mapNotNull null
-                    tag.getAttributeValue("class") ?: return@mapNotNull null
+                    tag.getAttributeValue("class")
+                        ?: tag.getAttributeValue("parent")
+                        ?: return@mapNotNull null
 
                     id to tag
                 }
@@ -131,9 +145,6 @@ class SimpleSpringService(private val project: Project, private val coroutineSco
     }
 
     companion object {
-        @Serial
-        private const val serialVersionUID: Long = -8015348108936115374L
-
         fun getService(project: Project): SimpleSpringService = project.getService(SimpleSpringService::class.java)
     }
 }
