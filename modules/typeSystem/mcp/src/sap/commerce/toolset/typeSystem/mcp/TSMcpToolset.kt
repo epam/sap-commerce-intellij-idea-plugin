@@ -33,7 +33,8 @@ class TSMcpToolset : McpToolset {
     @McpDescription(
         """Lists the Item types defined in the current project's SAP Commerce (Hybris) type system, as shown in the "Type System" tool window.
         |This is the project's LOCAL model, parsed from the `*-items.xml` definitions — it does NOT query a remote server and does NOT require a HAC connection.
-        |Returns a JSON object: {"detail", "filter", "matched", "total", "items": [...]}. Boolean flags (custom, abstract, deprecated) are present only when true and omitted otherwise.
+        |Returns a JSON object: {"detail", "filter", "matched", "total", "items": [...]}. Boolean flags (custom, abstract, deprecated, singleton, jaloOnly, catalogAware) are present only when true and omitted otherwise.
+        |Each item includes: name, extends, deployment (table, typeCode), extension, description, jaloClass, flattenType, deprecatedSince and the flag fields listed above.
         |A project can define thousands of item types, so narrow the result with 'filter' (by name) and/or 'extensions' (by owning extension), and use 'detail' to control how much per-type information is returned, keeping the response (and token usage) small."""
     )
     suspend fun listItemTypes(
@@ -52,13 +53,13 @@ class TSMcpToolset : McpToolset {
         extensions: String? = null,
         @McpDescription(
             """Controls how much information is returned per item type, to balance completeness against token usage:
-            |- TYPES: item type identity only (name, extends, typeCode, extension, and the custom/abstract/deprecated flags). No attributes.
+            |- TYPES: item type identity only (name, extends, deployment, extension, description, jaloClass, flattenType, deprecatedSince, and the flag fields). No attributes.
             |- ATTRIBUTES: the above plus each type's declared attributes as {name, type}.
             |- FULL: the above plus all available attribute meta-information: the extension it is 'declaredIn' and any extensions it is 'redeclaredIn', the localized/dynamic/deprecated/autoCreate/generate flags, defaultValue, selectionOf, flattenType, description, the active 'modifiers' (which include 'optional' — a mandatory attribute is simply one without it) and 'persistence' details. Only non-empty values are included.
             |Default: TYPES. Prefer the smallest level that answers the question. Attributes are the type's DECLARED attributes, not inherited ones."""
         )
         detail: String = ItemTypeDetail.TYPES.name,
-        @McpDescription("Output format for the response. Supported formats: JSON. Default: JSON.")
+        @McpDescription(McpConstants.Descriptions.OUTPUT_FORMAT)
         outputFormat: String = McpConstants.Formats.JSON,
     ): String {
         val mapper = resolveMapper(outputFormat)
@@ -89,7 +90,7 @@ class TSMcpToolset : McpToolset {
             |Omit to include atomic types from all extensions."""
         )
         extensions: String? = null,
-        @McpDescription("Output format for the response. Supported formats: JSON. Default: JSON.")
+        @McpDescription(McpConstants.Descriptions.OUTPUT_FORMAT)
         outputFormat: String = McpConstants.Formats.JSON,
     ): String {
         val mapper = resolveMapper(outputFormat)
@@ -119,7 +120,7 @@ class TSMcpToolset : McpToolset {
             |Omit to include collection types from all extensions."""
         )
         extensions: String? = null,
-        @McpDescription("Output format for the response. Supported formats: JSON. Default: JSON.")
+        @McpDescription(McpConstants.Descriptions.OUTPUT_FORMAT)
         outputFormat: String = McpConstants.Formats.JSON,
     ): String {
         val mapper = resolveMapper(outputFormat)
@@ -156,7 +157,7 @@ class TSMcpToolset : McpToolset {
             |Default: TYPES. Prefer the smallest level that answers the question. Dynamic enums may declare no values in the local model."""
         )
         detail: String = EnumTypeDetail.TYPES.name,
-        @McpDescription("Output format for the response. Supported formats: JSON. Default: JSON.")
+        @McpDescription(McpConstants.Descriptions.OUTPUT_FORMAT)
         outputFormat: String = McpConstants.Formats.JSON,
     ): String {
         val mapper = resolveMapper(outputFormat)
@@ -187,7 +188,7 @@ class TSMcpToolset : McpToolset {
             |Omit to include map types from all extensions."""
         )
         extensions: String? = null,
-        @McpDescription("Output format for the response. Supported formats: JSON. Default: JSON.")
+        @McpDescription(McpConstants.Descriptions.OUTPUT_FORMAT)
         outputFormat: String = McpConstants.Formats.JSON,
     ): String {
         val mapper = resolveMapper(outputFormat)
@@ -196,12 +197,52 @@ class TSMcpToolset : McpToolset {
         return mapper.map(mapTypes)
     }
 
+    @McpTool(name = "sap_commerce_get_type_system")
+    @McpDescription(
+        """Returns the complete SAP Commerce (Hybris) type system for the current project in a single call, as shown in the "Type System" tool window.
+        |Includes all type categories: item types, enum types, relation types, collection types, map types, and atomic types.
+        |This is the project's LOCAL model, parsed from the `*-items.xml` definitions — it does NOT query a remote server and does NOT require a HAC connection.
+        |Returns a JSON object: {"extensions", "items": [...], "enums": [...], "relations": [...], "collections": [...], "maps": [...], "atomics": [...]}.
+        |WARNING: A full SAP Commerce project can define thousands of types across hundreds of extensions, producing a very large response. Always use the 'extensions' parameter to limit the scope to one or a few extensions unless a broad overview is genuinely required."""
+    )
+    suspend fun getTypeSystem(
+        @McpDescription(
+            """Optional comma-separated list of extension names to restrict all returned types to those owned by those extensions (e.g. 'myextensioncore' or 'core,catalog').
+            |Matched case-insensitively and exactly against each type's owning 'extension'.
+            |Strongly recommended to keep the response size manageable. Omit only when you need the entire platform type system."""
+        )
+        extensions: String? = null,
+        @McpDescription(
+            """Controls how much information is returned per item type:
+            |- TYPES: item type identity and all type-level metadata (name, extends, deployment, description, flags). No attributes.
+            |- ATTRIBUTES: the above plus each type's declared attributes as {name, type}.
+            |- FULL: the above plus complete attribute metadata (declaredIn, redeclaredIn, localized, dynamic, deprecated, modifiers, persistence, etc.).
+            |Default: FULL. Use TYPES or ATTRIBUTES to reduce response size when attribute details are not needed."""
+        )
+        itemDetail: String = ItemTypeDetail.FULL.name,
+        @McpDescription(
+            """Controls how much information is returned per enum type:
+            |- TYPES: enum identity only (name, extension, flags). No values or description.
+            |- VALUES: the above plus the enum's 'description' and its 'values' as {name, description}.
+            |Default: VALUES."""
+        )
+        enumDetail: String = EnumTypeDetail.VALUES.name,
+        @McpDescription(McpConstants.Descriptions.OUTPUT_FORMAT)
+        outputFormat: String = McpConstants.Formats.FILE,
+    ): String {
+        val mapper = resolveMapper(outputFormat)
+        val itemDetailLevel = ItemTypeDetail.resolve(itemDetail)
+        val enumDetailLevel = EnumTypeDetail.resolve(enumDetail)
+        val typeSystem = TSMcpService.getInstance().getTypeSystem(extensions, itemDetailLevel, enumDetailLevel)
+        return mapper.map(typeSystem)
+    }
+
     @McpTool(name = "sap_commerce_list_relation_types")
     @McpDescription(
         """Lists the Relation types defined in the current project's SAP Commerce (Hybris) type system, as shown in the "Type System" tool window.
-        |A relation type connects two item types via a 'source' and a 'target' end; each end has the referenced item 'type', its 'qualifier', 'cardinality' ('one'/'many'), the 'collectionType' used for a 'many' end ('collection'/'list'/'set'), and the 'ordered'/'navigable' flags.
+        |A relation type connects two item types via a 'source' and a 'target' end; each end has the referenced item 'type', its 'qualifier', 'cardinality' ('one'/'many'), the 'collectionType' used for a 'many' end ('collection'/'list'/'set'), and the 'ordered'/'navigable'/'deprecated' flags plus an optional 'description'.
         |This is the project's LOCAL model, parsed from the `*-items.xml` definitions — it does NOT query a remote server and does NOT require a HAC connection.
-        |Returns a JSON object: {"filter", "extensions", "matched", "total", "items": [{"name", "typeCode", "source": {...}, "target": {...}, "extension", "localized", "custom", "autoCreate", "generate"}]}. Boolean flags are present only when true and omitted otherwise.
+        |Returns a JSON object: {"filter", "extensions", "matched", "total", "items": [{"name", "deployment": {"table", "typeCode"}, "description", "source": {...}, "target": {...}, "extension", "localized", "custom", "autoCreate", "generate"}]}. Boolean flags are present only when true and omitted otherwise.
         |Use 'filter' (by name) and/or 'extensions' (by owning extension) to narrow the result and keep the response (and token usage) small."""
     )
     suspend fun listRelationTypes(
@@ -217,7 +258,7 @@ class TSMcpToolset : McpToolset {
             |Omit to include relation types from all extensions."""
         )
         extensions: String? = null,
-        @McpDescription("Output format for the response. Supported formats: JSON. Default: JSON.")
+        @McpDescription(McpConstants.Descriptions.OUTPUT_FORMAT)
         outputFormat: String = McpConstants.Formats.JSON,
     ): String {
         val mapper = resolveMapper(outputFormat)

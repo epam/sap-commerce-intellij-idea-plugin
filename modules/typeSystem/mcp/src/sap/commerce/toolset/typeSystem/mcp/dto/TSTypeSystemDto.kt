@@ -16,18 +16,17 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.ai.mcp
+package sap.commerce.toolset.typeSystem.mcp.dto
 
-object McpConstants {
+import kotlinx.serialization.Serializable
 
-    object Formats {
-        const val JSON = "JSON"
-        const val FILE = "FILE"
-    }
-
-    object Descriptions {
-        const val OUTPUT_FORMAT = """Output format for the response. Supported formats: JSON, FILE.
-            |Use FILE to write the result to a temporary file and return its absolute path — avoids inline token limits for large responses.
-            |Default: JSON."""
-    }
-}
+@Serializable
+data class TSTypeSystemDto(
+    val extensions: List<String>? = null,
+    val items: List<TSItemDto>,
+    val enums: List<TSEnumDto>,
+    val relations: List<TSRelationDto>,
+    val collections: List<TSCollectionDto>,
+    val maps: List<TSMapDto>,
+    val atomics: List<TSAtomicDto>,
+)

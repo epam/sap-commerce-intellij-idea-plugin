@@ -1,11 +1,17 @@
 # Commit & PR conventions
 
+## Before writing any code
+
+1. Read `skills/dev-plugin.md` (Kotlin conventions, MCP patterns, service/DTO rules).
+2. Read the area-specific skill (`skills/dev-type-system.md`, `skills/lang-impex.md`, etc.).
+3. `git checkout -b <area>-<short-topic>` — never implement on `main`.
+
 ## Remote topology
 
 - `origin` — contributor's fork. Push branches here.
 - `upstream` — `epam/sap-commerce-intellij-idea-plugin`. PR target; merges into `epam:main`.
-- Never commit to `main` directly. Branch: `git checkout -b feature/<short-topic>`.
-- Push: `git push -u origin feature/<short-topic>`.
+- Never commit to `main` directly. Branch: `git checkout -b <area>-<short-topic>`.
+- Push: `git push -u origin <area>-<short-topic>`.
 
 ## Commit messages
 

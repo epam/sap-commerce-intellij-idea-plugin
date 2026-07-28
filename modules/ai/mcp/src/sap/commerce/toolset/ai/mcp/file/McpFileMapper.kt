@@ -16,18 +16,19 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.ai.mcp
+package sap.commerce.toolset.ai.mcp.file
 
-object McpConstants {
+import kotlinx.serialization.KSerializer
+import sap.commerce.toolset.ai.mcp.McpMapper
+import sap.commerce.toolset.ai.mcp.json.McpJsonMapper
+import java.io.File
 
-    object Formats {
-        const val JSON = "JSON"
-        const val FILE = "FILE"
-    }
+object McpFileMapper : McpMapper {
 
-    object Descriptions {
-        const val OUTPUT_FORMAT = """Output format for the response. Supported formats: JSON, FILE.
-            |Use FILE to write the result to a temporary file and return its absolute path — avoids inline token limits for large responses.
-            |Default: JSON."""
+    override fun <T> map(value: T, serializer: KSerializer<T>): String {
+        val json = McpJsonMapper.map(value, serializer)
+        val file = File.createTempFile("sap-cx-", ".json")
+        file.writeText(json)
+        return file.absolutePath
     }
 }

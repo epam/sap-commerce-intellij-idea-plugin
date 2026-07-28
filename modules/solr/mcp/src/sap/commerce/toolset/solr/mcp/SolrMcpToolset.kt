@@ -44,7 +44,7 @@ class SolrMcpToolset : McpToolset {
         rows: Int = 10,
         @McpDescription("Optional Solr connection name. Uses the active connection if not specified")
         connectionName: String? = null,
-        @McpDescription("Output format for the response. Supported formats: JSON. Default: JSON.")
+        @McpDescription(McpConstants.Descriptions.OUTPUT_FORMAT)
         outputFormat: String = McpConstants.Formats.JSON,
     ): String {
         val mapper = resolveMapper(outputFormat)
@@ -62,7 +62,7 @@ class SolrMcpToolset : McpToolset {
     suspend fun solrListCores(
         @McpDescription("Optional Solr connection name. Uses the active connection if not specified")
         connectionName: String? = null,
-        @McpDescription("Output format for the response. Supported formats: JSON. Default: JSON.")
+        @McpDescription(McpConstants.Descriptions.OUTPUT_FORMAT)
         outputFormat: String = McpConstants.Formats.JSON,
     ): String {
         val mapper = resolveMapper(outputFormat)
@@ -79,7 +79,7 @@ class SolrMcpToolset : McpToolset {
         | - active: whether it is the currently active connection."""
     )
     suspend fun listSolrConnections(
-        @McpDescription("Output format for the response. Supported formats: JSON. Default: JSON.")
+        @McpDescription(McpConstants.Descriptions.OUTPUT_FORMAT)
         outputFormat: String = McpConstants.Formats.JSON,
     ): String {
         val mapper = resolveMapper(outputFormat)

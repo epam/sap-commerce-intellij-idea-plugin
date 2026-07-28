@@ -28,4 +28,6 @@ data class TSRelationEndDto(
     val collectionType: String? = null,
     val ordered: Boolean? = null,
     val navigable: Boolean? = null,
+    val deprecated: Boolean? = null,
+    val description: String? = null,
 )

@@ -53,7 +53,7 @@ class FxSMcpToolset : McpToolset {
         timeout: Int? = null,
         @McpDescription("Optional HAC connection name. Uses the active connection if not specified")
         connectionName: String? = null,
-        @McpDescription("Output format for the response. Supported formats: JSON. Default: JSON.")
+        @McpDescription(McpConstants.Descriptions.OUTPUT_FORMAT)
         outputFormat: String = McpConstants.Formats.JSON,
     ): String {
         val mapper = resolveMapper(outputFormat)
@@ -84,7 +84,7 @@ class FxSMcpToolset : McpToolset {
         timeout: Int? = null,
         @McpDescription("Optional HAC connection name. Uses the active connection if not specified")
         connectionName: String? = null,
-        @McpDescription("Output format for the response. Supported formats: JSON. Default: JSON.")
+        @McpDescription(McpConstants.Descriptions.OUTPUT_FORMAT)
         outputFormat: String = McpConstants.Formats.JSON,
     ): String {
         val mapper = resolveMapper(outputFormat)
@@ -125,7 +125,7 @@ class FxSMcpToolset : McpToolset {
         includeTypeSystemUnique: Boolean = false,
         @McpDescription("Flag to include result data rows in the output. Set to 'true' whenever the user wants actual data (not just the ImpEx header). Default is 'true'.")
         includeData: Boolean = true,
-        @McpDescription("Output format for the response. Supported formats: JSON. Default: JSON.")
+        @McpDescription(McpConstants.Descriptions.OUTPUT_FORMAT)
         outputFormat: String = McpConstants.Formats.JSON,
     ): String {
         val mapper = resolveMapper(outputFormat)

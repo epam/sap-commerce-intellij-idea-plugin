@@ -56,7 +56,7 @@ Relation ends (`<relation>` XML only):
 Other: `.allIndexes / .indexes`, `.allCustomProperties / .customProperties`, `.deployment: TSMetaDeployment?`
 
 Flags: `.isAbstract`, `.isAutoCreate`, `.isGenerate`, `.isSingleton`, `.isJaloOnly`, `.isCatalogAware`, `.isDeprecated`
-Meta: `.description: String?`, `.jaloClass: String?`, `.deprecatedSince: String?`
+Meta: `.description: String?`, `.jaloClass: String?`, `.deprecatedSince: String?`, `.flattenType: String?` (Java class name, from `TSTypedClassifier`)
 
 ### TSGlobalMetaItemAttribute
 
@@ -105,13 +105,13 @@ FK rule: filter `.cardinality == Cardinality.ONE` for attributes with a physical
 
 ## Scalar Types
 
-| Type                     | Key fields                                                                     |
-|--------------------------|--------------------------------------------------------------------------------|
-| `TSGlobalMetaCollection` | `.elementType: String`, `.type: Type` (collection/list/set)                    |
-| `TSGlobalMetaMap`        | `.argumentType: String?` (key), `.returnType: String?` (value), `.isRedeclare` |
-| `TSGlobalMetaAtomic`     | `.extends: String` (Java class name)                                           |
+| Type                     | Key fields                                                                                       |
+|--------------------------|--------------------------------------------------------------------------------------------------|
+| `TSGlobalMetaCollection` | `.elementType: String`, `.type: Type` (collection/list/set), `.flattenType: String?`             |
+| `TSGlobalMetaMap`        | `.argumentType: String?` (key), `.returnType: String?` (value), `.isRedeclare`, `.flattenType: String?` |
+| `TSGlobalMetaAtomic`     | `.extends: String` (Java class name), `.flattenType: String?`                                    |
 
-All have `.isAutoCreate`, `.isGenerate`.
+All have `.isAutoCreate`, `.isGenerate`. All global meta types implement `TSTypedClassifier` → `.flattenType: String?`.
 
 ## Shared
 
@@ -144,6 +144,43 @@ CachedValueProvider.Result.create(
     PsiModificationTracker.MODIFICATION_COUNT
 )
 ```
+
+## TypeSystem MCP Layer
+
+Module: `modules/typeSystem/mcp/` (`:typeSystem-mcp`). Key files under `src/.../mcp/`:
+
+- `TSMcpToolset.kt` — 7 `@McpTool suspend fun`; no logic; delegates to service
+- `TSMcpService.kt` — private `toDto()` extensions + `getTypeSystem()` aggregate
+- `TSMcpDataProvider.kt` — `search<T>(request)`: dumb-mode guard → `readAction {}` → `getAll<T>(metaType)` → name/extension filter
+- `dto/` — `@Serializable data class` DTOs; `context/` — request objects
+
+**Request hierarchy:**
+```
+TSSearchMcpRequest(metaType, filter?, rawExtensions)
+  ├─ TSSearchItemMcpRequest(filter?, rawExtensions, detailLevel: ItemTypeDetail)   // META_ITEM
+  └─ TSSearchEnumMcpRequest(filter?, rawExtensions, detailLevel: EnumTypeDetail)   // META_ENUM
+```
+Detail enums: `ItemTypeDetail` (TYPES / ATTRIBUTES / FULL), `EnumTypeDetail` (TYPES / VALUES).
+
+**DTOs — fields beyond the base (`name`, `extension`, `custom`, `autoCreate`, `generate`):**
+
+| DTO | Fields |
+|---|---|
+| `TSItemDto` | `abstract`, `deprecated`, `deprecatedSince`, `extends`, `description`, `jaloClass`, `singleton`, `jaloOnly`, `catalogAware`, `flattenType`, `deployment: TSDeploymentDto?`, `attributes: List<TSItemAttributeDto>?` |
+| `TSItemAttributeDto` | `type`, `declaredIn`, `redeclaredIn`, `localized`, `dynamic`, `deprecated`, `autoCreate`, `generate`, `defaultValue`, `selectionOf`, `flattenType`, `description`, `modifiers: List<String>?`, `persistence: TSAttributePersistenceDto?` |
+| `TSEnumDto` | `dynamic`, `deprecated`, `deprecatedSince`, `description`, `values: List<TSEnumValueDto>?` |
+| `TSRelationDto` | `source/target: TSRelationEndDto`, `description`, `deployment: TSDeploymentDto?`, `localized` |
+| `TSRelationEndDto` | `type`, `qualifier`, `cardinality`, `collectionType`, `ordered`, `navigable`, `deprecated`, `description` |
+| `TSCollectionDto` | `kind`, `elementType`, `flattenType` |
+| `TSMapDto` | `returnType`, `argumentType`, `redeclare`, `flattenType` |
+| `TSAtomicDto` | `extends`, `flattenType` |
+| `TSDeploymentDto` | `table`, `typeCode` |
+| `TSTypeSystemDto` | `extensions`, `items`, `enums`, `relations`, `collections`, `maps`, `atomics` |
+
+**Service mapping conventions:**
+- Boolean flags: `isXxx.takeIf { it }` — omitted when `false`
+- Strings: `str?.takeIf { it.isNotBlank() }` — omitted when blank/null
+- Detail gating: item-level fields always mapped; attribute fields (`declaredIn`, `redeclaredIn`, `persistence`, most flags, `modifiers`, `flattenType`, `description`) only at `FULL`
 
 ## Inspections
 

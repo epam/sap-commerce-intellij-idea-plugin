@@ -71,7 +71,9 @@ Never inline HAC calls — `HacHttpClient.getInstance(project).post(actionUrl, p
 - **Toolset = no logic**: `resolveMapper(outputFormat)` → resolve project → call service → `mapper.map(result)`.
 - Logic in `@Service(Level.PROJECT) XxxMcpService`; `@Serializable` DTOs in `dto/`. Never call `Json` directly.
 - No try/catch — `error(...)`/`require(...)` or failure as DTO fields (`success = false`, `error`).
-- Exemplars: `shared/mcp/` (local EP query), `groovy/mcp/` (remote exec).
+- Exemplars: `typeSystem/mcp/` (typed meta-model search with detail levels — canonical), `shared/mcp/` (local EP query), `groovy/mcp/` (remote exec).
+- When adding search-style tools: use a request object (`XxxSearchMcpRequest`) with `filter?`, `rawExtensions`, and an optional `detailLevel` enum (see `typeSystem/mcp/context/`). `TSMcpDataProvider` shows the standard pipeline: dumb-mode guard → `readAction {}` → `getAll<T>` → filter.
+- Read `skills/dev-type-system.md` § "TypeSystem MCP Layer" before touching `typeSystem/mcp/`.
 
 ## Actions & UI
 

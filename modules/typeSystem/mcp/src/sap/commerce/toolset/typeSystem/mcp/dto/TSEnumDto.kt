@@ -29,6 +29,7 @@ data class TSEnumDto(
     override val generate: Boolean? = null,
     val dynamic: Boolean? = null,
     val deprecated: Boolean? = null,
+    val deprecatedSince: String? = null,
     val description: String? = null,
     val values: List<TSEnumValueDto>? = null,
 ) : TSClassifierDto

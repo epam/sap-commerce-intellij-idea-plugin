@@ -49,7 +49,7 @@ class ImpExMcpToolset : McpToolset {
         validate: Boolean = false,
         @McpDescription("Optional HAC connection name. Uses the active connection if not specified")
         connectionName: String? = null,
-        @McpDescription("Output format for the response. Supported formats: JSON. Default: JSON.")
+        @McpDescription(McpConstants.Descriptions.OUTPUT_FORMAT)
         outputFormat: String = McpConstants.Formats.JSON,
     ): String {
         val mapper = resolveMapper(outputFormat)
@@ -81,7 +81,7 @@ class ImpExMcpToolset : McpToolset {
         content: String? = null,
         @McpDescription("Optional path (absolute, or relative to the project directory) to an existing ImpEx file in the project to validate instead of 'content'.")
         filePath: String? = null,
-        @McpDescription("Output format for the response. Supported formats: JSON. Default: JSON.")
+        @McpDescription(McpConstants.Descriptions.OUTPUT_FORMAT)
         outputFormat: String = McpConstants.Formats.JSON,
     ): String {
         val mapper = resolveMapper(outputFormat)

@@ -40,7 +40,7 @@ class TransformerMcpToolset : McpToolset {
     suspend fun listTransformers(
         @McpDescription("Optional language ID to filter by (e.g. 'FlexibleSearch'). Matched case-insensitively against language ID and display name. Returns transformers for all languages when omitted.")
         languageId: String? = null,
-        @McpDescription("Output format for the response. Supported formats: JSON. Default: JSON.")
+        @McpDescription(McpConstants.Descriptions.OUTPUT_FORMAT)
         outputFormat: String = McpConstants.Formats.JSON,
     ): String {
         val mapper = resolveMapper(outputFormat)

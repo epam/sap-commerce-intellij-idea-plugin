@@ -43,7 +43,7 @@ class GroovyMcpToolset : McpToolset {
         commit: Boolean = false,
         @McpDescription("Optional HAC connection name. Uses the active connection if not specified")
         connectionName: String? = null,
-        @McpDescription("Output format for the response. Supported formats: JSON. Default: JSON.")
+        @McpDescription(McpConstants.Descriptions.OUTPUT_FORMAT)
         outputFormat: String = McpConstants.Formats.JSON,
     ): String {
         val mapper = resolveMapper(outputFormat)
@@ -67,7 +67,7 @@ class GroovyMcpToolset : McpToolset {
         script: String,
         @McpDescription("Name used as the Script item code and ScriptingJob code prefix (e.g. 'removeTestUserScript')")
         scriptName: String,
-        @McpDescription("Output format for the response. Supported formats: JSON. Default: JSON.")
+        @McpDescription(McpConstants.Descriptions.OUTPUT_FORMAT)
         outputFormat: String = McpConstants.Formats.JSON,
     ): String {
         val mapper = resolveMapper(outputFormat)
