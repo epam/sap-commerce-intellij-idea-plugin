@@ -148,7 +148,7 @@ class FlexibleSearchTransformAction : AnAction() {
                         psiFile.putUserData(FlexibleSearchExecConstants.Transform.EXEC_RESULTS, execResult)
 
                         val transformer = applicableTransformers[selectedTransformerIndex]
-                        transformer.transform(psiFile) { result ->
+                        transformer.transform(project, psiFile) { result ->
                             notify(project, result)
                         }
                     }

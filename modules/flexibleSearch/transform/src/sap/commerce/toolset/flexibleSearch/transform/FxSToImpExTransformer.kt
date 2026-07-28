@@ -20,6 +20,7 @@ package sap.commerce.toolset.flexibleSearch.transform
 
 import com.intellij.lang.Language
 import com.intellij.openapi.fileTypes.LanguageFileType
+import com.intellij.openapi.project.Project
 import sap.commerce.toolset.flexibleSearch.FlexibleSearchLanguage
 import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchPsiFile
 import sap.commerce.toolset.flexibleSearch.transform.impex.ImpExTransformationService
@@ -38,9 +39,9 @@ class FxSToImpExTransformer : Transformer<FlexibleSearchPsiFile> {
 
     override fun isApplicable(language: Language) = language is FlexibleSearchLanguage
 
-    override fun transform(psiElement: FlexibleSearchPsiFile, onComplete: (TransformationResult) -> Unit) = ImpExTransformationService.getInstance(psiElement.project)
+    override fun transform(project: Project, psiElement: FlexibleSearchPsiFile, onComplete: (TransformationResult) -> Unit) = ImpExTransformationService.getInstance(project)
         .transform(outputFileType, psiElement, onComplete)
 
-    override suspend fun transform(psiElement: FlexibleSearchPsiFile): TransformationResult = ImpExTransformationService.getInstance(psiElement.project)
+    override suspend fun transform(project: Project, psiElement: FlexibleSearchPsiFile): TransformationResult = ImpExTransformationService.getInstance(project)
         .transform(outputFileType, psiElement)
 }

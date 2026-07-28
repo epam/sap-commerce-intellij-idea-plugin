@@ -124,7 +124,7 @@ class ImpExValueLineTransformLineMarkerProvider : LineMarkerProvider {
                         content.apply()
                         val transformer = transformers[selectedTransformerIndex]
                         element.putUserData(ImpExConstants.Transform.INCLUDE_ALL_ATTRIBUTES, includeAllAttributes.get())
-                        transformer.transform(element) { result ->
+                        transformer.transform(project, element) { result ->
                             notify(project, result)
                         }
                     }

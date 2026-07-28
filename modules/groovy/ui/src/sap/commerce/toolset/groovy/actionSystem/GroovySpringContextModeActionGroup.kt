@@ -22,6 +22,7 @@ import com.intellij.ide.DataManager
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.actionSystem.ex.ActionUtil
 import com.intellij.openapi.actionSystem.ex.CustomComponentAction
+import com.intellij.openapi.util.Disposer
 import com.intellij.ui.GotItTooltip
 import com.intellij.ui.scale.JBUIScale
 import sap.commerce.toolset.GotItTooltips
@@ -30,6 +31,7 @@ import sap.commerce.toolset.groovy.getSpringContextMode
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.settings.state.SpringContextMode
 import sap.commerce.toolset.ui.ActionButtonWithTextAndDescriptionComponent
+import java.awt.event.HierarchyEvent
 
 class GroovySpringContextModeActionGroup : DefaultActionGroup(), CustomComponentAction {
 
@@ -55,7 +57,7 @@ class GroovySpringContextModeActionGroup : DefaultActionGroup(), CustomComponent
         place = place,
         title = "Spring Context Mode"
     )
-        .also {
+        .also { component ->
             val before = """<pre class="code">
                 import de.hybris.platform.core.Registry
                 import de.hybris.platform.product.ProductService
@@ -67,6 +69,12 @@ class GroovySpringContextModeActionGroup : DefaultActionGroup(), CustomComponent
             """.trimIndent()
             val after = "<pre class=\"code\">productService.getProduct('test')</pre>"
 
+            val disposable = Disposer.newDisposable()
+            component.addHierarchyListener { e ->
+                if (e.changeFlags and HierarchyEvent.DISPLAYABILITY_CHANGED.toLong() != 0L && !component.isDisplayable) {
+                    Disposer.dispose(disposable)
+                }
+            }
             GotItTooltip(
                 id = GotItTooltips.Groovy.SPRING_CONTEXT_MODE,
                 textSupplier = {
@@ -75,7 +83,7 @@ class GroovySpringContextModeActionGroup : DefaultActionGroup(), CustomComponent
                     <br>${icon(SpringContextMode.REMOTE.icon)} ${code(SpringContextMode.REMOTE.presentationText)} resolves beans by fetching them from the remote HAC.
                     <br>Resolution of the Spring Context is a heavy operation, that's why it is ${icon(SpringContextMode.DISABLED.icon)} ${code(SpringContextMode.DISABLED.presentationText)} by default for every new Editor, but it can be changed via ${
                         link("Groovy settings") {
-                            DataManager.getInstance().getDataContext(it).getData(CommonDataKeys.PROJECT)
+                            DataManager.getInstance().getDataContext(component).getData(CommonDataKeys.PROJECT)
                                 ?.triggerAction("hybris.groovy.openSettings")
                         }
                     }.
@@ -86,11 +94,11 @@ class GroovySpringContextModeActionGroup : DefaultActionGroup(), CustomComponent
                     <br>${after}
                 """.trimIndent()
                 },
-                parentDisposable = null
+                parentDisposable = disposable
             )
                 .withMaxWidth(JBUIScale.scale(420))
                 .withHeader("Welcome Spring Context in Groovy!")
-                .show(it, GotItTooltip.BOTTOM_MIDDLE)
+                .show(component, GotItTooltip.BOTTOM_MIDDLE)
         }
 
 }
