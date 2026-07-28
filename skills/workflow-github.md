@@ -1,5 +1,11 @@
 # Commit & PR conventions
 
+## Before writing any code
+
+1. Read `skills/dev-plugin.md` (Kotlin conventions, MCP patterns, service/DTO rules).
+2. Read the area-specific skill (`skills/dev-type-system.md`, `skills/lang-impex.md`, etc.).
+3. `git checkout -b feature/<short-topic>` — never implement on `main`.
+
 ## Remote topology
 
 - `origin` — contributor's fork. Push branches here.
