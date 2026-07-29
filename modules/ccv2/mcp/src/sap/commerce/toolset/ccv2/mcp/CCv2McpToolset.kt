@@ -34,7 +34,7 @@ class CCv2McpToolset : McpToolset {
         |Returns a JSON object: {"total", "items": [{"id", "name"}]}.
         |If only one subscription is configured you may omit subscriptionId from other tools — the first is used automatically."""
     )
-    suspend fun listSubscriptions(
+    fun listSubscriptions(
         @McpDescription(McpConstants.Descriptions.OUTPUT_FORMAT)
         outputFormat: String = McpConstants.Formats.JSON,
     ): String {
@@ -325,7 +325,7 @@ class CCv2McpToolset : McpToolset {
         |Accepts a raw CCv2 log line (or block) that contains a JSON-serialized exception with a 'thrown.extendedStackTrace' field.
         |Returns a JSON object: {"success", "stackTrace", "message"}. When 'success' is false the input did not contain a recognizable CCv2 exception."""
     )
-    suspend fun unscrambleLog(
+    fun unscrambleLog(
         @McpDescription("Raw CCv2 log text containing a JSON-encoded exception (must include a 'thrown.extendedStackTrace' field).")
         logText: String,
         @McpDescription(McpConstants.Descriptions.OUTPUT_FORMAT)
