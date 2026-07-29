@@ -304,19 +304,17 @@ class CCv2McpToolset : McpToolset {
 
     @McpTool(name = "sap_commerce_ccv2_download_build_logs")
     @McpDescription(
-        """Downloads and extracts build log files for a CCv2 build.
-        |Returns a JSON object: {"subscription", "buildCode", "files": [{"name", "content"}]}.
-        |Each file contains the raw text of a build log. Large builds may produce many log files — use outputFormat=FILE to write to a file instead of embedding in the response."""
+        """Downloads and extracts build log files for a CCv2 build to a local temp directory.
+        |Returns a JSON object: {"subscription", "buildCode", "files": [{"name", "path"}]}.
+        |Each entry contains the file name and its absolute local path — read the files directly from disk."""
     )
     suspend fun downloadBuildLogs(
         @McpDescription(CCv2McpConstants.Descriptions.BUILD_CODE)
         buildCode: String,
         @McpDescription(CCv2McpConstants.Descriptions.SUBSCRIPTION_ID)
         subscriptionId: String? = null,
-        @McpDescription(McpConstants.Descriptions.OUTPUT_FORMAT)
-        outputFormat: String = McpConstants.Formats.FILE,
     ): String {
-        val mapper = resolveMapper(outputFormat)
+        val mapper = resolveMapper(McpConstants.Formats.JSON)
         val buildLogs = CCv2McpService.getInstance().downloadBuildLogs(subscriptionId, buildCode)
         return mapper.map(buildLogs)
     }

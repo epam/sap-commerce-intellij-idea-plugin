@@ -23,5 +23,5 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class CCv2LogFileMcpDto(
     val name: String,
-    val content: String,
+    val path: String,
 )

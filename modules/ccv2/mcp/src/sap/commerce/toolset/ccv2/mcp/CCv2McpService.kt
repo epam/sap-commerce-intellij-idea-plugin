@@ -306,7 +306,7 @@ class CCv2McpService {
                     val logFile = if (targetFile.exists()) targetFile else file
                     CCv2LogFileMcpDto(
                         name = logFile.name,
-                        content = logFile.readText(),
+                        path = logFile.absolutePath,
                     )
                 }
                 .toList()
