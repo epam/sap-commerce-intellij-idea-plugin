@@ -21,26 +21,11 @@ package sap.commerce.toolset.ccv2.mcp.dto
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class CCv2MReplicaDto(
-    val name: String,
-    val status: String,
-    val ready: Boolean,
-)
-
-@Serializable
-data class CCv2MServiceDto(
+data class CCv2ServiceMcpDto(
     val code: String,
     val name: String,
     val desiredReplicas: Int?,
     val availableReplicas: Int?,
-    val replicas: List<CCv2MReplicaDto>,
+    val replicas: List<CCv2ReplicaMcpDto>,
     val link: String,
-)
-
-@Serializable
-data class CCv2MServicesDto(
-    val subscription: String,
-    val environmentCode: String,
-    val total: Int,
-    val items: List<CCv2MServiceDto>,
 )

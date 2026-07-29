@@ -21,21 +21,8 @@ package sap.commerce.toolset.ccv2.mcp.dto
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class CCv2MDataBackupDto(
-    val code: String,
-    val name: String,
-    val buildCode: String,
-    val status: String,
-    val type: String,
-    val description: String,
-    val createdBy: String,
-    val createdTime: String?,
-)
-
-@Serializable
-data class CCv2MDataBackupsDto(
+data class CCv2BuildLogsMcpDto(
     val subscription: String,
-    val environmentCode: String,
-    val total: Int,
-    val items: List<CCv2MDataBackupDto>,
+    val buildCode: String,
+    val files: List<CCv2LogFileMcpDto>,
 )

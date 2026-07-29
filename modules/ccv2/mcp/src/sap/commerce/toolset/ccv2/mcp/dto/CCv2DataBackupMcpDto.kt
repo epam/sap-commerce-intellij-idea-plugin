@@ -21,22 +21,13 @@ package sap.commerce.toolset.ccv2.mcp.dto
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class CCv2MScheduledActivityDto(
+data class CCv2DataBackupMcpDto(
     val code: String,
-    val activityType: String,
-    val activityName: String,
+    val name: String,
+    val buildCode: String,
     val status: String,
-    val scheduledTime: String,
-    val startedTime: String?,
-    val finishedTime: String?,
+    val type: String,
+    val description: String,
     val createdBy: String,
     val createdTime: String?,
-)
-
-@Serializable
-data class CCv2MScheduledActivitiesDto(
-    val subscription: String,
-    val environmentCode: String,
-    val total: Int,
-    val items: List<CCv2MScheduledActivityDto>,
 )

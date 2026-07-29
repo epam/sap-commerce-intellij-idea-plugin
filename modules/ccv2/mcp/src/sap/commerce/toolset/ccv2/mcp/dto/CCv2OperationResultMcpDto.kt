@@ -21,19 +21,9 @@ package sap.commerce.toolset.ccv2.mcp.dto
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class CCv2MEndpointDto(
-    val code: String,
-    val name: String,
-    val service: String,
-    val url: String,
-    val maintenanceMode: Boolean,
-    val link: String,
-)
-
-@Serializable
-data class CCv2MEndpointsDto(
+data class CCv2OperationResultMcpDto(
     val subscription: String,
-    val environmentCode: String,
-    val total: Int,
-    val items: List<CCv2MEndpointDto>,
+    val success: Boolean,
+    val code: String? = null,
+    val message: String,
 )

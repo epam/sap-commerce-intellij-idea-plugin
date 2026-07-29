@@ -21,7 +21,7 @@ package sap.commerce.toolset.ccv2.mcp.dto
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class CCv2MEnvironmentDto(
+data class CCv2EnvironmentMcpDto(
     val code: String,
     val name: String,
     val type: String,
@@ -29,11 +29,4 @@ data class CCv2MEnvironmentDto(
     val deploymentStatus: String,
     val deploymentAllowed: Boolean,
     val link: String?,
-)
-
-@Serializable
-data class CCv2MEnvironmentsDto(
-    val subscription: String,
-    val total: Int,
-    val items: List<CCv2MEnvironmentDto>,
 )

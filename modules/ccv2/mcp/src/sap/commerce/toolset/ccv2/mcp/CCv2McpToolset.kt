@@ -39,7 +39,8 @@ class CCv2McpToolset : McpToolset {
         outputFormat: String = McpConstants.Formats.JSON,
     ): String {
         val mapper = resolveMapper(outputFormat)
-        return mapper.map(CCv2McpService.getInstance().listSubscriptions())
+        val subscriptions = CCv2McpService.getInstance().listSubscriptions()
+        return mapper.map(subscriptions)
     }
 
     @McpTool(name = "sap_commerce_ccv2_list_environments")
@@ -55,7 +56,8 @@ class CCv2McpToolset : McpToolset {
         outputFormat: String = McpConstants.Formats.JSON,
     ): String {
         val mapper = resolveMapper(outputFormat)
-        return mapper.map(CCv2McpService.getInstance().listEnvironments(subscriptionId))
+        val environments = CCv2McpService.getInstance().listEnvironments(subscriptionId)
+        return mapper.map(environments)
     }
 
     @McpTool(name = "sap_commerce_ccv2_list_builds")
@@ -73,7 +75,8 @@ class CCv2McpToolset : McpToolset {
         outputFormat: String = McpConstants.Formats.JSON,
     ): String {
         val mapper = resolveMapper(outputFormat)
-        return mapper.map(CCv2McpService.getInstance().listBuilds(subscriptionId, top))
+        val builds = CCv2McpService.getInstance().listBuilds(subscriptionId, top)
+        return mapper.map(builds)
     }
 
     @McpTool(name = "sap_commerce_ccv2_get_build")
@@ -91,7 +94,8 @@ class CCv2McpToolset : McpToolset {
         outputFormat: String = McpConstants.Formats.JSON,
     ): String {
         val mapper = resolveMapper(outputFormat)
-        return mapper.map(CCv2McpService.getInstance().getBuild(subscriptionId, buildCode))
+        val build = CCv2McpService.getInstance().getBuild(subscriptionId, buildCode)
+        return mapper.map(build)
     }
 
     @McpTool(name = "sap_commerce_ccv2_create_build")
@@ -111,7 +115,8 @@ class CCv2McpToolset : McpToolset {
         outputFormat: String = McpConstants.Formats.JSON,
     ): String {
         val mapper = resolveMapper(outputFormat)
-        return mapper.map(CCv2McpService.getInstance().createBuild(subscriptionId, branch, name))
+        val build = CCv2McpService.getInstance().createBuild(subscriptionId, branch, name)
+        return mapper.map(build)
     }
 
     @McpTool(name = "sap_commerce_ccv2_list_deployments")
@@ -127,7 +132,8 @@ class CCv2McpToolset : McpToolset {
         outputFormat: String = McpConstants.Formats.JSON,
     ): String {
         val mapper = resolveMapper(outputFormat)
-        return mapper.map(CCv2McpService.getInstance().listDeployments(subscriptionId))
+        val deployments = CCv2McpService.getInstance().listDeployments(subscriptionId)
+        return mapper.map(deployments)
     }
 
     @McpTool(name = "sap_commerce_ccv2_deploy_build")
@@ -152,7 +158,8 @@ class CCv2McpToolset : McpToolset {
         outputFormat: String = McpConstants.Formats.JSON,
     ): String {
         val mapper = resolveMapper(outputFormat)
-        return mapper.map(CCv2McpService.getInstance().deployBuild(subscriptionId, buildCode, environmentCode, mode, strategy))
+        val build = CCv2McpService.getInstance().deployBuild(subscriptionId, buildCode, environmentCode, mode, strategy)
+        return mapper.map(build)
     }
 
     @McpTool(name = "sap_commerce_ccv2_get_deployment_status")
@@ -170,7 +177,8 @@ class CCv2McpToolset : McpToolset {
         outputFormat: String = McpConstants.Formats.JSON,
     ): String {
         val mapper = resolveMapper(outputFormat)
-        return mapper.map(CCv2McpService.getInstance().getDeploymentStatus(subscriptionId, deploymentCode))
+        val deploymentStatus = CCv2McpService.getInstance().getDeploymentStatus(subscriptionId, deploymentCode)
+        return mapper.map(deploymentStatus)
     }
 
     @McpTool(name = "sap_commerce_ccv2_list_environment_services")
@@ -188,7 +196,8 @@ class CCv2McpToolset : McpToolset {
         outputFormat: String = McpConstants.Formats.JSON,
     ): String {
         val mapper = resolveMapper(outputFormat)
-        return mapper.map(CCv2McpService.getInstance().listEnvironmentServices(subscriptionId, environmentCode))
+        val environmentServices = CCv2McpService.getInstance().listEnvironmentServices(subscriptionId, environmentCode)
+        return mapper.map(environmentServices)
     }
 
     @McpTool(name = "sap_commerce_ccv2_restart_service_pod")
@@ -211,7 +220,8 @@ class CCv2McpToolset : McpToolset {
         outputFormat: String = McpConstants.Formats.JSON,
     ): String {
         val mapper = resolveMapper(outputFormat)
-        return mapper.map(CCv2McpService.getInstance().restartServicePod(subscriptionId, environmentCode, serviceCode, replicaName))
+        val servicePod = CCv2McpService.getInstance().restartServicePod(subscriptionId, environmentCode, serviceCode, replicaName)
+        return mapper.map(servicePod)
     }
 
     @McpTool(name = "sap_commerce_ccv2_list_environment_endpoints")
@@ -229,7 +239,8 @@ class CCv2McpToolset : McpToolset {
         outputFormat: String = McpConstants.Formats.JSON,
     ): String {
         val mapper = resolveMapper(outputFormat)
-        return mapper.map(CCv2McpService.getInstance().listEnvironmentEndpoints(subscriptionId, environmentCode))
+        val environmentEndpoints = CCv2McpService.getInstance().listEnvironmentEndpoints(subscriptionId, environmentCode)
+        return mapper.map(environmentEndpoints)
     }
 
     @McpTool(name = "sap_commerce_ccv2_toggle_endpoint_maintenance")
@@ -250,7 +261,8 @@ class CCv2McpToolset : McpToolset {
         outputFormat: String = McpConstants.Formats.JSON,
     ): String {
         val mapper = resolveMapper(outputFormat)
-        return mapper.map(CCv2McpService.getInstance().toggleEndpointMaintenance(subscriptionId, environmentCode, endpointCode))
+        val endpointMaintenance = CCv2McpService.getInstance().toggleEndpointMaintenance(subscriptionId, environmentCode, endpointCode)
+        return mapper.map(endpointMaintenance)
     }
 
     @McpTool(name = "sap_commerce_ccv2_list_data_backups")
@@ -267,7 +279,8 @@ class CCv2McpToolset : McpToolset {
         outputFormat: String = McpConstants.Formats.JSON,
     ): String {
         val mapper = resolveMapper(outputFormat)
-        return mapper.map(CCv2McpService.getInstance().listDataBackups(subscriptionId, environmentCode))
+        val dataBackups = CCv2McpService.getInstance().listDataBackups(subscriptionId, environmentCode)
+        return mapper.map(dataBackups)
     }
 
     @McpTool(name = "sap_commerce_ccv2_list_scheduled_activities")
@@ -285,7 +298,8 @@ class CCv2McpToolset : McpToolset {
         outputFormat: String = McpConstants.Formats.JSON,
     ): String {
         val mapper = resolveMapper(outputFormat)
-        return mapper.map(CCv2McpService.getInstance().listScheduledActivities(subscriptionId, environmentCode))
+        val scheduledActivities = CCv2McpService.getInstance().listScheduledActivities(subscriptionId, environmentCode)
+        return mapper.map(scheduledActivities)
     }
 
     @McpTool(name = "sap_commerce_ccv2_download_build_logs")
@@ -303,7 +317,8 @@ class CCv2McpToolset : McpToolset {
         outputFormat: String = McpConstants.Formats.FILE,
     ): String {
         val mapper = resolveMapper(outputFormat)
-        return mapper.map(CCv2McpService.getInstance().downloadBuildLogs(subscriptionId, buildCode))
+        val buildLogs = CCv2McpService.getInstance().downloadBuildLogs(subscriptionId, buildCode)
+        return mapper.map(buildLogs)
     }
 
     @McpTool(name = "sap_commerce_ccv2_unscramble_log")
@@ -319,7 +334,8 @@ class CCv2McpToolset : McpToolset {
         outputFormat: String = McpConstants.Formats.JSON,
     ): String {
         val mapper = resolveMapper(outputFormat)
-        return mapper.map(CCv2McpService.getInstance().unscrambleLog(logText))
+        val unscrambleLog = CCv2McpService.getInstance().unscrambleLog(logText)
+        return mapper.map(unscrambleLog)
     }
 
     @McpTool(name = "sap_commerce_ccv2_set_credentials")
@@ -342,6 +358,7 @@ class CCv2McpToolset : McpToolset {
         outputFormat: String = McpConstants.Formats.JSON,
     ): String {
         val mapper = resolveMapper(outputFormat)
-        return mapper.map(CCv2McpService.getInstance().setCredentials(subscriptionId, clientId, clientSecret))
+        val credentials = CCv2McpService.getInstance().setCredentials(subscriptionId, clientId, clientSecret)
+        return mapper.map(credentials)
     }
 }
