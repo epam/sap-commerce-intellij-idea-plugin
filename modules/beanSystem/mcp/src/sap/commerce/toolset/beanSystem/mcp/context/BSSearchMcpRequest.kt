@@ -18,19 +18,12 @@
 
 package sap.commerce.toolset.beanSystem.mcp.context
 
+import sap.commerce.toolset.ai.mcp.context.ExtensionsAwareMcpRequest
 import sap.commerce.toolset.beanSystem.meta.model.BSMetaType
 
 data class BSSearchMcpRequest(
     val metaType: BSMetaType,
     val filter: String? = null,
     val detail: BSDetail,
-    private val rawExtensions: String? = null
-) {
-    val extensions: Set<String>?
-        get() = rawExtensions
-            ?.split(',')
-            ?.map { it.trim().lowercase() }
-            ?.filter { it.isNotEmpty() }
-            ?.toSet()
-            ?.takeIf { it.isNotEmpty() }
-}
+    override val rawExtensions: String?,
+) : ExtensionsAwareMcpRequest

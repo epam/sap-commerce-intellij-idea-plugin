@@ -16,13 +16,17 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.typeSystem.mcp.context
+package sap.commerce.toolset.ai.mcp.context
 
-import sap.commerce.toolset.ai.mcp.context.ExtensionsAwareMcpRequest
-import sap.commerce.toolset.typeSystem.meta.model.TSMetaType
+interface ExtensionsAwareMcpRequest {
 
-open class TSSearchMcpRequest(
-    val metaType: TSMetaType,
-    val filter: String? = null,
-    override val rawExtensions: String?,
-) : ExtensionsAwareMcpRequest
+    val rawExtensions: String?
+
+    val extensions: Set<String>?
+        get() = rawExtensions
+            ?.split(',')
+            ?.map { it.trim().lowercase() }
+            ?.filter { it.isNotEmpty() }
+            ?.toSet()
+            ?.takeIf { it.isNotEmpty() }
+}

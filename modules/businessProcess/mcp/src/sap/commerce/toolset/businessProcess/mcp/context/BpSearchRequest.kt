@@ -18,15 +18,9 @@
 
 package sap.commerce.toolset.businessProcess.mcp.context
 
+import sap.commerce.toolset.ai.mcp.context.ExtensionsAwareMcpRequest
+
 data class BpSearchRequest(
     val scope: SearchScope,
-    val rawExtensions: String? = null
-) {
-    val extensions: Set<String>?
-        get() = rawExtensions
-            ?.split(',')
-            ?.map { it.trim().lowercase() }
-            ?.filter { it.isNotEmpty() }
-            ?.toSet()
-            ?.takeIf { it.isNotEmpty() }
-}
+    override val rawExtensions: String?,
+) : ExtensionsAwareMcpRequest
