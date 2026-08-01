@@ -149,8 +149,8 @@ CachedValueProvider.Result.create(
 
 Module: `modules/typeSystem/mcp/` (`:typeSystem-mcp`). Key files under `src/.../mcp/`:
 
-- `TSMcpToolset.kt` — 7 `@McpTool suspend fun`; no logic; delegates to service
-- `TSMcpService.kt` — private `toDto()` extensions + `getTypeSystem()` aggregate
+- `BpMcpToolset.kt` — 7 `@McpTool suspend fun`; no logic; delegates to service
+- `BpMcpService.kt` — private `toDto()` extensions + `getTypeSystem()` aggregate
 - `TSMcpDataProvider.kt` — `search<T>(request)`: dumb-mode guard → `readAction {}` → `getAll<T>(metaType)` → name/extension filter
 - `dto/` — `@Serializable data class` DTOs; `context/` — request objects
 

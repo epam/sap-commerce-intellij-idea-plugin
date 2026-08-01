@@ -16,39 +16,15 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-fun properties(key: String) = providers.gradleProperty(key)
+package sap.commerce.toolset.businessProcess.mcp.dto
 
-plugins {
-    id("org.jetbrains.intellij.platform.module")
-    alias(libs.plugins.kotlin) // Kotlin support
-}
+import kotlinx.serialization.Serializable
 
-sourceSets {
-    main {
-        java.srcDirs("src", "gen")
-        resources.srcDirs("resources")
-    }
-    test {
-        java.srcDirs("tests")
-    }
-}
-
-idea {
-    module {
-        generatedSourceDirs.add(file("gen"))
-    }
-}
-
-dependencies {
-    implementation(project(":shared-core"))
-    implementation(project(":shared-ui"))
-    implementation(project(":meta-core"))
-    implementation(project(":project-core"))
-    implementation(project(":typeSystem-core"))
-
-    intellijPlatform {
-        intellijIdea(properties("intellij.version")) {
-            useInstaller = true
-        }
-    }
-}
+@Serializable
+data class BusinessProcessDto(
+    val container: String,
+    val yContainer: String,
+    val name: String,
+    val representationName: String,
+    val absolutePath: String,
+)
