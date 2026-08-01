@@ -18,18 +18,11 @@
 
 package sap.commerce.toolset.typeSystem.mcp.context
 
+import sap.commerce.toolset.ai.mcp.context.ExtensionsAwareMcpRequest
 import sap.commerce.toolset.typeSystem.meta.model.TSMetaType
 
 open class TSSearchMcpRequest(
     val metaType: TSMetaType,
     val filter: String? = null,
-    private val rawExtensions: String? = null
-) {
-    val extensions: Set<String>?
-        get() = rawExtensions
-            ?.split(',')
-            ?.map { it.trim().lowercase() }
-            ?.filter { it.isNotEmpty() }
-            ?.toSet()
-            ?.takeIf { it.isNotEmpty() }
-}
+    override val rawExtensions: String?,
+) : ExtensionsAwareMcpRequest

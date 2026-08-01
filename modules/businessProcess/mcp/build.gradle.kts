@@ -21,11 +21,12 @@ fun properties(key: String) = providers.gradleProperty(key)
 plugins {
     id("org.jetbrains.intellij.platform.module")
     alias(libs.plugins.kotlin) // Kotlin support
+    alias(libs.plugins.serialization) // Kotlin serialization
 }
 
 sourceSets {
     main {
-        java.srcDirs("src", "gen")
+        java.srcDirs("src")
         resources.srcDirs("resources")
     }
     test {
@@ -33,22 +34,20 @@ sourceSets {
     }
 }
 
-idea {
-    module {
-        generatedSourceDirs.add(file("gen"))
-    }
-}
-
 dependencies {
     implementation(project(":shared-core"))
-    implementation(project(":shared-ui"))
     implementation(project(":meta-core"))
-    implementation(project(":project-core"))
-    implementation(project(":typeSystem-core"))
+    implementation(project(":ai-mcp"))
+    implementation(project(":businessProcess-core"))
+    implementation(libs.kotlinxJson)
 
     intellijPlatform {
         intellijIdea(properties("intellij.version")) {
             useInstaller = true
         }
+
+        bundledPlugins(
+            "com.intellij.mcpServer",
+        )
     }
 }
