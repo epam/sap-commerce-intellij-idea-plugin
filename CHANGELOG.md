@@ -18,6 +18,9 @@
 ### `Other` enhancements
 - Updated tooltip according to new 2026.2 API to render html-description [#1986](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1986)
 
+### Fixes
+- Keep credentials of the `hAC` and `Solr` connections which were not opened before saving the connection settings
+
 ## [2026.2.0]
 
 <cite>Release contributors</code>

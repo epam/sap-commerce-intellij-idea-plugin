@@ -86,7 +86,7 @@ data class HacConnectionSettingsState(
         var sessionCookieName: String,
     ) : ExecConnectionSettingsState.Mutable {
 
-        override fun immutable(): Pair<HacConnectionSettingsState, ExecConnectionCredentials> = HacConnectionSettingsState(
+        override fun immutable(): Pair<HacConnectionSettingsState, ExecConnectionCredentials?> = HacConnectionSettingsState(
             uuid = uuid,
             scope = scope,
             name = name.get(),
@@ -100,9 +100,12 @@ data class HacConnectionSettingsState(
             sessionCookieName = sessionCookieName,
             proxyAuthMode = proxyAuthMode.get(),
             authMode = authMode.get(),
-        ) to ExecConnectionCredentials(
+        ) to credentials()
+
+        // credentials are lazily loaded by the connection dialog, an untouched connection knows nothing about them
+        private fun credentials() = if (modified) ExecConnectionCredentials(
             Credentials(username.get(), password.get()),
             Credentials(proxyUsername.get(), proxyPassword.get())
-        )
+        ) else null
     }
 }

@@ -39,55 +39,70 @@ abstract class ExecConnectionService<T : ExecConnectionSettingsState>(protected 
 
     abstract fun defaultCredentials(settings: T): Credentials
     abstract fun default(): T
-    abstract fun delete(settings: T, notify: Boolean = true)
-    abstract fun create(settings: Pair<T, ExecConnectionCredentials>, notify: Boolean = true)
-    abstract fun save(settings: Map<T, ExecConnectionCredentials>)
+    abstract fun delete(settings: T, notify: Boolean = true, purgeCredentials: Boolean = true)
+    abstract fun create(settings: Pair<T, ExecConnectionCredentials?>, notify: Boolean = true)
+    abstract fun save(settings: Map<T, ExecConnectionCredentials?>)
 
     fun getCredentials(settings: T) = PasswordSafe.instance.get(CredentialAttributes("SAP CX - ${settings.uuid}"))
         ?: defaultCredentials(settings)
 
     fun getProxyCredentials(settings: T) = PasswordSafe.instance.get(CredentialAttributes("SAP CX - proxy - ${settings.uuid}"))
 
-    fun update(settings: Pair<T, ExecConnectionCredentials>) = update(mapOf(settings))
+    fun update(settings: Pair<T, ExecConnectionCredentials?>) = update(mapOf(settings))
 
-    fun update(settings: Map<T, ExecConnectionCredentials>) {
-        settings.keys.forEach { delete(it, notify = false) }
+    /**
+     * The delete/create cycle must not touch the credential store, [onUpdate] is the single writer:
+     * purging here would drop the credentials of a connection with unknown ones and would race
+     * with the write of the very same credential attributes.
+     */
+    fun update(settings: Map<T, ExecConnectionCredentials?>) {
+        settings.keys.forEach { delete(it, notify = false, purgeCredentials = false) }
         settings.forEach { create(it.key to it.value, notify = false) }
 
         onUpdate(settings)
     }
 
-    protected fun removeCredentials(settings: T) = saveCredentials(settings to null)
+    protected fun removeCredentials(settings: T) = writeCredentials(settings, null)
 
     protected fun onActivate(settings: T, notify: Boolean = true) = if (notify) listener.onActive(settings) else Unit
-    protected fun onDelete(settings: T, notify: Boolean = true) {
-        removeCredentials(settings)
+    protected fun onDelete(settings: T, notify: Boolean = true, purgeCredentials: Boolean = true) {
+        if (purgeCredentials) removeCredentials(settings)
         if (notify) listener.onDelete(settings) else Unit
     }
 
-    protected fun onCreate(settings: Pair<T, ExecConnectionCredentials>, notify: Boolean = true) = if (notify) {
-        saveCredentials(settings)
+    protected fun onCreate(settings: Pair<T, ExecConnectionCredentials?>, notify: Boolean = true) = if (notify) {
+        saveCredentials(settings.first, settings.second)
         listener.onCreate(settings.first)
     } else Unit
 
-    protected fun onUpdate(settings: Map<T, ExecConnectionCredentials>, notify: Boolean = true) {
-        settings.forEach { saveCredentials(it.key to it.value) }
+    protected fun onUpdate(settings: Map<T, ExecConnectionCredentials?>, notify: Boolean = true) {
+        settings.forEach { saveCredentials(it.key, it.value) }
         if (notify) listener.onUpdate(settings.keys)
     }
 
-    protected fun onSave(settings: Map<T, ExecConnectionCredentials>) {
-        settings.forEach { saveCredentials(it.key to it.value) }
+    protected fun onSave(settings: Map<T, ExecConnectionCredentials?>) {
+        settings.forEach { saveCredentials(it.key, it.value) }
         listener.onSave(settings.keys)
     }
 
-    private fun saveCredentials(settings: Pair<T, ExecConnectionCredentials?>) {
+    /**
+     * Unknown credentials must never overwrite the credential store, otherwise saving the settings of one connection
+     * wipes the credentials of every connection the user did not open in the very same settings session.
+     */
+    private fun saveCredentials(settings: T, credentials: ExecConnectionCredentials?) {
+        if (credentials == null) return
+
+        writeCredentials(settings, credentials)
+    }
+
+    private fun writeCredentials(settings: T, credentials: ExecConnectionCredentials?) {
         ProgressManager.getInstance().run(object : Task.Backgroundable(project, "Persisting credentials", false) {
             override fun run(indicator: ProgressIndicator) {
-                val credentialAttributes = CredentialAttributes("SAP CX - ${settings.first.uuid}")
-                PasswordSafe.instance.set(credentialAttributes, settings.second?.credentials)
+                val credentialAttributes = CredentialAttributes("SAP CX - ${settings.uuid}")
+                PasswordSafe.instance.set(credentialAttributes, credentials?.credentials)
 
-                val proxyCredentialAttributes = CredentialAttributes("SAP CX - proxy - ${settings.first.uuid}")
-                PasswordSafe.instance.set(proxyCredentialAttributes, settings.second?.proxyCredentials)
+                val proxyCredentialAttributes = CredentialAttributes("SAP CX - proxy - ${settings.uuid}")
+                PasswordSafe.instance.set(proxyCredentialAttributes, credentials?.proxyCredentials)
             }
         })
     }

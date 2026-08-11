@@ -26,6 +26,7 @@ import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.exec.ExecConnectionService
 import sap.commerce.toolset.exec.settings.state.ExecConnectionCredentials
 import sap.commerce.toolset.exec.settings.state.ExecConnectionScope
+import sap.commerce.toolset.exec.settings.state.obsoleteFor
 import sap.commerce.toolset.hac.exec.settings.HacExecDeveloperSettings
 import sap.commerce.toolset.hac.exec.settings.HacExecProjectSettings
 import sap.commerce.toolset.hac.exec.settings.event.HacConnectionSettingsListener
@@ -59,7 +60,7 @@ class HacExecConnectionService(project: Project) : ExecConnectionService<HacConn
     override val listener: HacConnectionSettingsListener
         get() = project.messageBus.syncPublisher(HacConnectionSettingsListener.TOPIC)
 
-    override fun create(settings: Pair<HacConnectionSettingsState, ExecConnectionCredentials>, notify: Boolean) = when (settings.first.scope) {
+    override fun create(settings: Pair<HacConnectionSettingsState, ExecConnectionCredentials?>, notify: Boolean) = when (settings.first.scope) {
         ExecConnectionScope.PROJECT_PERSONAL -> with(HacExecDeveloperSettings.getInstance(project)) {
             connections = connections + settings.first
 
@@ -73,7 +74,7 @@ class HacExecConnectionService(project: Project) : ExecConnectionService<HacConn
         }
     }
 
-    override fun delete(settings: HacConnectionSettingsState, notify: Boolean) {
+    override fun delete(settings: HacConnectionSettingsState, notify: Boolean, purgeCredentials: Boolean) {
         val developerSettings = HacExecDeveloperSettings.getInstance(project)
         val projectSettings = HacExecProjectSettings.getInstance(project)
         developerSettings.connections = developerSettings.connections
@@ -81,17 +82,18 @@ class HacExecConnectionService(project: Project) : ExecConnectionService<HacConn
         projectSettings.connections = projectSettings.connections
             .filterNot { it.uuid == settings.uuid }
 
-        onDelete(settings, notify)
+        onDelete(settings, notify, purgeCredentials)
     }
 
-    override fun save(settings: Map<HacConnectionSettingsState, ExecConnectionCredentials>) {
+    override fun save(settings: Map<HacConnectionSettingsState, ExecConnectionCredentials?>) {
         val groupedSettings = settings.keys.groupBy { it.scope }
         val projectSettings = HacExecProjectSettings.getInstance(project)
         val developerSettings = HacExecDeveloperSettings.getInstance(project)
 
-        // remove persisted credentials for previous connections
-        projectSettings.connections.forEach { removeCredentials(it) }
-        developerSettings.connections.forEach { removeCredentials(it) }
+        // remove persisted credentials only for the connections which are gone
+        (projectSettings.connections + developerSettings.connections)
+            .obsoleteFor(settings.keys)
+            .forEach { removeCredentials(it) }
 
         projectSettings.connections = groupedSettings.getOrElse(ExecConnectionScope.PROJECT) { emptyList() }
         developerSettings.connections = groupedSettings.getOrElse(ExecConnectionScope.PROJECT_PERSONAL) { emptyList() }

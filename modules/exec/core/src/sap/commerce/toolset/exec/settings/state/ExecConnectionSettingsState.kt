@@ -49,7 +49,11 @@ interface ExecConnectionSettingsState : ConnectionSettingsState {
         val proxyUsername: ObservableMutableProperty<String>
         val proxyPassword: ObservableMutableProperty<String>
 
-        fun immutable(): Pair<ExecConnectionSettingsState, ExecConnectionCredentials>
+        /**
+         * Credentials are `null` until they were loaded from the credential store or entered by the user,
+         * see [modified]. A `null` value means "unknown" and must leave the persisted credentials untouched.
+         */
+        fun immutable(): Pair<ExecConnectionSettingsState, ExecConnectionCredentials?>
 
         val generatedURL: String
             get() = generateUrl(ssl.get(), host.get(), port.get(), webroot.get())

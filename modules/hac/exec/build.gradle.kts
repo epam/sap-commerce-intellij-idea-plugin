@@ -37,6 +37,8 @@ dependencies {
     implementation(project(":shared-core"))
     implementation(project(":exec-core"))
 
+    testImplementation(kotlin("test"))
+
     intellijPlatform {
         intellijIdea(properties("intellij.version")) {
             useInstaller = true

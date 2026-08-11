@@ -72,7 +72,7 @@ data class SolrConnectionSettingsState(
         var socketTimeout: Int,
     ) : ExecConnectionSettingsState.Mutable {
 
-        override fun immutable() = SolrConnectionSettingsState(
+        override fun immutable(): Pair<SolrConnectionSettingsState, ExecConnectionCredentials?> = SolrConnectionSettingsState(
             uuid = uuid,
             scope = scope,
             name = name.get(),
@@ -82,6 +82,9 @@ data class SolrConnectionSettingsState(
             ssl = ssl.get(),
             timeout = timeout,
             socketTimeout = socketTimeout,
-        ) to ExecConnectionCredentials(Credentials(username.get(), password.get()))
+        ) to credentials()
+
+        // credentials are lazily loaded by the connection dialog, an untouched connection knows nothing about them
+        private fun credentials() = if (modified) ExecConnectionCredentials(Credentials(username.get(), password.get())) else null
     }
 }
