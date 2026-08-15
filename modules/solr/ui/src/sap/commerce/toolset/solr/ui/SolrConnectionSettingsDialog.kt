@@ -27,7 +27,6 @@ import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.listCellRenderer.textListCellRenderer
 import sap.commerce.toolset.exec.settings.state.ExecConnectionScope
 import sap.commerce.toolset.exec.ui.ConnectionSettingsDialog
-import sap.commerce.toolset.settings.state.Mutation
 import sap.commerce.toolset.solr.exec.SolrExecClient
 import sap.commerce.toolset.solr.exec.SolrExecConnectionService
 import sap.commerce.toolset.solr.exec.settings.state.SolrConnectionSettingsState
@@ -73,15 +72,14 @@ class SolrConnectionSettingsDialog(
     }
 
     override fun apply(original: SolrConnectionSettingsState.Mutable, mutable: SolrConnectionSettingsState.Mutable) = with(original) {
-        mutation = Mutation.SAVE
-        scope = mutable.scope
-        name.set(mutable.name.get())
-        host.set(mutable.host.get())
-        port.set(mutable.port.get())
-        webroot.set(mutable.webroot.get())
-        ssl.set(mutable.ssl.get())
-        timeout = mutable.timeout
-        socketTimeout = mutable.socketTimeout
+        apply(mutable, { scope }, { scope = it })
+        apply(mutable, { timeout }, { timeout = it })
+        apply(mutable, { socketTimeout }, { socketTimeout = it })
+        apply(mutable, { name.get() }, { name.set(it) })
+        apply(mutable, { host.get() }, { host.set(it) })
+        apply(mutable, { port.get() }, { port.set(it) })
+        apply(mutable, { webroot.get() }, { webroot.set(it) })
+        apply(mutable, { ssl.get() }, { ssl.set(it) })
 
         credentials.apply(mutable.credentials)
         proxyCredentials.apply(mutable.proxyCredentials)

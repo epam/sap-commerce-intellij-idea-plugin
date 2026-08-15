@@ -51,7 +51,6 @@ import sap.commerce.toolset.hac.exec.http.HacHttpClient
 import sap.commerce.toolset.hac.exec.settings.state.AuthMode
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
 import sap.commerce.toolset.hac.exec.settings.state.ProxyAuthMode
-import sap.commerce.toolset.settings.state.Mutation
 import sap.commerce.toolset.ui.inlineBanner
 import sap.commerce.toolset.ui.nullableIntTextField
 import sap.commerce.toolset.ui.repackDialog
@@ -115,19 +114,18 @@ class HacConnectionSettingsDialog(
         }
 
     override fun apply(original: HacConnectionSettingsState.Mutable, mutable: HacConnectionSettingsState.Mutable) = with(original) {
-        mutation = Mutation.SAVE
-        scope = mutable.scope
-        name.set(mutable.name.get())
-        host.set(mutable.host.get())
-        port.set(mutable.port.get())
-        webroot.set(mutable.webroot.get())
-        ssl.set(mutable.ssl.get())
-        timeout = mutable.timeout
-        wsl.set(mutable.wsl.get())
-        authMode.set(mutable.authMode.get())
-        proxyAuthMode.set(mutable.proxyAuthMode.get())
-        sslProtocol.set(mutable.sslProtocol.get())
-        sessionCookieName = mutable.sessionCookieName
+        apply(mutable, { scope }, { scope = it })
+        apply(mutable, { timeout }, { timeout = it })
+        apply(mutable, { sessionCookieName }, { sessionCookieName = it })
+        apply(mutable, { name.get() }, { name.set(it) })
+        apply(mutable, { host.get() }, { host.set(it) })
+        apply(mutable, { port.get() }, { port.set(it) })
+        apply(mutable, { webroot.get() }, { webroot.set(it) })
+        apply(mutable, { ssl.get() }, { ssl.set(it) })
+        apply(mutable, { wsl.get() }, { wsl.set(it) })
+        apply(mutable, { authMode.get() }, { authMode.set(it) })
+        apply(mutable, { proxyAuthMode.get() }, { proxyAuthMode.set(it) })
+        apply(mutable, { sslProtocol.get() }, { sslProtocol.set(it) })
 
         credentials.apply(mutable.credentials)
         proxyCredentials.apply(mutable.proxyCredentials)

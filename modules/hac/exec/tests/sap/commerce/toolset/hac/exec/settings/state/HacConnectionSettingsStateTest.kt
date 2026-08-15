@@ -18,6 +18,7 @@
 
 package sap.commerce.toolset.hac.exec.settings.state
 
+import com.intellij.credentialStore.Credentials
 import sap.commerce.toolset.settings.state.Mutation
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -88,5 +89,28 @@ class HacConnectionSettingsStateTest {
         assertEquals(Mutation.NONE, execCredentials.mutation)
         assertEquals("admin", credentials.userName)
         assertEquals("", credentials.getPasswordAsString())
+    }
+
+    @Test
+    fun `save only modified credentials`() {
+        val fixture = fixture().apply {
+            credentials.load(Credentials("admin", "nimda"))
+        }
+
+        val execCredentials = assertNotNull(fixture.immutable().credentials)
+        val credentials = execCredentials.credentials
+
+        assertEquals(Mutation.NONE, execCredentials.mutation)
+        assertEquals("admin", credentials.userName)
+        assertEquals("nimda", credentials.getPasswordAsString())
+
+        fixture.credentials.apply("newAdmin", "nimda")
+
+        val modifiedExecCredentials = assertNotNull(fixture.immutable().credentials)
+        val modifiedCredentials = modifiedExecCredentials.credentials
+
+        assertEquals(Mutation.SAVE, modifiedExecCredentials.mutation)
+        assertEquals("newAdmin", modifiedCredentials.userName)
+        assertEquals("nimda", modifiedCredentials.getPasswordAsString())
     }
 }
