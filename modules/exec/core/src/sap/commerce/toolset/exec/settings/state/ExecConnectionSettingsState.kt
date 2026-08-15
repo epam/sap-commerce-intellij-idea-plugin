@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -21,6 +21,8 @@ package sap.commerce.toolset.exec.settings.state
 import com.intellij.openapi.observable.properties.MutableBooleanProperty
 import com.intellij.openapi.observable.properties.ObservableMutableProperty
 import sap.commerce.toolset.exec.generateUrl
+import sap.commerce.toolset.settings.state.MutableState
+import sap.commerce.toolset.settings.state.Mutation
 
 interface ExecConnectionSettingsState : ConnectionSettingsState {
     override val scope: ExecConnectionScope
@@ -34,7 +36,17 @@ interface ExecConnectionSettingsState : ConnectionSettingsState {
 
     fun mutable(): Mutable
 
-    interface Mutable {
+    interface Immutable<T : ExecConnectionSettingsState> {
+        val state: T
+        val mutation: Mutation
+        val credentials: ExecCredentials
+        val proxyCredentials: ExecCredentials
+
+        val modified: Boolean
+            get() = mutation != Mutation.NONE
+    }
+
+    interface Mutable : MutableState {
         var scope: ExecConnectionScope
         var uuid: String
         var name: ObservableMutableProperty<String>
@@ -43,22 +55,17 @@ interface ExecConnectionSettingsState : ConnectionSettingsState {
         var timeout: Int
         var port: ObservableMutableProperty<String>
         var webroot: ObservableMutableProperty<String>
-        var modified: Boolean
-        val username: ObservableMutableProperty<String>
-        val password: ObservableMutableProperty<String>
-        val proxyUsername: ObservableMutableProperty<String>
-        val proxyPassword: ObservableMutableProperty<String>
-
-        /**
-         * Credentials are `null` until they were loaded from the credential store or entered by the user,
-         * see [modified]. A `null` value means "unknown" and must leave the persisted credentials untouched.
-         */
-        fun immutable(): Pair<ExecConnectionSettingsState, ExecConnectionCredentials?>
+        val credentials: ExecCredentials.Mutable
+        val proxyCredentials: ExecCredentials.Mutable
 
         val generatedURL: String
             get() = generateUrl(ssl.get(), host.get(), port.get(), webroot.get())
 
         val presentationName: String
             get() = connectionPresentationName(scope, name.get()) { generatedURL }
+
+        fun immutable(): Immutable<out ExecConnectionSettingsState>
+        fun copy(): Mutable
     }
+
 }

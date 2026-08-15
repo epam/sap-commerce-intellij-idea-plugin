@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,16 +18,16 @@
 
 package sap.commerce.toolset.solr.exec.settings.state
 
-import com.intellij.credentialStore.Credentials
 import com.intellij.openapi.observable.properties.AtomicBooleanProperty
 import com.intellij.openapi.observable.properties.AtomicProperty
 import com.intellij.openapi.observable.properties.MutableBooleanProperty
 import com.intellij.openapi.observable.properties.ObservableMutableProperty
 import com.intellij.util.xmlb.annotations.OptionTag
 import sap.commerce.toolset.exec.ExecConstants
-import sap.commerce.toolset.exec.settings.state.ExecConnectionCredentials
 import sap.commerce.toolset.exec.settings.state.ExecConnectionScope
 import sap.commerce.toolset.exec.settings.state.ExecConnectionSettingsState
+import sap.commerce.toolset.exec.settings.state.ExecCredentials
+import sap.commerce.toolset.settings.state.Mutation
 import sap.commerce.toolset.solr.SolrConstants
 import java.util.*
 
@@ -56,6 +56,7 @@ data class SolrConnectionSettingsState(
     )
 
     data class Mutable(
+        override var mutation: Mutation = Mutation.NONE,
         override var uuid: String = UUID.randomUUID().toString(),
         override var scope: ExecConnectionScope,
         override var name: ObservableMutableProperty<String>,
@@ -64,15 +65,25 @@ data class SolrConnectionSettingsState(
         override var webroot: ObservableMutableProperty<String>,
         override var ssl: MutableBooleanProperty,
         override var timeout: Int,
-        override var modified: Boolean = false,
-        override val username: ObservableMutableProperty<String> = AtomicProperty(""),
-        override val password: ObservableMutableProperty<String> = AtomicProperty(""),
-        override val proxyUsername: ObservableMutableProperty<String> = AtomicProperty(""),
-        override val proxyPassword: ObservableMutableProperty<String> = AtomicProperty(""),
+        override val credentials: ExecCredentials.Mutable = ExecCredentials.Mutable(),
+        override val proxyCredentials: ExecCredentials.Mutable = ExecCredentials.Mutable(),
         var socketTimeout: Int,
     ) : ExecConnectionSettingsState.Mutable {
 
-        override fun immutable(): Pair<SolrConnectionSettingsState, ExecConnectionCredentials?> = SolrConnectionSettingsState(
+        override fun immutable() = Immutable(
+            state = state(),
+            mutation = mutation,
+            credentials = credentials.immutable(),
+            proxyCredentials = proxyCredentials.immutable(),
+        )
+
+        override fun copy(): Mutable = immutable().state.mutable()
+            .also {
+                it.credentials.load(credentials)
+                it.proxyCredentials.load(proxyCredentials)
+            }
+
+        private fun state() = SolrConnectionSettingsState(
             uuid = uuid,
             scope = scope,
             name = name.get(),
@@ -82,9 +93,13 @@ data class SolrConnectionSettingsState(
             ssl = ssl.get(),
             timeout = timeout,
             socketTimeout = socketTimeout,
-        ) to credentials()
-
-        // credentials are lazily loaded by the connection dialog, an untouched connection knows nothing about them
-        private fun credentials() = if (modified) ExecConnectionCredentials(Credentials(username.get(), password.get())) else null
+        )
     }
+
+    data class Immutable(
+        override val state: SolrConnectionSettingsState,
+        override val mutation: Mutation,
+        override val credentials: ExecCredentials,
+        override val proxyCredentials: ExecCredentials,
+    ) : ExecConnectionSettingsState.Immutable<SolrConnectionSettingsState>
 }

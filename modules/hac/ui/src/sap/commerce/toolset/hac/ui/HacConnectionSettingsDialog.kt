@@ -51,6 +51,7 @@ import sap.commerce.toolset.hac.exec.http.HacHttpClient
 import sap.commerce.toolset.hac.exec.settings.state.AuthMode
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
 import sap.commerce.toolset.hac.exec.settings.state.ProxyAuthMode
+import sap.commerce.toolset.settings.state.Mutation
 import sap.commerce.toolset.ui.inlineBanner
 import sap.commerce.toolset.ui.nullableIntTextField
 import sap.commerce.toolset.ui.repackDialog
@@ -65,7 +66,7 @@ class HacConnectionSettingsDialog(
     parentComponent: Component,
     settings: HacConnectionSettingsState.Mutable,
     dialogTitle: String,
-) : ConnectionSettingsDialog<HacConnectionSettingsState.Mutable>(project, parentComponent, settings, dialogTitle) {
+) : ConnectionSettingsDialog<HacConnectionSettingsState.Mutable>(project, parentComponent, settings, settings.copy(), dialogTitle) {
 
     private lateinit var urlPreviewLabel: JLabel
     private lateinit var timeoutIntSpinner: JBIntSpinner
@@ -83,10 +84,10 @@ class HacConnectionSettingsDialog(
     }
 
     override fun retrieveCredentials(mutable: HacConnectionSettingsState.Mutable) = HacExecConnectionService.getInstance(project)
-        .getCredentials(mutable.immutable().first)
+        .getCredentials(mutable.uuid)
 
     override fun retrieveProxyCredentials(mutable: HacConnectionSettingsState.Mutable) = HacExecConnectionService.getInstance(project)
-        .getProxyCredentials(mutable.immutable().first)
+        .getProxyCredentials(mutable.uuid)
 
     override suspend fun testConnection(): String? = HacHttpClient.getInstance(project).testConnection(
         HacConnectionSettingsState(
@@ -101,10 +102,10 @@ class HacConnectionSettingsDialog(
                 ?: ExecConstants.DEFAULT_SESSION_COOKIE_NAME,
             proxyAuthMode = mutable.proxyAuthMode.get()
         ),
-        mutable.username.get(),
-        mutable.password.get(),
-        mutable.proxyUsername.get(),
-        mutable.proxyPassword.get()
+        mutable.credentials.username.get(),
+        mutable.credentials.password.get(),
+        mutable.proxyCredentials.username.get(),
+        mutable.proxyCredentials.password.get()
     )
         .let {
             when {
@@ -112,6 +113,25 @@ class HacConnectionSettingsDialog(
                 else -> null
             }
         }
+
+    override fun apply(original: HacConnectionSettingsState.Mutable, mutable: HacConnectionSettingsState.Mutable) = with(original) {
+        mutation = Mutation.SAVE
+        scope = mutable.scope
+        name.set(mutable.name.get())
+        host.set(mutable.host.get())
+        port.set(mutable.port.get())
+        webroot.set(mutable.webroot.get())
+        ssl.set(mutable.ssl.get())
+        timeout = mutable.timeout
+        wsl.set(mutable.wsl.get())
+        authMode.set(mutable.authMode.get())
+        proxyAuthMode.set(mutable.proxyAuthMode.get())
+        sslProtocol.set(mutable.sslProtocol.get())
+        sessionCookieName = mutable.sessionCookieName
+
+        credentials.apply(mutable.credentials)
+        proxyCredentials.apply(mutable.proxyCredentials)
+    }
 
     override fun panel() = panel {
         val configurationProviders = HacConnectionSettingsProvider.EP.extensionList
@@ -290,14 +310,14 @@ class HacConnectionSettingsDialog(
             row {
                 proxyUsernameTextField = textField()
                     .label("Username:")
-                    .bindText(mutable.proxyUsername)
+                    .bindText(mutable.proxyCredentials.username)
                     .enabledIf(editableCredentials)
                     .visibleIf(mutable.proxyAuthMode.equalsTo(ProxyAuthMode.BASIC))
                     .component
 
                 proxyPasswordTextField = passwordField()
                     .label("Password:")
-                    .bindText(mutable.proxyPassword)
+                    .bindText(mutable.proxyCredentials.password)
                     .enabledIf(editableCredentials)
                     .visibleIf(mutable.proxyAuthMode.equalsTo(ProxyAuthMode.BASIC))
                     .component
@@ -333,7 +353,7 @@ class HacConnectionSettingsDialog(
             row {
                 usernameTextField = textField()
                     .label("Username:")
-                    .bindText(mutable.username)
+                    .bindText(mutable.credentials.username)
                     .enabledIf(editableCredentials)
                     .visibleIf(mutable.authMode.equalsTo(AuthMode.AUTOMATIC))
                     .addValidationRule("Username cannot be blank.") {
@@ -343,7 +363,7 @@ class HacConnectionSettingsDialog(
 
                 passwordTextField = passwordField()
                     .label("Password:")
-                    .bindText(mutable.password)
+                    .bindText(mutable.credentials.password)
                     .enabledIf(editableCredentials)
                     .visibleIf(mutable.authMode.equalsTo(AuthMode.AUTOMATIC))
                     .addValidationRule("Password cannot be blank.") {

@@ -46,7 +46,7 @@ class SolrExecProjectSettingsConfigurableProvider(private val project: Project) 
         "Solr", "sap.commerce.toolset.solr.exec.settings"
     ) {
 
-        private lateinit var connectionsListPanel: SolrConnectionSettingsListPanel
+        private lateinit var connectionsList: SolrConnectionSettingsListPanel
         private lateinit var activeServerComboBox: ComboBox<SolrConnectionSettingsState>
         private lateinit var activeServerModel: ConnectionComboBoxModel<SolrConnectionSettingsState>
 
@@ -54,15 +54,13 @@ class SolrExecProjectSettingsConfigurableProvider(private val project: Project) 
         private var originalActiveConnection = SolrExecConnectionService.getInstance(project).activeConnection
 
         override fun createPanel(): DialogPanel {
-            activeServerModel = ConnectionComboBoxModel()
-            connectionsListPanel = SolrConnectionSettingsListPanel(project, disposable) {
-                val previousSelectedItem = activeServerModel.selectedItem?.asSafely<SolrConnectionSettingsState>()?.uuid
-                val modifiedConnections = connectionsListPanel.data.map { it.immutable() }
-                activeServerModel.refresh(modifiedConnections.map { it.first })
-                activeServerModel.selectedItem = modifiedConnections.find { it.first.uuid == previousSelectedItem }
-                    ?.first
-                    ?: modifiedConnections.firstOrNull()?.first
-                activeServerComboBox.repaint()
+            connectionsList = SolrConnectionSettingsListPanel(
+                project, disposable,
+                activeConnection = { activeServerComboBox.selectedItem as? SolrConnectionSettingsState }) {
+                refreshActiveServerCombobox()
+            }
+            activeServerModel = ConnectionComboBoxModel() {
+                connectionsList.repaint()
             }
 
             return panel {
@@ -80,8 +78,8 @@ class SolrExecProjectSettingsConfigurableProvider(private val project: Project) 
 
                 group(i18n("hybris.settings.project.remote_instances.solr.title"), false) {
                     row {
-                        cell(connectionsListPanel)
-                            .onIsModified { connectionsListPanel.data != originalConnections }
+                        cell(connectionsList)
+                            .onIsModified { connectionsList.modified }
                             .align(Align.FILL)
                     }
                 }
@@ -89,7 +87,8 @@ class SolrExecProjectSettingsConfigurableProvider(private val project: Project) 
         }
 
         override fun reset() {
-            connectionsListPanel.data = originalConnections.map { it.copy() }
+            connectionsList.reset(originalConnections.map { it.copy() })
+            refreshActiveServerCombobox()
             activeServerComboBox.selectedItem = originalActiveConnection
         }
 
@@ -97,21 +96,31 @@ class SolrExecProjectSettingsConfigurableProvider(private val project: Project) 
             super.apply()
 
             val connectionService = SolrExecConnectionService.getInstance(project)
-            val newSettings = connectionsListPanel.data.map { it.immutable() }
+            val newSettings = connectionsList.elements.map { it.immutable() }
 
-            connectionService.save(newSettings.toMap())
+            connectionService.save(newSettings)
 
             if (newSettings.isEmpty()) {
                 originalConnections = connectionService.connections.map { it.mutable() }
                 originalActiveConnection = connectionService.activeConnection
             } else {
-                originalConnections = newSettings.map { it.first.mutable() }
+                originalConnections = newSettings.map { it.state.mutable() }
                 originalActiveConnection = activeServerComboBox.selectedItem as SolrConnectionSettingsState
 
                 connectionService.activeConnection = originalActiveConnection
             }
 
             reset()
+        }
+
+        private fun refreshActiveServerCombobox() {
+            val previousSelectedItem = activeServerModel.selectedItem?.asSafely<SolrConnectionSettingsState>()?.uuid
+            val modifiedConnections = connectionsList.elements.map { it.immutable() }
+            activeServerModel.refresh(modifiedConnections.map { it.state })
+            activeServerModel.selectedItem = modifiedConnections.find { it.state.uuid == previousSelectedItem }
+                ?.state
+                ?: modifiedConnections.firstOrNull()?.state
+            activeServerComboBox.repaint()
         }
 
     }

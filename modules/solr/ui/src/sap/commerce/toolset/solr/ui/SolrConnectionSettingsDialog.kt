@@ -39,7 +39,7 @@ class SolrConnectionSettingsDialog(
     parentComponent: Component,
     settings: SolrConnectionSettingsState.Mutable,
     dialogTitle: String,
-) : ConnectionSettingsDialog<SolrConnectionSettingsState.Mutable>(project, parentComponent, settings, dialogTitle) {
+) : ConnectionSettingsDialog<SolrConnectionSettingsState.Mutable>(project, parentComponent, settings, settings.copy(), dialogTitle) {
 
     private lateinit var urlPreviewLabel: JLabel
     private lateinit var timeoutIntSpinner: JBIntSpinner
@@ -48,7 +48,7 @@ class SolrConnectionSettingsDialog(
     private lateinit var socketTimeoutIntSpinner: JBIntSpinner
 
     override fun retrieveCredentials(mutable: SolrConnectionSettingsState.Mutable) = SolrExecConnectionService.getInstance(project)
-        .getCredentials(mutable.immutable().first)
+        .getCredentials(mutable.uuid)
 
     override suspend fun testConnection(): String? = try {
         val testSettings = SolrConnectionSettingsState(
@@ -62,13 +62,27 @@ class SolrConnectionSettingsDialog(
 
         SolrExecClient.getInstance(project).testConnection(
             testSettings,
-            mutable.username.get(),
-            mutable.password.get(),
+            mutable.credentials.username.get(),
+            mutable.credentials.password.get(),
         )
 
         null
     } catch (e: Exception) {
         e.message ?: ""
+    }
+
+    override fun apply(original: SolrConnectionSettingsState.Mutable, mutable: SolrConnectionSettingsState.Mutable) = with(original) {
+        scope = mutable.scope
+        name.set(mutable.name.get())
+        host.set(mutable.host.get())
+        port.set(mutable.port.get())
+        webroot.set(mutable.webroot.get())
+        ssl.set(mutable.ssl.get())
+        timeout = mutable.timeout
+        socketTimeout = mutable.socketTimeout
+
+        credentials.apply(mutable.credentials)
+        proxyCredentials.apply(mutable.proxyCredentials)
     }
 
     override fun panel() = panel {
@@ -165,14 +179,14 @@ class SolrConnectionSettingsDialog(
             row {
                 usernameTextField = textField()
                     .label("Username:")
-                    .bindText(mutable.username)
+                    .bindText(mutable.credentials.username)
                     .enabledIf(editableCredentials)
                     .addValidationRule("Username cannot be blank.") { it.text.isNullOrBlank() }
                     .component
 
                 passwordTextField = passwordField()
                     .label("Password:")
-                    .bindText(mutable.password)
+                    .bindText(mutable.credentials.password)
                     .enabledIf(editableCredentials)
                     .addValidationRule("Password cannot be blank.") { it.password.isEmpty() }
                     .component

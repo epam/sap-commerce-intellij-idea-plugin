@@ -66,12 +66,8 @@ class CxRemoteLogStateService(private val project: Project, private val coroutin
     init {
         with(project.messageBus.connect(this)) {
             subscribe(HacConnectionSettingsListener.TOPIC, object : HacConnectionSettingsListener {
-                override fun onActive(connection: HacConnectionSettingsState) = refresh()
-                override fun onUpdate(settings: Collection<HacConnectionSettingsState>) = settings.forEach { clearState(it) }
+                override fun onActivate(connection: HacConnectionSettingsState) = refresh()
                 override fun onSave(settings: Collection<HacConnectionSettingsState>) = settings.forEach { clearState(it) }
-                override fun onDelete(connection: HacConnectionSettingsState) {
-                    loggersStates.remove(connection.uuid)
-                }
             })
         }
     }

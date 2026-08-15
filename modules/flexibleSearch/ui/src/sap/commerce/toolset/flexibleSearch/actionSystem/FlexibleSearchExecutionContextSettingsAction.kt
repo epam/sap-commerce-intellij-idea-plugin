@@ -55,7 +55,7 @@ class FlexibleSearchExecutionContextSettingsAction : ExecutionContextSettingsAct
     override fun settings(e: AnActionEvent, project: Project, virtualFile: VirtualFile): FlexibleSearchExecContext.Settings.Mutable {
         val settings = e.flexibleSearchExecutionContextSettings {
             val connectionSettings = HacExecConnectionService.getInstance(project).activeConnection
-            val credentials = HacExecConnectionService.getInstance(project).getCredentials(connectionSettings)
+            val credentials = HacExecConnectionService.getInstance(project).getCredentials(connectionSettings.uuid)
             FlexibleSearchExecContext.defaultSettings(connectionSettings, credentials.userName)
         }
 

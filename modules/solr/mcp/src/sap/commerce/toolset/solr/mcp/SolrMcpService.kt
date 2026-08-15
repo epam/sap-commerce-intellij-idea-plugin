@@ -54,7 +54,7 @@ class SolrMcpService(private val project: Project) {
     fun listCores(request: SolrListCoresMcpRequest): SolrCoresDto {
         val connection = request.connection(project)
         val connectionService = SolrExecConnectionService.getInstance(project)
-        val credentials = connectionService.getCredentials(connection)
+        val credentials = connectionService.getCredentials(connection.uuid)
         val username = credentials.userName ?: ""
         val password = credentials.getPasswordAsString() ?: ""
 

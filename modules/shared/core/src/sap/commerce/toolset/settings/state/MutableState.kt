@@ -16,18 +16,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.hac.exec.settings.event
+package sap.commerce.toolset.settings.state
 
-import com.intellij.util.messages.Topic
-import sap.commerce.toolset.exec.settings.event.ExecConnectionListener
-import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
-
-interface HacConnectionSettingsListener : ExecConnectionListener<HacConnectionSettingsState> {
-
-    override fun onActivate(connection: HacConnectionSettingsState) = Unit
-    override fun onCreate(connection: HacConnectionSettingsState) = Unit
-
-    companion object {
-        val TOPIC = Topic(HacConnectionSettingsListener::class.java)
-    }
+interface MutableState {
+    var mutation: Mutation
 }

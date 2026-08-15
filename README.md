@@ -35,7 +35,7 @@ This plugin provides [SAP Commerce](https://www.sap.com/products/crm/e-commerce-
 - Import your custom _Eclipse_, _Maven_ and _Gradle_ extensions together with SAP Commerce platform.
 - Tight integration with [kotlinnature](https://github.com/mlytvyn/kotlinnature) which will enhance SAP Commerce with **Kotlin** language support
 - Extended support and customization for multiple 3rd-party IntelliJ IDEA plugins, such as:
-  - Spring, Cron, Junit, Java, Grid, i18n, JavaEE WEB, JavaEE EL, Jrebel, Ant, Groovy, Angular, Database, Diagram, Properties, Copyright, Javascript, IntelliLang. 
+  - Spring, Cron, Junit, Java, Grid, i18n, JavaEE WEB, JavaEE EL, JRebel, Ant, Groovy, Angular, Database, Diagram, Properties, Copyright, Javascript, IntelliLang. 
 - Custom editors for various custom languages with automatic formatting, find usages and go to declaration actions, validation and import of files into a remote SAP Commerce instance right from your IDE by a single click of a button, so far supported custom languages:
   - [ImpEx](https://help.sap.com/docs/SAP_COMMERCE/d0224eca81e249cb821f2cdf45a82ace/8bee24e986691014b97bcd2c7e6ff732.html?locale=en-US&version=LATEST)
   - [Acl](https://help.sap.com/docs/SAP_COMMERCE/d0224eca81e249cb821f2cdf45a82ace/8b4aa00e866910148df2920f69d68b27.html?locale=en-US&version=LATEST)

@@ -79,7 +79,7 @@ class FlexibleSearchShowRestrictionsAction : AnAction(
         val server = connectionService.activeConnection
         val userUid = e.flexibleSearchExecutionContextSettings { FlexibleSearchExecContext.defaultSettings(server) }
             .user
-            ?: connectionService.getCredentials(server).userName
+            ?: connectionService.getCredentials(server.uuid).userName
             ?: "admin"
 
         val table2scope = PsiTreeUtil.collectElementsOfType(psiFile, FlexibleSearchDefinedTableName::class.java)

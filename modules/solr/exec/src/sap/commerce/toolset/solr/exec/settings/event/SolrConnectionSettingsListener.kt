@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -24,10 +24,8 @@ import sap.commerce.toolset.solr.exec.settings.state.SolrConnectionSettingsState
 
 interface SolrConnectionSettingsListener : ExecConnectionListener<SolrConnectionSettingsState> {
 
-    override fun onActive(connection: SolrConnectionSettingsState) = Unit
+    override fun onActivate(connection: SolrConnectionSettingsState) = Unit
     override fun onCreate(connection: SolrConnectionSettingsState) = Unit
-    override fun onUpdate(settings: Collection<SolrConnectionSettingsState>) = Unit
-    override fun onDelete(connection: SolrConnectionSettingsState) = Unit
 
     companion object {
         val TOPIC = Topic(SolrConnectionSettingsListener::class.java)

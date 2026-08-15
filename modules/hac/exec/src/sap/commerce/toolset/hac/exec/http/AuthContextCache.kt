@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -29,18 +29,15 @@ import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
 import java.util.concurrent.ConcurrentHashMap
 
 @Service(Service.Level.PROJECT)
-class AuthContextCache(private val project: Project) : Disposable {
+class AuthContextCache(project: Project) : Disposable {
 
     val authContexts = ConcurrentHashMap<String, AuthContext>()
 
     init {
         project.messageBus.connect().subscribe(HacConnectionSettingsListener.TOPIC, object : HacConnectionSettingsListener {
-            override fun onDelete(connection: HacConnectionSettingsState) = invalidateCookies(connection)
-            override fun onUpdate(settings: Collection<HacConnectionSettingsState>) = settings
+            override fun onSave(settings: Collection<HacConnectionSettingsState>) = settings
                 .filterNot { it.authMode == AuthMode.MANUAL }
                 .forEach { invalidateCookies(it) }
-
-            override fun onSave(settings: Collection<HacConnectionSettingsState>) = settings.forEach { invalidateCookies(it) }
         })
     }
 

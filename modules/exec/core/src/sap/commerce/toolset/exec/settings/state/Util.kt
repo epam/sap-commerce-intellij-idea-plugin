@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -27,15 +27,3 @@ fun connectionPresentationName(scope: ExecConnectionScope, name: String?, fallba
         .takeIf { it.isNotBlank() }
     )
     .let { scope.shortTitle + " : " + it }
-
-/**
- * Persisted connections of the receiver which are not part of [retained] anymore, matched by [ConnectionSettingsState.uuid].
- *
- * Credentials of such connections are not referenced by any connection and have to be purged from the credential store,
- * whereas credentials of the retained ones must survive, even when the user did not open them before saving the settings.
- */
-fun <T : ExecConnectionSettingsState> Collection<T>.obsoleteFor(retained: Collection<ExecConnectionSettingsState>): List<T> {
-    val retainedUUIDs = retained.mapTo(mutableSetOf()) { it.uuid }
-
-    return filterNot { retainedUUIDs.contains(it.uuid) }
-}

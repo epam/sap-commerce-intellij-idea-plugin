@@ -143,7 +143,7 @@ class HybrisSolrSearchConsole(project: Project) : HybrisConsole<SolrQueryExecCon
 
     private fun retrieveListOfCores() = try {
         val activeConnection = activeConnection()
-        val credentials = SolrExecConnectionService.getInstance(project).getCredentials(activeConnection)
+        val credentials = SolrExecConnectionService.getInstance(project).getCredentials(activeConnection.uuid)
         val username = credentials.userName ?: ""
         val password = credentials.getPasswordAsString() ?: ""
         SolrExecClient.getInstance(project).coresData(activeConnection, username, password).toList()

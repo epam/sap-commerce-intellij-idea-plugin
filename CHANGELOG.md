@@ -1,3 +1,15 @@
+## [2026.2.2]
+
+<cite>Release contributors</code>
+- 1 PR(s) by [Flaviu Lupoian](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.2.2+author%3Aflup-repo+is%3Apr)
+- 1 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.2.2+author%3Amlytvyn+is%3Apr)
+
+### Fixes
+- Keep credentials of the `HAC` and `Solr` connections which were not opened before saving the connection settings [#1992](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1992)
+
+### Other enhancements
+- Unified api for HAC and Solr settings [#1993](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1993)
+
 ## [2026.2.1]
 
 <cite>Release contributors</code>
@@ -17,9 +29,6 @@
 
 ### `Other` enhancements
 - Updated tooltip according to new 2026.2 API to render html-description [#1986](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1986)
-
-### Fixes
-- Keep credentials of the `hAC` and `Solr` connections which were not opened before saving the connection settings [#1992](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1992)
 
 ## [2026.2.0]
 
