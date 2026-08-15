@@ -65,7 +65,7 @@ abstract class ExecConnectionService<T : ExecConnectionSettingsState, S : ExecCo
 
     protected fun onSave(stores: Collection<S>, notify: Boolean = true) {
         stores
-            .filter { it.modified }
+            .filter { it.mutation == Mutation.SAVE }
             .forEach { saveCredentials(it) }
         if (notify) listener.onSave(stores.map { it.state })
     }

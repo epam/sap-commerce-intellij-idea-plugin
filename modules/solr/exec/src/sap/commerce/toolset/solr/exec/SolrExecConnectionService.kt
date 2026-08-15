@@ -24,6 +24,7 @@ import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import sap.commerce.toolset.exec.ExecConnectionService
 import sap.commerce.toolset.exec.settings.state.ExecConnectionScope
+import sap.commerce.toolset.settings.state.Mutation
 import sap.commerce.toolset.solr.SolrConstants
 import sap.commerce.toolset.solr.exec.settings.SolrExecDeveloperSettings
 import sap.commerce.toolset.solr.exec.settings.SolrExecProjectSettings
@@ -87,7 +88,7 @@ class SolrExecConnectionService(project: Project) : ExecConnectionService<SolrCo
 
     override fun save(stores: Collection<SolrConnectionSettingsState.Immutable>) {
         val groupedSettings = stores
-            .filter { it.modified }
+            .filter { it.mutation == Mutation.SAVE }
             .map { it.state }
             .groupBy { it.scope }
             .mapValues { (_, v) -> v.toList() }

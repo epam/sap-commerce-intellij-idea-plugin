@@ -41,9 +41,6 @@ interface ExecConnectionSettingsState : ConnectionSettingsState {
         val mutation: Mutation
         val credentials: ExecCredentials
         val proxyCredentials: ExecCredentials
-
-        val modified: Boolean
-            get() = mutation != Mutation.NONE
     }
 
     interface Mutable : MutableState {
