@@ -8,7 +8,7 @@
 - Keep credentials of the `HAC` and `Solr` connections which were not opened before saving the connection settings [#1992](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1992)
 
 ### Other enhancements
-- Unified api for HAC and Solr settings [#1993](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1993)
+- Unified crud table API [#1993](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1993)
 
 ## [2026.2.1]
 
