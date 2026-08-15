@@ -37,6 +37,9 @@ data class ExecCredentials(
         var username: ObservableMutableProperty<String> = AtomicProperty(""),
         var password: ObservableMutableProperty<String> = AtomicProperty(""),
     ) : MutableState {
+        private val values
+            get() = username.get() to password.get()
+
         var loaded: Boolean = false
             private set
 
@@ -62,9 +65,6 @@ data class ExecCredentials(
         }
 
         fun immutable() = ExecCredentials(mutation, username.get(), password.get())
-
-        private val values
-            get() = username.get() to password.get()
 
         override fun equals(other: Any?): Boolean = this === other
                 || other is Mutable
