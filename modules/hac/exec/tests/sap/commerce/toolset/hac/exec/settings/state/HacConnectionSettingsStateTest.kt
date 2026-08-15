@@ -18,6 +18,11 @@
 
 package sap.commerce.toolset.hac.exec.settings.state
 
+import sap.commerce.toolset.settings.state.Mutation
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
+
 /**
  * Unit tests for [HacConnectionSettingsState.Mutable.immutable].
  *
@@ -27,61 +32,61 @@ package sap.commerce.toolset.hac.exec.settings.state
 class HacConnectionSettingsStateTest {
 
     private fun fixture(host: String = "localhost") = HacConnectionSettingsState(host = host).mutable()
-//
-//    @Test
-//    fun immutable_notModified_hasNoCredentials() {
-//        val (_, credentials) = fixture().immutable(it.mutation)
-//
-//        assertNull(credentials)
-//    }
-//
-//    @Test
-//    fun immutable_notModified_stillHasSettings() {
-//        val (settings, _) = fixture(host = "hac.example.com").immutable(it.mutation)
-//
-//        assertEquals("hac.example.com", settings.host)
-//    }
-//
-//    @Test
-//    fun immutable_modified_hasCredentials() {
-//        val fixture = fixture().apply {
-//            credentials.username.set("admin")
-//            credentials.password.set("nimda")
-//            modified = true
-//        }
-//
-//        val execCredentials = assertNotNull(fixture.immutable(it.mutation).execCredentials)
-//        val credentials = execCredentials.credentials
-//
-//        assertEquals("admin", credentials.userName)
-//        assertEquals("nimda", credentials.getPasswordAsString())
-//    }
-//
-//    @Test
-//    fun immutable_modified_hasProxyCredentials() {
-//        val fixture = fixture().apply {
-//            proxyCredentials.username.set("proxyUser")
-//            proxyCredentials.password.set("proxyPass")
-//            modified = true
-//        }
-//
-//        val execCredentials = assertNotNull(fixture.immutable(it.mutation).execCredentials)
-//        val proxyCredentials = assertNotNull(execCredentials.proxyCredentials)
-//
-//        assertEquals("proxyUser", proxyCredentials.userName)
-//        assertEquals("proxyPass", proxyCredentials.getPasswordAsString())
-//    }
-//
-//    @Test
-//    fun immutable_modifiedWithBlankPassword_hasCredentials() {
-//        val fixture = fixture().apply {
-//            credentials.username.set("admin")
-//            modified = true
-//        }
-//
-//        val credentials = assertNotNull(fixture.immutable(it.mutation).execCredentials).credentials
-//
-//        assertEquals("admin", credentials.userName)
-//        assertEquals("", credentials.getPasswordAsString())
-//    }
+
+    @Test
+    fun immutable_notModified_hasNoCredentials() {
+        val fixture = fixture().immutable()
+
+        assertEquals(Mutation.NONE, fixture.mutation)
+        assertEquals(Mutation.NONE, fixture.credentials.mutation)
+    }
+
+    @Test
+    fun immutable_notModified_stillHasSettings() {
+        val fixture = fixture(host = "hac.example.com").immutable()
+
+        assertEquals("hac.example.com", fixture.state.host)
+    }
+
+    @Test
+    fun immutable_modified_hasCredentials() {
+        val fixture = fixture().apply {
+            credentials.apply("admin", "nimda")
+        }
+
+        val execCredentials = assertNotNull(fixture.immutable().credentials)
+        val credentials = execCredentials.credentials
+
+        assertEquals(Mutation.SAVE, execCredentials.mutation)
+        assertEquals("admin", credentials.userName)
+        assertEquals("nimda", credentials.getPasswordAsString())
+    }
+
+    @Test
+    fun immutable_modified_hasProxyCredentials() {
+        val fixture = fixture().apply {
+            proxyCredentials.apply("proxyUser", "proxyPass")
+        }
+
+        val execCredentials = assertNotNull(fixture.immutable().proxyCredentials)
+        val credentials = execCredentials.credentials
+
+        assertEquals(Mutation.SAVE, execCredentials.mutation)
+        assertEquals("proxyUser", credentials.userName)
+        assertEquals("proxyPass", credentials.getPasswordAsString())
+    }
+
+    @Test
+    fun immutable_modifiedWithBlankPassword_hasCredentials() {
+        val fixture = fixture().apply {
+            credentials.username.set("admin")
+        }
+
+        val execCredentials = assertNotNull(fixture.immutable().credentials)
+        val credentials = execCredentials.credentials
+
+        assertEquals(Mutation.NONE, execCredentials.mutation)
+        assertEquals("admin", credentials.userName)
+        assertEquals("", credentials.getPasswordAsString())
+    }
 }

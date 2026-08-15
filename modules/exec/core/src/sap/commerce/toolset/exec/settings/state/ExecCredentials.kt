@@ -48,7 +48,8 @@ data class ExecCredentials(
         fun load(mutable: Mutable) = if (mutable.loaded) set(mutable.username.get(), mutable.password.get(), mutable.mutation)
         else Unit
 
-        fun apply(mutable: Mutable) = set(mutable.username.get(), mutable.password.get(), Mutation.SAVE)
+        fun apply(mutable: Mutable) = apply(mutable.username.get(), mutable.password.get())
+        fun apply(username: String, password: String) = set(username, password, Mutation.SAVE)
 
         private fun set(username: String, password: String, mutation: Mutation = Mutation.NONE) {
             this.loaded = true

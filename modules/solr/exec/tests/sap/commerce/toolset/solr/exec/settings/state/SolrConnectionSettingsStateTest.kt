@@ -18,6 +18,11 @@
 
 package sap.commerce.toolset.solr.exec.settings.state
 
+import sap.commerce.toolset.settings.state.Mutation
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
+
 /**
  * Unit tests for [SolrConnectionSettingsState.Mutable.immutable].
  *
@@ -25,34 +30,35 @@ package sap.commerce.toolset.solr.exec.settings.state
  * carries blank credentials which must never reach the credential store.
  */
 class SolrConnectionSettingsStateTest {
-//
-//    private fun fixture(host: String = "localhost") = SolrConnectionSettingsState(host = host).mutable()
-//
-//    @Test
-//    fun immutable_notModified_hasNoCredentials() {
-//        val (_, credentials) = fixture().immutable()
-//
-//        assertNull(credentials)
-//    }
-//
-//    @Test
-//    fun immutable_notModified_stillHasSettings() {
-//        val (settings, _) = fixture(host = "solr.example.com").immutable()
-//
-//        assertEquals("solr.example.com", settings.host)
-//    }
-//
-//    @Test
-//    fun immutable_modified_hasCredentials() {
-//        val fixture = fixture().apply {
-//            credentials.username.set("solr")
-//            credentials.password.set("solrRocks")
-//            modified = true
-//        }
-//
-//        val execCredentials = assertNotNull(fixture.immutable().execCredentials)
-//
-//        assertEquals("solr", execCredentials.credentials.userName)
-//        assertEquals("solrRocks", execCredentials.credentials.getPasswordAsString())
-//    }
+
+    private fun fixture(host: String = "localhost") = SolrConnectionSettingsState(host = host).mutable()
+
+    @Test
+    fun immutable_notModified_hasNoCredentials() {
+        val fixture = fixture().immutable()
+
+        assertEquals(Mutation.NONE, fixture.mutation)
+        assertEquals(Mutation.NONE, fixture.credentials.mutation)
+    }
+
+    @Test
+    fun immutable_notModified_stillHasSettings() {
+        val fixture = fixture(host = "solr.example.com").immutable()
+
+        assertEquals("solr.example.com", fixture.state.host)
+    }
+
+    @Test
+    fun immutable_modified_hasCredentials() {
+        val fixture = fixture().apply {
+            credentials.apply("solr", "solrRocks")
+        }
+
+        val execCredentials = assertNotNull(fixture.immutable().credentials)
+        val credentials = execCredentials.credentials
+
+        assertEquals(Mutation.SAVE, execCredentials.mutation)
+        assertEquals("solr", credentials.userName)
+        assertEquals("solrRocks", credentials.getPasswordAsString())
+    }
 }
