@@ -70,14 +70,14 @@ data class SolrConnectionSettingsState(
         var socketTimeout: Int,
     ) : ExecConnectionSettingsState.Mutable {
 
-        override fun immutable() = Immutable(
+        override fun snapshot() = Snapshot(
             state = state(),
             mutation = mutation,
             credentials = credentials.immutable(),
             proxyCredentials = proxyCredentials.immutable(),
         )
 
-        override fun copy(): Mutable = immutable().state.mutable()
+        override fun copy(): Mutable = snapshot().state.mutable()
             .also {
                 it.credentials.load(credentials)
                 it.proxyCredentials.load(proxyCredentials)
@@ -96,10 +96,10 @@ data class SolrConnectionSettingsState(
         )
     }
 
-    data class Immutable(
+    data class Snapshot(
         override val state: SolrConnectionSettingsState,
         override val mutation: Mutation,
         override val credentials: ExecCredentials,
         override val proxyCredentials: ExecCredentials,
-    ) : ExecConnectionSettingsState.Immutable<SolrConnectionSettingsState>
+    ) : ExecConnectionSettingsState.Snapshot<SolrConnectionSettingsState>
 }

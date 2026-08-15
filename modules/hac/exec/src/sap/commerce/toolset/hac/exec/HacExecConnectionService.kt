@@ -31,7 +31,7 @@ import sap.commerce.toolset.hac.exec.settings.event.HacConnectionSettingsListene
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
 
 @Service(Service.Level.PROJECT)
-class HacExecConnectionService(project: Project) : ExecConnectionService<HacConnectionSettingsState, HacConnectionSettingsState.Immutable>(project) {
+class HacExecConnectionService(project: Project) : ExecConnectionService<HacConnectionSettingsState, HacConnectionSettingsState.Snapshot>(project) {
 
     private val lock = Any()
 
@@ -58,17 +58,17 @@ class HacExecConnectionService(project: Project) : ExecConnectionService<HacConn
     override val listener: HacConnectionSettingsListener
         get() = project.messageBus.syncPublisher(HacConnectionSettingsListener.TOPIC)
 
-    override fun create(store: HacConnectionSettingsState.Immutable, notify: Boolean) = when (store.state.scope) {
+    override fun create(snapshot: HacConnectionSettingsState.Snapshot, notify: Boolean) = when (snapshot.state.scope) {
         ExecConnectionScope.PROJECT_PERSONAL -> with(HacExecDeveloperSettings.getInstance(project)) {
-            connections = connections + store.state
+            connections = connections + snapshot.state
 
-            onCreate(store, notify)
+            onCreate(snapshot, notify)
         }
 
         ExecConnectionScope.PROJECT -> with(HacExecProjectSettings.getInstance(project)) {
-            connections = connections + store.state
+            connections = connections + snapshot.state
 
-            onCreate(store, notify)
+            onCreate(snapshot, notify)
         }
     }
 
@@ -81,13 +81,13 @@ class HacExecConnectionService(project: Project) : ExecConnectionService<HacConn
             .filterNot { it.uuid == state.uuid }
     }
 
-    override fun save(stores: Collection<HacConnectionSettingsState.Immutable>) {
-        val groupedSettings = stores.map { it.state }.groupBy { it.scope }
+    override fun save(snapshots: Collection<HacConnectionSettingsState.Snapshot>) {
+        val groupedSettings = snapshots.map { it.state }.groupBy { it.scope }
         val projectSettings = HacExecProjectSettings.getInstance(project)
         val developerSettings = HacExecDeveloperSettings.getInstance(project)
 
         // remove persisted credentials only for the connections which are gone
-        val statesToSave = stores.map { it.state.uuid }
+        val statesToSave = snapshots.map { it.state.uuid }
         (projectSettings.connections + developerSettings.connections)
             .filterNot { statesToSave.contains(it.uuid) }
             .forEach { removeCredentials(it) }
@@ -95,7 +95,7 @@ class HacExecConnectionService(project: Project) : ExecConnectionService<HacConn
         projectSettings.connections = groupedSettings.getOrElse(ExecConnectionScope.PROJECT) { emptyList() }
         developerSettings.connections = groupedSettings.getOrElse(ExecConnectionScope.PROJECT_PERSONAL) { emptyList() }
 
-        onSave(stores)
+        onSave(snapshots)
     }
 
     override fun default() = HacConnectionSettingsState(

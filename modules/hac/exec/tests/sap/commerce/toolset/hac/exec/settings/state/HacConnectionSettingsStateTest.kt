@@ -25,7 +25,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 
 /**
- * Unit tests for [HacConnectionSettingsState.Mutable.immutable].
+ * Unit tests for [HacConnectionSettingsState.Mutable.snapshot].
  *
  * Credentials of a connection are loaded lazily by the connection dialog, therefore an untouched `Mutable`
  * carries blank credentials which must never reach the credential store.
@@ -36,7 +36,7 @@ class HacConnectionSettingsStateTest {
 
     @Test
     fun immutable_notModified_hasNoCredentials() {
-        val fixture = fixture().immutable()
+        val fixture = fixture().snapshot()
 
         assertEquals(Mutation.NONE, fixture.mutation)
         assertEquals(Mutation.NONE, fixture.credentials.mutation)
@@ -44,7 +44,7 @@ class HacConnectionSettingsStateTest {
 
     @Test
     fun immutable_notModified_stillHasSettings() {
-        val fixture = fixture(host = "hac.example.com").immutable()
+        val fixture = fixture(host = "hac.example.com").snapshot()
 
         assertEquals("hac.example.com", fixture.state.host)
     }
@@ -55,7 +55,7 @@ class HacConnectionSettingsStateTest {
             credentials.apply("admin", "nimda")
         }
 
-        val execCredentials = assertNotNull(fixture.immutable().credentials)
+        val execCredentials = assertNotNull(fixture.snapshot().credentials)
         val credentials = execCredentials.credentials
 
         assertEquals(Mutation.SAVE, execCredentials.mutation)
@@ -69,7 +69,7 @@ class HacConnectionSettingsStateTest {
             proxyCredentials.apply("proxyUser", "proxyPass")
         }
 
-        val execCredentials = assertNotNull(fixture.immutable().proxyCredentials)
+        val execCredentials = assertNotNull(fixture.snapshot().proxyCredentials)
         val credentials = execCredentials.credentials
 
         assertEquals(Mutation.SAVE, execCredentials.mutation)
@@ -83,7 +83,7 @@ class HacConnectionSettingsStateTest {
             credentials.username.set("admin")
         }
 
-        val execCredentials = assertNotNull(fixture.immutable().credentials)
+        val execCredentials = assertNotNull(fixture.snapshot().credentials)
         val credentials = execCredentials.credentials
 
         assertEquals(Mutation.NONE, execCredentials.mutation)
@@ -97,7 +97,7 @@ class HacConnectionSettingsStateTest {
             credentials.load(Credentials("admin", "nimda"))
         }
 
-        val execCredentials = assertNotNull(fixture.immutable().credentials)
+        val execCredentials = assertNotNull(fixture.snapshot().credentials)
         val credentials = execCredentials.credentials
 
         assertEquals(Mutation.NONE, execCredentials.mutation)
@@ -106,7 +106,7 @@ class HacConnectionSettingsStateTest {
 
         fixture.credentials.apply("newAdmin", "nimda")
 
-        val modifiedExecCredentials = assertNotNull(fixture.immutable().credentials)
+        val modifiedExecCredentials = assertNotNull(fixture.snapshot().credentials)
         val modifiedCredentials = modifiedExecCredentials.credentials
 
         assertEquals(Mutation.SAVE, modifiedExecCredentials.mutation)

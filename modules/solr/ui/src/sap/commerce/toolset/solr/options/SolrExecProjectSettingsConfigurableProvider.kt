@@ -96,15 +96,15 @@ class SolrExecProjectSettingsConfigurableProvider(private val project: Project) 
             super.apply()
 
             val connectionService = SolrExecConnectionService.getInstance(project)
-            val newSettings = connectionsList.elements.map { it.immutable() }
+            val snapshots = connectionsList.elements.map { it.snapshot() }
 
-            connectionService.save(newSettings)
+            connectionService.save(snapshots)
 
-            if (newSettings.isEmpty()) {
+            if (snapshots.isEmpty()) {
                 originalConnections = connectionService.connections.map { it.mutable() }
                 originalActiveConnection = connectionService.activeConnection
             } else {
-                originalConnections = newSettings.map { it.state.mutable() }
+                originalConnections = snapshots.map { it.state.mutable() }
                 originalActiveConnection = activeServerComboBox.selectedItem as SolrConnectionSettingsState
 
                 connectionService.activeConnection = originalActiveConnection
@@ -115,7 +115,7 @@ class SolrExecProjectSettingsConfigurableProvider(private val project: Project) 
 
         private fun refreshActiveServerCombobox() {
             val previousSelectedItem = activeServerModel.selectedItem?.asSafely<SolrConnectionSettingsState>()?.uuid
-            val modifiedConnections = connectionsList.elements.map { it.immutable() }
+            val modifiedConnections = connectionsList.elements.map { it.snapshot() }
             activeServerModel.refresh(modifiedConnections.map { it.state })
             activeServerModel.selectedItem = modifiedConnections.find { it.state.uuid == previousSelectedItem }
                 ?.state

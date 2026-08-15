@@ -36,7 +36,7 @@ interface ExecConnectionSettingsState : ConnectionSettingsState {
 
     fun mutable(): Mutable
 
-    interface Immutable<T : ExecConnectionSettingsState> {
+    interface Snapshot<T : ExecConnectionSettingsState> {
         val state: T
         val mutation: Mutation
         val credentials: ExecCredentials
@@ -61,7 +61,7 @@ interface ExecConnectionSettingsState : ConnectionSettingsState {
         val presentationName: String
             get() = connectionPresentationName(scope, name.get()) { generatedURL }
 
-        fun immutable(): Immutable<out ExecConnectionSettingsState>
+        fun snapshot(): Snapshot<out ExecConnectionSettingsState>
         fun copy(): Mutable
     }
 

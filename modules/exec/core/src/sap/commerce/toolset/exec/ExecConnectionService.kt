@@ -31,7 +31,7 @@ import sap.commerce.toolset.exec.settings.state.ExecCredentials
 import sap.commerce.toolset.project.PropertyService
 import sap.commerce.toolset.settings.state.Mutation
 
-abstract class ExecConnectionService<T : ExecConnectionSettingsState, S : ExecConnectionSettingsState.Immutable<T>>(protected val project: Project) {
+abstract class ExecConnectionService<T : ExecConnectionSettingsState, S : ExecConnectionSettingsState.Snapshot<T>>(protected val project: Project) {
 
     abstract var activeConnection: T
     abstract val connections: List<T>
@@ -41,33 +41,33 @@ abstract class ExecConnectionService<T : ExecConnectionSettingsState, S : ExecCo
     abstract fun defaultCredentials(): Credentials
     abstract fun default(): T
 
-    abstract fun save(stores: Collection<S>)
+    abstract fun save(snapshots: Collection<S>)
     abstract fun delete(state: T)
-    abstract fun create(store: S, notify: Boolean = true)
+    abstract fun create(snapshot: S, notify: Boolean = true)
 
     fun getCredentials(uuid: String) = PasswordSafe.instance[CredentialAttributes("SAP CX - $uuid")]
         ?: defaultCredentials()
 
     fun getProxyCredentials(uuid: String) = PasswordSafe.instance[CredentialAttributes("SAP CX - proxy - $uuid")]
 
-    fun update(store: S) {
-        delete(store.state)
-        create(store, false)
-        onSave(listOf(store))
+    fun update(snapshot: S) {
+        delete(snapshot.state)
+        create(snapshot, false)
+        onSave(listOf(snapshot))
     }
 
     protected fun onActivate(state: T, notify: Boolean = true) = if (notify) listener.onActivate(state) else Unit
 
-    protected fun onCreate(store: S, notify: Boolean = true) = if (notify) {
-        saveCredentials(store)
-        listener.onCreate(store.state)
+    protected fun onCreate(snapshot: S, notify: Boolean = true) = if (notify) {
+        saveCredentials(snapshot)
+        listener.onCreate(snapshot.state)
     } else Unit
 
-    protected fun onSave(stores: Collection<S>, notify: Boolean = true) {
-        stores
+    protected fun onSave(snapshots: Collection<S>, notify: Boolean = true) {
+        snapshots
             .filter { it.mutation == Mutation.SAVE }
             .forEach { saveCredentials(it) }
-        if (notify) listener.onSave(stores.map { it.state })
+        if (notify) listener.onSave(snapshots.map { it.state })
     }
 
     protected fun removeCredentials(state: T) = writeCredentials(
@@ -75,11 +75,11 @@ abstract class ExecConnectionService<T : ExecConnectionSettingsState, S : ExecCo
         uuid = state.uuid,
     )
 
-    private fun saveCredentials(store: S) = writeCredentials(
+    private fun saveCredentials(snapshot: S) = writeCredentials(
         title = "Persisting credentials",
-        uuid = store.state.uuid,
-        credentials = store.credentials,
-        proxyCredentials = store.proxyCredentials,
+        uuid = snapshot.state.uuid,
+        credentials = snapshot.credentials,
+        proxyCredentials = snapshot.proxyCredentials,
     )
 
     private fun writeCredentials(title: String, uuid: String, credentials: ExecCredentials? = null, proxyCredentials: ExecCredentials? = null) = ProgressManager.getInstance()

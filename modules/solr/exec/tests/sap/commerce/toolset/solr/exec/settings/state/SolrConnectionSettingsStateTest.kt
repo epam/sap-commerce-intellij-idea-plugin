@@ -24,7 +24,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 
 /**
- * Unit tests for [SolrConnectionSettingsState.Mutable.immutable].
+ * Unit tests for [SolrConnectionSettingsState.Mutable.snapshot].
  *
  * Credentials of a connection are loaded lazily by the connection dialog, therefore an untouched `Mutable`
  * carries blank credentials which must never reach the credential store.
@@ -35,7 +35,7 @@ class SolrConnectionSettingsStateTest {
 
     @Test
     fun immutable_notModified_hasNoCredentials() {
-        val fixture = fixture().immutable()
+        val fixture = fixture().snapshot()
 
         assertEquals(Mutation.NONE, fixture.mutation)
         assertEquals(Mutation.NONE, fixture.credentials.mutation)
@@ -43,7 +43,7 @@ class SolrConnectionSettingsStateTest {
 
     @Test
     fun immutable_notModified_stillHasSettings() {
-        val fixture = fixture(host = "solr.example.com").immutable()
+        val fixture = fixture(host = "solr.example.com").snapshot()
 
         assertEquals("solr.example.com", fixture.state.host)
     }
@@ -54,7 +54,7 @@ class SolrConnectionSettingsStateTest {
             credentials.apply("solr", "solrRocks")
         }
 
-        val execCredentials = assertNotNull(fixture.immutable().credentials)
+        val execCredentials = assertNotNull(fixture.snapshot().credentials)
         val credentials = execCredentials.credentials
 
         assertEquals(Mutation.SAVE, execCredentials.mutation)

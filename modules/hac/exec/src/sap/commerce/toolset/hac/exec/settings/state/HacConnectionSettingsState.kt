@@ -84,14 +84,14 @@ data class HacConnectionSettingsState(
         var sessionCookieName: String,
     ) : ExecConnectionSettingsState.Mutable {
 
-        override fun immutable() = Immutable(
+        override fun snapshot() = Snapshot(
             state = state(),
             mutation = mutation,
             credentials = credentials.immutable(),
             proxyCredentials = proxyCredentials.immutable(),
         )
 
-        override fun copy(): Mutable = immutable().state.mutable()
+        override fun copy(): Mutable = snapshot().state.mutable()
             .also {
                 it.credentials.load(credentials)
                 it.proxyCredentials.load(proxyCredentials)
@@ -114,10 +114,10 @@ data class HacConnectionSettingsState(
         )
     }
 
-    data class Immutable(
+    data class Snapshot(
         override val state: HacConnectionSettingsState,
         override val mutation: Mutation,
         override val credentials: ExecCredentials,
         override val proxyCredentials: ExecCredentials,
-    ) : ExecConnectionSettingsState.Immutable<HacConnectionSettingsState>
+    ) : ExecConnectionSettingsState.Snapshot<HacConnectionSettingsState>
 }
