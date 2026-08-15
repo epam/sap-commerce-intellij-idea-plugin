@@ -18,39 +18,47 @@
 
 package sap.commerce.toolset.impex.ui.components
 
+import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
-import com.intellij.ui.AddEditDeleteListPanel
-import com.intellij.ui.ListSpeedSearch
-import com.intellij.util.asSafely
-import com.intellij.util.ui.JBEmptyBorder
+import com.intellij.openapi.ui.DialogWrapper
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.settings.state.ImpExQuoteStringExclusion
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
 import sap.commerce.toolset.ui.ifOk
-import java.awt.Component
+import sap.commerce.toolset.ui.list.AddEditDeleteList
 import java.io.Serial
-import javax.swing.DefaultListCellRenderer
-import javax.swing.JComponent
-import javax.swing.JList
-import javax.swing.ListCellRenderer
+import javax.swing.Icon
 
 class ImpExQuoteStringExclusionsListPanel(
     private val project: Project,
-) : AddEditDeleteListPanel<ImpExQuoteStringExclusion>("", emptyList()) {
+    disposable: Disposable?,
+) : AddEditDeleteList<ImpExQuoteStringExclusion>(disposable) {
 
-    private var myListCellRenderer: ListCellRenderer<*>? = null
+    override fun getName(element: ImpExQuoteStringExclusion): String = element.presentationTitle
 
-    init {
-        ListSpeedSearch.installOn(myList) { it.typeName + "." + it.attributeName }
-    }
+    override fun getIcon(element: ImpExQuoteStringExclusion): Icon = element.typeName
+        .let {
+            runCatching { TSMetaModelAccess.getInstance(project).findMetaItemByName(it) }
+        }
+        .getOrNull()
+        ?.icon
+        ?: HybrisIcons.TypeSystem.Types.UNKNOWN
 
-    override fun editSelectedItem(item: ImpExQuoteStringExclusion) = ImpExQuoteStringExclusionDialog(
+    override fun newItem(element: ImpExQuoteStringExclusion?) = ImpExQuoteStringExclusion("", "")
+
+    override fun createDialog(item: ImpExQuoteStringExclusion): DialogWrapper = ImpExQuoteStringExclusionDialog(
+        project = project,
+        exclusion = item,
+        parentComponent = this,
+        dialogTitle = "Define Exclusion"
+    )
+
+    override fun editDialog(item: ImpExQuoteStringExclusion): DialogWrapper = ImpExQuoteStringExclusionDialog(
         project = project,
         exclusion = item,
         parentComponent = this,
         dialogTitle = "Edit Exclusion"
     )
-        .ifOk { item }
 
     override fun findItemToAdd() = ImpExQuoteStringExclusion("", "").let { item ->
         ImpExQuoteStringExclusionDialog(
@@ -61,43 +69,6 @@ class ImpExQuoteStringExclusionsListPanel(
         )
             .ifOk { item }
     }
-
-    override fun getListCellRenderer(): ListCellRenderer<*> {
-        if (myListCellRenderer == null) {
-            myListCellRenderer = object : DefaultListCellRenderer() {
-
-                override fun getListCellRendererComponent(list: JList<*>, value: Any, index: Int, isSelected: Boolean, cellHasFocus: Boolean): Component {
-                    val name = value.toString()
-                    val comp = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus)
-                    (comp as JComponent).border = JBEmptyBorder(5)
-                    icon = value.asSafely<ImpExQuoteStringExclusion>()
-                        ?.typeName
-                        ?.let {
-                            runCatching { TSMetaModelAccess.getInstance(project).findMetaItemByName(it) }
-                        }
-                        ?.getOrNull()
-                        ?.icon
-                        ?: HybrisIcons.TypeSystem.Types.UNKNOWN
-                    text = name
-
-                    return comp
-                }
-
-                @Serial
-                private val serialVersionUID: Long = -7680459678226925362L
-            }
-        }
-        return myListCellRenderer!!
-    }
-
-    var data: List<ImpExQuoteStringExclusion>
-        get() = myListModel.elements().toList()
-        set(itemList) {
-            myListModel.clear()
-            for (itemToAdd in itemList) {
-                super.addElement(itemToAdd)
-            }
-        }
 
     companion object {
         @Serial

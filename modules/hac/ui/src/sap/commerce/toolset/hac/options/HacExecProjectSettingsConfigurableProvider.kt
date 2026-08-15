@@ -18,7 +18,6 @@
 
 package sap.commerce.toolset.hac.options
 
-import com.intellij.openapi.Disposable
 import com.intellij.openapi.options.BoundSearchableConfigurable
 import com.intellij.openapi.options.ConfigurableProvider
 import com.intellij.openapi.project.Project
@@ -38,7 +37,7 @@ import sap.commerce.toolset.hac.ui.HacConnectionSettingsListPanel
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.isHybrisProject
 
-class HacExecProjectSettingsConfigurableProvider(private val project: Project) : ConfigurableProvider(), Disposable {
+class HacExecProjectSettingsConfigurableProvider(private val project: Project) : ConfigurableProvider() {
 
     override fun canCreateConfigurable() = project.isHybrisProject
     override fun createConfigurable() = SettingsConfigurable(project)
@@ -57,12 +56,10 @@ class HacExecProjectSettingsConfigurableProvider(private val project: Project) :
         override fun createPanel(): DialogPanel {
             connectionsList = HacConnectionSettingsListPanel(
                 project, disposable,
-                activeConnection = { activeServerComboBox.selectedItem as? HacConnectionSettingsState }) {
-                refreshActiveServerComboBox()
-            }
-            activeServerModel = ConnectionComboBoxModel() {
-                connectionsList.repaint()
-            }
+                activeConnection = { activeServerComboBox.selectedItem as? HacConnectionSettingsState }
+            ) { refreshActiveServerComboBox() }
+
+            activeServerModel = ConnectionComboBoxModel() { connectionsList.repaint() }
 
             return panel {
                 row {
@@ -122,6 +119,4 @@ class HacExecProjectSettingsConfigurableProvider(private val project: Project) :
             activeServerComboBox.repaint()
         }
     }
-
-    override fun dispose() = Unit
 }

@@ -55,6 +55,7 @@ class ImpExQuoteStringExclusionDialog(
     private val selectedMetaItem = AtomicProperty(
         exclusion.typeName.let { TSMetaModelAccess.getInstance(project).findMetaItemByName(it) }
     )
+    private lateinit var itemTextFieldCompletion: TextFieldWithAutoCompletion<String>
 
     init {
         title = dialogTitle
@@ -65,6 +66,7 @@ class ImpExQuoteStringExclusionDialog(
 
     override fun getStyle() = DialogStyle.COMPACT
     override fun getInitialSize() = Dimension(450, super.initialSize?.height ?: 250)
+    override fun getPreferredFocusedComponent() = itemTextFieldCompletion
 
     override fun createNorthPanel() = banner(
         text = """
@@ -75,7 +77,7 @@ class ImpExQuoteStringExclusionDialog(
     )
 
     override fun createCenterPanel(): DialogPanel {
-        val itemTextFieldCompletion = TextFieldWithAutoCompletion.create(
+        itemTextFieldCompletion = TextFieldWithAutoCompletion.create(
             project, emptyList(), false, exclusion.typeName
         )
             .apply { installProvider(ItemListProvider(project)) }
@@ -117,7 +119,7 @@ class ImpExQuoteStringExclusionDialog(
                     .validationOnApply {
                         val metaItem = selectedMetaItem.get() ?: return@validationOnApply null
 
-                        if (metaItem.attributes.contains(it.text)) null
+                        if (metaItem.allAttributes.contains(it.text)) null
                         else error("Please enter a valid attribute name")
                     }
                     .onApply { exclusion.attributeName = attributeTextFieldCompletion.text }

@@ -26,6 +26,7 @@ import com.intellij.ui.ListSpeedSearch
 import com.intellij.util.ui.JBEmptyBorder
 import sap.commerce.toolset.settings.state.MutableState
 import sap.commerce.toolset.settings.state.Mutation
+import sap.commerce.toolset.ui.ifOk
 import java.awt.Component
 import java.io.Serial
 import javax.swing.*
@@ -33,7 +34,7 @@ import javax.swing.event.ListDataEvent
 
 abstract class AddEditDeleteList<T : MutableState>(
     disposable: Disposable?,
-    listener: (ListDataEvent) -> Unit,
+    listener: (ListDataEvent) -> Unit = {},
     title: String? = null,
     initialList: List<T> = emptyList(),
 ) : AddEditDeleteListPanel<T>(title, initialList) {
@@ -65,26 +66,25 @@ abstract class AddEditDeleteList<T : MutableState>(
 
     abstract fun getName(element: T): String
     abstract fun getIcon(element: T): Icon
-    abstract fun newMutable(element: T? = null): T
-    abstract fun createDialog(mutable: T): DialogWrapper
-    abstract fun editDialog(mutable: T): DialogWrapper
+    abstract fun newItem(element: T? = null): T
+    abstract fun createDialog(item: T): DialogWrapper
+    abstract fun editDialog(item: T): DialogWrapper
 
-    override fun findItemToAdd(): T? = with(newMutable()) {
-        if (createDialog(this).showAndGet()) this
-        else null
+    override fun findItemToAdd(): T? = with(newItem()) {
+        createDialog(this).ifOk {
+            this.also { it.mutation = Mutation.SAVE }
+        }
     }
 
-    override fun editSelectedItem(item: T): T? = with(item) {
-        if (editDialog(this).showAndGet()) this
-        else null
+    override fun editSelectedItem(item: T): T? = editDialog(item).ifOk {
+        item.also { it.mutation = Mutation.SAVE }
     }
 
     override fun getListCellRenderer(): ListCellRenderer<*> {
         if (myListCellRenderer == null) {
             myListCellRenderer = object : DefaultListCellRenderer() {
                 override fun getListCellRendererComponent(list: JList<*>, value: Any, index: Int, isSelected: Boolean, cellHasFocus: Boolean): Component {
-                    val component =
-                        super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus) as JComponent
+                    val component = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus) as JComponent
                     val t = value as T
 
                     component.border = JBEmptyBorder(5)

@@ -38,21 +38,21 @@ class SolrConnectionSettingsListPanel(
     override fun getIcon(element: SolrConnectionSettingsState.Mutable) = if (activeConnection()?.uuid == element.uuid) HybrisIcons.Y.REMOTE
     else HybrisIcons.Y.REMOTE_GREEN
 
-    override fun newMutable(element: SolrConnectionSettingsState.Mutable?) = element
+    override fun newItem(element: SolrConnectionSettingsState.Mutable?) = element
         ?.copy()
         ?: SolrExecConnectionService.getInstance(project).default().mutable()
 
-    override fun createDialog(mutable: SolrConnectionSettingsState.Mutable) = SolrConnectionSettingsDialog(
+    override fun createDialog(item: SolrConnectionSettingsState.Mutable) = SolrConnectionSettingsDialog(
         project = project,
         parentComponent = this,
-        settings = mutable,
+        settings = item,
         "Create Solr Connection Settings"
     )
 
-    override fun editDialog(mutable: SolrConnectionSettingsState.Mutable) = SolrConnectionSettingsDialog(
+    override fun editDialog(item: SolrConnectionSettingsState.Mutable) = SolrConnectionSettingsDialog(
         project = project,
         parentComponent = this,
-        settings = mutable,
+        settings = item,
         "Edit Solr Connection Settings"
     )
 

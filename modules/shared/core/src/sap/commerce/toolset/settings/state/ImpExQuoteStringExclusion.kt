@@ -21,6 +21,10 @@ package sap.commerce.toolset.settings.state
 data class ImpExQuoteStringExclusion(
     var typeName: String,
     var attributeName: String,
-) {
-    override fun toString() = "$typeName.$attributeName"
+    override var mutation: Mutation = Mutation.NONE
+) : MutableState {
+    val presentationTitle: String
+        get() = "$typeName.$attributeName"
+
+    override fun toString() = presentationTitle
 }

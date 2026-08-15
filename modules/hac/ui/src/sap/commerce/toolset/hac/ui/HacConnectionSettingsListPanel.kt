@@ -38,21 +38,21 @@ class HacConnectionSettingsListPanel(
     override fun getIcon(element: HacConnectionSettingsState.Mutable) = if (activeConnection()?.uuid == element.uuid) HybrisIcons.Y.REMOTE
     else HybrisIcons.Y.REMOTE_GREEN
 
-    override fun newMutable(element: HacConnectionSettingsState.Mutable?) = element
+    override fun newItem(element: HacConnectionSettingsState.Mutable?) = element
         ?.copy()
         ?: HacExecConnectionService.getInstance(project).default().mutable()
 
-    override fun createDialog(mutable: HacConnectionSettingsState.Mutable) = HacConnectionSettingsDialog(
+    override fun createDialog(item: HacConnectionSettingsState.Mutable) = HacConnectionSettingsDialog(
         project = project,
         parentComponent = this,
-        settings = mutable,
+        settings = item,
         "Create SAP CX Connection Settings"
     )
 
-    override fun editDialog(mutable: HacConnectionSettingsState.Mutable) = HacConnectionSettingsDialog(
+    override fun editDialog(item: HacConnectionSettingsState.Mutable) = HacConnectionSettingsDialog(
         project = project,
         parentComponent = this,
-        settings = mutable,
+        settings = item,
         "Edit SAP CX Connection Settings"
     )
 

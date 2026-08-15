@@ -22,6 +22,7 @@ import com.intellij.ide.projectView.ProjectView
 import com.intellij.openapi.options.BoundSearchableConfigurable
 import com.intellij.openapi.options.ConfigurableProvider
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.ui.DialogPanel
 import com.intellij.ui.dsl.builder.AlignX
 import com.intellij.ui.dsl.builder.bindSelected
 import com.intellij.ui.dsl.builder.bindText
@@ -49,146 +50,149 @@ class ImpExProjectSettingsConfigurableProvider(private val project: Project) : C
         private val mutable = developerSettings.impexSettings.mutable()
         private var originalGroupLocalizedFiles = mutable.groupLocalizedFiles
         private val originalQuoteStringExclusions = mutableListOf<ImpExQuoteStringExclusion>()
-        private val wrapStringExclusionsListPanel = ImpExQuoteStringExclusionsListPanel(project)
+        private lateinit var wrapStringExclusionsList: ImpExQuoteStringExclusionsListPanel
         private lateinit var documentationEnableCheckBox: JCheckBox
-        private val _ui = panel {
-            row {
-                checkBox("Group localized ImpEx files")
-                    .bindSelected(mutable::groupLocalizedFiles)
-            }
+        private lateinit var _ui: DialogPanel
 
-            group("Data Edit Mode") {
-                row {
-                    checkBox("First row is header")
-                        .bindSelected(mutable.editMode::firstRowIsHeader)
-                }
-                row {
-                    checkBox("Trim whitespace")
-                        .bindSelected(mutable.editMode::trimWhitespace)
-                }
-            }.rowComment("This functionality relies and expects that 'intellij.grid.plugin' is available and enabled.")
+        override fun createPanel(): DialogPanel {
+            wrapStringExclusionsList = ImpExQuoteStringExclusionsListPanel(project, disposable)
 
-            group("Code Completion") {
+            _ui = panel {
                 row {
-                    checkBox("Show inline type for reference header parameter")
-                        .comment(
-                            """
+                    checkBox("Group localized ImpEx files")
+                        .bindSelected(mutable::groupLocalizedFiles)
+                }
+
+                group("Data Edit Mode") {
+                    row {
+                        checkBox("First row is header")
+                            .bindSelected(mutable.editMode::firstRowIsHeader)
+                    }
+                    row {
+                        checkBox("Trim whitespace")
+                            .bindSelected(mutable.editMode::trimWhitespace)
+                    }
+                }.rowComment("This functionality relies and expects that 'intellij.grid.plugin' is available and enabled.")
+
+                group("Code Completion") {
+                    row {
+                        checkBox("Show inline type for reference header parameter")
+                            .comment(
+                                """
                                     When enabled, parameter Type and all its extends will be available as suggestions.<br>
                                     Sample: <code>principal(<strong>Principal.</strong>uid)</code>
                                     """.trimIndent()
-                        )
-                        .bindSelected(mutable.completion::showInlineTypes)
-                }
-                row {
-                    checkBox("Automatically add '.' char after inline type")
-                        .comment(
-                            """
+                            )
+                            .bindSelected(mutable.completion::showInlineTypes)
+                    }
+                    row {
+                        checkBox("Automatically add '.' char after inline type")
+                            .comment(
+                                """
                                     When enabled and '.' char is not present, it will be injected automatically
                                     """.trimIndent()
-                        )
-                        .bindSelected(mutable.completion::addCommaAfterInlineType)
-                }
-                row {
-                    checkBox("Automatically add '=' char after type and attribute modifier")
-                        .comment(
-                            """
+                            )
+                            .bindSelected(mutable.completion::addCommaAfterInlineType)
+                    }
+                    row {
+                        checkBox("Automatically add '=' char after type and attribute modifier")
+                            .comment(
+                                """
                                     When enabled and '=' char is not present, it will be injected automatically.<br>
                                     In addition to that, code completion will be automatically triggered for modifier values.
                                     """.trimIndent()
-                        )
-                        .bindSelected(mutable.completion::addEqualsAfterModifier)
+                            )
+                            .bindSelected(mutable.completion::addEqualsAfterModifier)
+                    }
                 }
-            }
-            group("Documentation") {
-                row {
-                    documentationEnableCheckBox = checkBox("Enable documentation")
-                        .bindSelected(mutable.documentation::enabled)
-                        .component
-                }
-                row {
-                    checkBox("Show documentation for type")
-                        .comment(
-                            """
+                group("Documentation") {
+                    row {
+                        documentationEnableCheckBox = checkBox("Enable documentation")
+                            .bindSelected(mutable.documentation::enabled)
+                            .component
+                    }
+                    row {
+                        checkBox("Show documentation for type")
+                            .comment(
+                                """
                                     When enabled short description of the type will be shown on-hover as a tooltip for type in the header or sub-type in the value line.
                                 """.trimIndent()
-                        )
-                        .bindSelected(mutable.documentation::showTypeDocumentation)
-                        .enabledIf(documentationEnableCheckBox.selected)
-                }
-                row {
-                    checkBox("Show documentation for modifier")
-                        .comment(
-                            """
+                            )
+                            .bindSelected(mutable.documentation::showTypeDocumentation)
+                            .enabledIf(documentationEnableCheckBox.selected)
+                    }
+                    row {
+                        checkBox("Show documentation for modifier")
+                            .comment(
+                                """
                                     When enabled short description of the modifier will be shown on-hover as a tooltip for type or attribute modifier in the header.
                                 """.trimIndent()
-                        )
-                        .bindSelected(mutable.documentation::showModifierDocumentation)
-                        .enabledIf(documentationEnableCheckBox.selected)
+                            )
+                            .bindSelected(mutable.documentation::showModifierDocumentation)
+                            .enabledIf(documentationEnableCheckBox.selected)
+                    }
                 }
-            }
 
-            group("Wrap Value Strings", false) {
-                row {
-                    val text = """
+                group("Wrap Value Strings", false) {
+                    row {
+                        val text = """
                         UPDATE Title; code[unique = true]; name[lang = en]
                         # Before inspection rule
                         ; test ; Not quoted name
                         # After inspection rule
                         ; test ; "Not quoted name"
                     """.trimIndent()
-                    previewEditor(project, ImpExFileType, text)
-                        .comment(
-                            """
+                        previewEditor(project, ImpExFileType, text)
+                            .comment(
+                                """
                                     It is preferable to wrap any values in quotes for non-unique <code>java.lang.String</code> and <code>localized:java.lang.String</code> item attributes.<br>
                                     This setting extends <code>[y] Quote value strings</code> inspection rule with exclusion of specific item attributes.<br>
                                     New exclusion rules can be managed here or added from an ImpEx file via quick-fix on a specific attribute.
                             """.trimIndent()
-                        )
-                        .align(AlignX.FILL)
-                }
+                            )
+                            .align(AlignX.FILL)
+                    }
 
-                row {
-                    checkBox("Do not quote string values matching the Regex:")
-                        .bindSelected(mutable::quoteStringWhitelist)
+                    row {
+                        checkBox("Do not quote string values matching the Regex:")
+                            .bindSelected(mutable::quoteStringWhitelist)
 
-                    textField()
-                        .bindText(mutable::quoteStringWhitelistPattern)
-                        .addValidationRule("Please enter a valid Regex.") {
-                            runCatching { Regex(it.text) }.isFailure
-                        }
-                }
+                        textField()
+                            .bindText(mutable::quoteStringWhitelistPattern)
+                            .addValidationRule("Please enter a valid Regex.") {
+                                runCatching { Regex(it.text) }.isFailure
+                            }
+                    }
 
-                row {
-                    label("Type & attribute specific exclusion rules:")
-                }
-                row {
-                    cell(wrapStringExclusionsListPanel)
-                        .onIsModified { originalQuoteStringExclusions != wrapStringExclusionsListPanel.data }
-                        .onApply {
-                            mutable.quoteStringExclusions.apply {
-                                clear()
-                                addAll(wrapStringExclusionsListPanel.data)
+                    row {
+                        label("Type & attribute specific exclusion rules:")
+                    }
+                    row {
+
+                        cell(wrapStringExclusionsList)
+                            .onIsModified { wrapStringExclusionsList.modified }
+                            .onApply {
+                                mutable.quoteStringExclusions.clear()
+                                mutable.quoteStringExclusions.addAll(wrapStringExclusionsList.elements)
+
+                                originalQuoteStringExclusions.clear()
+                                originalQuoteStringExclusions.addAll(wrapStringExclusionsList.elements)
+
+                                wrapStringExclusionsList.reset(originalQuoteStringExclusions.map { it.copy() })
                             }
-                            originalQuoteStringExclusions.apply {
-                                clear()
-                                addAll(wrapStringExclusionsListPanel.data)
+                            .onReset {
+                                originalQuoteStringExclusions.clear()
+                                originalQuoteStringExclusions.addAll(mutable.quoteStringExclusions)
+
+                                wrapStringExclusionsList.reset(originalQuoteStringExclusions.map { it.copy() })
                             }
-                        }
-                        .onReset {
-                            originalQuoteStringExclusions.apply {
-                                clear()
-                                mutable.quoteStringExclusions.forEach { add(it.copy()) }
-                            }
-                            wrapStringExclusionsListPanel.data = originalQuoteStringExclusions
-                                .map { it.copy() }
-                        }
-                        .align(AlignX.FILL)
+                            .align(AlignX.FILL)
+                    }
                 }
             }
+
+            return _ui
         }
-
-
-        override fun createPanel() = _ui
 
         override fun apply() {
             if (_ui.validateAll().none { it.component?.isVisible ?: false }) {
