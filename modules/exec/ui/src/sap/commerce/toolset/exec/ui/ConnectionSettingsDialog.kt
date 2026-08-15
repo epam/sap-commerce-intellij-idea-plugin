@@ -59,6 +59,7 @@ abstract class ConnectionSettingsDialog<M : ExecConnectionSettingsState.Mutable>
 ) : DialogWrapper(project, parentComponent, true, IdeModalityType.IDE) {
 
     protected val editableCredentials = AtomicBooleanProperty(false)
+    protected val editableProxyCredentials = AtomicBooleanProperty(false)
     protected lateinit var connectionNameTextField: JBTextField
     protected lateinit var hostTextField: JBTextField
     protected lateinit var portTextField: JBTextField
@@ -120,8 +121,8 @@ abstract class ConnectionSettingsDialog<M : ExecConnectionSettingsState.Mutable>
 
     protected abstract suspend fun testConnection(): String?
     protected abstract fun panel(): DialogPanel
-    protected abstract fun retrieveCredentials(mutable: M): Credentials
     protected abstract fun apply(original: M, mutable: M)
+    protected abstract fun retrieveCredentials(mutable: M): Credentials
     protected open fun retrieveProxyCredentials(mutable: M): Credentials? = null
 
     init {
@@ -145,17 +146,19 @@ abstract class ConnectionSettingsDialog<M : ExecConnectionSettingsState.Mutable>
     }
 
     private fun loadCredentials() {
-        if (mutable.credentials.loaded && mutable.proxyCredentials.loaded) {
-            editableCredentials.set(true)
-            return
-        }
-
-        ProgressManager.getInstance().run(object : Task.Backgroundable(project, "Retrieving credentials", false) {
+        if (mutable.credentials.loaded) editableCredentials.set(true)
+        else ProgressManager.getInstance().run(object : Task.Backgroundable(project, "Retrieving credentials", false) {
             override fun run(indicator: ProgressIndicator) {
                 mutable.credentials.load(retrieveCredentials(mutable))
-                mutable.proxyCredentials.load(retrieveProxyCredentials(mutable))
-
                 editableCredentials.set(true)
+            }
+        })
+
+        if (mutable.proxyCredentials.loaded) editableProxyCredentials.set(true)
+        else ProgressManager.getInstance().run(object : Task.Backgroundable(project, "Retrieving proxy credentials", false) {
+            override fun run(indicator: ProgressIndicator) {
+                mutable.proxyCredentials.load(retrieveProxyCredentials(mutable))
+                editableProxyCredentials.set(true)
             }
         })
     }

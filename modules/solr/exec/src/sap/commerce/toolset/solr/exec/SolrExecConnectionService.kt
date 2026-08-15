@@ -95,7 +95,7 @@ class SolrExecConnectionService(project: Project) : ExecConnectionService<SolrCo
         val projectSettings = SolrExecProjectSettings.getInstance(project)
         val developerSettings = SolrExecDeveloperSettings.getInstance(project)
 
-        // remove persisted credentials only for the connections which are gone
+        // remove persisted credentials only f or the connections which are gone
         val statesToSave = snapshots.map { it.state.uuid }
 
         (projectSettings.connections + developerSettings.connections)

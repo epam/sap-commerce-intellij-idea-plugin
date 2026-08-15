@@ -71,14 +71,10 @@ abstract class AddEditDeleteList<T : MutableState>(
     abstract fun editDialog(item: T): DialogWrapper
 
     override fun findItemToAdd(): T? = with(newItem()) {
-        createDialog(this).ifOk {
-            this.also { it.mutation = Mutation.SAVE }
-        }
+        createDialog(this).ifOk { this }
     }
 
-    override fun editSelectedItem(item: T): T? = editDialog(item).ifOk {
-        item.also { it.mutation = Mutation.SAVE }
-    }
+    override fun editSelectedItem(item: T): T? = editDialog(item).ifOk { item }
 
     override fun getListCellRenderer(): ListCellRenderer<*> {
         if (myListCellRenderer == null) {

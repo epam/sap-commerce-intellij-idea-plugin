@@ -21,17 +21,17 @@ package sap.commerce.toolset.settings.state
 interface MutableState {
     var mutation: Mutation
 
-    fun <T> MutableState.apply(
-        another: MutableState,
-        get: MutableState.() -> T,
-        set: MutableState.(T) -> Unit
+    fun <S : MutableState, T> S.apply(
+        another: S,
+        getter: (S) -> T,
+        setter: S.(T) -> Unit
     ) {
-        val originalValue = this.get()
-        val newValue = another.get()
+        val originalValue = getter(this)
+        val newValue = getter(another)
 
         if (originalValue != newValue) {
             this.mutation = Mutation.SAVE
-            this.set(newValue)
+            this.setter(newValue)
         }
     }
 }

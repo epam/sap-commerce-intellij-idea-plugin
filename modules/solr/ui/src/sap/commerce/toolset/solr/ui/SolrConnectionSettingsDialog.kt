@@ -72,17 +72,17 @@ class SolrConnectionSettingsDialog(
     }
 
     override fun apply(original: SolrConnectionSettingsState.Mutable, mutable: SolrConnectionSettingsState.Mutable) = with(original) {
-        apply(mutable, { scope }, { scope = it })
-        apply(mutable, { timeout }, { timeout = it })
-        apply(mutable, { socketTimeout }, { socketTimeout = it })
-        apply(mutable, { name.get() }, { name.set(it) })
-        apply(mutable, { host.get() }, { host.set(it) })
-        apply(mutable, { port.get() }, { port.set(it) })
-        apply(mutable, { webroot.get() }, { webroot.set(it) })
-        apply(mutable, { ssl.get() }, { ssl.set(it) })
+        apply(mutable, { it.scope }, { scope = it })
+        apply(mutable, { it.timeout }, { timeout = it })
+        apply(mutable, { it.socketTimeout }, { socketTimeout = it })
+        apply(mutable, { it.name.get() }, { name.set(it) })
+        apply(mutable, { it.host.get() }, { host.set(it) })
+        apply(mutable, { it.port.get() }, { port.set(it) })
+        apply(mutable, { it.webroot.get() }, { webroot.set(it) })
+        apply(mutable, { it.ssl.get() }, { ssl.set(it) })
 
-        credentials.apply(mutable.credentials)
-        proxyCredentials.apply(mutable.proxyCredentials)
+        apply(mutable, { it.credentials } , { credentials.apply(it) })
+        apply(mutable, { it.proxyCredentials } , { proxyCredentials.apply(it) })
     }
 
     override fun panel() = panel {

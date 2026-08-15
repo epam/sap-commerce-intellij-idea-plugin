@@ -88,7 +88,7 @@ class CCv2ReplicaSelectionDialog(
     override fun getStyle(): DialogStyle = DialogStyle.COMPACT
 
     override fun createNorthPanel() = banner(
-        text = "Each selected replica will result into a standalone request to hAC associated with ROUTE cookie value of the replica id.",
+        text = "Each selected replica will result into a standalone request to HAC associated with ROUTE cookie value of the replica id.",
     )
 
     override fun createCenterPanel(): JComponent {
