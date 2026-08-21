@@ -100,4 +100,28 @@ class LocalExtensionsProcessorTest : BasePlatformTestCase() {
 
         kotlin.test.assertEquals(declaredDirectory, extension?.moduleRootPath)
     }
+
+    fun testRetainsScanPathPriorityForDuplicateExtensions() {
+        val preferredDirectory = tempDirectory.resolve("preferred/sampleextension")
+        val secondaryDirectory = tempDirectory.resolve("secondary/sampleextension")
+        val context = LocalExtensionsContext(
+            scanTypes = linkedMapOf(
+                "preferred" to ScanType("preferred", false, 1, tempDirectory.resolve("preferred")),
+                "secondary" to ScanType("secondary", false, 1, tempDirectory.resolve("secondary")),
+            ),
+            extensions = mapOf(
+                "sampleextension" to LocalExtensionsContext.Extension("sampleextension", secondaryDirectory),
+            ),
+        )
+
+        val extension = LocalExtensionsProcessor().getSuitableExtension(
+            foundExtensions = listOf(
+                FoundExtension("sampleextension", secondaryDirectory),
+                FoundExtension("sampleextension", preferredDirectory),
+            ),
+            context = context,
+        )
+
+        kotlin.test.assertEquals(preferredDirectory, extension?.moduleRootPath)
+    }
 }
