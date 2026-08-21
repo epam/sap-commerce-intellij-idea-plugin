@@ -78,9 +78,12 @@ class LocalExtensionsProcessor {
     fun getSuitableExtension(
         foundExtensions: Collection<FoundExtension>,
         context: LocalExtensionsContext,
-    ): FoundExtension? = foundExtensions
-        .firstOrNull { extension ->
-            context.extensions[extension.name]?.path?.normalize() == extension.moduleRootPath.normalize()
+    ): FoundExtension? = context.extensions
+        .takeIf { context.scanTypes.isEmpty() }
+        ?.let { extensions ->
+            foundExtensions.firstOrNull { extension ->
+                extensions[extension.name]?.path?.normalize() == extension.moduleRootPath.normalize()
+            }
         }
         ?: context.scanTypes.values
             .firstNotNullOfOrNull { scanType ->
