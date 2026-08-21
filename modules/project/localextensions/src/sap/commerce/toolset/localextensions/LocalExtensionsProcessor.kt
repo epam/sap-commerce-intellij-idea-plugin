@@ -21,7 +21,6 @@ package sap.commerce.toolset.localextensions
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
-import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.PropertiesUtil
 import com.intellij.util.application
 import sap.commerce.toolset.HybrisConstants
@@ -51,10 +50,6 @@ class LocalExtensionsProcessor {
             ?: return@readAction null
 
         val scanTypes = getScanTypes(hybrisConfig, expandedProperties)
-            ?: run {
-                thisLogger().warn("No scan types defined in the localextensions.xml.")
-                return@readAction null
-            }
 
         val extensions = buildMap {
             // declared via `path autoload="true"`
@@ -83,20 +78,24 @@ class LocalExtensionsProcessor {
     fun getSuitableExtension(
         foundExtensions: Collection<FoundExtension>,
         context: LocalExtensionsContext,
-    ): FoundExtension? = context.scanTypes.values
-        .firstNotNullOfOrNull { scanType ->
-            foundExtensions.firstOrNull { extension ->
-                val moduleDir = extension.moduleRootPath.normalize().pathString
-                val scanTypeNormalizedPath = scanType.normalizedPath.pathString
-                moduleDir.startsWith(scanTypeNormalizedPath)
-                    && Paths.get(moduleDir.substring(scanTypeNormalizedPath.length)).nameCount <= scanType.depth
-            }
+    ): FoundExtension? = foundExtensions
+        .firstOrNull { extension ->
+            context.extensions[extension.name]?.path?.normalize() == extension.moduleRootPath.normalize()
         }
+        ?: context.scanTypes.values
+            .firstNotNullOfOrNull { scanType ->
+                foundExtensions.firstOrNull { extension ->
+                    val moduleDir = extension.moduleRootPath.normalize().pathString
+                    val scanTypeNormalizedPath = scanType.normalizedPath.pathString
+                    moduleDir.startsWith(scanTypeNormalizedPath)
+                        && Paths.get(moduleDir.substring(scanTypeNormalizedPath.length)).nameCount <= scanType.depth
+                }
+            }
 
     private fun getScanTypes(
         hybrisConfig: Hybrisconfig,
         expandedProperties: Map<String, String>
-    ): Map<String, ScanType>? {
+    ): Map<String, ScanType> {
         val scanTypes = mutableMapOf<String, ScanType>()
 
         hybrisConfig.getExtensions().getPath().forEach { scanType ->
@@ -116,8 +115,6 @@ class LocalExtensionsProcessor {
                 }
             }
         }
-
-        if (scanTypes.isEmpty()) return null
 
         scanTypes.entries.forEach { (dir, scanType) ->
             scanType.normalizedPath = dir.toNormalizedPath(expandedProperties)
