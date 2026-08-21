@@ -16,6 +16,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import org.jetbrains.intellij.platform.gradle.TestFrameworkType
+
 fun properties(key: String) = providers.gradleProperty(key)
 
 plugins {
@@ -43,11 +45,14 @@ dependencies {
     implementation(libs.bundles.jaxb)
     implementation(project(":shared-core"))
     implementation(project(":project-extensioninfo"))
+    testImplementation(kotlin("test-junit"))
 
     intellijPlatform {
         intellijIdea(properties("intellij.version")) {
             useInstaller = true
         }
+
+        testFramework(TestFrameworkType.Platform)
 
         bundledModules(
             "intellij.spellchecker",
