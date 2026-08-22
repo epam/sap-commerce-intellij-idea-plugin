@@ -1,3 +1,11 @@
+## [2026.2.3]
+
+<cite>Release contributors</code>
+- 1 PR(s) by [Rainer Baun](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.2.3+author%3Arbaun-berner+is%3Apr)
+
+### `Project Import` enhancements
+- Fixed broken project import for localextension files without scan path [#1995](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1995)
+
 ## [2026.2.2]
 
 <cite>Release contributors</code>
