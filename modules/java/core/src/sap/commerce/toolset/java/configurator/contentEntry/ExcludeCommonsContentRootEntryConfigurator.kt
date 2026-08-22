@@ -47,7 +47,7 @@ class ExcludeCommonsContentRootEntryConfigurator : ModuleContentRootEntryConfigu
         val excludePaths = buildList {
             add(moduleRootPath.resolve(HybrisConstants.EXTERNAL_TOOL_BUILDERS_DIRECTORY))
             add(moduleRootPath.resolve(HybrisConstants.SETTINGS_DIRECTORY))
-            add(moduleRootPath.resolve(HybrisConstants.SPOCK_META_INF_SERVICES_DIRECTORY))
+            add(moduleRootPath.resolve(ProjectConstants.Directory.RESOURCES).resolve(ProjectConstants.Directory.META_INF_SERVICES))
             add(moduleRootPath.resolve(ProjectConstants.Directory.NODE_MODULES))
             add(moduleRootPath.resolve(ProjectConstants.Directory.TEST_CLASSES))
             add(moduleRootPath.resolve(ProjectConstants.Directory.ECLIPSE_BIN))

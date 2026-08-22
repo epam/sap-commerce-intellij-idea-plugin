@@ -130,6 +130,7 @@ class CheckRequiredPluginsStep(context: WizardContext) : ProjectImportWizardStep
             .asSequence()
             .filterIsInstance<PluginDetailsService.ModuleDependencyInfo.OnPlugin>()
             .distinctBy { it.pluginId }
+            .filterNot { pluginDetailsService.isBuiltIn(it.pluginId) }
             .onEach { pluginDependency ->
                 val pluginId = pluginDependency.pluginId
                 if (!PluginManager.isPluginInstalled(pluginId)) {

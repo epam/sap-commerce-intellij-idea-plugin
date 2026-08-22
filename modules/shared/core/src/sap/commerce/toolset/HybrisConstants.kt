@@ -42,7 +42,6 @@ object HybrisConstants {
     const val JAR_MODELS = "models.jar"
     const val SETTINGS_DIRECTORY = ".settings"
     const val EXTERNAL_TOOL_BUILDERS_DIRECTORY = ".externalToolBuilders"
-    const val SPOCK_META_INF_SERVICES_DIRECTORY = "resources/META-INF/services"
 
     const val PLATFORM_HOME_PLACEHOLDER = "\${platformhome}"
 
