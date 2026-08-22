@@ -76,6 +76,7 @@ object ProjectConstants {
         const val ADDON_TEST_SRC = "addontestsrc"
 
         const val RESOURCES = "resources"
+        const val META_INF_SERVICES = "META-INF/services"
         const val ECLIPSE_BIN = "eclipsebin"
         const val NPM = "npm"
         const val NODE_MODULES = "node_modules"

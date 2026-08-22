@@ -27,7 +27,11 @@ import kotlin.io.path.Path
 
 fun ModuleDescriptor.excludedResources(virtualFileUrlManager: VirtualFileUrlManager) = this.moduleRootPath
     .resolve(ProjectConstants.Directory.RESOURCES)
-    .excludedRoots(virtualFileUrlManager, Path(ProjectConstants.Directory.NPM))
+    .excludedRoots(
+        virtualFileUrlManager,
+        Path(ProjectConstants.Directory.NPM),
+        Path(ProjectConstants.Directory.META_INF_SERVICES),
+    )
 
 private fun Path.excludedRoots(virtualFileUrlManager: VirtualFileUrlManager, vararg paths: Path) = paths
     .map { this.resolve(it) }
