@@ -139,7 +139,7 @@ class CheckRequiredPluginsStep(context: WizardContext) : ProjectImportWizardStep
                 }
 
                 val notEnabled = Plugin.of(pluginId.idString)?.isDisabled()
-                    ?: (!pluginDetailsService.isLoaded(pluginId) || pluginDetailsService.isBuiltIn(pluginId))
+                    ?: (!pluginDetailsService.isLoaded(pluginId) || pluginDetailsService.isDisabled(pluginId))
 
                 if (notEnabled) notEnabledModel.add(pluginId)
             }
