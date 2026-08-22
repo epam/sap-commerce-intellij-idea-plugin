@@ -1,19 +1,13 @@
-## [2026.2.3]
-
-<cite>Release contributors</code>
-- 1 PR(s) by [Rainer Baun](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.2.3+author%3Arbaun-berner+is%3Apr)
-
-### `Project Import` enhancements
-- Fixed broken project import for localextension files without scan path [#1995](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1995)
-
 ## [2026.2.2]
 
 <cite>Release contributors</code>
 - 1 PR(s) by [Flaviu Lupoian](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.2.2+author%3Aflup-repo+is%3Apr)
 - 1 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.2.2+author%3Amlytvyn+is%3Apr)
+- 1 PR(s) by [Rainer Baun](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.2.3+author%3Arbaun-berner+is%3Apr)
 
 ### Fixes
 - Keep credentials of the `HAC` and `Solr` connections which were not opened before saving the connection settings [#1992](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1992)
+- Fixed broken project import for localextension files without scan path [#1995](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1995)
 
 ### Other enhancements
 - Unified crud table API [#1993](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1993)
