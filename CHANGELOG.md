@@ -3,10 +3,12 @@
 <cite>Release contributors</code>
 - 1 PR(s) by [Flaviu Lupoian](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.2.3+author%3Aflup-repo+is%3Apr)
 - 1 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.2.3+author%3Amlytvyn+is%3Apr)
+- 1 PR(s) by [Rainer Baun](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.2.3+author%3Arbaun-berner+is%3Apr)
 
 ### `Project Import` enhancements
 - Skip state validation of the built-in plugins during the import [#1996](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1996)
 - Exclude Spock specific `resources/META-INF/services` directory from the module library roots [#1997](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1997)
+- Added support of the localextensions.xml definition without any scan paths defined [#1995](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1995)
 
 ## [2026.2.2]
 
