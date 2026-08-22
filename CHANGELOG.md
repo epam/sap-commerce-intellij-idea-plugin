@@ -4,7 +4,7 @@
 - 1 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.2.3+author%3Amlytvyn+is%3Apr)
 
 ### Fixes
-- Exclude Spock specific `resources/META-INF/services` directory from the module library roots
+- Exclude Spock specific `resources/META-INF/services` directory from the module library roots [#1997](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1997)
 
 ### `Project Import` enhancements
 - Skip state validation of the built-in plugins during the import [#1996](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1996)
