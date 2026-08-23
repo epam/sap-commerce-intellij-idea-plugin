@@ -23,7 +23,7 @@
 - `2026.2.1` backport | Flaviu Lupoian | Keep credentials of the `hAC` and `Solr` connections which were not opened before saving the connection settings [#1992](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1992)
 
 ### Other
-- `2026.2.1` backport to `2026.0.16` API adjustment [#1992](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1992)
+- `2026.2.1` backport to `2026.0.16` API adjustment [#1999](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1999)
 
 ## [2026.0.15]
 
