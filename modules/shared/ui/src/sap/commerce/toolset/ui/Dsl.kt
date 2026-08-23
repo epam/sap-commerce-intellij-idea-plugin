@@ -138,7 +138,7 @@ fun Row.copyLink(
         .comment(label)
         .applyToComponent {
             HelpTooltip()
-                .setPlainTextTitle { "Click to copy to clipboard" }
+                .setTitle { "Click to copy to clipboard" }
                 .installOn(this)
         }
 }
