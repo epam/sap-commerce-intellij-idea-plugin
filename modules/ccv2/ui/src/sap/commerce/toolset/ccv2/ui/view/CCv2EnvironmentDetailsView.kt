@@ -761,7 +761,7 @@ class CCv2EnvironmentDetailsView(
                                         .comment("Account key")
                                         .applyToComponent {
                                             HelpTooltip()
-                                                .setPlainTextTitle { "Click to copy to clipboard" }
+                                                .setTitle { "Click to copy to clipboard" }
                                                 .installOn(this)
                                         }
                                         .component

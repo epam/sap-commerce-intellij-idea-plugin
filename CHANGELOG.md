@@ -1,23 +1,29 @@
 ## [2026.0.16]
 
+<cite>Release contributors</code>
+- 1 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.16+author%3Amlytvyn+is%3Apr)
+
 ### `Project Import` enhancements
-- `2026.2.3` back-port | Rainer Baun | Skip state validation of the built-in plugins during the import [#1996](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1996)
-- `2026.2.3` back-port | Flaviu Lupoian | Exclude Spock specific `resources/META-INF/services` directory from the module library roots [#1997](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1997)
+- `2026.2.3` backport | Rainer Baun | Skip state validation of the built-in plugins during the import [#1996](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1996)
+- `2026.2.3` backport | Flaviu Lupoian | Exclude Spock specific `resources/META-INF/services` directory from the module library roots [#1997](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1997)
 
 ### `Spring` enhancements
-- `2026.2.1` back-port | Mykhailo Lytvyn | Improved "Simple Spring" and added parent beans resolution in Non-Ultimate edition [#1985](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1985)
+- `2026.2.1` backport | Mykhailo Lytvyn | Improved "Simple Spring" and added parent beans resolution in Non-Ultimate edition [#1985](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1985)
 
 ### `CCv2` enhancements
-- `2026.2.1` back-port | Mykhailo Lytvyn | Show informative message when authentication failed [#1984](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1984)
+- `2026.2.1` backport | Mykhailo Lytvyn | Show informative message when authentication failed [#1984](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1984)
 
 ### `AI` capabilities
-- `2026.2.1` back-port | Mykhailo Lytvyn | Expose the complete TypeSystem as MCP tool [#1987](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1987)
-- `2026.2.1` back-port | Mykhailo Lytvyn | Expose the complete Bean System as MCP tool [#1988](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1988)
-- `2026.2.1` back-port | Mykhailo Lytvyn | Expose CCv2 management operations as MCP tools [#1989](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1989)
-- `2026.2.1` back-port | Mykhailo Lytvyn | Expose business processes via MCP tool [#1990](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1990)
+- `2026.2.1` backport | Mykhailo Lytvyn | Expose the complete TypeSystem as MCP tool [#1987](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1987)
+- `2026.2.1` backport | Mykhailo Lytvyn | Expose the complete Bean System as MCP tool [#1988](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1988)
+- `2026.2.1` backport | Mykhailo Lytvyn | Expose CCv2 management operations as MCP tools [#1989](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1989)
+- `2026.2.1` backport | Mykhailo Lytvyn | Expose business processes via MCP tool [#1990](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1990)
 
 ### Fixes
-- `2026.2.1` back-port | Flaviu Lupoian | Keep credentials of the `hAC` and `Solr` connections which were not opened before saving the connection settings [#1992](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1992)
+- `2026.2.1` backport | Flaviu Lupoian | Keep credentials of the `hAC` and `Solr` connections which were not opened before saving the connection settings [#1992](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1992)
+
+### Other
+- `2026.2.1` backport to `2026.0.16` API adjustment [#1999](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1999)
 
 ## [2026.0.15]
 

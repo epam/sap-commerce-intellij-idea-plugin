@@ -48,7 +48,7 @@ fun Row.sUser(project: Project, sUserId: String, icon: Icon, label: String = "Cr
         .comment(label)
         .applyToComponent {
             HelpTooltip()
-                .setPlainTextTitle { "Define an alias for the S-User" }
+                .setTitle { "Define an alias for the S-User" }
                 .installOn(this)
         }
 }
