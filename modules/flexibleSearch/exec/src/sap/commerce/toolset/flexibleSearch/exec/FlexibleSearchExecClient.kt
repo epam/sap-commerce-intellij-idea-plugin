@@ -62,6 +62,9 @@ class FlexibleSearchExecClient(
      *
      * The column names are not reported by the Service Layer result, therefore they are taken from a probing
      * execution of the very same query on the HAC, limited to a single row.
+     *
+     * The script executes the query in a local view of the session, hence the locale and the search restrictions
+     * of the requested user are applied exactly as they are by the HAC console.
      */
     private suspend fun executeOnServiceLayer(context: FlexibleSearchExecContext): FlexibleSearchExecResult {
         val probe = executeOnHac(context.copy(maxCount = 1))
@@ -73,6 +76,8 @@ class FlexibleSearchExecClient(
             .replace(FlexibleSearchExecConstants.Scripts.PLACEHOLDER_QUERY, context.content)
             .replace(FlexibleSearchExecConstants.Scripts.PLACEHOLDER_COLUMN_COUNT, headers.size.toString())
             .replace(FlexibleSearchExecConstants.Scripts.PLACEHOLDER_MAX_COUNT, context.maxCount.toString())
+            .replace(FlexibleSearchExecConstants.Scripts.PLACEHOLDER_LOCALE, context.locale.lowercase())
+            .replace(FlexibleSearchExecConstants.Scripts.PLACEHOLDER_USER, context.user ?: "")
 
         val groovyResult = GroovyExecClient.getInstance(project).execute(
             GroovyExecContext(

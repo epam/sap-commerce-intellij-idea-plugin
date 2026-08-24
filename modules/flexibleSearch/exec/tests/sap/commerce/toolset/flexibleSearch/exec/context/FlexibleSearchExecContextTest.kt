@@ -36,11 +36,12 @@ class FlexibleSearchExecContextTest {
         content: String = "SELECT {pk} FROM {Product}",
         maxCount: Int = FlexibleSearchExecConstants.Limits.HAC_MAX_COUNT,
         queryMode: QueryMode = QueryMode.FlexibleSearch,
+        dataSource: String = FlexibleSearchExecConstants.Defaults.DATA_SOURCE,
     ) = FlexibleSearchExecContext(
         connection = HacConnectionSettingsState(),
         content = content,
         queryMode = queryMode,
-        settings = FlexibleSearchExecContext.defaultSettings().copy(maxCount = maxCount),
+        settings = FlexibleSearchExecContext.defaultSettings().copy(maxCount = maxCount, dataSource = dataSource),
     )
 
     @Test
@@ -56,6 +57,16 @@ class FlexibleSearchExecContextTest {
     @Test
     fun `raw SQL is never executed on the service layer`() {
         assertFalse(context(maxCount = 1_000, queryMode = QueryMode.SQL).executableOnServiceLayer)
+    }
+
+    @Test
+    fun `query against another data source is never executed on the service layer`() {
+        assertFalse(context(maxCount = 1_000, dataSource = "junit").executableOnServiceLayer)
+    }
+
+    @Test
+    fun `query against the default data source is executed on the service layer`() {
+        assertTrue(context(maxCount = 1_000, dataSource = FlexibleSearchExecConstants.Defaults.DATA_SOURCE).executableOnServiceLayer)
     }
 
     @Test

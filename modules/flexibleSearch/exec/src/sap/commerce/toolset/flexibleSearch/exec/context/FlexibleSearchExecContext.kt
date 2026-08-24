@@ -62,12 +62,16 @@ data class FlexibleSearchExecContext(
      * Whether the query has to be executed on the Service Layer via Groovy instead of the HAC FlexibleSearch
      * console, which does not return more than [FlexibleSearchExecConstants.Limits.HAC_MAX_COUNT] rows.
      *
+     * The locale and the user of the execution are honoured by the script, the data source is not, therefore a
+     * query against another data source stays on the HAC to never silently report the rows of the wrong one.
+     *
      * Raw SQL is not supported by the Service Layer execution, as is a query carrying a triple quote, which
      * cannot be injected into the Groovy script.
      */
     val executableOnServiceLayer: Boolean
         get() = queryMode == QueryMode.FlexibleSearch
             && maxCount > FlexibleSearchExecConstants.Limits.HAC_MAX_COUNT
+            && dataSource == FlexibleSearchExecConstants.Defaults.DATA_SOURCE
             && !content.contains(FlexibleSearchExecConstants.Scripts.TRIPLE_QUOTE)
 
     fun params(): Map<String, String> = buildMap {

@@ -44,6 +44,8 @@ object FlexibleSearchExecConstants {
         const val PLACEHOLDER_QUERY = "placeholder_query"
         const val PLACEHOLDER_COLUMN_COUNT = "placeholder_columnCount"
         const val PLACEHOLDER_MAX_COUNT = "placeholder_maxCount"
+        const val PLACEHOLDER_LOCALE = "placeholder_locale"
+        const val PLACEHOLDER_USER = "placeholder_user"
 
         /**
          * The query is injected into a triple quoted Groovy string, therefore it cannot carry one itself.

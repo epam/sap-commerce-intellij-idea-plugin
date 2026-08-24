@@ -18,7 +18,7 @@
 
 
 import de.hybris.platform.servicelayer.search.FlexibleSearchQuery
-import de.hybris.platform.servicelayer.search.FlexibleSearchService
+import de.hybris.platform.servicelayer.session.SessionExecutionBody
 import groovy.json.JsonOutput
 
 /*
@@ -29,6 +29,11 @@ The following contract is expected:
  - `placeholder_query` will be used to inject the FlexibleSearch query, it must not contain a triple quote.
  - `placeholder_columnCount` will be used to inject the number of the columns of the query.
  - `placeholder_maxCount` will be used to inject the maximum number of the rows to return.
+ - `placeholder_locale` will be used to inject the language tag of the locale of the query.
+ - `placeholder_user` will be used to inject the UID of the user to execute the query as, empty for the
+   current session user. The query is executed in a local view, therefore the search restrictions of that
+   user apply, exactly as they do for the execution via the HAC console.
+ - services are resolved via the `spring` binding, as not every one of them is bound by the HAC console.
  - script must print the results as a return value of the script.
  - result must be a json array of the rows, each row being a json array of the column values as strings,
    also for a single column query, which is returned by the Service Layer as a flat list of the values.
@@ -39,16 +44,38 @@ The following contract is expected:
 [["8796093054993","MWST"],["8796093087761","ZDVP"]]
  */
 
-def fss = flexibleSearchService as FlexibleSearchService
+def fss = spring.getBean('flexibleSearchService')
+def sessionService = spring.getBean('sessionService')
+def i18nService = spring.getBean('i18nService')
+def userService = spring.getBean('userService')
 
-def query = new FlexibleSearchQuery('''placeholder_query''')
-query.setResultClassList([String.class] * placeholder_columnCount)
-query.setCount(placeholder_maxCount)
+def userUid = '''placeholder_user'''
+def locale = Locale.forLanguageTag('''placeholder_locale''')
 
-def rows = fss.search(query).result
-        .collect { row ->
-            // a single column query is returned as a flat list of the values, not as a list of the rows
-            (row instanceof List ? row : [row]).collect { value -> value?.toString() }
-        }
+def search = {
+    i18nService.setCurrentLocale(locale)
+
+    def query = new FlexibleSearchQuery('''placeholder_query''')
+    query.setResultClassList([String.class] * placeholder_columnCount)
+    query.setCount(placeholder_maxCount)
+    query.setLocale(locale)
+
+    return fss.search(query).result
+            .collect { row ->
+                // a single column query is returned as a flat list of the values, not as a list of the rows
+                (row instanceof List ? row : [row]).collect { value -> value?.toString() }
+            }
+}
+
+def body = new SessionExecutionBody() {
+    Object execute() {
+        return search()
+    }
+}
+
+// a local view keeps the locale of the query and the restrictions of the user out of the current session
+def rows = userUid.isEmpty()
+        ? sessionService.executeInLocalView(body)
+        : sessionService.executeInLocalView(body, userService.getUserForUID(userUid))
 
 return JsonOutput.toJson(rows)
