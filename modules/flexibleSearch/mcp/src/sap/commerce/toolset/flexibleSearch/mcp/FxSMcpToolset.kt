@@ -37,6 +37,9 @@ class FxSMcpToolset : McpToolset {
         """Executes a FlexibleSearch query on a SAP Commerce (Hybris) server via the HAC.
         |FlexibleSearch is the SAP Commerce query language for accessing the type system.
         |Returns query results as a formatted table.
+        |The result reports 'rowCount' and 'maxCountReached'. Whenever 'maxCountReached' is 'true' the result may be
+        |capped by 'maxCount' and further rows may exist, re-run the query with a higher 'maxCount' or narrow it down
+        |before relying on the completeness of the data.
         |Requires a configured and authenticated HAC connection."""
     )
     suspend fun executeFlexibleSearch(
@@ -68,6 +71,9 @@ class FxSMcpToolset : McpToolset {
         """Executes a raw SQL query on a SAP Commerce (Hybris) server via the HAC.
         |This executes SQL directly against the underlying database (not FlexibleSearch).
         |Returns query results as a formatted table.
+        |The result reports 'rowCount' and 'maxCountReached'. Whenever 'maxCountReached' is 'true' the result may be
+        |capped by 'maxCount' and further rows may exist, re-run the query with a higher 'maxCount' or narrow it down
+        |before relying on the completeness of the data.
         |Requires a configured and authenticated HAC connection."""
     )
     suspend fun executeSql(
@@ -103,6 +109,9 @@ class FxSMcpToolset : McpToolset {
         |Enum attribute values are resolved from their runtime PKs to their codes via follow-up queries.
         |FK attribute values are resolved from their runtime PKs to their natural key strings via follow-up queries.
         |Returns the transformed text along with metadata (primary type, column count, row count).
+        |The result reports 'rowCount' and 'maxCountReached'. Whenever 'maxCountReached' is 'true' the result may be
+        |capped by 'maxCount' and further rows may exist, re-run the query with a higher 'maxCount' or narrow it down
+        |before relying on the completeness of the data.
         |Requires a configured and authenticated HAC connection."""
     )
     suspend fun executeAndTransform(

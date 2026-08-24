@@ -18,13 +18,20 @@
 
 package sap.commerce.toolset.flexibleSearch.mcp
 
-object FxSMcpConstants {
+import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecResult
 
-    object Descriptions {
-        const val MAX_COUNT = "Maximum number of result rows to return, enforced by the server. Default is 200"
-        const val LOCALE = "Optional locale for the query. Default is 'en'"
-        const val DATA_SOURCE = "Optional data source for the query. Default is 'master'"
-        const val USER = "Optional user to execute the query as. Default uses the current session user"
-        const val TIMEOUT = "Optional timeout. Default uses timeout of the connection"
-    }
-}
+/**
+ * Number of the data rows returned by the server, `null` when the response carried no result list.
+ */
+internal val FlexibleSearchExecResult.rowCount: Int?
+    get() = rows?.size
+
+/**
+ * Whether the result may have been capped by the `maxCount` limit of the request.
+ *
+ * The server does not report whether more rows were available, therefore an exactly-[maxCount] sized result
+ * is reported as capped even when it happens to be complete. A false positive is intentional: it tells the
+ * caller to re-run the query with a higher `maxCount`, whereas a silent cap is indistinguishable from a
+ * complete result set.
+ */
+internal fun FlexibleSearchExecResult.maxCountReached(maxCount: Int): Boolean? = rowCount?.let { it >= maxCount }

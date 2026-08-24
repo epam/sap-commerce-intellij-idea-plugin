@@ -28,5 +28,7 @@ data class FxSExecResultDto(
     override val error: String? = null,
     override val errorDetail: String? = null,
     override val output: String? = null,
+    val rowCount: Int? = null,
+    val maxCountReached: Boolean? = null,
     val description: String? = null,
 ) : HacExecResultDto

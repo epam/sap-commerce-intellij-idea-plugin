@@ -57,6 +57,8 @@ class FxSMcpService(private val project: Project) {
                 connectionName = connection.connectionName,
                 success = true,
                 output = result.output?.takeIf { it.isNotBlank() },
+                rowCount = result.rowCount,
+                maxCountReached = result.maxCountReached(request.maxCount),
             )
         }
     }
@@ -75,10 +77,10 @@ class FxSMcpService(private val project: Project) {
         psiFile.putUserData(FlexibleSearchExecConstants.Transform.CONNECTION, connection)
         psiFile.putUserData(FlexibleSearchExecConstants.Transform.EXEC_SETTINGS, execRequest.execSettings(connection))
 
-        if (request.includeData) {
-            val result = execute(execRequest, connection)
-            psiFile.putUserData(FlexibleSearchExecConstants.Transform.EXEC_RESULTS, result)
-        }
+        val execResult = if (request.includeData) {
+            execute(execRequest, connection)
+                .also { psiFile.putUserData(FlexibleSearchExecConstants.Transform.EXEC_RESULTS, it) }
+        } else null
 
         val transformationResult = transformer.transform(project, psiFile)
 
@@ -86,6 +88,8 @@ class FxSMcpService(private val project: Project) {
             connectionName = connection.connectionName,
             success = true,
             output = transformationResult.content,
+            rowCount = execResult?.rowCount,
+            maxCountReached = execResult?.maxCountReached(execRequest.maxCount),
             description = transformationResult.description,
         )
     }

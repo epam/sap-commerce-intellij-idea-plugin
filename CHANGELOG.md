@@ -1,3 +1,11 @@
+## [2026.2.4]
+
+<cite>Release contributors</code>
+- 1 PR(s) by [Flaviu Lupoian](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.2.4+author%3Aflup-repo+is%3Apr)
+
+### `AI` capabilities
+- Report row count and reached `maxCount` limit in the FlexibleSearch and SQL MCP tool results
+
 ## [2026.2.3]
 
 <cite>Release contributors</code>

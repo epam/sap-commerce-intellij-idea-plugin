@@ -46,6 +46,8 @@ dependencies {
     implementation(project(":flexibleSearch-exec"))
     implementation(libs.kotlinxJson)
 
+    testImplementation(kotlin("test"))
+
     intellijPlatform {
         intellijIdea(properties("intellij.version")) {
             useInstaller = true
