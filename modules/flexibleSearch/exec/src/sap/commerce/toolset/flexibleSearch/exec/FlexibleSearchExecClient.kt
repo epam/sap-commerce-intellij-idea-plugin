@@ -31,8 +31,13 @@ import org.apache.http.message.BasicNameValuePair
 import sap.commerce.toolset.exec.ExecClient
 import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecContext
 import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecResult
+import sap.commerce.toolset.flexibleSearch.exec.context.QueryMode
 import sap.commerce.toolset.flexibleSearch.exec.context.TableBuilder
+import sap.commerce.toolset.groovy.exec.GroovyExecClient
+import sap.commerce.toolset.groovy.exec.context.GroovyExecContext
 import sap.commerce.toolset.hac.exec.http.HacHttpClient
+import sap.commerce.toolset.readResource
+import sap.commerce.toolset.settings.state.TransactionMode
 import java.io.Serial
 
 @Service(Service.Level.PROJECT)
@@ -46,7 +51,60 @@ class FlexibleSearchExecClient(
         errorDetailMessage = exception.stackTraceToString()
     )
 
-    override suspend fun execute(context: FlexibleSearchExecContext): FlexibleSearchExecResult {
+    override suspend fun execute(context: FlexibleSearchExecContext): FlexibleSearchExecResult = when {
+        context.executableOnServiceLayer -> executeOnServiceLayer(context)
+        else -> executeOnHac(context)
+    }
+
+    /**
+     * Executes the query on the Service Layer via Groovy, as the HAC FlexibleSearch console does not return more
+     * than [FlexibleSearchExecConstants.Limits.HAC_MAX_COUNT] rows.
+     *
+     * The column names are not reported by the Service Layer result, therefore they are taken from a probing
+     * execution of the very same query on the HAC, limited to a single row.
+     */
+    private suspend fun executeOnServiceLayer(context: FlexibleSearchExecContext): FlexibleSearchExecResult {
+        val probe = executeOnHac(context.copy(maxCount = 1))
+        val headers = probe.headers
+            ?.takeIf { probe.statusCode == HttpStatus.SC_OK }
+            ?: return probe
+
+        val script = readResource(FlexibleSearchExecConstants.Scripts.EXECUTE)
+            .replace(FlexibleSearchExecConstants.Scripts.PLACEHOLDER_QUERY, context.content)
+            .replace(FlexibleSearchExecConstants.Scripts.PLACEHOLDER_COLUMN_COUNT, headers.size.toString())
+            .replace(FlexibleSearchExecConstants.Scripts.PLACEHOLDER_MAX_COUNT, context.maxCount.toString())
+
+        val groovyResult = GroovyExecClient.getInstance(project).execute(
+            GroovyExecContext(
+                connection = context.connection,
+                executionTitle = context.executionTitle,
+                content = script,
+                transactionMode = TransactionMode.ROLLBACK,
+                timeout = context.timeout,
+            )
+        )
+
+        if (groovyResult.hasError) return FlexibleSearchExecResult(
+            statusCode = HttpStatus.SC_BAD_REQUEST,
+            errorMessage = groovyResult.errorMessage,
+            errorDetailMessage = groovyResult.errorDetailMessage,
+        )
+
+        val rows = groovyResult.result
+            ?.let { parseRows(it) }
+            ?: return FlexibleSearchExecResult(
+                statusCode = HttpStatus.SC_BAD_REQUEST,
+                errorMessage = "Cannot parse rows returned by the Service Layer execution of the query",
+            )
+
+        return FlexibleSearchExecResult(
+            output = buildTableResult(headers, rows),
+            headers = headers,
+            rows = rows,
+        )
+    }
+
+    private suspend fun executeOnHac(context: FlexibleSearchExecContext): FlexibleSearchExecResult {
         val connection = context.connection
         val actionUrl = "${connection.generatedURL}/console/flexsearch/execute"
         val params = context.params()
@@ -94,6 +152,14 @@ class FlexibleSearchExecClient(
             )
         }
     }
+
+    /**
+     * Rows of the Service Layer execution as a json array of the arrays of the nullable column values.
+     */
+    private fun parseRows(json: String): List<List<String>>? = runCatching {
+        Gson().fromJson(json, Array<Array<String?>>::class.java)
+            .map { row -> row.map { value -> value ?: "" } }
+    }.getOrNull()
 
     private fun buildTableResult(headers: List<String>?, rows: List<List<String>>?): String {
         val tableBuilder = TableBuilder()

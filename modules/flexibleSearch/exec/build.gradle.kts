@@ -39,6 +39,7 @@ dependencies {
     implementation(project(":console-core"))
     implementation(project(":console-ui"))
     implementation(project(":flexibleSearch-core"))
+    implementation(project(":groovy-exec"))
     implementation(project(":hac-exec"))
 
     testImplementation(kotlin("test"))

@@ -27,7 +27,7 @@ import sap.commerce.toolset.settings.state.TransactionMode
 
 data class FlexibleSearchExecContext(
     val connection: HacConnectionSettingsState,
-    private val content: String = "",
+    val content: String = "",
     private val transactionMode: TransactionMode = TransactionMode.ROLLBACK,
     private val queryMode: QueryMode = QueryMode.FlexibleSearch,
     val maxCount: Int,
@@ -57,6 +57,18 @@ data class FlexibleSearchExecContext(
 
     override val executionTitle: String
         get() = "Executing ${queryMode.title} on the remote SAP Commerce instance…"
+
+    /**
+     * Whether the query has to be executed on the Service Layer via Groovy instead of the HAC FlexibleSearch
+     * console, which does not return more than [FlexibleSearchExecConstants.Limits.HAC_MAX_COUNT] rows.
+     *
+     * Raw SQL is not supported by the Service Layer execution, as is a query carrying a triple quote, which
+     * cannot be injected into the Groovy script.
+     */
+    val executableOnServiceLayer: Boolean
+        get() = queryMode == QueryMode.FlexibleSearch
+            && maxCount > FlexibleSearchExecConstants.Limits.HAC_MAX_COUNT
+            && !content.contains(FlexibleSearchExecConstants.Scripts.TRIPLE_QUOTE)
 
     fun params(): Map<String, String> = buildMap {
         put("scriptType", "flexibleSearch")

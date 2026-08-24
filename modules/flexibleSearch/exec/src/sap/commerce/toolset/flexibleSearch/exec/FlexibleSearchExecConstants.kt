@@ -31,6 +31,26 @@ object FlexibleSearchExecConstants {
         const val DATA_SOURCE = "master"
     }
 
+    object Limits {
+        /**
+         * Number of the rows the HAC FlexibleSearch console is expected to return, a query asking for more rows
+         * is executed on the Service Layer via Groovy instead.
+         */
+        const val HAC_MAX_COUNT = 200
+    }
+
+    object Scripts {
+        const val EXECUTE = "scripts/flexibleSearch-execute.groovy"
+        const val PLACEHOLDER_QUERY = "placeholder_query"
+        const val PLACEHOLDER_COLUMN_COUNT = "placeholder_columnCount"
+        const val PLACEHOLDER_MAX_COUNT = "placeholder_maxCount"
+
+        /**
+         * The query is injected into a triple quoted Groovy string, therefore it cannot carry one itself.
+         */
+        const val TRIPLE_QUOTE = "'''"
+    }
+
     object Transform {
         val CONNECTION = Key.create<HacConnectionSettingsState>("flexibleSearch.transform.connection")
         val EXEC_SETTINGS = Key.create<FlexibleSearchExecContext.Settings>("flexibleSearch.transform.execSettings")
