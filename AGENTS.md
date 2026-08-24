@@ -102,3 +102,5 @@ Whenever `AGENTS.md` is modified, update the agent's persistent memory (`MEMORY.
 - Avoid unnecessary generated-file commits.
 - Small, focused, reviewable, easy-to-revert changes.
 - New/changed logic: cover with atomic unit tests (single behavior per test) in the relevant module's own test source set — required before merge, not necessarily written first. TDD encouraged for `core`/pure logic; test-after acceptable for `exec` (remote IO) and `ui` (Swing glue).
+- Test function names use backticks and read as a human-friendly BDD description of the behaviour, not an identifier:
+  ``fun `row count is zero when the result list is empty`() { }`` — never `rowCount_emptyResultList_isZero`.

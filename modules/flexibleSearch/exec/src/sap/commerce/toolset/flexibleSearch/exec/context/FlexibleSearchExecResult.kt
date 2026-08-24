@@ -37,6 +37,12 @@ data class FlexibleSearchExecResult(
     val hasDataRows: Boolean
         get() = output?.trim()?.contains("\n") ?: false
 
+    /**
+     * Number of the data rows returned by the server, `null` when the response carried no result list.
+     */
+    val rowCount: Int?
+        get() = rows?.size
+
     companion object {
         fun from(result: DefaultExecResult) = FlexibleSearchExecResult(
             statusCode = result.statusCode,

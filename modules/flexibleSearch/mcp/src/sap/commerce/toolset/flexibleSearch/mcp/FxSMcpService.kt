@@ -58,7 +58,7 @@ class FxSMcpService(private val project: Project) {
                 success = true,
                 output = result.output?.takeIf { it.isNotBlank() },
                 rowCount = result.rowCount,
-                maxCountReached = result.maxCountReached(request.maxCount),
+                maxCountReached = maxCountReached(result, request.maxCount),
             )
         }
     }
@@ -89,7 +89,7 @@ class FxSMcpService(private val project: Project) {
             success = true,
             output = transformationResult.content,
             rowCount = execResult?.rowCount,
-            maxCountReached = execResult?.maxCountReached(execRequest.maxCount),
+            maxCountReached = execResult?.let { maxCountReached(it, execRequest.maxCount) },
             description = transformationResult.description,
         )
     }
@@ -109,6 +109,17 @@ class FxSMcpService(private val project: Project) {
 
         return FlexibleSearchExecClient.getInstance(project).execute(execContext)
     }
+
+    /**
+     * Whether the [result] may have been capped by the [maxCount] limit of the request.
+     *
+     * The server does not report whether more rows were available, therefore an exactly-[maxCount] sized result
+     * is reported as capped even when it happens to be complete. A false positive is intentional: it tells the
+     * caller to re-run the query with a higher `maxCount`, whereas a silent cap is indistinguishable from a
+     * complete result set.
+     */
+    private fun maxCountReached(result: FlexibleSearchExecResult, maxCount: Int): Boolean? = result.rowCount
+        ?.let { it >= maxCount }
 
     private fun FxSExecMcpRequest.execSettings(connection: HacConnectionSettingsState) = FlexibleSearchExecContext.Settings(
         maxCount = maxCount,
