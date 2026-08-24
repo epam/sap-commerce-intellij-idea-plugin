@@ -7,7 +7,7 @@
 - Report row count and reached `maxCount` limit in the FlexibleSearch and SQL MCP tool results [#2000](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2000)
 
 ### `FlexibleSearch` enhancements
-- Execute a query expecting more rows than the HAC console limit on the Service Layer via Groovy
+- Execute a query expecting more rows than the HAC console limit on the Service Layer via Groovy [#2001](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2001)
 
 ## [2026.2.3]
 
