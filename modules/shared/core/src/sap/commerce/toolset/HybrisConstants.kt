@@ -162,6 +162,7 @@ object HybrisConstants {
         const val JUNIE = ".junie"
         const val CURSOR = ".cursor"
         const val AGENTS = ".agents"
+        const val CODEMIE = ".codemie"
         const val ASSISTANT = ".aiassistant"
     }
 

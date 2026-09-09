@@ -91,6 +91,9 @@ class HybrisProjectViewProjectNode(project: Project, viewSettings: ViewSettings)
                             HybrisConstants.Ai.AGENTS -> aiAgentNode(psiManager, vf, HybrisIcons.AI.AGENTS)
                                 ?.let { aiDirectories.add(it) }
 
+                            HybrisConstants.Ai.CODEMIE -> aiAgentNode(psiManager, vf, HybrisIcons.AI.CODEMIE)
+                                ?.let { aiDirectories.add(it) }
+
                             HybrisConstants.Ai.ASSISTANT -> aiAgentNode(psiManager, vf, HybrisIcons.AI.ASSISTANT)
                                 ?.let { aiDirectories.add(it) }
                         }

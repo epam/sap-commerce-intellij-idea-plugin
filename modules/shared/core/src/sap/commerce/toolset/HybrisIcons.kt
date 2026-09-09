@@ -545,6 +545,7 @@ object HybrisIcons {
     object AI {
         val SKILLS = getIcon("/icons/ai/skills.svg")
         val AGENTS = getIcon("/icons/ai/agents.svg")
+        val CODEMIE = getIcon("/icons/ai/codemie.svg")
         val ASSISTANT = getIcon("/icons/ai/assistant.svg")
         val AGENT_CLAUDE = getIcon("/icons/ai/agent-claude.svg")
         val AGENT_GEMINI = getIcon("/icons/ai/agent-gemini.svg")
