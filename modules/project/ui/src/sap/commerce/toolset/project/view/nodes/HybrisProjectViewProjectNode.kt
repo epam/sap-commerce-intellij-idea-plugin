@@ -19,16 +19,14 @@
 package sap.commerce.toolset.project.view.nodes
 
 import com.intellij.ide.projectView.ViewSettings
-import com.intellij.ide.projectView.impl.nodes.ExternalLibrariesNode
-import com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode
-import com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode
-import com.intellij.ide.projectView.impl.nodes.PsiFileNode
+import com.intellij.ide.projectView.impl.nodes.*
 import com.intellij.ide.util.treeView.AbstractTreeNode
 import com.intellij.openapi.module.ModuleUtilCore
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ProjectFileIndex
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiManager
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisIcons
@@ -58,7 +56,7 @@ class HybrisProjectViewProjectNode(project: Project, viewSettings: ViewSettings)
                 val psiManager = PsiManager.getInstance(project)
                 val virtualFiles = baseDir.children
                 var projectFileIndex: ProjectFileIndex? = null
-                val aiDirectories = mutableListOf<PsiDirectoryNode>()
+                val aiNodes = mutableListOf<BasePsiNode<out PsiElement>>()
                 for (vf in virtualFiles) {
                     if (!vf.isDirectory) {
                         if (projectFileIndex == null) {
@@ -67,7 +65,21 @@ class HybrisProjectViewProjectNode(project: Project, viewSettings: ViewSettings)
                         if (projectFileIndex.getModuleForFile(vf, false) == null) {
                             val psiFile = psiManager.findFile(vf)
                             if (psiFile != null) {
-                                nodes.add(PsiFileNode(getProject(), psiFile, settings))
+                                when (vf.name) {
+                                    HybrisConstants.Ai.MD.AGENTS -> aiFileNode(psiManager, vf)
+                                        ?.let { aiNodes.add(it) }
+
+                                    HybrisConstants.Ai.MD.GEMINI -> aiFileNode(psiManager, vf)
+                                        ?.let { aiNodes.add(it) }
+
+                                    HybrisConstants.Ai.MD.CLAUDE -> aiFileNode(psiManager, vf)
+                                        ?.let { aiNodes.add(it) }
+
+                                    HybrisConstants.Ai.MD.CLAUDE_LOCAL -> aiFileNode(psiManager, vf)
+                                        ?.let { aiNodes.add(it) }
+
+                                    else -> nodes.add(PsiFileNode(getProject(), psiFile, settings))
+                                }
                             }
                         }
                     } else {
@@ -76,32 +88,32 @@ class HybrisProjectViewProjectNode(project: Project, viewSettings: ViewSettings)
                                 ?.let { PsiDirectoryNode(getProject(), it, settings) }
                                 ?.let { nodes.add(it) }
 
-                            HybrisConstants.Ai.CLAUDE -> aiAgentNode(psiManager, vf, HybrisIcons.AI.AGENT_CLAUDE)
-                                ?.let { aiDirectories.add(it) }
+                            HybrisConstants.Ai.CLAUDE -> aiDirectoryNode(psiManager, vf, HybrisIcons.AI.AGENT_CLAUDE)
+                                ?.let { aiNodes.add(it) }
 
-                            HybrisConstants.Ai.GEMINI -> aiAgentNode(psiManager, vf, HybrisIcons.AI.AGENT_GEMINI)
-                                ?.let { aiDirectories.add(it) }
+                            HybrisConstants.Ai.GEMINI -> aiDirectoryNode(psiManager, vf, HybrisIcons.AI.AGENT_GEMINI)
+                                ?.let { aiNodes.add(it) }
 
-                            HybrisConstants.Ai.JUNIE -> aiAgentNode(psiManager, vf, HybrisIcons.AI.AGENT_JUNIE)
-                                ?.let { aiDirectories.add(it) }
+                            HybrisConstants.Ai.JUNIE -> aiDirectoryNode(psiManager, vf, HybrisIcons.AI.AGENT_JUNIE)
+                                ?.let { aiNodes.add(it) }
 
-                            HybrisConstants.Ai.CURSOR -> aiAgentNode(psiManager, vf, HybrisIcons.AI.AGENT_CURSOR)
-                                ?.let { aiDirectories.add(it) }
+                            HybrisConstants.Ai.CURSOR -> aiDirectoryNode(psiManager, vf, HybrisIcons.AI.AGENT_CURSOR)
+                                ?.let { aiNodes.add(it) }
 
-                            HybrisConstants.Ai.AGENTS -> aiAgentNode(psiManager, vf, HybrisIcons.AI.AGENTS)
-                                ?.let { aiDirectories.add(it) }
+                            HybrisConstants.Ai.AGENTS -> aiDirectoryNode(psiManager, vf, HybrisIcons.AI.AGENTS)
+                                ?.let { aiNodes.add(it) }
 
-                            HybrisConstants.Ai.CODEMIE -> aiAgentNode(psiManager, vf, HybrisIcons.AI.CODEMIE)
-                                ?.let { aiDirectories.add(it) }
+                            HybrisConstants.Ai.CODEMIE -> aiDirectoryNode(psiManager, vf, HybrisIcons.AI.CODEMIE)
+                                ?.let { aiNodes.add(it) }
 
-                            HybrisConstants.Ai.ASSISTANT -> aiAgentNode(psiManager, vf, HybrisIcons.AI.ASSISTANT)
-                                ?.let { aiDirectories.add(it) }
+                            HybrisConstants.Ai.ASSISTANT -> aiDirectoryNode(psiManager, vf, HybrisIcons.AI.ASSISTANT)
+                                ?.let { aiNodes.add(it) }
                         }
                     }
                 }
 
-                if (aiDirectories.isNotEmpty()) {
-                    nodes.add(AiProjectViewNode(getProject(), aiDirectories, settings))
+                if (aiNodes.isNotEmpty()) {
+                    nodes.add(AiProjectViewNode(getProject(), aiNodes, settings))
                 }
             }
 
@@ -111,6 +123,9 @@ class HybrisProjectViewProjectNode(project: Project, viewSettings: ViewSettings)
         return nodes
     }
 
-    private fun aiAgentNode(psiManager: PsiManager, vf: VirtualFile, icon: Icon) = psiManager.findDirectory(vf)
+    private fun aiDirectoryNode(psiManager: PsiManager, vf: VirtualFile, icon: Icon) = psiManager.findDirectory(vf)
         ?.let { AiAgentPsiDirectoryNode(project, it, settings, icon) }
+
+    private fun aiFileNode(psiManager: PsiManager, vf: VirtualFile) = psiManager.findFile(vf)
+        ?.let { PsiFileNode(project, it, null) }
 }

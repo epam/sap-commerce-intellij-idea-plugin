@@ -2,11 +2,12 @@
 
 <cite>Release contributors</code>
 - 2 PR(s) by [Flaviu Lupoian](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.2.4+author%3Aflup-repo+is%3Apr)
-- 1 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.2.4+author%3Amlytvyn+is%3Apr)
+- 2 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.2.4+author%3Amlytvyn+is%3Apr)
 
 ### `AI` capabilities
 - Report row count and reached `maxCount` limit in the FlexibleSearch and SQL MCP tool results [#2000](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2000)
 - Support `.codemie` in the `AI Capabilities` project view [#2003](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2003)
+- Display `AGENTS.md`, `CLAUDE.md` and `GEMINI.md` under `AI Capabilities` [#2004](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2004)
 
 ### `Project Import` enhancements
 - Speed up the libraries sources and javadocs fetching by remembering the previous lookup outcome and no longer blocking the shared background threads [#2002](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2002)

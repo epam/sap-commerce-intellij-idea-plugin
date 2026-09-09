@@ -164,6 +164,13 @@ object HybrisConstants {
         const val AGENTS = ".agents"
         const val CODEMIE = ".codemie"
         const val ASSISTANT = ".aiassistant"
+
+        object MD {
+            const val AGENTS = "AGENTS.md"
+            const val GEMINI = "GEMINI.md"
+            const val CLAUDE = "CLAUDE.md"
+            const val CLAUDE_LOCAL = "CLAUDE.local.md"
+        }
     }
 
     val DEFAULT_JUNK_FILE_NAMES = listOf(
