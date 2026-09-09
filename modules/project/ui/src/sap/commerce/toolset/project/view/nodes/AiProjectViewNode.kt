@@ -18,9 +18,7 @@
 
 package sap.commerce.toolset.project.view.nodes
 
-import com.intellij.ide.projectView.PresentationData
-import com.intellij.ide.projectView.ProjectViewNode
-import com.intellij.ide.projectView.ViewSettings
+import com.intellij.ide.projectView.*
 import com.intellij.ide.projectView.impl.ProjectViewPane
 import com.intellij.ide.util.treeView.AbstractTreeNode
 import com.intellij.openapi.project.Project
@@ -50,4 +48,6 @@ class AiProjectViewNode(
             )
         }
     }
+
+    override fun getSortOrder(settings: NodeSortSettings) = NodeSortOrder.PROJECT_ROOT
 }
