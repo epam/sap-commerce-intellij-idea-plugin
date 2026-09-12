@@ -86,13 +86,22 @@ internal class CxPropertyMouseHandler(
         return actionAt(e.point, bounds)
     }
 
+    /**
+     * Walks the icons the row actually shows, outermost first. A hidden icon collapses in the renderer's layout, so
+     * the ones behind it move outwards and their zones have to move with them - measuring against the full set would
+     * leave the report icon of a non-editable row sitting in what used to be the delete zone.
+     */
     private fun actionAt(point: Point, cellBounds: Rectangle): CxPropertyRowAction? {
         val fromRightEdge = cellBounds.x + cellBounds.width - point.x
         if (fromRightEdge < 0) return null
 
+        var zoneEnd = 0
         return CxPropertyRowAction.entries
-            .find { fromRightEdge <= JBUI.scale(CxPropertyRowAction.offsetOf(it)) }
-            ?.takeIf { list.editable || !it.remote }
+            .filter { list.editable || !it.remote }
+            .find {
+                zoneEnd += it.hitWidth
+                fromRightEdge <= JBUI.scale(zoneEnd)
+            }
     }
 
     companion object {

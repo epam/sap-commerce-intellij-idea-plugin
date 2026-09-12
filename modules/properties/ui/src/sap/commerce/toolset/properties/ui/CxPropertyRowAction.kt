@@ -21,8 +21,10 @@ package sap.commerce.toolset.properties.ui
 /**
  * Action icons pinned to the right edge of a property row, ordered as they are laid out.
  *
- * The hit zones are measured from the right edge of the cell, so the enum also fixes how far each one reaches:
- * [DELETE] sits outermost, every following entry one [hitWidth] further to the left.
+ * The hit zones are measured from the right edge of the cell, so the declaration order is the layout order too:
+ * [DELETE] sits outermost, every following *visible* entry one [hitWidth] further to the left. Hidden icons collapse
+ * in the renderer's `GridBagLayout`, so the zones have to be summed over what is actually on screen rather than over
+ * the whole enum - see `CxPropertyMouseHandler.actionAt`.
  *
  * [remote] marks the ones which act on the remote instance, and which a row standing for a property the instance does
  * not have therefore cannot offer.
@@ -36,9 +38,7 @@ internal enum class CxPropertyRowAction(val tooltip: String, val remote: Boolean
 
     companion object {
 
-        /** Distance from the right edge of a cell at which the zone of this action starts. */
-        fun offsetOf(action: CxPropertyRowAction) = entries
-            .take(action.ordinal + 1)
-            .sumOf { it.hitWidth }
+        /** Width every action taken together reserves, for laying out anything which must clear them. */
+        val totalHitWidth = entries.sumOf { it.hitWidth }
     }
 }
