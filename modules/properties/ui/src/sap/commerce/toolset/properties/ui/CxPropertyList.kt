@@ -87,6 +87,9 @@ internal class CxPropertyList(
         border = JBUI.Borders.empty(0, 4)
         selectionMode = ListSelectionModel.SINGLE_SELECTION
         emptyText.text = "No properties loaded"
+        // Rows are measured up front rather than from the renderer, so a row always has room
+        // for the inline editor's text field instead of collapsing to the label height.
+        fixedCellHeight = maxOf(CxPropertyRenderer.rowHeight(), InlinePropertyEditor.rowHeight())
 
         addListSelectionListener(parentDisposable) {
             if (selectedIndex != -1) invokeLater { clearSelection() }

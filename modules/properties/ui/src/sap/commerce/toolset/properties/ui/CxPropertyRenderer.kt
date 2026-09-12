@@ -177,6 +177,9 @@ internal class CxPropertyRenderer : JPanel(), ListCellRenderer<CxPropertyPresent
         private const val PILL_ARC = 8
         private const val PILL_HORIZONTAL_INSET = 4
 
+        /** Height a row needs for the read-only key / value labels not to be clipped. */
+        fun rowHeight() = JBLabel("X").preferredSize.height + 2 * JBUI.scale(VERTICAL_PADDING)
+
         /** Width of the click hit zone for the delete icon, measured from the cell's right edge. */
         const val DELETE_HIT_WIDTH = 28
 

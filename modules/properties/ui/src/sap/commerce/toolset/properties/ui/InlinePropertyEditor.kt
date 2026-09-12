@@ -138,10 +138,23 @@ internal class InlinePropertyEditor(
     companion object {
         @Serial
         private const val serialVersionUID: Long = 6853792617726419231L
-        private const val VERTICAL_PADDING = 6
+
+        /**
+         * The editor sits flush inside a single list row, so it can only pad as much as the row
+         * height allows. A text field is taller than the read-only labels [CxPropertyRenderer]
+         * draws, hence a tighter padding here than the renderer's own row metrics.
+         */
+        private const val VERTICAL_PADDING = 2
         private const val HORIZONTAL_PADDING = 12
         private const val COLUMN_GAP = 8
         private const val ACTION_GAP = 6
         private const val ACTION_LEFT_INSET = 12
+
+        /**
+         * Height a list row must have for the inline value field to render at its natural height.
+         * The renderer's labels are shorter than a text field, so a row measured from the renderer
+         * alone squashes the editor.
+         */
+        fun rowHeight() = JBTextField().preferredSize.height + 2 * JBUI.scale(VERTICAL_PADDING)
     }
 }
