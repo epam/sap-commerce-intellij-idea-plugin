@@ -236,9 +236,13 @@ class CxRemotePropertyStateService(
     fun applyProperties(
         properties: List<CxPropertyPresentation>,
         callback: (CoroutineScope, DefaultExecResult) -> Unit = { _, _ -> },
-    ) {
-        val server = HacExecConnectionService.getInstance(project).activeConnection
+    ) = applyProperties(HacExecConnectionService.getInstance(project).activeConnection, properties, callback)
 
+    fun applyProperties(
+        server: HacConnectionSettingsState,
+        properties: List<CxPropertyPresentation>,
+        callback: (CoroutineScope, DefaultExecResult) -> Unit = { _, _ -> },
+    ) {
         coroutineScope.launch {
             // Every property is attempted even when an earlier one fails, so a single rejected
             // key cannot silently leave the rest of the template unapplied.
@@ -251,13 +255,13 @@ class CxRemotePropertyStateService(
             refetchLoaded(server)
 
             val result = if (failed.isEmpty()) {
-                notify(NotificationType.INFORMATION, "Properties template applied") {
+                notify(NotificationType.INFORMATION, "Properties applied") {
                     "<p>Applied properties: ${properties.size}</p><p>Server: ${server.shortenConnectionName}</p>"
                 }
                 DefaultExecResult()
             } else {
                 val failedKeys = StringUtil.escapeXmlEntities(failed.joinToString { it.key })
-                notify(NotificationType.ERROR, "Failed to apply properties template") {
+                notify(NotificationType.ERROR, "Failed to apply properties") {
                     "<p>Applied properties: ${properties.size - failed.size} of ${properties.size}</p>" +
                         "<p>Failed properties: $failedKeys</p>" +
                         "<p>Server: ${server.shortenConnectionName}</p>"

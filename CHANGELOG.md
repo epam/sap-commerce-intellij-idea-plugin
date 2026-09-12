@@ -1,7 +1,7 @@
 ## [2026.2.5]
 
 <cite>Release contributors</code>
-- 6 PR(s) by [Eugeni Kalenchuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.2.5+author%3Aekalenchuk+is%3Apr)
+- 7 PR(s) by [Eugeni Kalenchuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.2.5+author%3Aekalenchuk+is%3Apr)
 
 ### `SAP CX Properties` enhancements
 - Introduced the `Properties` tool window to browse, filter and modify the runtime properties of a remote SAP Commerce instance, and to compose and apply custom property templates [#1923](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1923)
@@ -10,6 +10,7 @@
 - Report where a property is declared and which declaration wins, with navigation to each of them [#2008](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2008)
 - Compare a remote instance with the project and list the properties either side is missing [#2009](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2009)
 - Declare the properties a project is missing into `local.properties` or a custom extension [#2010](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2010)
+- Apply the properties a remote instance is missing to that instance [#2011](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2011)
 
 ## [2026.2.4]
 
