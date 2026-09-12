@@ -18,7 +18,6 @@
 
 package sap.commerce.toolset.properties.ui
 
-import com.intellij.openapi.util.text.StringUtil
 import com.intellij.ui.JBColor
 import com.intellij.ui.components.JBLabel
 import com.intellij.util.asSafely
@@ -46,8 +45,9 @@ import javax.swing.*
  * affects the row background, similar to standard table tools.
  *
  * A row whose remote value disagrees with the one the project's property files resolve to
- * (see [CxPropertyList.localValues]) is painted in [VALUE_DIFFERS_COLOR] and carries a
- * tooltip spelling out both values.
+ * (see [CxPropertyList.localProperties]) is painted in [VALUE_DIFFERS_COLOR]; the values
+ * themselves are spelled out by [CxPropertyList.getToolTipText], since a tooltip assigned
+ * here would never reach the `ToolTipManager`.
  */
 internal class CxPropertyRenderer : JPanel(), ListCellRenderer<CxPropertyPresentation> {
 
@@ -162,31 +162,20 @@ internal class CxPropertyRenderer : JPanel(), ListCellRenderer<CxPropertyPresent
 
         // A property which is not declared by the project at all is not a disagreement - only a
         // locally declared key resolving to something else counts as one.
-        val differingLocalValue = cxList?.localValues
+        val differs = cxList?.localProperties
             ?.get(property.key)
-            ?.takeIf { it != property.value }
+            ?.value
+            ?.let { it != property.value }
+            ?: false
 
         keyLabel.text = if (editing) "" else property.key
-        keyLabel.toolTipText = if (editing) null else property.key
-        keyLabel.foreground = if (differingLocalValue != null) VALUE_DIFFERS_COLOR else UIUtil.getLabelForeground()
+        keyLabel.foreground = if (differs) VALUE_DIFFERS_COLOR else UIUtil.getLabelForeground()
         valueLabel.text = if (editing) "" else property.value
-        valueLabel.foreground = if (differingLocalValue != null) VALUE_DIFFERS_COLOR else JBColor.GRAY
-        valueLabel.toolTipText = when {
-            editing -> null
-            differingLocalValue != null -> differenceTooltip(property.value, differingLocalValue)
-            else -> property.value.takeIf { it.isNotBlank() }
-        }
+        valueLabel.foreground = if (differs) VALUE_DIFFERS_COLOR else JBColor.GRAY
         editLabel.isVisible = !editing
         deleteLabel.isVisible = !editing
 
         return this
-    }
-
-    private fun differenceTooltip(remoteValue: String, localValue: String) = buildString {
-        append("<html><body>")
-        append("<p><b>Remote:</b> ").append(StringUtil.escapeXmlEntities(remoteValue)).append("</p>")
-        append("<p><b>Project files:</b> ").append(StringUtil.escapeXmlEntities(localValue)).append("</p>")
-        append("</body></html>")
     }
 
     companion object {

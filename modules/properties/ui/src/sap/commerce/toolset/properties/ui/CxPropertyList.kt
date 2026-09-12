@@ -20,10 +20,12 @@ package sap.commerce.toolset.properties.ui
 
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.application.invokeLater
+import com.intellij.openapi.util.text.StringUtil
 import com.intellij.ui.CollectionListModel
 import com.intellij.ui.components.JBList
 import com.intellij.util.ui.JBUI
 import com.intellij.util.ui.UIUtil
+import sap.commerce.toolset.properties.meta.CxResolvedProperty
 import sap.commerce.toolset.properties.presentation.CxPropertyPresentation
 import sap.commerce.toolset.ui.addListSelectionListener
 import sap.commerce.toolset.ui.addMouseListener
@@ -35,6 +37,7 @@ import java.io.Serial
 import javax.swing.JComponent
 import javax.swing.ListSelectionModel
 import javax.swing.SwingUtilities
+import javax.swing.ToolTipManager
 import javax.swing.event.ListDataEvent
 import javax.swing.event.ListDataListener
 
@@ -55,6 +58,10 @@ import javax.swing.event.ListDataListener
  *
  * Clicks on the edit / delete hit zones invoke [onEditClicked] / [onDeleteClicked]; clicks
  * elsewhere on a row do nothing.
+ *
+ * **Tooltips.** [getToolTipText] is resolved per row here rather than on the renderer: renderer
+ * components are stamped through a `CellRendererPane` instead of joining the component hierarchy,
+ * so a tooltip assigned to one of their labels never reaches the `ToolTipManager`.
  */
 internal class CxPropertyList(
     parentDisposable: Disposable,
@@ -76,11 +83,11 @@ internal class CxPropertyList(
         private set
 
     /**
-     * Values the project's own property files resolve to, keyed by property key. Rows whose remote value disagrees
-     * with the one declared here are highlighted by [CxPropertyRenderer]; keys which are absent are not highlighted,
-     * as a property existing only on the remote instance is not a disagreement.
+     * Properties as the project's own files declare them, keyed by property key. Rows whose remote value disagrees
+     * with the one declared here are highlighted by [CxPropertyRenderer] and explained by [getToolTipText]; keys
+     * which are absent are left alone, as a property existing only on the remote instance is not a disagreement.
      */
-    var localValues: Map<String, String> = emptyMap()
+    var localProperties: Map<String, CxResolvedProperty> = emptyMap()
         set(value) {
             if (field != value) {
                 field = value
@@ -124,7 +131,42 @@ internal class CxPropertyList(
         this.addMouseListener(parentDisposable, mouseHandler)
         this.addMouseMotionListener(parentDisposable, mouseHandler)
         cellRenderer = CxPropertyRenderer()
+
+        // JList never consults the renderer for tooltips, so the manager has to be told about the
+        // list itself - `getToolTipText` below answers for whichever row is under the cursor.
+        ToolTipManager.sharedInstance().registerComponent(this)
     }
+
+    /**
+     * Explains a highlighted row: what the project's own property files declare and where. Rows which agree with the
+     * remote instance, rows the project does not declare, and the row being edited have nothing to explain.
+     */
+    override fun getToolTipText(event: MouseEvent): String? {
+        if (!isOnRow(event)) return null
+
+        val property = model.items.getOrNull(locationToIndex(event.point)) ?: return null
+        if (property.key == editingKey) return null
+
+        val local = localProperties[property.key]
+            ?.takeIf { it.value != property.value }
+            ?: return null
+
+        return buildString {
+            append("<html><body>")
+            append("<p><b>Remote:</b> ").append(escape(property.value)).append("</p>")
+            append("<p><b>Project:</b> ").append(escape(local.value)).append("</p>")
+            // A raw value only differs once it carries placeholders - showing it then explains the expansion.
+            if (local.rawValue != local.value) {
+                append("<p><b>Declared as:</b> ").append(escape(local.rawValue)).append("</p>")
+            }
+            append("<p><b>Declared in:</b> ").append(escape(local.source.presentableName)).append("</p>")
+            local.source.path
+                ?.let { append("<p><small>").append(escape(it)).append("</small></p>") }
+            append("</body></html>")
+        }
+    }
+
+    private fun escape(value: String) = StringUtil.escapeXmlEntities(value)
 
     fun beginEdit(
         property: CxPropertyPresentation,

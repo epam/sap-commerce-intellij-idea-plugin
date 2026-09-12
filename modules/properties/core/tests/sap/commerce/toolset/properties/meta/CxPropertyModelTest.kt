@@ -218,27 +218,58 @@ class CxPropertyModelTest {
             local to ("db.driver" to "com.mysql.Driver"),
         )
 
-        assertEquals(
-            mapOf("db.url" to "jdbc:platform", "db.driver" to "com.mysql.Driver"),
-            model.resolveAll(listOf("db.url", "db.driver", "cluster.id")),
-        )
+        val resolved = model.resolveProperties(listOf("db.url", "db.driver", "cluster.id"))
+
+        assertEquals(listOf("db.url", "db.driver"), resolved.keys.toList())
+        assertEquals(listOf("jdbc:platform", "com.mysql.Driver"), resolved.values.map { it.value })
     }
 
     @Test
-    fun `resolving a given set of keys expands their placeholders`() {
+    fun `a resolved property carries the file its winning value was declared in`() {
+        val model = model(
+            platformProject to ("db.url" to "jdbc:platform"),
+            local to ("db.url" to "jdbc:local"),
+        )
+
+        val resolved = model.resolveProperties(listOf("db.url"))["db.url"]
+
+        assertEquals("jdbc:local", resolved?.value)
+        assertEquals(local, resolved?.source)
+        assertEquals("local.properties", resolved?.source?.presentableName)
+    }
+
+    @Test
+    fun `a resolved property keeps the raw value apart from the expanded one`() {
         val model = model(
             platformProject to ("db.url" to "jdbc:\${db.host}"),
             local to ("db.host" to "localhost"),
         )
 
-        assertEquals(mapOf("db.url" to "jdbc:localhost"), model.resolveAll(listOf("db.url")))
+        val resolved = model.resolveProperties(listOf("db.url"))["db.url"]
+
+        assertEquals("jdbc:localhost", resolved?.value)
+        assertEquals("jdbc:\${db.host}", resolved?.rawValue)
+        assertEquals(platformProject, resolved?.source)
+    }
+
+    @Test
+    fun `a resolved property keeps the declarations it shadows`() {
+        val model = model(
+            platformProject to ("db.url" to "jdbc:platform"),
+            customProject to ("db.url" to "jdbc:custom"),
+            local to ("db.url" to "jdbc:local"),
+        )
+
+        val resolved = model.resolveProperties(listOf("db.url"))["db.url"]
+
+        assertEquals(listOf("jdbc:platform", "jdbc:custom"), resolved?.property?.shadowedDeclarations?.map { it.value })
     }
 
     @Test
     fun `resolving a repeated key yields it once`() {
         val model = model(local to ("db.url" to "jdbc:local"))
 
-        assertEquals(mapOf("db.url" to "jdbc:local"), model.resolveAll(listOf("db.url", "db.url")))
+        assertEquals(listOf("db.url"), model.resolveProperties(listOf("db.url", "db.url")).keys.toList())
     }
 
     @Test
