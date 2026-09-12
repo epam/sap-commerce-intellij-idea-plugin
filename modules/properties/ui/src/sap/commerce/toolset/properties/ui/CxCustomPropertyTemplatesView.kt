@@ -42,8 +42,11 @@ import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.properties.custom.CxCustomPropertyTemplateService
 import sap.commerce.toolset.properties.presentation.CxPropertyPresentation
 import sap.commerce.toolset.ui.actionButton
+import sap.commerce.toolset.ui.addDocumentListener
+import sap.commerce.toolset.ui.event.documentListener
 import java.awt.BorderLayout
 import java.awt.Dimension
+import java.awt.GridLayout
 import javax.swing.JComponent
 import javax.swing.JPanel
 import javax.swing.ScrollPaneConstants
@@ -74,11 +77,7 @@ class CxCustomPropertyTemplatesView(private val project: Project) : Disposable {
                             .resizableColumn()
                             .applyToComponent {
                                 emptyText.text = "Filter by key"
-                                document.addDocumentListener(object : javax.swing.event.DocumentListener {
-                                    override fun insertUpdate(e: javax.swing.event.DocumentEvent?) = refreshDataView()
-                                    override fun removeUpdate(e: javax.swing.event.DocumentEvent?) = refreshDataView()
-                                    override fun changedUpdate(e: javax.swing.event.DocumentEvent?) = refreshDataView()
-                                })
+                                document.addDocumentListener(this@CxCustomPropertyTemplatesView, documentListener { refreshDataView() })
                             }
                             .component
 
@@ -87,11 +86,7 @@ class CxCustomPropertyTemplatesView(private val project: Project) : Disposable {
                             .resizableColumn()
                             .applyToComponent {
                                 emptyText.text = "Filter by value"
-                                document.addDocumentListener(object : javax.swing.event.DocumentListener {
-                                    override fun insertUpdate(e: javax.swing.event.DocumentEvent?) = refreshDataView()
-                                    override fun removeUpdate(e: javax.swing.event.DocumentEvent?) = refreshDataView()
-                                    override fun changedUpdate(e: javax.swing.event.DocumentEvent?) = refreshDataView()
-                                })
+                                document.addDocumentListener(this@CxCustomPropertyTemplatesView, documentListener { refreshDataView() })
                             }
                             .component
                     }.visibleIf(showDataPanel).layout(RowLayout.PARENT_GRID)
@@ -196,11 +191,7 @@ class CxCustomPropertyTemplatesView(private val project: Project) : Disposable {
                         val valueField = textField()
                             .applyToComponent { text = editingPropertyValue }
                             .applyToComponent {
-                                document.addDocumentListener(object : javax.swing.event.DocumentListener {
-                                    override fun insertUpdate(e: javax.swing.event.DocumentEvent?) = syncEditingValue(text)
-                                    override fun removeUpdate(e: javax.swing.event.DocumentEvent?) = syncEditingValue(text)
-                                    override fun changedUpdate(e: javax.swing.event.DocumentEvent?) = syncEditingValue(text)
-                                })
+                                document.addDocumentListener(this@CxCustomPropertyTemplatesView, documentListener { syncEditingValue(text) })
                             }
                             .component
 
@@ -253,7 +244,7 @@ class CxCustomPropertyTemplatesView(private val project: Project) : Disposable {
         dataScrollPane.setViewportView(view)
     }
 
-    private fun createPropertyColumns(left: JComponent, right: JComponent): JComponent = JPanel(java.awt.GridLayout(1, 2, JBUI.scale(COLUMN_GAP), 0)).apply {
+    private fun createPropertyColumns(left: JComponent, right: JComponent): JComponent = JPanel(GridLayout(1, 2, JBUI.scale(COLUMN_GAP), 0)).apply {
         isOpaque = false
         add(wrapContentCell(left))
         add(wrapContentCell(right))

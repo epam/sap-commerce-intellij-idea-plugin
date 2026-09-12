@@ -44,6 +44,8 @@ import sap.commerce.toolset.properties.CxPropertyConstants
 import sap.commerce.toolset.properties.CxRemotePropertyStateService
 import sap.commerce.toolset.properties.exec.CxRemotePropertyStatePage
 import sap.commerce.toolset.properties.presentation.CxPropertyPresentation
+import sap.commerce.toolset.ui.addDocumentListener
+import sap.commerce.toolset.ui.event.documentListener
 import java.awt.Color
 import java.awt.Font
 import java.awt.GridBagConstraints
@@ -157,11 +159,7 @@ class CxRemotePropertyStateView(private val project: Project) : Disposable {
                             .resizableColumn()
                             .applyToComponent {
                                 emptyText.text = "Filter by key"
-                                document.addDocumentListener(object : javax.swing.event.DocumentListener {
-                                    override fun insertUpdate(e: javax.swing.event.DocumentEvent?) = onFilterChanged()
-                                    override fun removeUpdate(e: javax.swing.event.DocumentEvent?) = onFilterChanged()
-                                    override fun changedUpdate(e: javax.swing.event.DocumentEvent?) = onFilterChanged()
-                                })
+                                document.addDocumentListener(this@CxRemotePropertyStateView, documentListener { onFilterChanged() })
                             }
                             .component
 
@@ -170,11 +168,7 @@ class CxRemotePropertyStateView(private val project: Project) : Disposable {
                             .resizableColumn()
                             .applyToComponent {
                                 emptyText.text = "Filter by value"
-                                document.addDocumentListener(object : javax.swing.event.DocumentListener {
-                                    override fun insertUpdate(e: javax.swing.event.DocumentEvent?) = onFilterChanged()
-                                    override fun removeUpdate(e: javax.swing.event.DocumentEvent?) = onFilterChanged()
-                                    override fun changedUpdate(e: javax.swing.event.DocumentEvent?) = onFilterChanged()
-                                })
+                                document.addDocumentListener(this@CxRemotePropertyStateView, documentListener { onFilterChanged() })
                             }
                             .component
                     }.visibleIf(showDataPanel)

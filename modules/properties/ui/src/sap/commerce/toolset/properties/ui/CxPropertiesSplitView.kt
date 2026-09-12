@@ -18,7 +18,6 @@
 
 package sap.commerce.toolset.properties.ui
 
-import com.intellij.ide.IdeBundle
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.application.EDT
 import com.intellij.openapi.project.Project
@@ -33,6 +32,7 @@ import kotlinx.coroutines.*
 import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import sap.commerce.toolset.hac.exec.settings.event.HacConnectionSettingsListener
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.properties.CxRemotePropertyStateService
 import sap.commerce.toolset.properties.custom.settings.event.CxCustomPropertyTemplateStateListener
 import sap.commerce.toolset.properties.exec.event.CxRemotePropertyStateListener
@@ -56,7 +56,7 @@ class CxPropertiesSplitView(private val project: Project) : OnePixelSplitter(fal
     private val customPropertyTemplatesView by lazy { CxCustomPropertyTemplatesView(project).also { Disposer.register(this, it) } }
     private val nothingSelectedPanel = panel {
         row {
-            label(IdeBundle.message("empty.text.nothing.selected"))
+            label(i18n("empty.text.nothing.selected"))
                 .resizableColumn()
                 .align(Align.CENTER)
         }.resizableRow()

@@ -21,6 +21,7 @@ package sap.commerce.toolset.properties.actionSystem
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.project.Project
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.ifNotFromSearchPopup
 import sap.commerce.toolset.properties.CxRemotePropertyStateService
@@ -65,7 +66,7 @@ class CxCreateCustomPropertyTemplateAction : AnAction() {
         e.presentation.icon = HybrisIcons.Log.Action.SAVE_AS_TEMPLATE
     }
 
-    private fun sourceProperties(project: com.intellij.openapi.project.Project, node: Any): Collection<CxPropertyPresentation>? = when (node) {
+    private fun sourceProperties(project: Project, node: Any): Collection<CxPropertyPresentation>? = when (node) {
         is CxRemotePropertyStateNode -> CxRemotePropertyStateService.getInstance(project).state(node.connection.uuid).get()?.properties
         is CxCustomPropertyTemplateItemNode -> node.properties
         else -> null
