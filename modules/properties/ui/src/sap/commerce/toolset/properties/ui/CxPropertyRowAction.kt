@@ -23,12 +23,15 @@ package sap.commerce.toolset.properties.ui
  *
  * The hit zones are measured from the right edge of the cell, so the enum also fixes how far each one reaches:
  * [DELETE] sits outermost, every following entry one [hitWidth] further to the left.
+ *
+ * [remote] marks the ones which act on the remote instance, and which a row standing for a property the instance does
+ * not have therefore cannot offer.
  */
-internal enum class CxPropertyRowAction(val tooltip: String, val hitWidth: Int = 28) {
+internal enum class CxPropertyRowAction(val tooltip: String, val remote: Boolean, val hitWidth: Int = 28) {
 
-    DELETE("Delete property"),
-    EDIT("Edit property"),
-    REPORT("Show property report"),
+    DELETE("Delete property", remote = true),
+    EDIT("Edit property", remote = true),
+    REPORT("Show property report", remote = false),
     ;
 
     companion object {

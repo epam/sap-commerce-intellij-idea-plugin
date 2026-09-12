@@ -44,6 +44,9 @@
             <reference ref="sap.cx.properties.custom.deleteTemplate"/>
         </group>
 
+        <group id="sap.cx.properties.remote.viewOptions" popup="true" searchable="false"
+               class="sap.commerce.toolset.properties.actionSystem.CxPropertyViewModeActionGroup"/>
+
         <group id="sap.cx.properties.remote.item.menu" popup="true" searchable="false">
             <reference ref="sap.cx.properties.remote.copyKey"/>
             <reference ref="sap.cx.properties.remote.copyValue"/>

@@ -28,6 +28,9 @@ import com.intellij.openapi.ui.MessageDialogBuilder
 import com.intellij.openapi.ui.ValidationInfo
 import com.intellij.openapi.util.ClearableLazyValue
 import com.intellij.ui.AnimatedIcon
+import com.intellij.openapi.actionSystem.ActionGroup
+import com.intellij.openapi.actionSystem.ActionManager
+import com.intellij.openapi.actionSystem.DefaultActionGroup
 import com.intellij.ui.CollectionListModel
 import com.intellij.ui.components.JBScrollPane
 import com.intellij.ui.components.JBTextField
@@ -35,6 +38,7 @@ import com.intellij.ui.dsl.builder.Align
 import com.intellij.ui.dsl.builder.AlignX
 import com.intellij.ui.dsl.builder.RowLayout
 import com.intellij.ui.dsl.builder.panel
+import com.intellij.util.asSafely
 import com.intellij.util.ui.JBUI
 import com.intellij.util.ui.UIUtil
 import kotlinx.coroutines.CoroutineScope
@@ -48,6 +52,11 @@ import sap.commerce.toolset.properties.CxPropertyKey
 import sap.commerce.toolset.properties.CxRemotePropertyStateService
 import sap.commerce.toolset.properties.exec.CxRemotePropertyStatePage
 import sap.commerce.toolset.properties.meta.CxPropertyCollector
+import sap.commerce.toolset.properties.meta.CxPropertyComparison
+import sap.commerce.toolset.properties.meta.CxPropertyModel
+import sap.commerce.toolset.properties.settings.CxPropertyViewSettings
+import sap.commerce.toolset.properties.settings.event.CxPropertyViewSettingsListener
+import sap.commerce.toolset.properties.settings.state.CxPropertyViewMode
 import sap.commerce.toolset.properties.presentation.CxPropertyPresentation
 import sap.commerce.toolset.ui.addDocumentListener
 import sap.commerce.toolset.ui.event.documentListener
@@ -96,6 +105,12 @@ class CxRemotePropertyStateView(private val project: Project) : Disposable {
     private var statePage: CxRemotePropertyStatePage? = null
     private var lastSeenLoadedCount: Int = -1
     private var lastSeenFilterSignature: String = ""
+
+    /** Rows of the current report, before the client side filter is applied. Empty in [CxPropertyViewMode.ALL]. */
+    private var reportRows: List<CxPropertyPresentation> = emptyList()
+
+    private val viewMode
+        get() = CxPropertyViewSettings.getInstance(project).viewMode
 
     private val filterDebounceTimer = Timer(FILTER_DEBOUNCE_MS, ActionListener { fetchFilteredPage() }).apply {
         isRepeats = false
@@ -156,10 +171,12 @@ class CxRemotePropertyStateView(private val project: Project) : Disposable {
                     }.visibleIf(showDataPanel)
                         .layout(RowLayout.PARENT_GRID)
 
-                    // --- Filters: labels above their inputs ---
+                    // --- Filters: labels above their inputs, view options on the right ---
                     row {
                         label("Filter by key:")
                         label("Filter by value:")
+                        cell(buildViewOptionsToolbar())
+                            .align(AlignX.RIGHT)
                     }.visibleIf(showDataPanel)
                         .layout(RowLayout.PARENT_GRID)
 
@@ -212,6 +229,17 @@ class CxRemotePropertyStateView(private val project: Project) : Disposable {
         }
     }
 
+    init {
+        project.messageBus.connect(this).subscribe(CxPropertyViewSettingsListener.TOPIC, object : CxPropertyViewSettingsListener {
+            override fun onViewModeChanged(viewMode: CxPropertyViewMode) {
+                val connection = currentConnection.takeIf { ::currentConnection.isInitialized } ?: return
+                val page = statePage ?: return
+
+                viewScope.launch { applyViewMode(connection, page) }
+            }
+        })
+    }
+
     override fun dispose() {
         viewScope.cancel()
         filterDebounceTimer.stop()
@@ -247,7 +275,6 @@ class CxRemotePropertyStateView(private val project: Project) : Disposable {
         val connectionChanged = !::currentConnection.isInitialized || currentConnection.uuid != connection.uuid
         currentConnection = connection
         this.statePage = statePage
-        var adoptedSnapshot = false
 
         withContext(Dispatchers.EDT) {
             if (connectionChanged) {
@@ -256,9 +283,22 @@ class CxRemotePropertyStateView(private val project: Project) : Disposable {
                 propertyList.cancelEdit()
             }
             fetchingLabel.text = "Fetching data from '${connection.shortenConnectionName}'"
-            statusLabel.text = "Loaded ${statePage.loadedCount} of ${statePage.totalItems} total"
             setFetching(service.isFetching(connection))
             toggleView(showDataPanel)
+            bottomLoadingLabel.isVisible = service.isFetching(connection)
+        }
+
+        if (viewMode.report) {
+            coroutineScope.launch { applyViewMode(connection, statePage) }
+            return withContext(Dispatchers.EDT) { viewPanel }
+        }
+
+        var adoptedSnapshot = false
+
+        withContext(Dispatchers.EDT) {
+            reportRows = emptyList()
+            propertyList.editable = true
+            statusLabel.text = "Loaded ${statePage.loadedCount} of ${statePage.totalItems} total"
 
             // Only adopt the snapshot if it matches what the user is currently filtering for —
             // a stale broadcast (e.g. the first publish of a still-running filter fetch) would
@@ -269,25 +309,93 @@ class CxRemotePropertyStateView(private val project: Project) : Disposable {
                 syncListModel(connectionChanged, statePage)
                 adoptedSnapshot = true
             }
-
-            bottomLoadingLabel.isVisible = service.isFetching(connection)
         }
 
         // Resolving the project chain walks the indexes, so it must not hold up the rows: the
         // comparison lands in a follow-up repaint once the model is available.
-        if (adoptedSnapshot) coroutineScope.launch { highlightDifferingProperties(statePage) }
+        if (adoptedSnapshot) coroutineScope.launch { highlightDifferingProperties(statePage.properties) }
 
         return withContext(Dispatchers.EDT) { viewPanel }
+    }
+
+    /**
+     * Builds the rows of a report mode by comparing the remote instance against the project's property chain.
+     *
+     * A report is only meaningful over the complete, unfiltered remote set — the page the user happened to scroll to
+     * would report every unloaded property as missing — so an incomplete snapshot is re-fetched in full first and the
+     * report is built by the broadcast that follows.
+     */
+    private suspend fun applyViewMode(connection: HacConnectionSettingsState, statePage: CxRemotePropertyStatePage) {
+        val mode = viewMode
+
+        if (!mode.report) {
+            CxRemotePropertyStateService.getInstance(project).fetch(connection)
+            return
+        }
+
+        if (statePage.hasMore || statePage.keyFilter.isNotEmpty() || statePage.valueFilter.isNotEmpty()) {
+            withContext(Dispatchers.EDT) {
+                keyFilterField.text = ""
+                valueFilterField.text = ""
+                setFetching(true)
+            }
+            CxRemotePropertyStateService.getInstance(project).resetAndFetch(
+                server = connection,
+                pageSize = maxOf(statePage.totalItems, CxPropertyConstants.DEFAULT_PAGE_SIZE),
+            )
+            return
+        }
+
+        val chain = smartReadAction(project) { CxPropertyCollector.getInstance(project).collect() }
+        val rows = when (mode) {
+            CxPropertyViewMode.MISSING_IN_PROJECT -> CxPropertyComparison.missingInProject(statePage.properties, chain)
+            CxPropertyViewMode.MISSING_ON_REMOTE -> CxPropertyComparison.missingOnRemote(statePage.properties, chain)
+            CxPropertyViewMode.ALL -> statePage.properties
+        }
+
+        withContext(Dispatchers.EDT) {
+            reportRows = rows
+            propertyList.cancelEdit()
+            // A property the remote instance does not have cannot be edited or deleted there.
+            propertyList.editable = mode != CxPropertyViewMode.MISSING_ON_REMOTE
+            lastSeenLoadedCount = -1
+            lastSeenFilterSignature = ""
+            applyClientFilter()
+            statusLabel.text = reportStatus(mode, rows.size, statePage.totalItems)
+        }
+
+        highlightDifferingProperties(rows, chain)
+    }
+
+    private fun reportStatus(mode: CxPropertyViewMode, rows: Int, remoteTotal: Int) = when (mode) {
+        CxPropertyViewMode.MISSING_IN_PROJECT -> "$rows of $remoteTotal remote properties are not declared by the project"
+        CxPropertyViewMode.MISSING_ON_REMOTE -> "$rows project properties are missing on the remote instance"
+        CxPropertyViewMode.ALL -> "Loaded $rows of $remoteTotal total"
+    }
+
+    /** Narrows the current report by the filter fields. Report rows are already complete, so no round-trip is needed. */
+    private fun applyClientFilter() {
+        val keyFilter = keyFilterField.text.trim()
+        val valueFilter = valueFilterField.text.trim()
+        val filtered = reportRows.filter { property ->
+            (keyFilter.isEmpty() || property.key.contains(keyFilter, ignoreCase = true))
+                && (valueFilter.isEmpty() || property.value.contains(valueFilter, ignoreCase = true))
+        }
+
+        listModel.replaceAll(filtered)
     }
 
     /**
      * Compares every loaded remote property against the value the project's own property files resolve to and hands
      * the result to the list, which repaints the disagreeing rows.
      */
-    private suspend fun highlightDifferingProperties(statePage: CxRemotePropertyStatePage) {
-        val chain = smartReadAction(project) { CxPropertyCollector.getInstance(project).collect() }
-        val localProperties = chain.resolveProperties(statePage.properties.map { it.key })
-        val differingCount = statePage.properties.count { localProperties[it.key]?.value?.equals(it.value) == false }
+    private suspend fun highlightDifferingProperties(
+        properties: List<CxPropertyPresentation>,
+        resolvedChain: CxPropertyModel? = null,
+    ) {
+        val chain = resolvedChain ?: smartReadAction(project) { CxPropertyCollector.getInstance(project).collect() }
+        val localProperties = chain.resolveProperties(properties.map { it.key })
+        val differingCount = properties.count { localProperties[it.key]?.value?.equals(it.value) == false }
 
         withContext(Dispatchers.EDT) {
             propertyList.localProperties = localProperties
@@ -341,6 +449,8 @@ class CxRemotePropertyStateView(private val project: Project) : Disposable {
     }
 
     private fun onScrollChanged(@Suppress("UNUSED_PARAMETER") event: AdjustmentEvent) {
+        if (viewMode.report) return
+
         val current = statePage ?: return
         if (!current.hasMore) return
         val service = CxRemotePropertyStateService.getInstance(project)
@@ -355,10 +465,13 @@ class CxRemotePropertyStateView(private val project: Project) : Disposable {
     }
 
     private fun onFilterChanged() {
-        filterDebounceTimer.restart()
+        if (viewMode.report) applyClientFilter()
+        else filterDebounceTimer.restart()
     }
 
     private fun fetchFilteredPage() {
+        if (viewMode.report) return
+
         val currentStatePage = statePage ?: return
         val keyFilter = keyFilterField.text.trim()
         val valueFilter = valueFilterField.text.trim()
@@ -425,6 +538,22 @@ class CxRemotePropertyStateView(private val project: Project) : Disposable {
 
     private fun toggleView(vararg unhide: AtomicBooleanProperty) = listOf(showFetchProperties, showDataPanel, showFetchingState)
         .forEach { it.set(unhide.contains(it)) }
+
+    /**
+     * View options button — one toolbar button opening the mode popup, the way the Commit tool window presents its own
+     * grouping options. Wrapping the popup group in a plain group is what renders it as a single button.
+     */
+    private fun buildViewOptionsToolbar(): JComponent {
+        val group = ActionManager.getInstance()
+            .getAction("sap.cx.properties.remote.viewOptions")
+            .asSafely<ActionGroup>()
+            ?: return JPanel()
+
+        return ActionManager.getInstance()
+            .createActionToolbar("Sap.Cx.PropertiesViewOptions", DefaultActionGroup(group), true)
+            .also { it.targetComponent = propertyList }
+            .component
+    }
 
     /**
      * Builds a column-header strip that mirrors [CxPropertyRenderer]'s GridBag layout, so the

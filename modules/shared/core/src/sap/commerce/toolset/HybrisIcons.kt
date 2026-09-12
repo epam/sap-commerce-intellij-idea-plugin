@@ -616,6 +616,7 @@ object HybrisIcons {
         val EFFECTIVE = AllIcons.General.InspectionsOK
         val SHADOWED = AllIcons.General.Information
         val IGNORED = AllIcons.General.Warning
+        val VIEW_OPTIONS = AllIcons.Actions.Show
     }
 
     object WelcomeTab {

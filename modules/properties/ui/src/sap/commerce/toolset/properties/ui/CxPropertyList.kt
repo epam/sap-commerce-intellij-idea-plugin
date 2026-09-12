@@ -127,6 +127,19 @@ internal class CxPropertyList(
 
     private lateinit var mouseHandler: CxPropertyMouseHandler
 
+    /**
+     * Whether the rows stand for properties which exist on the remote instance. A report of properties the remote
+     * instance is missing cannot offer to edit or delete them there, so their icons and hit zones are dropped.
+     */
+    var editable: Boolean = true
+        set(value) {
+            if (field != value) {
+                field = value
+                if (!value) cancelEdit()
+                repaint()
+            }
+        }
+
     init {
         // Match the surrounding DialogPanel background so the data area doesn't look like a
         // separate gray pane. The renderer reads this value at paint time.

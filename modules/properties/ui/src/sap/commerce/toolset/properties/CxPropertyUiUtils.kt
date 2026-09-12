@@ -21,6 +21,7 @@ package sap.commerce.toolset.properties
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.PlatformCoreDataKeys
 import com.intellij.util.asSafely
+import sap.commerce.toolset.properties.settings.CxPropertyViewSettings
 import sap.commerce.toolset.properties.ui.tree.CxPropertiesTree
 import sap.commerce.toolset.properties.ui.tree.nodes.CxPropertiesNode
 import javax.swing.tree.DefaultMutableTreeNode
@@ -37,3 +38,7 @@ internal fun AnActionEvent.selectedNode(): Any? = tree()
 internal fun AnActionEvent.selectedNodes() = tree()
     ?.selectionPaths
     ?.mapNotNull { it.lastPathComponent?.asSafely<DefaultMutableTreeNode>()?.userObject?.asSafely<CxPropertiesNode>() }
+
+internal val AnActionEvent.cxPropertyViewSettings
+    get() = project
+        ?.let { CxPropertyViewSettings.getInstance(it) }

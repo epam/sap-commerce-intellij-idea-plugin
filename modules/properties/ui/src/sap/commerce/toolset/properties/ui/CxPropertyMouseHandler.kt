@@ -92,6 +92,7 @@ internal class CxPropertyMouseHandler(
 
         return CxPropertyRowAction.entries
             .find { fromRightEdge <= JBUI.scale(CxPropertyRowAction.offsetOf(it)) }
+            ?.takeIf { list.editable || !it.remote }
     }
 
     companion object {
