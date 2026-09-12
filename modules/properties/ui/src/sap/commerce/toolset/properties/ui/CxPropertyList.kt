@@ -140,6 +140,58 @@ internal class CxPropertyList(
             }
         }
 
+    /** Whether rows carry a selection box. Turning it off drops whatever was checked. */
+    var selectable: Boolean = false
+        set(value) {
+            if (field != value) {
+                field = value
+                if (!value) checked.clear()
+                onSelectionChanged(checkedKeys)
+                repaint()
+            }
+        }
+
+    /** Notified whenever the checked rows change, with the keys which are checked now. */
+    var onSelectionChanged: (Set<String>) -> Unit = {}
+
+    private val checked = linkedSetOf<String>()
+
+    val checkedKeys: Set<String>
+        get() = checked.toSet()
+
+    val checkedProperties: List<CxPropertyPresentation>
+        get() = model.items.filter { it.key in checked }
+
+    fun isChecked(key: String) = key in checked
+
+    fun toggleChecked(key: String) {
+        if (!checked.remove(key)) checked.add(key)
+
+        onSelectionChanged(checkedKeys)
+        repaint()
+    }
+
+    /** Checks every row currently listed; rows filtered out are left alone. */
+    fun checkAll() {
+        checked.addAll(model.items.map { it.key })
+
+        onSelectionChanged(checkedKeys)
+        repaint()
+    }
+
+    fun clearChecked() {
+        if (checked.isEmpty()) return
+
+        checked.clear()
+        onSelectionChanged(checkedKeys)
+        repaint()
+    }
+
+    /** Drops keys which are no longer listed, so a filter or a refresh cannot leave an invisible selection behind. */
+    fun retainCheckedWithin(keys: Collection<String>) {
+        if (checked.retainAll(keys.toSet())) onSelectionChanged(checkedKeys)
+    }
+
     init {
         // Match the surrounding DialogPanel background so the data area doesn't look like a
         // separate gray pane. The renderer reads this value at paint time.
@@ -239,6 +291,8 @@ internal class CxPropertyList(
 
         mouseHandler.actionAt(event)
             ?.let { return it.tooltip }
+
+        if (selectable && mouseHandler.isOnCheckBox(event)) return "Select property"
 
         val local = localProperties[property.key]
             ?.takeIf { it.value != property.value }

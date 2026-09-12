@@ -19,6 +19,7 @@
 package sap.commerce.toolset.properties.ui
 
 import com.intellij.ui.JBColor
+import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.components.JBLabel
 import com.intellij.util.asSafely
 import com.intellij.util.ui.JBUI
@@ -50,6 +51,12 @@ import javax.swing.*
  * here would never reach the `ToolTipManager`.
  */
 internal class CxPropertyRenderer : JPanel(), ListCellRenderer<CxPropertyPresentation> {
+
+    /** Selection box — only laid out while the list is offering a selection. */
+    private val checkBox = JBCheckBox().apply {
+        isOpaque = false
+        border = JBUI.Borders.empty()
+    }
 
     /** Key cell — zero preferred/minimum width so GridBagLayout's equal weights split fairly. */
     private val keyLabel = object : JBLabel() {
@@ -92,32 +99,38 @@ internal class CxPropertyRenderer : JPanel(), ListCellRenderer<CxPropertyPresent
 
         val gap = JBUI.scale(COLUMN_GAP)
 
-        add(keyLabel, GridBagConstraints().apply {
+        add(checkBox, GridBagConstraints().apply {
             gridx = 0; gridy = 0
+            weightx = 0.0; weighty = 1.0
+            fill = GridBagConstraints.VERTICAL
+            insets = JBUI.insets(0, 0, 0, JBUI.scale(CHECKBOX_GAP))
+        })
+        add(keyLabel, GridBagConstraints().apply {
+            gridx = 1; gridy = 0
             weightx = 0.5; weighty = 1.0
             fill = GridBagConstraints.BOTH
             insets = JBUI.insets(0, 0, 0, gap / 2)
         })
         add(valueLabel, GridBagConstraints().apply {
-            gridx = 1; gridy = 0
+            gridx = 2; gridy = 0
             weightx = 0.5; weighty = 1.0
             fill = GridBagConstraints.BOTH
             insets = JBUI.insets(0, gap / 2, 0, JBUI.scale(ACTION_LEFT_INSET))
         })
         add(reportLabel, GridBagConstraints().apply {
-            gridx = 2; gridy = 0
-            weightx = 0.0; weighty = 1.0
-            fill = GridBagConstraints.VERTICAL
-            insets = JBUI.insets(0, JBUI.scale(ACTION_GAP), 0, 0)
-        })
-        add(editLabel, GridBagConstraints().apply {
             gridx = 3; gridy = 0
             weightx = 0.0; weighty = 1.0
             fill = GridBagConstraints.VERTICAL
             insets = JBUI.insets(0, JBUI.scale(ACTION_GAP), 0, 0)
         })
-        add(deleteLabel, GridBagConstraints().apply {
+        add(editLabel, GridBagConstraints().apply {
             gridx = 4; gridy = 0
+            weightx = 0.0; weighty = 1.0
+            fill = GridBagConstraints.VERTICAL
+            insets = JBUI.insets(0, JBUI.scale(ACTION_GAP), 0, 0)
+        })
+        add(deleteLabel, GridBagConstraints().apply {
+            gridx = 5; gridy = 0
             weightx = 0.0; weighty = 1.0
             fill = GridBagConstraints.VERTICAL
             insets = JBUI.insets(0, JBUI.scale(ACTION_GAP), 0, 0)
@@ -176,6 +189,8 @@ internal class CxPropertyRenderer : JPanel(), ListCellRenderer<CxPropertyPresent
         valueLabel.text = if (editing) "" else property.value
         valueLabel.foreground = if (differs) VALUE_DIFFERS_COLOR else JBColor.GRAY
         val editable = cxList?.editable ?: true
+        checkBox.isVisible = cxList?.selectable == true && !editing
+        checkBox.isSelected = cxList?.isChecked(property.key) == true
         reportLabel.isVisible = !editing
         editLabel.isVisible = !editing && editable
         deleteLabel.isVisible = !editing && editable
@@ -193,6 +208,10 @@ internal class CxPropertyRenderer : JPanel(), ListCellRenderer<CxPropertyPresent
         private const val VERTICAL_PADDING = 6
         private const val HORIZONTAL_PADDING = 12
         private const val COLUMN_GAP = 8
+        private const val CHECKBOX_GAP = 6
+
+        /** Width of the click hit zone for the selection box, measured from the cell's left edge. */
+        const val CHECKBOX_HIT_WIDTH = 28
         private const val ACTION_GAP = 6
         private const val ACTION_LEFT_INSET = 12
         private const val PILL_ARC = 8

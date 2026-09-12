@@ -33,7 +33,8 @@ import java.awt.event.MouseEvent
  * Mouse interaction for [CxPropertyList]:
  *
  * - Hovering a row updates [CxPropertyList.hoveredIndex] and switches the cursor to a hand
- *   over the action icons.
+ *   over the action icons and the selection box.
+ * - Left-click on the selection box of a selectable row checks or unchecks it.
  * - Left-click on the report hit zone fires [onReportClicked].
  * - Left-click on the edit hit zone fires [onEditClicked].
  * - Left-click on the delete hit zone fires [onDeleteClicked].
@@ -56,6 +57,12 @@ internal class CxPropertyMouseHandler(
         if (!bounds.contains(e.point)) return
 
         val property = model.getElementAt(index)
+
+        if (list.selectable && isOnCheckBox(e.point, bounds)) {
+            list.toggleChecked(property.key)
+            return
+        }
+
         when (actionAt(e.point, bounds)) {
             CxPropertyRowAction.DELETE -> onDeleteClicked(property)
             CxPropertyRowAction.EDIT -> onEditClicked(property)
@@ -76,7 +83,18 @@ internal class CxPropertyMouseHandler(
         list.cursor = DEFAULT_CURSOR
     }
 
-    private fun isOnActionZone(e: MouseEvent) = actionAt(e) != null
+    private fun isOnActionZone(e: MouseEvent) = actionAt(e) != null || (list.selectable && isOnCheckBox(e))
+
+    /** Whether [e] points at the selection box of a row. */
+    fun isOnCheckBox(e: MouseEvent): Boolean {
+        val index = list.locationToIndex(e.point).takeIf { it >= 0 } ?: return false
+        val bounds = list.getCellBounds(index, index) ?: return false
+
+        return isOnCheckBox(e.point, bounds)
+    }
+
+    private fun isOnCheckBox(point: Point, cellBounds: Rectangle) =
+        point.x - cellBounds.x <= JBUI.scale(CxPropertyRenderer.CHECKBOX_HIT_WIDTH)
 
     /** Action icon under [e], or `null` when the cursor is not over one. */
     fun actionAt(e: MouseEvent): CxPropertyRowAction? {

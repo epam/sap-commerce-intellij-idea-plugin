@@ -28,6 +28,7 @@ import com.intellij.openapi.ui.MessageDialogBuilder
 import com.intellij.openapi.ui.ValidationInfo
 import com.intellij.openapi.util.ClearableLazyValue
 import com.intellij.ui.AnimatedIcon
+import com.intellij.notification.NotificationType
 import com.intellij.openapi.actionSystem.ActionGroup
 import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.DefaultActionGroup
@@ -46,6 +47,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import sap.commerce.toolset.Notifications
 import sap.commerce.toolset.actionSystem.HybrisActionPlaces
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
 import sap.commerce.toolset.properties.CxPropertyConstants
@@ -55,6 +57,7 @@ import sap.commerce.toolset.properties.exec.CxRemotePropertyStatePage
 import sap.commerce.toolset.properties.meta.CxPropertyCollector
 import sap.commerce.toolset.properties.meta.CxPropertyComparison
 import sap.commerce.toolset.properties.meta.CxPropertyModel
+import sap.commerce.toolset.properties.meta.CxPropertyWriteService
 import sap.commerce.toolset.properties.settings.CxPropertyViewSettings
 import sap.commerce.toolset.properties.settings.event.CxPropertyViewSettingsListener
 import sap.commerce.toolset.properties.settings.state.CxPropertyViewMode
@@ -62,6 +65,7 @@ import sap.commerce.toolset.properties.presentation.CxPropertyPresentation
 import sap.commerce.toolset.ui.addDocumentListener
 import sap.commerce.toolset.ui.event.documentListener
 import java.awt.Color
+import java.awt.Dimension
 import java.awt.Font
 import java.awt.GridBagConstraints
 import java.awt.GridBagLayout
@@ -77,6 +81,8 @@ class CxRemotePropertyStateView(private val project: Project) : Disposable {
     private val showFetchProperties = AtomicBooleanProperty(false)
     private val showDataPanel = AtomicBooleanProperty(false)
     private val showFetchingState = AtomicBooleanProperty(false)
+    private val showSelectionActions = AtomicBooleanProperty(false)
+    private val hasSelection = AtomicBooleanProperty(false)
 
     private val viewScope = CxPropertiesViewScopeService.getInstance(project).childScope()
 
@@ -89,6 +95,7 @@ class CxRemotePropertyStateView(private val project: Project) : Disposable {
         onDeleteClicked = { confirmAndDelete(it) },
     ).apply {
         putClientProperty(AnimatedIcon.ANIMATION_IN_RENDERER_ALLOWED, true)
+        onSelectionChanged = { hasSelection.set(it.isNotEmpty()) }
     }
 
     private lateinit var dataScrollPane: JBScrollPane
@@ -99,6 +106,9 @@ class CxRemotePropertyStateView(private val project: Project) : Disposable {
     private lateinit var statusLabel: JLabel
     private lateinit var bottomLoadingLabel: JLabel
     private lateinit var differingLabel: JLabel
+
+    /** Keeps the "Key" header aligned with the key column once the selection boxes take the leading column. */
+    private val headerLeadingSpacer = JPanel().apply { isOpaque = false }
     private lateinit var fetchingLabel: JLabel
 
     private lateinit var currentConnection: HacConnectionSettingsState
@@ -206,6 +216,17 @@ class CxRemotePropertyStateView(private val project: Project) : Disposable {
                     }.visibleIf(showDataPanel)
                         .layout(RowLayout.PARENT_GRID)
 
+                    // --- Selection actions, only while a report is listed ---
+                    row {
+                        link("Select all") { propertyList.checkAll() }
+                        link("Clear selection") { propertyList.clearChecked() }
+
+                        button("Declare in Project…") { declareSelectedInProject() }
+                            .enabledIf(hasSelection)
+                            .align(AlignX.RIGHT)
+                    }.visibleIf(showSelectionActions)
+                        .layout(RowLayout.PARENT_GRID)
+
                     separator(JBUI.CurrentTheme.Banner.INFO_BORDER_COLOR)
                         .visibleIf(showDataPanel)
 
@@ -304,6 +325,7 @@ class CxRemotePropertyStateView(private val project: Project) : Disposable {
         withContext(Dispatchers.EDT) {
             reportRows = emptyList()
             propertyList.editable = true
+            setSelectable(false)
             statusLabel.text = "Loaded ${statePage.loadedCount} of ${statePage.totalItems} total"
 
             // Only adopt the snapshot if it matches what the user is currently filtering for —
@@ -379,6 +401,9 @@ class CxRemotePropertyStateView(private val project: Project) : Disposable {
             propertyList.cancelEdit()
             // A property the remote instance does not have cannot be edited or deleted there.
             propertyList.editable = mode != CxPropertyViewMode.MISSING_ON_REMOTE
+            // Only the properties the project is missing can be declared into it.
+            setSelectable(mode == CxPropertyViewMode.MISSING_IN_PROJECT)
+            propertyList.retainCheckedWithin(rows.map { it.key })
             lastSeenLoadedCount = -1
             lastSeenFilterSignature = ""
             applyClientFilter()
@@ -386,6 +411,18 @@ class CxRemotePropertyStateView(private val project: Project) : Disposable {
         }
 
         highlightDifferingProperties(rows, chain)
+    }
+
+    private fun setSelectable(selectable: Boolean) {
+        propertyList.selectable = selectable
+        showSelectionActions.set(selectable)
+
+        headerLeadingSpacer.preferredSize = Dimension(
+            if (selectable) JBUI.scale(CxPropertyRenderer.CHECKBOX_HIT_WIDTH) else 0,
+            0,
+        )
+        headerLeadingSpacer.revalidate()
+        headerLeadingSpacer.parent?.revalidate()
     }
 
     private fun reportStatus(mode: CxPropertyViewMode, rows: Int, remoteTotal: Int) = when (mode) {
@@ -528,6 +565,47 @@ class CxRemotePropertyStateView(private val project: Project) : Disposable {
         }
     }
 
+    /**
+     * Declares the checked properties in one of the project's own property files. The targets are read off the
+     * collected chain, so the dialog only offers files the running system would actually read.
+     */
+    private fun declareSelectedInProject() {
+        val properties = propertyList.checkedProperties.takeIf { it.isNotEmpty() } ?: return
+
+        viewScope.launch {
+            val writeService = CxPropertyWriteService.getInstance(project)
+            val targets = smartReadAction(project) { writeService.targets() }
+
+            if (targets.isEmpty()) {
+                Notifications.create(
+                    NotificationType.WARNING,
+                    "Nowhere to declare the properties",
+                    "The project has neither a local.properties nor a custom extension with a project.properties.",
+                ).notify(project)
+                return@launch
+            }
+
+            val dialog = withContext(Dispatchers.EDT) {
+                CxDeclarePropertiesDialog(project, targets, properties).takeIf { it.showAndGet() }
+            } ?: return@launch
+
+            val written = writeService.write(dialog.target, properties)
+            if (written.isEmpty()) return@launch
+
+            withContext(Dispatchers.EDT) { propertyList.clearChecked() }
+
+            Notifications.create(
+                NotificationType.INFORMATION,
+                "Properties declared",
+                "<p>Declared ${written.size} propert${if (written.size == 1) "y" else "ies"} in ${dialog.target.presentableName}</p>",
+            ).notify(project)
+
+            currentConnection
+                .takeIf { ::currentConnection.isInitialized }
+                ?.let { applyViewMode(it, statePage ?: return@launch) }
+        }
+    }
+
     private fun startInlineEdit(property: CxPropertyPresentation) {
         propertyList.beginEdit(property) { newValue ->
             // Apply with an unchanged value would hit the backend, fire a confirmation toast,
@@ -591,15 +669,20 @@ class CxRemotePropertyStateView(private val project: Project) : Disposable {
         val keyHeader = JLabel("Key").apply { font = font.deriveFont(Font.BOLD) }
         val valueHeader = JLabel("Value").apply { font = font.deriveFont(Font.BOLD) }
 
-        header.add(keyHeader, GridBagConstraints().apply {
+        header.add(headerLeadingSpacer, GridBagConstraints().apply {
             gridx = 0; gridy = 0
+            weightx = 0.0
+            fill = GridBagConstraints.NONE
+        })
+        header.add(keyHeader, GridBagConstraints().apply {
+            gridx = 1; gridy = 0
             weightx = 0.5; weighty = 1.0
             fill = GridBagConstraints.HORIZONTAL
             anchor = GridBagConstraints.WEST
             insets = JBUI.insets(0, 0, 0, gap / 2)
         })
         header.add(valueHeader, GridBagConstraints().apply {
-            gridx = 1; gridy = 0
+            gridx = 2; gridy = 0
             weightx = 0.5; weighty = 1.0
             fill = GridBagConstraints.HORIZONTAL
             anchor = GridBagConstraints.WEST
@@ -607,7 +690,7 @@ class CxRemotePropertyStateView(private val project: Project) : Disposable {
         })
         header.add(Box.createHorizontalStrut(JBUI.scale(HEADER_ACTION_RESERVED_WIDTH)),
             GridBagConstraints().apply {
-                gridx = 2; gridy = 0
+                gridx = 3; gridy = 0
                 weightx = 0.0
                 fill = GridBagConstraints.NONE
             })
