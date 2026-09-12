@@ -40,9 +40,11 @@ dependencies {
     implementation(project(":hac-exec"))
     implementation(project(":groovy-exec"))
 
+    testImplementation(kotlin("test"))
+
     intellijPlatform {
         intellijIdea(properties("intellij.version")) {
-            useInstaller = false
+            useInstaller = true
         }
     }
 }

@@ -21,7 +21,7 @@ import de.hybris.platform.servicelayer.config.ConfigurationViewService
 import groovy.json.JsonOutput
 
 /*
-======= Version: 2026.4.23 =======
+======= Version: 2026.4.24 =======
 
 This script is used by the plugin to retrieve SAP Commerce runtime properties.
 It returns a paged JSON object with `page`, `pageSize`, `totalItems`, and `items`.
@@ -30,14 +30,14 @@ It returns a paged JSON object with `page`, `pageSize`, `totalItems`, and `items
 def configurationViewService = Registry.getApplicationContext()
         .getBean("configurationViewService", ConfigurationViewService)
 def config = new HashMap<String, String>(configurationViewService.readConfigParameters())
-def requestedPageToken = "[currentPagePlaceholder]"
-def pageSizeToken = "[pageSizePlaceholder]"
-def keyFilterToken = "[keyFilterPlaceholder]"
-def valueFilterToken = "[valueFilterPlaceholder]"
+def requestedPageToken = '[currentPagePlaceholder]'
+def pageSizeToken = '[pageSizePlaceholder]'
+// Single-quoted literals: the plugin substitutes user-supplied filters here, and a plain
+// Groovy string never interpolates, so a filter containing `$` or `"` cannot alter the script.
+def keyFilter = '[keyFilterPlaceholder]'
+def valueFilter = '[valueFilterPlaceholder]'
 def requestedPage = requestedPageToken.isInteger() ? requestedPageToken.toInteger() : 1
 def pageSize = pageSizeToken.isInteger() ? pageSizeToken.toInteger() : 50
-def keyFilter = keyFilterToken.startsWith("[") ? "" : keyFilterToken
-def valueFilter = valueFilterToken.startsWith("[") ? "" : valueFilterToken
 
 config.remove("extension.envs")
 config.remove("extension.names")

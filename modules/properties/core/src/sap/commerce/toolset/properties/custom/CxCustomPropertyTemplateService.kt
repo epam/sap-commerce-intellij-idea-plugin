@@ -20,6 +20,7 @@ package sap.commerce.toolset.properties.custom
 
 import com.intellij.ide.SaveAndSyncHandler
 import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -158,8 +159,7 @@ class CxCustomPropertyTemplateService(
     private fun isValidPropertyKey(key: String): Boolean = key.isNotBlank() && !key.any(Char::isWhitespace)
 
     companion object {
-        fun getInstance(project: Project): CxCustomPropertyTemplateService =
-            project.getService(CxCustomPropertyTemplateService::class.java)
+        fun getInstance(project: Project): CxCustomPropertyTemplateService = project.service()
     }
 }
 

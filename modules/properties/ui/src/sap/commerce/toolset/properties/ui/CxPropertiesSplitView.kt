@@ -95,11 +95,9 @@ class CxPropertiesSplitView(private val project: Project) : OnePixelSplitter(fal
 
         with(project.messageBus.connect(this)) {
             subscribe(HacConnectionSettingsListener.TOPIC, object : HacConnectionSettingsListener {
-                override fun onActive(connection: HacConnectionSettingsState) = updateTree()
-                override fun onUpdate(settings: Collection<HacConnectionSettingsState>) = updateTree()
+                override fun onActivate(connection: HacConnectionSettingsState) = updateTree()
                 override fun onSave(settings: Collection<HacConnectionSettingsState>) = updateTree()
                 override fun onCreate(connection: HacConnectionSettingsState) = updateTree()
-                override fun onDelete(connection: HacConnectionSettingsState) = updateTree()
             })
 
             subscribe(CxRemotePropertyStateListener.TOPIC, object : CxRemotePropertyStateListener {

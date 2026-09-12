@@ -36,9 +36,11 @@ sourceSets {
 dependencies {
     implementation(project(":shared-core"))
 
+    testImplementation(kotlin("test"))
+
     intellijPlatform {
         intellijIdea(properties("intellij.version")) {
-            useInstaller = false
+            useInstaller = true
         }
 
         bundledPlugins(

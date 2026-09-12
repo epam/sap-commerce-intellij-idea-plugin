@@ -35,6 +35,7 @@ class CxRemotePropertyStateNode(
     override fun getName() = connection.connectionName
 
     override fun update(presentation: PresentationData) {
+        if (myProject == null || myProject.isDisposed) return
         val activeConnection = HacExecConnectionService.getInstance(project).activeConnection
         val active = activeConnection == connection
         val icon = if (active) HybrisIcons.Y.REMOTE else HybrisIcons.Y.REMOTE_GREEN

@@ -43,7 +43,7 @@ dependencies {
 
     intellijPlatform {
         intellijIdea(properties("intellij.version")) {
-            useInstaller = false
+            useInstaller = true
         }
 
         bundledPlugins(

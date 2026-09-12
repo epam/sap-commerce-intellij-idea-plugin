@@ -51,7 +51,7 @@ class CxRemotePropertyStateService(
     private val coroutineScope: CoroutineScope,
 ) : Disposable {
 
-    private val propertyStates = WeakHashMap<String, CxRemotePropertyState>()
+    private val propertyStates = Collections.synchronizedMap(WeakHashMap<String, CxRemotePropertyState>())
     private val fetchingConnections = Collections.synchronizedSet(mutableSetOf<String>())
 
     val ready: Boolean
@@ -65,12 +65,7 @@ class CxRemotePropertyStateService(
     init {
         with(project.messageBus.connect(this)) {
             subscribe(HacConnectionSettingsListener.TOPIC, object : HacConnectionSettingsListener {
-                override fun onActive(connection: HacConnectionSettingsState) = Unit
-                override fun onUpdate(settings: Collection<HacConnectionSettingsState>) = settings.forEach { clearState(it) }
                 override fun onSave(settings: Collection<HacConnectionSettingsState>) = settings.forEach { clearState(it) }
-                override fun onDelete(connection: HacConnectionSettingsState) {
-                    propertyStates.remove(connection.uuid)
-                }
             })
         }
     }
@@ -225,30 +220,29 @@ class CxRemotePropertyStateService(
         val server = HacExecConnectionService.getInstance(project).activeConnection
 
         coroutineScope.launch {
-            var failed: String? = null
-
-            for (property in properties) {
-                val ok = postConfigStore(server, property.key, property.value)
-                if (!ok) {
-                    failed = property.key
-                    break
-                }
+            // Every property is attempted even when an earlier one fails, so a single rejected
+            // key cannot silently leave the rest of the template unapplied.
+            val failed = properties.filterNot { property ->
+                isValidPropertyKey(property.key.trim()) && postConfigStore(server, property.key.trim(), property.value)
             }
 
             refetchLoaded(server)
 
-            val result = if (failed == null) {
+            val result = if (failed.isEmpty()) {
                 notify(NotificationType.INFORMATION, "Properties template applied") {
                     "<p>Applied properties: ${properties.size}</p><p>Server: ${server.shortenConnectionName}</p>"
                 }
                 DefaultExecResult()
             } else {
+                val failedKeys = failed.joinToString { it.key }
                 notify(NotificationType.ERROR, "Failed to apply properties template") {
-                    "<p>Property: $failed</p><p>Server: ${server.shortenConnectionName}</p>"
+                    "<p>Applied properties: ${properties.size - failed.size} of ${properties.size}</p>" +
+                        "<p>Failed properties: $failedKeys</p>" +
+                        "<p>Server: ${server.shortenConnectionName}</p>"
                 }
                 DefaultExecResult(
                     statusCode = HttpStatus.SC_BAD_REQUEST,
-                    errorMessage = "Failed to apply property: $failed",
+                    errorMessage = "Failed to apply properties: $failedKeys",
                 )
             }
 

@@ -24,9 +24,9 @@ import com.intellij.util.xmlb.annotations.OptionTag
 import java.util.*
 
 data class CxCustomPropertyTemplateState(
-    @OptionTag val uuid: String = UUID.randomUUID().toString(),
-    @OptionTag val name: String = "",
-    @OptionTag val properties: List<CxCustomPropertyState> = emptyList(),
+    @JvmField @OptionTag val uuid: String = UUID.randomUUID().toString(),
+    @JvmField @OptionTag val name: String = "",
+    @JvmField val properties: List<CxCustomPropertyState> = emptyList(),
 ) {
     fun mutable() = Mutable(
         uuid = uuid,

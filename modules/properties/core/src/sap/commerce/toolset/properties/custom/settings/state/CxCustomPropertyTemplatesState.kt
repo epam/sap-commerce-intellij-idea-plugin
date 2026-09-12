@@ -18,6 +18,9 @@
 
 package sap.commerce.toolset.properties.custom.settings.state
 
+import com.intellij.util.xmlb.annotations.Tag
+
+@Tag("HybrisCustomPropertyTemplates")
 data class CxCustomPropertyTemplatesState(
-    val templates: List<CxCustomPropertyTemplateState> = emptyList(),
+    @JvmField val templates: List<CxCustomPropertyTemplateState> = emptyList(),
 )

@@ -20,8 +20,6 @@ package sap.commerce.toolset.properties
 
 object CxPropertyConstants {
     const val EXTENSION_STATE_SCRIPT = "cx-properties-state.groovy"
-    const val HIDDEN_PROPERTY_EXTENSION_ENVS = "extension.envs"
-    const val HIDDEN_PROPERTY_EXTENSION_NAMES = "extension.names"
     const val PAGE_PLACEHOLDER = "[currentPagePlaceholder]"
     const val PAGE_SIZE_PLACEHOLDER = "[pageSizePlaceholder]"
     const val KEY_FILTER_PLACEHOLDER = "[keyFilterPlaceholder]"

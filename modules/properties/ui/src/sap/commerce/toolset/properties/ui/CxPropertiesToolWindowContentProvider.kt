@@ -26,7 +26,7 @@ import sap.commerce.toolset.ui.toolwindow.CxToolWindowContentProvider
 class CxPropertiesToolWindowContentProvider : CxToolWindowContentProvider(
     "Properties",
     HybrisIcons.Extension.CONFIG,
-    5,
+    6,
 ) {
     override fun createComponent(project: Project, parentDisposable: Disposable) = CxPropertiesToolWindow(project, parentDisposable)
 }

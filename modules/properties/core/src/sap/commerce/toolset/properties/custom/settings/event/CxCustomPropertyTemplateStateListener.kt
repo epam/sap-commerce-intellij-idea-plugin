@@ -22,10 +22,10 @@ import com.intellij.util.messages.Topic
 import sap.commerce.toolset.properties.presentation.CxPropertyTemplatePresentation
 
 interface CxCustomPropertyTemplateStateListener {
-    fun onTemplateUpdated(templateUUID: String)
-    fun onTemplatesDeleted()
-    fun onPropertyDeleted(modifiedTemplate: CxPropertyTemplatePresentation)
-    fun onPropertyUpdated(modifiedTemplate: CxPropertyTemplatePresentation)
+    fun onTemplateUpdated(templateUUID: String) = Unit
+    fun onTemplatesDeleted() = Unit
+    fun onPropertyDeleted(modifiedTemplate: CxPropertyTemplatePresentation) = Unit
+    fun onPropertyUpdated(modifiedTemplate: CxPropertyTemplatePresentation) = Unit
 
     companion object {
         @Topic.ProjectLevel

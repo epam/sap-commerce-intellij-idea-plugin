@@ -23,8 +23,8 @@ import com.intellij.openapi.observable.properties.ObservableMutableProperty
 import com.intellij.util.xmlb.annotations.OptionTag
 
 data class CxCustomPropertyState(
-    @OptionTag val key: String = "",
-    @OptionTag val value: String = "",
+    @JvmField @OptionTag val key: String = "",
+    @JvmField @OptionTag val value: String = "",
 ) {
     fun mutable() = Mutable(
         key = AtomicProperty(key),

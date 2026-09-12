@@ -22,7 +22,7 @@ import com.intellij.util.messages.Topic
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
 
 interface CxRemotePropertyStateListener {
-    fun onPropertiesStateChanged(remoteConnection: HacConnectionSettingsState)
+    fun onPropertiesStateChanged(remoteConnection: HacConnectionSettingsState) = Unit
 
     companion object {
         @Topic.ProjectLevel
