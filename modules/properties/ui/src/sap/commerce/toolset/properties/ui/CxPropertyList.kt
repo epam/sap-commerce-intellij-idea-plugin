@@ -75,6 +75,19 @@ internal class CxPropertyList(
     var editingKey: String? = null
         private set
 
+    /**
+     * Values the project's own property files resolve to, keyed by property key. Rows whose remote value disagrees
+     * with the one declared here are highlighted by [CxPropertyRenderer]; keys which are absent are not highlighted,
+     * as a property existing only on the remote instance is not a disagreement.
+     */
+    var localValues: Map<String, String> = emptyMap()
+        set(value) {
+            if (field != value) {
+                field = value
+                repaint()
+            }
+        }
+
     private var editorOverlay: InlinePropertyEditor? = null
 
     init {

@@ -20,6 +20,7 @@ package sap.commerce.toolset.properties.ui
 
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.application.EDT
+import com.intellij.openapi.application.smartReadAction
 import com.intellij.openapi.observable.properties.AtomicBooleanProperty
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogPanel
@@ -38,12 +39,14 @@ import com.intellij.util.ui.JBUI
 import com.intellij.util.ui.UIUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
 import sap.commerce.toolset.properties.CxPropertyConstants
 import sap.commerce.toolset.properties.CxPropertyKey
 import sap.commerce.toolset.properties.CxRemotePropertyStateService
 import sap.commerce.toolset.properties.exec.CxRemotePropertyStatePage
+import sap.commerce.toolset.properties.meta.CxPropertyCollector
 import sap.commerce.toolset.properties.presentation.CxPropertyPresentation
 import sap.commerce.toolset.ui.addDocumentListener
 import sap.commerce.toolset.ui.event.documentListener
@@ -81,6 +84,7 @@ class CxRemotePropertyStateView(private val project: Project) : Disposable {
     private lateinit var addValueField: JBTextField
     private lateinit var statusLabel: JLabel
     private lateinit var bottomLoadingLabel: JLabel
+    private lateinit var differingLabel: JLabel
     private lateinit var fetchingLabel: JLabel
 
     private lateinit var currentConnection: HacConnectionSettingsState
@@ -211,7 +215,7 @@ class CxRemotePropertyStateView(private val project: Project) : Disposable {
     }
 
     suspend fun render(
-        @Suppress("UNUSED_PARAMETER") coroutineScope: CoroutineScope,
+        coroutineScope: CoroutineScope,
         connection: HacConnectionSettingsState,
         statePage: CxRemotePropertyStatePage?,
     ): JComponent {
@@ -227,6 +231,8 @@ class CxRemotePropertyStateView(private val project: Project) : Disposable {
                 toggleView(if (service.isFetching(connection)) showFetchingState else showFetchProperties)
                 propertyList.cancelEdit()
                 listModel.removeAll()
+                propertyList.localValues = emptyMap()
+                updateDifferingStatus(0)
                 lastSeenLoadedCount = -1
                 lastSeenFilterSignature = ""
             }
@@ -236,6 +242,7 @@ class CxRemotePropertyStateView(private val project: Project) : Disposable {
         val connectionChanged = !::currentConnection.isInitialized || currentConnection.uuid != connection.uuid
         currentConnection = connection
         this.statePage = statePage
+        var adoptedSnapshot = false
 
         withContext(Dispatchers.EDT) {
             if (connectionChanged) {
@@ -253,12 +260,45 @@ class CxRemotePropertyStateView(private val project: Project) : Disposable {
             // otherwise repopulate the list with results for the previous filter.
             val filtersMatch = statePage.keyFilter == keyFilterField.text.trim()
                 && statePage.valueFilter == valueFilterField.text.trim()
-            if (filtersMatch) syncListModel(connectionChanged, statePage)
+            if (filtersMatch) {
+                syncListModel(connectionChanged, statePage)
+                adoptedSnapshot = true
+            }
 
             bottomLoadingLabel.isVisible = service.isFetching(connection)
         }
 
+        // Resolving the project chain walks the indexes, so it must not hold up the rows: the
+        // comparison lands in a follow-up repaint once the model is available.
+        if (adoptedSnapshot) coroutineScope.launch { highlightDifferingProperties(statePage) }
+
         return withContext(Dispatchers.EDT) { viewPanel }
+    }
+
+    /**
+     * Compares every loaded remote property against the value the project's own property files resolve to and hands
+     * the result to the list, which repaints the disagreeing rows.
+     */
+    private suspend fun highlightDifferingProperties(statePage: CxRemotePropertyStatePage) {
+        val chain = smartReadAction(project) { CxPropertyCollector.getInstance(project).collect() }
+        val localValues = chain.resolveAll(statePage.properties.map { it.key })
+        val differingCount = statePage.properties.count { localValues[it.key]?.equals(it.value) == false }
+
+        withContext(Dispatchers.EDT) {
+            propertyList.localValues = localValues
+            updateDifferingStatus(differingCount)
+        }
+    }
+
+    private fun updateDifferingStatus(differingCount: Int) {
+        if (!::differingLabel.isInitialized) return
+
+        differingLabel.text = when (differingCount) {
+            0 -> ""
+            1 -> "1 value differs from the project files"
+            else -> "$differingCount values differ from the project files"
+        }
+        differingLabel.isVisible = differingCount > 0
     }
 
     /**
@@ -405,8 +445,8 @@ class CxRemotePropertyStateView(private val project: Project) : Disposable {
 
     /**
      * Bottom toolbar — sits below the scrolling area and shows summary status. The "Loading…"
-     * label only appears while a fetch is in flight; the right-aligned label shows the
-     * "Loaded N of M total" counter.
+     * label only appears while a fetch is in flight, the middle label legends the highlighted
+     * rows, and the right-aligned label shows the "Loaded N of M total" counter.
      */
     private fun buildBottomToolbar(): JComponent {
         val bg = UIUtil.getPanelBackground()
@@ -424,15 +464,25 @@ class CxRemotePropertyStateView(private val project: Project) : Disposable {
             isVisible = false
         }
         statusLabel = JLabel("")
+        differingLabel = JLabel("").apply {
+            foreground = CxPropertyRenderer.VALUE_DIFFERS_COLOR
+            isVisible = false
+        }
 
         toolbar.add(bottomLoadingLabel, GridBagConstraints().apply {
             gridx = 0; gridy = 0
+            weightx = 0.0
+            anchor = GridBagConstraints.WEST
+        })
+        toolbar.add(differingLabel, GridBagConstraints().apply {
+            gridx = 1; gridy = 0
             weightx = 1.0
             anchor = GridBagConstraints.WEST
             fill = GridBagConstraints.HORIZONTAL
+            insets = JBUI.insets(0, JBUI.scale(COLUMN_GAP), 0, 0)
         })
         toolbar.add(statusLabel, GridBagConstraints().apply {
-            gridx = 1; gridy = 0
+            gridx = 2; gridy = 0
             weightx = 0.0
             anchor = GridBagConstraints.EAST
         })

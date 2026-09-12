@@ -18,6 +18,7 @@
 
 package sap.commerce.toolset.properties.ui
 
+import com.intellij.openapi.util.text.StringUtil
 import com.intellij.ui.JBColor
 import com.intellij.ui.components.JBLabel
 import com.intellij.util.asSafely
@@ -43,6 +44,10 @@ import javax.swing.*
  * cell background) so the user can see which row's actions belong to the
  * cursor position. The action icons are always visible; the hover only
  * affects the row background, similar to standard table tools.
+ *
+ * A row whose remote value disagrees with the one the project's property files resolve to
+ * (see [CxPropertyList.localValues]) is painted in [VALUE_DIFFERS_COLOR] and carries a
+ * tooltip spelling out both values.
  */
 internal class CxPropertyRenderer : JPanel(), ListCellRenderer<CxPropertyPresentation> {
 
@@ -155,19 +160,41 @@ internal class CxPropertyRenderer : JPanel(), ListCellRenderer<CxPropertyPresent
         // bleed through any transparent gap in the overlay.
         hovered = !editing && cxList?.hoveredIndex == index
 
+        // A property which is not declared by the project at all is not a disagreement - only a
+        // locally declared key resolving to something else counts as one.
+        val differingLocalValue = cxList?.localValues
+            ?.get(property.key)
+            ?.takeIf { it != property.value }
+
         keyLabel.text = if (editing) "" else property.key
         keyLabel.toolTipText = if (editing) null else property.key
+        keyLabel.foreground = if (differingLocalValue != null) VALUE_DIFFERS_COLOR else UIUtil.getLabelForeground()
         valueLabel.text = if (editing) "" else property.value
-        valueLabel.toolTipText = if (editing) null else property.value.takeIf { it.isNotBlank() }
+        valueLabel.foreground = if (differingLocalValue != null) VALUE_DIFFERS_COLOR else JBColor.GRAY
+        valueLabel.toolTipText = when {
+            editing -> null
+            differingLocalValue != null -> differenceTooltip(property.value, differingLocalValue)
+            else -> property.value.takeIf { it.isNotBlank() }
+        }
         editLabel.isVisible = !editing
         deleteLabel.isVisible = !editing
 
         return this
     }
 
+    private fun differenceTooltip(remoteValue: String, localValue: String) = buildString {
+        append("<html><body>")
+        append("<p><b>Remote:</b> ").append(StringUtil.escapeXmlEntities(remoteValue)).append("</p>")
+        append("<p><b>Project files:</b> ").append(StringUtil.escapeXmlEntities(localValue)).append("</p>")
+        append("</body></html>")
+    }
+
     companion object {
         @Serial
         private const val serialVersionUID: Long = 7124083902112374581L
+
+        /** Marks a remote value which disagrees with the one resolved from the project's property files. */
+        val VALUE_DIFFERS_COLOR = JBColor.namedColor("hybris.properties.valueDiffersFromProject", 0x2470B3, 0x589DF6)
 
         private const val VERTICAL_PADDING = 6
         private const val HORIZONTAL_PADDING = 12

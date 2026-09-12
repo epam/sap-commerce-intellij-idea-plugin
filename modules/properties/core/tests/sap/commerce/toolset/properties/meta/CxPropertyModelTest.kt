@@ -212,6 +212,36 @@ class CxPropertyModelTest {
     }
 
     @Test
+    fun `resolving a given set of keys keeps only the ones the project declares`() {
+        val model = model(
+            platformProject to ("db.url" to "jdbc:platform"),
+            local to ("db.driver" to "com.mysql.Driver"),
+        )
+
+        assertEquals(
+            mapOf("db.url" to "jdbc:platform", "db.driver" to "com.mysql.Driver"),
+            model.resolveAll(listOf("db.url", "db.driver", "cluster.id")),
+        )
+    }
+
+    @Test
+    fun `resolving a given set of keys expands their placeholders`() {
+        val model = model(
+            platformProject to ("db.url" to "jdbc:\${db.host}"),
+            local to ("db.host" to "localhost"),
+        )
+
+        assertEquals(mapOf("db.url" to "jdbc:localhost"), model.resolveAll(listOf("db.url")))
+    }
+
+    @Test
+    fun `resolving a repeated key yields it once`() {
+        val model = model(local to ("db.url" to "jdbc:local"))
+
+        assertEquals(mapOf("db.url" to "jdbc:local"), model.resolveAll(listOf("db.url", "db.url")))
+    }
+
+    @Test
     fun `sources are ordered from the lowest to the highest precedence`() {
         val model = model(
             local to ("a" to "1"),

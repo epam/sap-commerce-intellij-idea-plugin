@@ -46,7 +46,14 @@ class CxPropertyModel private constructor(
         ?.let { expand(it, setOf(key)) }
 
     /** Every resolved property of the chain, ordered by key. */
-    fun resolveAll(): Map<String, String> = properties.keys
+    fun resolveAll(): Map<String, String> = resolveAll(properties.keys)
+
+    /**
+     * Values the chain resolves to for the given [keys], in their iteration order. Keys the project does not declare
+     * are left out, so the result tells apart "declared as something else" from "not declared here at all".
+     */
+    fun resolveAll(keys: Collection<String>): Map<String, String> = keys
+        .distinct()
         .mapNotNull { key -> resolve(key)?.let { key to it } }
         .toMap(LinkedHashMap())
 
