@@ -518,7 +518,7 @@ class CxRemotePropertyStateView(private val project: Project) : Disposable {
         private const val COLUMN_GAP = 8
         private const val HEADER_VERTICAL_PADDING = 6
         private const val HEADER_HORIZONTAL_PADDING = 12
-        private const val HEADER_ACTION_RESERVED_WIDTH = 96
+        private val HEADER_ACTION_RESERVED_WIDTH = CxPropertyRowAction.entries.sumOf { it.hitWidth } + 12
         private const val TOOLBAR_VERTICAL_PADDING = 6
         private const val TOOLBAR_HORIZONTAL_PADDING = 12
     }

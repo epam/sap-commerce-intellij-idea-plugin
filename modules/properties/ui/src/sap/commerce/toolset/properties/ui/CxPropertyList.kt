@@ -125,6 +125,8 @@ internal class CxPropertyList(
             }
         }
 
+    private lateinit var mouseHandler: CxPropertyMouseHandler
+
     init {
         // Match the surrounding DialogPanel background so the data area doesn't look like a
         // separate gray pane. The renderer reads this value at paint time.
@@ -156,6 +158,7 @@ internal class CxPropertyList(
         })
 
         val mouseHandler = CxPropertyMouseHandler(this, model, onReportClicked, onEditClicked, onDeleteClicked)
+        this.mouseHandler = mouseHandler
         this.addMouseListener(parentDisposable, mouseHandler)
         this.addMouseMotionListener(parentDisposable, mouseHandler)
         cellRenderer = CxPropertyRenderer()
@@ -211,14 +214,18 @@ internal class CxPropertyList(
     }
 
     /**
-     * Explains a highlighted row: what the project's own property files declare and where. Rows which agree with the
-     * remote instance, rows the project does not declare, and the row being edited have nothing to explain.
+     * Names the action icon under the cursor, or - anywhere else on the row - explains a highlighted row by spelling
+     * out what the project's own property files declare and where. Rows which agree with the remote instance, rows the
+     * project does not declare, and the row being edited have nothing to explain.
      */
     override fun getToolTipText(event: MouseEvent): String? {
         if (!isOnRow(event)) return null
 
         val property = model.items.getOrNull(locationToIndex(event.point)) ?: return null
         if (property.key == editingKey) return null
+
+        mouseHandler.actionAt(event)
+            ?.let { return it.tooltip }
 
         val local = localProperties[property.key]
             ?.takeIf { it.value != property.value }

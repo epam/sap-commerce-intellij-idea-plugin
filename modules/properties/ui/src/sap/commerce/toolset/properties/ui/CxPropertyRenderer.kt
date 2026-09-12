@@ -65,20 +65,11 @@ internal class CxPropertyRenderer : JPanel(), ListCellRenderer<CxPropertyPresent
         foreground = JBColor.GRAY
     }
 
-    private val reportLabel = JBLabel(HybrisIcons.Property.REPORT).apply {
-        toolTipText = "Show property report"
-        border = JBUI.Borders.empty(2)
-    }
-
-    private val editLabel = JBLabel(HybrisIcons.Connection.EDIT).apply {
-        toolTipText = "Edit property"
-        border = JBUI.Borders.empty(2)
-    }
-
-    private val deleteLabel = JBLabel(HybrisIcons.Log.Action.DELETE).apply {
-        toolTipText = "Delete property"
-        border = JBUI.Borders.empty(2)
-    }
+    // Tooltips for these belong to CxPropertyList: a renderer never joins the component hierarchy,
+    // so the ToolTipManager would never ask it.
+    private val reportLabel = JBLabel(HybrisIcons.Property.REPORT).apply { border = JBUI.Borders.empty(2) }
+    private val editLabel = JBLabel(HybrisIcons.Connection.EDIT).apply { border = JBUI.Borders.empty(2) }
+    private val deleteLabel = JBLabel(HybrisIcons.Log.Action.DELETE).apply { border = JBUI.Borders.empty(2) }
 
     // Resolved at paint time so theme switches apply immediately.
     private val pillColor: Color
@@ -209,13 +200,5 @@ internal class CxPropertyRenderer : JPanel(), ListCellRenderer<CxPropertyPresent
         /** Height a row needs for the read-only key / value labels not to be clipped. */
         fun rowHeight() = JBLabel("X").preferredSize.height + 2 * JBUI.scale(VERTICAL_PADDING)
 
-        /** Width of the click hit zone for the delete icon, measured from the cell's right edge. */
-        const val DELETE_HIT_WIDTH = 28
-
-        /** Width of the click hit zone for the edit icon, measured leftward from [DELETE_HIT_WIDTH]. */
-        const val EDIT_HIT_WIDTH = 28
-
-        /** Width of the click hit zone for the report icon, measured leftward from [EDIT_HIT_WIDTH]. */
-        const val REPORT_HIT_WIDTH = 28
     }
 }

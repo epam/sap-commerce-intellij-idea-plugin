@@ -24,6 +24,7 @@ import com.intellij.ui.CollectionListModel
 import com.intellij.util.ui.JBUI
 import sap.commerce.toolset.properties.presentation.CxPropertyPresentation
 import java.awt.Cursor
+import java.awt.Point
 import java.awt.Rectangle
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
@@ -55,10 +56,11 @@ internal class CxPropertyMouseHandler(
         if (!bounds.contains(e.point)) return
 
         val property = model.getElementAt(index)
-        when {
-            isOnDelete(e, bounds) -> onDeleteClicked(property)
-            isOnEdit(e, bounds) -> onEditClicked(property)
-            isOnReport(e, bounds) -> onReportClicked(property)
+        when (actionAt(e.point, bounds)) {
+            CxPropertyRowAction.DELETE -> onDeleteClicked(property)
+            CxPropertyRowAction.EDIT -> onEditClicked(property)
+            CxPropertyRowAction.REPORT -> onReportClicked(property)
+            null -> Unit
         }
     }
 
@@ -74,32 +76,23 @@ internal class CxPropertyMouseHandler(
         list.cursor = DEFAULT_CURSOR
     }
 
-    private fun isOnActionZone(e: MouseEvent): Boolean {
-        val index = list.locationToIndex(e.point)
-        if (index < 0) return false
-        val bounds = list.getCellBounds(index, index) ?: return false
-        return isOnEdit(e, bounds) || isOnDelete(e, bounds) || isOnReport(e, bounds)
+    private fun isOnActionZone(e: MouseEvent) = actionAt(e) != null
+
+    /** Action icon under [e], or `null` when the cursor is not over one. */
+    fun actionAt(e: MouseEvent): CxPropertyRowAction? {
+        val index = list.locationToIndex(e.point).takeIf { it >= 0 } ?: return null
+        val bounds = list.getCellBounds(index, index) ?: return null
+
+        return actionAt(e.point, bounds)
     }
 
-    private fun isOnDelete(e: MouseEvent, cellBounds: Rectangle): Boolean {
-        val zoneStart = cellBounds.x + cellBounds.width - JBUI.scale(CxPropertyRenderer.DELETE_HIT_WIDTH)
-        return e.point.x >= zoneStart
-    }
+    private fun actionAt(point: Point, cellBounds: Rectangle): CxPropertyRowAction? {
+        val fromRightEdge = cellBounds.x + cellBounds.width - point.x
+        if (fromRightEdge < 0) return null
 
-    private fun isOnEdit(e: MouseEvent, cellBounds: Rectangle): Boolean {
-        val deleteZoneStart = cellBounds.x + cellBounds.width - JBUI.scale(CxPropertyRenderer.DELETE_HIT_WIDTH)
-        return e.point.x in editZoneStart(cellBounds) until deleteZoneStart
+        return CxPropertyRowAction.entries
+            .find { fromRightEdge <= JBUI.scale(CxPropertyRowAction.offsetOf(it)) }
     }
-
-    private fun isOnReport(e: MouseEvent, cellBounds: Rectangle): Boolean {
-        val editZoneStart = editZoneStart(cellBounds)
-        val reportZoneStart = editZoneStart - JBUI.scale(CxPropertyRenderer.REPORT_HIT_WIDTH)
-        return e.point.x in reportZoneStart until editZoneStart
-    }
-
-    private fun editZoneStart(cellBounds: Rectangle) = cellBounds.x + cellBounds.width -
-        JBUI.scale(CxPropertyRenderer.DELETE_HIT_WIDTH) -
-        JBUI.scale(CxPropertyRenderer.EDIT_HIT_WIDTH)
 
     companion object {
         private val HAND_CURSOR = Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)
