@@ -45,8 +45,8 @@ import javax.swing.*
  * cursor position. The action icons are always visible; the hover only
  * affects the row background, similar to standard table tools.
  *
- * A row whose remote value disagrees with the one the project's property files resolve to
- * (see [CxPropertyList.localProperties]) is painted in [VALUE_DIFFERS_COLOR]; the values
+ * A row disagreeing with the side it is held against (see [CxPropertyList.counterpart])
+ * is painted in [VALUE_DIFFERS_COLOR]; the values
  * themselves are spelled out by [CxPropertyList.getToolTipText], since a tooltip assigned
  * here would never reach the `ToolTipManager`.
  */
@@ -176,13 +176,8 @@ internal class CxPropertyRenderer : JPanel(), ListCellRenderer<CxPropertyPresent
         // The menu row stays lit while its menu is open, so it is clear what the menu will act on.
         hovered = !editing && (cxList?.hoveredIndex == index || cxList?.contextMenuProperty == property)
 
-        // A property which is not declared by the project at all is not a disagreement - only a
-        // locally declared key resolving to something else counts as one.
-        val differs = cxList?.localProperties
-            ?.get(property.key)
-            ?.value
-            ?.let { it != property.value }
-            ?: false
+        // An absence on the other side is not a disagreement - only a value which is there and differs.
+        val differs = cxList?.counterpart?.disagreementWith(property) != null
 
         keyLabel.text = if (editing) "" else property.key
         keyLabel.foreground = if (differs) VALUE_DIFFERS_COLOR else UIUtil.getLabelForeground()

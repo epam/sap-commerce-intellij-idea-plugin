@@ -31,7 +31,6 @@ import com.intellij.ui.components.JBList
 import com.intellij.util.asSafely
 import com.intellij.util.ui.JBUI
 import com.intellij.util.ui.UIUtil
-import sap.commerce.toolset.properties.meta.CxResolvedProperty
 import sap.commerce.toolset.properties.presentation.CxPropertyPresentation
 import sap.commerce.toolset.ui.addListSelectionListener
 import sap.commerce.toolset.ui.addMouseListener
@@ -98,16 +97,14 @@ internal class CxPropertyList(
         private set
 
     /**
-     * Properties as the project's own files declare them, keyed by property key. Rows whose remote value disagrees
-     * with the one declared here are highlighted by [CxPropertyRenderer] and explained by [getToolTipText]; keys
-     * which are absent are left alone, as a property existing only on the remote instance is not a disagreement.
+     * The other side these rows are held against. Rows disagreeing with it are highlighted by [CxPropertyRenderer] and
+     * explained by [getToolTipText]; keys the other side does not know are left alone, since an absence is not a
+     * disagreement.
      */
-    var localProperties: Map<String, CxResolvedProperty> = emptyMap()
+    var counterpart: CxPropertyCounterpart? = null
         set(value) {
-            if (field != value) {
-                field = value
-                repaint()
-            }
+            field = value
+            repaint()
         }
 
     private var editorOverlay: InlinePropertyEditor? = null
@@ -294,21 +291,24 @@ internal class CxPropertyList(
 
         if (selectable && mouseHandler.isOnCheckBox(event)) return "Select property"
 
-        val local = localProperties[property.key]
-            ?.takeIf { it.value != property.value }
-            ?: return null
+        val counterpart = counterpart ?: return null
+        val otherValue = counterpart.disagreementWith(property) ?: return null
+        val declaration = counterpart.declarationOf(property.key)
 
         return buildString {
             append("<html><body>")
-            append("<p><b>Remote:</b> ").append(escape(property.value)).append("</p>")
-            append("<p><b>Project:</b> ").append(escape(local.value)).append("</p>")
-            // A raw value only differs once it carries placeholders - showing it then explains the expansion.
-            if (local.rawValue != local.value) {
-                append("<p><b>Declared as:</b> ").append(escape(local.rawValue)).append("</p>")
+            append("<p><b>${counterpart.ownLabel}:</b> ").append(escape(property.value)).append("</p>")
+            append("<p><b>${counterpart.otherLabel}:</b> ").append(escape(otherValue)).append("</p>")
+
+            declaration?.let {
+                // A raw value only differs once it carries placeholders - showing it then explains the expansion.
+                if (it.rawValue != it.value) {
+                    append("<p><b>Declared as:</b> ").append(escape(it.rawValue)).append("</p>")
+                }
+                append("<p><b>Declared in:</b> ").append(escape(it.source.presentableName)).append("</p>")
+                it.source.path
+                    ?.let { path -> append("<p><small>").append(escape(path)).append("</small></p>") }
             }
-            append("<p><b>Declared in:</b> ").append(escape(local.source.presentableName)).append("</p>")
-            local.source.path
-                ?.let { append("<p><small>").append(escape(it)).append("</small></p>") }
             append("</body></html>")
         }
     }

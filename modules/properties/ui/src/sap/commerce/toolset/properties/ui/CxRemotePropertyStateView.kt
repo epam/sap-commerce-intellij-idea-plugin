@@ -303,7 +303,7 @@ class CxRemotePropertyStateView(private val project: Project) : Disposable {
                 toggleView(if (service.isFetching(connection)) showFetchingState else showFetchProperties)
                 propertyList.cancelEdit()
                 listModel.removeAll()
-                propertyList.localProperties = emptyMap()
+                propertyList.counterpart = null
                 updateDifferingStatus(0)
                 lastSeenLoadedCount = -1
                 lastSeenFilterSignature = ""
@@ -472,12 +472,11 @@ class CxRemotePropertyStateView(private val project: Project) : Disposable {
         resolvedChain: CxPropertyModel? = null,
     ) {
         val chain = resolvedChain ?: smartReadAction(project) { CxPropertyCollector.getInstance(project).collect() }
-        val localProperties = chain.resolveProperties(properties.map { it.key })
-        val differingCount = properties.count { localProperties[it.key]?.value?.equals(it.value) == false }
+        val counterpart = CxPropertyCounterpart.project(chain.resolveProperties(properties.map { it.key }))
 
         withContext(Dispatchers.EDT) {
-            propertyList.localProperties = localProperties
-            updateDifferingStatus(differingCount)
+            propertyList.counterpart = counterpart
+            updateDifferingStatus(counterpart.countDisagreements(properties))
         }
     }
 

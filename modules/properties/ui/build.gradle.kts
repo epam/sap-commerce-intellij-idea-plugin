@@ -37,6 +37,7 @@ dependencies {
     implementation(project(":shared-core"))
     implementation(project(":shared-ui"))
     implementation(project(":properties-core"))
+    implementation(project(":project-core"))
     implementation(project(":properties-exec"))
     implementation(project(":exec-core"))
     implementation(project(":hac-exec"))
@@ -48,6 +49,7 @@ dependencies {
 
         bundledPlugins(
             "com.intellij.java",
+            "com.intellij.properties",
         )
     }
 }

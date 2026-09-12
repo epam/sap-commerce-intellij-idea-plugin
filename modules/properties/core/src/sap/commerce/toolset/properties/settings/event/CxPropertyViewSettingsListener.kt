@@ -19,11 +19,14 @@
 package sap.commerce.toolset.properties.settings.event
 
 import com.intellij.util.messages.Topic
+import sap.commerce.toolset.properties.settings.state.CxPropertySourceMode
 import sap.commerce.toolset.properties.settings.state.CxPropertyViewMode
 
 interface CxPropertyViewSettingsListener {
 
     fun onViewModeChanged(viewMode: CxPropertyViewMode) = Unit
+
+    fun onSourceModeChanged(sourceMode: CxPropertySourceMode) = Unit
 
     companion object {
         @Topic.ProjectLevel

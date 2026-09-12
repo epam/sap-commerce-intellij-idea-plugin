@@ -617,6 +617,8 @@ object HybrisIcons {
         val SHADOWED = AllIcons.General.Information
         val IGNORED = AllIcons.General.Warning
         val VIEW_OPTIONS = AllIcons.Actions.Show
+        val SOURCE_CODE = AllIcons.Nodes.ModuleGroup
+        val SOURCE_MODE = AllIcons.Actions.GroupBy
     }
 
     object WelcomeTab {

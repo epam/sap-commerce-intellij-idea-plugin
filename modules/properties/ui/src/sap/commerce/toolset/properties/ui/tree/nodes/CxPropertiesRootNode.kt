@@ -23,6 +23,7 @@ import com.intellij.openapi.project.Project
 class CxPropertiesRootNode(project: Project) : CxPropertiesNode(project, "root") {
     override fun getNewChildren() = listOf(
         CxRemoteHacInstancesNode(project),
+        CxSourceCodeNode(project),
         CxCustomPropertyTemplateGroupNode(project),
     ).associateBy { it.name }
 }

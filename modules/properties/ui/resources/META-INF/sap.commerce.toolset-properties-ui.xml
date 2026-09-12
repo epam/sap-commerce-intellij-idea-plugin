@@ -35,7 +35,12 @@
         <group id="sap.cx.properties.toolbar.actions" searchable="false">
             <reference ref="sap.commerce.toolset.hac.chooseConnection"/>
             <reference ref="sap.cx.properties.remote.fetch"/>
+            <separator/>
+            <reference ref="sap.cx.properties.source.mode"/>
         </group>
+
+        <group id="sap.cx.properties.source.mode" popup="true" searchable="false"
+               class="sap.commerce.toolset.properties.actionSystem.CxPropertySourceModeActionGroup"/>
 
         <group id="sap.cx.properties.template.item.actions" searchable="false">
             <reference ref="sap.cx.properties.applyTemplate"/>
