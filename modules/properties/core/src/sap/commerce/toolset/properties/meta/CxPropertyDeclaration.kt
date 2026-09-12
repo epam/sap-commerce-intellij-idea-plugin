@@ -20,9 +20,16 @@ package sap.commerce.toolset.properties.meta
 
 /**
  * One `key=value` pair as it is written in a concrete [source], with no placeholder substitution applied.
+ *
+ * @param offset where the declaration starts in [CxPropertySource.file], for navigation; `-1` when unknown.
  */
 data class CxPropertyDeclaration(
     val key: String,
     val value: String,
     val source: CxPropertySource,
-)
+    val offset: Int = -1,
+) {
+
+    val navigatable
+        get() = source.file != null && offset >= 0
+}

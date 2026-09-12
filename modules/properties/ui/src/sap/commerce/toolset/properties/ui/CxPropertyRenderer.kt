@@ -32,8 +32,8 @@ import javax.swing.*
 /**
  * Cell renderer for the [CxPropertyList] infinite-scroll table.
  *
- * Layout matches the legacy paginated UI: a 50/50 key/value split with edit
- * and delete action icons pinned to the right edge. Long text is clipped with
+ * Layout matches the legacy paginated UI: a 50/50 key/value split with report,
+ * edit and delete action icons pinned to the right edge. Long text is clipped with
  * "…" — JLabel does this automatically once the assigned width is below its
  * preferred width, which GridBagLayout produces by giving the action icons
  * fixed widths and letting the key/value columns share the remainder via
@@ -63,6 +63,11 @@ internal class CxPropertyRenderer : JPanel(), ListCellRenderer<CxPropertyPresent
         override fun getPreferredSize(): Dimension = Dimension(0, super.getPreferredSize().height)
     }.apply {
         foreground = JBColor.GRAY
+    }
+
+    private val reportLabel = JBLabel(HybrisIcons.Property.REPORT).apply {
+        toolTipText = "Show property report"
+        border = JBUI.Borders.empty(2)
     }
 
     private val editLabel = JBLabel(HybrisIcons.Connection.EDIT).apply {
@@ -108,14 +113,20 @@ internal class CxPropertyRenderer : JPanel(), ListCellRenderer<CxPropertyPresent
             fill = GridBagConstraints.BOTH
             insets = JBUI.insets(0, gap / 2, 0, JBUI.scale(ACTION_LEFT_INSET))
         })
-        add(editLabel, GridBagConstraints().apply {
+        add(reportLabel, GridBagConstraints().apply {
             gridx = 2; gridy = 0
             weightx = 0.0; weighty = 1.0
             fill = GridBagConstraints.VERTICAL
             insets = JBUI.insets(0, JBUI.scale(ACTION_GAP), 0, 0)
         })
-        add(deleteLabel, GridBagConstraints().apply {
+        add(editLabel, GridBagConstraints().apply {
             gridx = 3; gridy = 0
+            weightx = 0.0; weighty = 1.0
+            fill = GridBagConstraints.VERTICAL
+            insets = JBUI.insets(0, JBUI.scale(ACTION_GAP), 0, 0)
+        })
+        add(deleteLabel, GridBagConstraints().apply {
+            gridx = 4; gridy = 0
             weightx = 0.0; weighty = 1.0
             fill = GridBagConstraints.VERTICAL
             insets = JBUI.insets(0, JBUI.scale(ACTION_GAP), 0, 0)
@@ -173,6 +184,7 @@ internal class CxPropertyRenderer : JPanel(), ListCellRenderer<CxPropertyPresent
         keyLabel.foreground = if (differs) VALUE_DIFFERS_COLOR else UIUtil.getLabelForeground()
         valueLabel.text = if (editing) "" else property.value
         valueLabel.foreground = if (differs) VALUE_DIFFERS_COLOR else JBColor.GRAY
+        reportLabel.isVisible = !editing
         editLabel.isVisible = !editing
         deleteLabel.isVisible = !editing
 
@@ -202,5 +214,8 @@ internal class CxPropertyRenderer : JPanel(), ListCellRenderer<CxPropertyPresent
 
         /** Width of the click hit zone for the edit icon, measured leftward from [DELETE_HIT_WIDTH]. */
         const val EDIT_HIT_WIDTH = 28
+
+        /** Width of the click hit zone for the report icon, measured leftward from [EDIT_HIT_WIDTH]. */
+        const val REPORT_HIT_WIDTH = 28
     }
 }

@@ -33,6 +33,7 @@ import java.awt.event.MouseEvent
  *
  * - Hovering a row updates [CxPropertyList.hoveredIndex] and switches the cursor to a hand
  *   over the action icons.
+ * - Left-click on the report hit zone fires [onReportClicked].
  * - Left-click on the edit hit zone fires [onEditClicked].
  * - Left-click on the delete hit zone fires [onDeleteClicked].
  * - Clicks anywhere else on the row are ignored.
@@ -40,6 +41,7 @@ import java.awt.event.MouseEvent
 internal class CxPropertyMouseHandler(
     private val list: CxPropertyList,
     private val model: CollectionListModel<CxPropertyPresentation>,
+    private val onReportClicked: (CxPropertyPresentation) -> Unit,
     private val onEditClicked: (CxPropertyPresentation) -> Unit,
     private val onDeleteClicked: (CxPropertyPresentation) -> Unit,
 ) : MouseAdapter() {
@@ -56,6 +58,7 @@ internal class CxPropertyMouseHandler(
         when {
             isOnDelete(e, bounds) -> onDeleteClicked(property)
             isOnEdit(e, bounds) -> onEditClicked(property)
+            isOnReport(e, bounds) -> onReportClicked(property)
         }
     }
 
@@ -75,7 +78,7 @@ internal class CxPropertyMouseHandler(
         val index = list.locationToIndex(e.point)
         if (index < 0) return false
         val bounds = list.getCellBounds(index, index) ?: return false
-        return isOnEdit(e, bounds) || isOnDelete(e, bounds)
+        return isOnEdit(e, bounds) || isOnDelete(e, bounds) || isOnReport(e, bounds)
     }
 
     private fun isOnDelete(e: MouseEvent, cellBounds: Rectangle): Boolean {
@@ -85,9 +88,18 @@ internal class CxPropertyMouseHandler(
 
     private fun isOnEdit(e: MouseEvent, cellBounds: Rectangle): Boolean {
         val deleteZoneStart = cellBounds.x + cellBounds.width - JBUI.scale(CxPropertyRenderer.DELETE_HIT_WIDTH)
-        val editZoneStart = deleteZoneStart - JBUI.scale(CxPropertyRenderer.EDIT_HIT_WIDTH)
-        return e.point.x in editZoneStart until deleteZoneStart
+        return e.point.x in editZoneStart(cellBounds) until deleteZoneStart
     }
+
+    private fun isOnReport(e: MouseEvent, cellBounds: Rectangle): Boolean {
+        val editZoneStart = editZoneStart(cellBounds)
+        val reportZoneStart = editZoneStart - JBUI.scale(CxPropertyRenderer.REPORT_HIT_WIDTH)
+        return e.point.x in reportZoneStart until editZoneStart
+    }
+
+    private fun editZoneStart(cellBounds: Rectangle) = cellBounds.x + cellBounds.width -
+        JBUI.scale(CxPropertyRenderer.DELETE_HIT_WIDTH) -
+        JBUI.scale(CxPropertyRenderer.EDIT_HIT_WIDTH)
 
     companion object {
         private val HAND_CURSOR = Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)

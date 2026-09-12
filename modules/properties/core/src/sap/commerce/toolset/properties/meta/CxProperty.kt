@@ -21,28 +21,41 @@ package sap.commerce.toolset.properties.meta
 /**
  * A single SAP Commerce property together with every place it is declared in.
  *
- * [declarations] are ordered from the lowest to the highest precedence, hence the last one wins and every preceding
- * one is shadowed by it.
+ * [declarations] are ordered from the lowest to the highest precedence, hence the last [active][CxPropertySource.active]
+ * one wins and every preceding active one is shadowed by it. Declarations of a source the running system does not read
+ * are kept apart as [ignoredDeclarations] and never win, however high they would otherwise rank.
  */
 data class CxProperty(
     val key: String,
     val declarations: List<CxPropertyDeclaration>,
 ) {
 
+    /** Declarations the running system actually reads, ordered from the lowest to the highest precedence. */
+    val activeDeclarations
+        get() = declarations.filter { it.source.active }
+
+    /** Declarations of a source outside of the active system configuration, which the platform never loads. */
+    val ignoredDeclarations
+        get() = declarations.filterNot { it.source.active }
+
     /** Declaration the platform would actually apply. */
     val declaration
-        get() = declarations.lastOrNull()
+        get() = activeDeclarations.lastOrNull()
 
     /** Winning value, with `${...}` placeholders left as they are written. Use [CxPropertyModel.resolve] to expand them. */
     val rawValue
         get() = declaration?.value
 
-    /** Declarations shadowed by the [declaration], ordered from the lowest to the highest precedence. */
+    /** Active declarations shadowed by the [declaration], ordered from the lowest to the highest precedence. */
     val shadowedDeclarations
-        get() = declarations.dropLast(1)
+        get() = activeDeclarations.dropLast(1)
 
     val isShadowed
-        get() = declarations.size > 1
+        get() = activeDeclarations.size > 1
+
+    /** The project declares this property, but only in sources the running system does not read. */
+    val isIgnored
+        get() = declarations.isNotEmpty() && activeDeclarations.isEmpty()
 
     val sources
         get() = declarations.map { it.source }

@@ -62,6 +62,10 @@ import java.util.regex.Pattern
  *    `project.properties` of every configured extension and `local.properties` of the config extension;
  * 2. files referenced by the chain itself — the optional config directory and the runtime properties file;
  * 3. values injected by the running process — `platformhome` and the `env.properties.prefix` environment variables.
+ *
+ * Extensions the project imports without `localextensions.xml` listing them are collected too, but their sources
+ * are marked inactive: the running system never reads them, so they must not win, yet they are worth reporting
+ * because their `project.properties` still looks authoritative in the editor.
  */
 @Service(Service.Level.PROJECT)
 class CxPropertyCollector(private val project: Project) {
@@ -124,15 +128,19 @@ class CxPropertyCollector(private val project: Project) {
         val projectFileIndex = ProjectFileIndex.getInstance(project)
         val moduleMapping = project.ySettings.module2extensionMapping
         val extensionRanks = extensionRanks()
+        val unusedExtensions = project.ySettings.unusedExtensions
 
         return FileTypeIndex.getFiles(PropertiesFileType.INSTANCE, searchScope())
             .mapNotNull { virtualFile ->
                 val scope = CxPropertyScope.of(virtualFile.name) ?: return@mapNotNull null
                 val extension = projectFileIndex.getModuleForFile(virtualFile)
                     ?.yExtensionName(moduleMapping)
+                val ofExtension = scope == CxPropertyScope.PROJECT
 
-                // The platform reads `project.properties` of the configured extensions only
-                if (scope == CxPropertyScope.PROJECT && extensionRanks.isNotEmpty() && extension !in extensionRanks) return@mapNotNull null
+                // An extension the project does not know at all is not part of this configuration in any sense
+                if (ofExtension && extensionRanks.isNotEmpty() && extension !in extensionRanks && extension !in unusedExtensions) {
+                    return@mapNotNull null
+                }
 
                 val propertiesFile = psiManager.findFile(virtualFile)
                     ?.asSafely<PropertiesFile>()
@@ -141,7 +149,8 @@ class CxPropertyCollector(private val project: Project) {
                 val source = CxPropertySource(
                     name = virtualFile.name,
                     scope = scope,
-                    rank = if (scope == CxPropertyScope.PROJECT) extensionRanks[extension] ?: extensionRanks.size else 0,
+                    rank = if (ofExtension) extensionRanks[extension] ?: extensionRanks.size else 0,
+                    active = !ofExtension || extension !in unusedExtensions,
                     extension = extension,
                     path = virtualFile.path,
                     file = virtualFile,
@@ -195,11 +204,14 @@ class CxPropertyCollector(private val project: Project) {
 
     /**
      * Ranks the configured extensions the way the platform loads them — an extension after everything it requires,
-     * the platform itself always first.
+     * the platform itself always first. Extensions missing from `localextensions.xml` are left out: they are ranked
+     * nowhere because the running system never loads them.
      */
     private fun extensionRanks(): Map<String, Int> {
+        val unusedExtensions = project.ySettings.unusedExtensions
         val descriptors = project.ySettings.extensionDescriptors
             .filter { it.type in LOADED_EXTENSION_TYPES }
+            .filterNot { it.name in unusedExtensions }
             .sortedWith(compareBy({ if (it.type == ModuleDescriptorType.PLATFORM) 0 else 1 }, { it.name }))
             .takeIf { it.isNotEmpty() }
             ?: return emptyMap()
@@ -269,7 +281,7 @@ class CxPropertyCollector(private val project: Project) {
     private fun PropertiesFile.declarationsOf(source: CxPropertySource) = properties
         .mapNotNull { property ->
             val key = property.key ?: return@mapNotNull null
-            CxPropertyDeclaration(key, property.value ?: "", source)
+            CxPropertyDeclaration(key, property.value ?: "", source, property.psiElement.textOffset)
         }
 
     private fun GlobalSearchScope.withFileNames(vararg names: String) = object : DelegatingGlobalSearchScope(this) {

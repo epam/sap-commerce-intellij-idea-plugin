@@ -39,6 +39,7 @@ import com.intellij.util.ui.JBUI
 import com.intellij.util.ui.UIUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
@@ -67,10 +68,14 @@ class CxRemotePropertyStateView(private val project: Project) : Disposable {
     private val showDataPanel = AtomicBooleanProperty(false)
     private val showFetchingState = AtomicBooleanProperty(false)
 
+    private val job = SupervisorJob()
+    private val viewScope = CoroutineScope(Dispatchers.Default + job)
+
     private val listModel = CollectionListModel<CxPropertyPresentation>()
     private val propertyList = CxPropertyList(
         parentDisposable = this,
         model = listModel,
+        onReportClicked = { showReport(it) },
         onEditClicked = { startInlineEdit(it) },
         onDeleteClicked = { confirmAndDelete(it) },
     ).apply {
@@ -209,6 +214,7 @@ class CxRemotePropertyStateView(private val project: Project) : Disposable {
     }
 
     override fun dispose() {
+        job.cancel()
         filterDebounceTimer.stop()
         propertyList.cancelEdit()
         lazyViewPanel.drop()
@@ -373,6 +379,22 @@ class CxRemotePropertyStateView(private val project: Project) : Disposable {
         )
     }
 
+    /**
+     * Opens the report for a property. The project chain is resolved off the EDT, since the first resolution walks
+     * the indexes; the dialog only opens once the answer is in.
+     */
+    private fun showReport(property: CxPropertyPresentation) {
+        viewScope.launch {
+            val chain = smartReadAction(project) { CxPropertyCollector.getInstance(project).collect() }
+            val declared = chain[property.key]
+            val resolvedValue = chain.resolve(property.key)
+
+            withContext(Dispatchers.EDT) {
+                CxPropertyReportDialog(project, property, declared, resolvedValue).show()
+            }
+        }
+    }
+
     private fun startInlineEdit(property: CxPropertyPresentation) {
         propertyList.beginEdit(property) { newValue ->
             // Apply with an unchanged value would hit the backend, fire a confirmation toast,
@@ -496,7 +518,7 @@ class CxRemotePropertyStateView(private val project: Project) : Disposable {
         private const val COLUMN_GAP = 8
         private const val HEADER_VERTICAL_PADDING = 6
         private const val HEADER_HORIZONTAL_PADDING = 12
-        private const val HEADER_ACTION_RESERVED_WIDTH = 68
+        private const val HEADER_ACTION_RESERVED_WIDTH = 96
         private const val TOOLBAR_VERTICAL_PADDING = 6
         private const val TOOLBAR_HORIZONTAL_PADDING = 12
     }

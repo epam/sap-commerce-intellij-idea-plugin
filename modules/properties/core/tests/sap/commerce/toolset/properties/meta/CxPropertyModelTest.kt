@@ -34,6 +34,7 @@ class CxPropertyModelTest {
     private val customProject = CxPropertySource("project.properties", CxPropertyScope.PROJECT, rank = 7, extension = "custom")
     private val local = CxPropertySource("local.properties", CxPropertyScope.LOCAL)
     private val optionalConfig = CxPropertySource("10-cloud.properties", CxPropertyScope.OPTIONAL_CONFIG)
+    private val unusedProject = CxPropertySource("project.properties", CxPropertyScope.PROJECT, rank = 9, active = false, extension = "unused")
 
     @Test
     fun `a property declared in a single file resolves to its value`() {
@@ -283,6 +284,26 @@ class CxPropertyModelTest {
         )
 
         assertEquals(listOf(advanced, platformProject, customProject, local, optionalConfig), model.sources)
+    }
+
+    @Test
+    fun `a property declared only outside the active configuration resolves to nothing`() {
+        val model = model(unusedProject to ("db.url" to "jdbc:unused"))
+
+        assertNull(model.resolve("db.url"))
+        assertEquals(emptyMap(), model.resolveAll())
+        assertEquals(emptyMap(), model.resolveProperties(listOf("db.url")))
+        assertTrue(model["db.url"]?.isIgnored == true)
+    }
+
+    @Test
+    fun `a placeholder pointing at an ignored property is left as it is written`() {
+        val model = model(
+            platformProject to ("db.url" to "jdbc:\${db.host}"),
+            unusedProject to ("db.host" to "localhost"),
+        )
+
+        assertEquals("jdbc:\${db.host}", model.resolve("db.url"))
     }
 
     @Test

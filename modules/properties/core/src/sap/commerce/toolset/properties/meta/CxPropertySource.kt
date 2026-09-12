@@ -29,6 +29,9 @@ import com.intellij.openapi.vfs.VirtualFile
  * @param name file name of the source, or a synthetic name for [CxPropertyScope.ENVIRONMENT].
  * @param rank position within the [scope]; the extension load order for [CxPropertyScope.PROJECT] and the alphabetical
  * position for [CxPropertyScope.OPTIONAL_CONFIG].
+ * @param active whether the running system reads this source at all. An extension which the project imports but
+ * `localextensions.xml` does not list is not part of the active configuration, so the platform never loads its
+ * `project.properties` - the declarations are kept, but they lose to every active one.
  * @param extension owning SAP Commerce extension, when the source belongs to one.
  * @param path system dependent path of the source, for presentation purposes only.
  * @param file navigation target; never taken into account while resolving a property value.
@@ -37,6 +40,7 @@ data class CxPropertySource(
     val name: String,
     val scope: CxPropertyScope,
     val rank: Int = 0,
+    val active: Boolean = true,
     val extension: String? = null,
     val path: String? = null,
     val file: VirtualFile? = null,

@@ -80,6 +80,7 @@ import javax.swing.event.ListDataListener
 internal class CxPropertyList(
     parentDisposable: Disposable,
     private val model: CollectionListModel<CxPropertyPresentation>,
+    onReportClicked: (CxPropertyPresentation) -> Unit,
     onEditClicked: (CxPropertyPresentation) -> Unit,
     onDeleteClicked: (CxPropertyPresentation) -> Unit,
 ) : JBList<CxPropertyPresentation>(model), UiDataProvider {
@@ -154,7 +155,7 @@ internal class CxPropertyList(
             override fun componentResized(e: ComponentEvent) = repositionEditor()
         })
 
-        val mouseHandler = CxPropertyMouseHandler(this, model, onEditClicked, onDeleteClicked)
+        val mouseHandler = CxPropertyMouseHandler(this, model, onReportClicked, onEditClicked, onDeleteClicked)
         this.addMouseListener(parentDisposable, mouseHandler)
         this.addMouseMotionListener(parentDisposable, mouseHandler)
         cellRenderer = CxPropertyRenderer()

@@ -612,6 +612,10 @@ object HybrisIcons {
 
     object Property {
         val COPY = AllIcons.Actions.Copy
+        val REPORT = AllIcons.Actions.ListFiles
+        val EFFECTIVE = AllIcons.General.InspectionsOK
+        val SHADOWED = AllIcons.General.Information
+        val IGNORED = AllIcons.General.Warning
     }
 
     object WelcomeTab {

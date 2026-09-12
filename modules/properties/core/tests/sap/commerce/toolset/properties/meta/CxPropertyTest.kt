@@ -32,6 +32,7 @@ class CxPropertyTest {
     private val platformProject = CxPropertySource("project.properties", CxPropertyScope.PROJECT, rank = 0, extension = "platform")
     private val customProject = CxPropertySource("project.properties", CxPropertyScope.PROJECT, rank = 7, extension = "custom")
     private val local = CxPropertySource("local.properties", CxPropertyScope.LOCAL)
+    private val unusedProject = CxPropertySource("project.properties", CxPropertyScope.PROJECT, rank = 9, active = false, extension = "unused")
 
     @Test
     fun `declarations are ordered from the lowest to the highest precedence`() {
@@ -118,6 +119,67 @@ class CxPropertyTest {
         )
 
         assertEquals("jdbc:last", property.rawValue)
+    }
+
+    @Test
+    fun `a declaration of an extension outside the active configuration never wins`() {
+        val property = CxProperty.of(
+            "db.url", listOf(
+                declaration(platformProject, "jdbc:platform"),
+                declaration(unusedProject, "jdbc:unused"),
+            )
+        )
+
+        assertEquals("jdbc:platform", property.rawValue)
+        assertEquals(platformProject, property.declaration?.source)
+    }
+
+    @Test
+    fun `ignored declarations are kept apart from the active ones`() {
+        val property = CxProperty.of(
+            "db.url", listOf(
+                declaration(platformProject, "jdbc:platform"),
+                declaration(unusedProject, "jdbc:unused"),
+                declaration(local, "jdbc:local"),
+            )
+        )
+
+        assertEquals(listOf("jdbc:platform", "jdbc:local"), property.activeDeclarations.map { it.value })
+        assertEquals(listOf("jdbc:unused"), property.ignoredDeclarations.map { it.value })
+        assertEquals(listOf("jdbc:platform"), property.shadowedDeclarations.map { it.value })
+    }
+
+    @Test
+    fun `a property declared only outside the active configuration is ignored`() {
+        val property = CxProperty.of("db.url", listOf(declaration(unusedProject, "jdbc:unused")))
+
+        assertTrue(property.isIgnored)
+        assertNull(property.declaration)
+        assertNull(property.rawValue)
+    }
+
+    @Test
+    fun `a property with an active declaration is not ignored`() {
+        val property = CxProperty.of(
+            "db.url", listOf(
+                declaration(unusedProject, "jdbc:unused"),
+                declaration(local, "jdbc:local"),
+            )
+        )
+
+        assertFalse(property.isIgnored)
+    }
+
+    @Test
+    fun `an ignored declaration does not make a property shadowed`() {
+        val property = CxProperty.of(
+            "db.url", listOf(
+                declaration(unusedProject, "jdbc:unused"),
+                declaration(local, "jdbc:local"),
+            )
+        )
+
+        assertFalse(property.isShadowed)
     }
 
     @Test
