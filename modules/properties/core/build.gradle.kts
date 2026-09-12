@@ -35,6 +35,8 @@ sourceSets {
 
 dependencies {
     implementation(project(":shared-core"))
+    implementation(project(":project-core"))
+    implementation(project(":project-extensioninfo"))
 
     testImplementation(kotlin("test"))
 
@@ -45,6 +47,7 @@ dependencies {
 
         bundledPlugins(
             "com.intellij.java",
+            "com.intellij.properties",
         )
     }
 }
