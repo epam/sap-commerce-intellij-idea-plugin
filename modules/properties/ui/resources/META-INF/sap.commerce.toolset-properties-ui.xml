@@ -29,6 +29,8 @@
         <action id="sap.cx.properties.custom.addTemplate" class="sap.commerce.toolset.properties.actionSystem.CxAddCustomPropertyTemplateAction"/>
         <action id="sap.cx.properties.custom.deleteTemplate" class="sap.commerce.toolset.properties.actionSystem.CxDeleteCustomPropertyTemplateAction"/>
         <action id="sap.cx.properties.custom.editTemplate" class="sap.commerce.toolset.properties.actionSystem.CxEditCustomPropertyTemplateAction"/>
+        <action id="sap.cx.properties.remote.copyKey" class="sap.commerce.toolset.properties.actionSystem.CxCopyPropertyKeyAction"/>
+        <action id="sap.cx.properties.remote.copyValue" class="sap.commerce.toolset.properties.actionSystem.CxCopyPropertyValueAction"/>
 
         <group id="sap.cx.properties.toolbar.actions" searchable="false">
             <reference ref="sap.commerce.toolset.hac.chooseConnection"/>
@@ -40,6 +42,11 @@
             <reference ref="sap.cx.properties.custom.createTemplate"/>
             <reference ref="sap.cx.properties.custom.editTemplate"/>
             <reference ref="sap.cx.properties.custom.deleteTemplate"/>
+        </group>
+
+        <group id="sap.cx.properties.remote.item.menu" popup="true" searchable="false">
+            <reference ref="sap.cx.properties.remote.copyKey"/>
+            <reference ref="sap.cx.properties.remote.copyValue"/>
         </group>
 
         <group id="sap.cx.properties.toolwindow.menu" popup="true" searchable="false" class="sap.commerce.toolset.properties.actionSystem.CxPropertyTemplateContextMenuActionGroup"/>

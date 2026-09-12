@@ -610,6 +610,10 @@ object HybrisIcons {
         }
     }
 
+    object Property {
+        val COPY = AllIcons.Actions.Copy
+    }
+
     object WelcomeTab {
         val PLUGIN_LOGO = PLUGIN_SETTINGS
         val ACTION_MORE = AllIcons.Actions.More

@@ -19,10 +19,16 @@
 package sap.commerce.toolset.properties.ui
 
 import com.intellij.openapi.Disposable
+import com.intellij.openapi.actionSystem.ActionGroup
+import com.intellij.openapi.actionSystem.ActionManager
+import com.intellij.openapi.actionSystem.DataSink
+import com.intellij.openapi.actionSystem.UiDataProvider
 import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.ui.CollectionListModel
+import com.intellij.ui.PopupHandler
 import com.intellij.ui.components.JBList
+import com.intellij.util.asSafely
 import com.intellij.util.ui.JBUI
 import com.intellij.util.ui.UIUtil
 import sap.commerce.toolset.properties.meta.CxResolvedProperty
@@ -30,6 +36,8 @@ import sap.commerce.toolset.properties.presentation.CxPropertyPresentation
 import sap.commerce.toolset.ui.addListSelectionListener
 import sap.commerce.toolset.ui.addMouseListener
 import sap.commerce.toolset.ui.addMouseMotionListener
+import java.awt.Component
+import java.awt.Point
 import java.awt.event.ComponentAdapter
 import java.awt.event.ComponentEvent
 import java.awt.event.MouseEvent
@@ -62,13 +70,17 @@ import javax.swing.event.ListDataListener
  * **Tooltips.** [getToolTipText] is resolved per row here rather than on the renderer: renderer
  * components are stamped through a `CellRendererPane` instead of joining the component hierarchy,
  * so a tooltip assigned to one of their labels never reaches the `ToolTipManager`.
+ *
+ * **Context menu.** Right-clicking a row opens [CONTEXT_MENU_GROUP]. Persistent selection is
+ * suppressed here, so the row is taken from the click position and handed to the actions through
+ * [CxPropertyPresentation.DATA_KEY] by [uiDataSnapshot].
  */
 internal class CxPropertyList(
     parentDisposable: Disposable,
     private val model: CollectionListModel<CxPropertyPresentation>,
     onEditClicked: (CxPropertyPresentation) -> Unit,
     onDeleteClicked: (CxPropertyPresentation) -> Unit,
-) : JBList<CxPropertyPresentation>(model) {
+) : JBList<CxPropertyPresentation>(model), UiDataProvider {
 
     var hoveredIndex: Int = -1
         set(value) {
@@ -96,6 +108,9 @@ internal class CxPropertyList(
         }
 
     private var editorOverlay: InlinePropertyEditor? = null
+
+    /** Row the currently open context menu was invoked on. */
+    private var contextMenuProperty: CxPropertyPresentation? = null
 
     init {
         // Match the surrounding DialogPanel background so the data area doesn't look like a
@@ -135,6 +150,35 @@ internal class CxPropertyList(
         // The tooltip depends on the counterpart rather than on the renderer's labels, so it is composed
         // per row in `getToolTipText` below, and the manager has to be told about the list itself.
         ToolTipManager.sharedInstance().registerComponent(this)
+
+        this.addMouseListener(parentDisposable, object : PopupHandler() {
+            override fun invokePopup(comp: Component, x: Int, y: Int) = showContextMenu(comp, x, y)
+        })
+    }
+
+    override fun uiDataSnapshot(sink: DataSink) {
+        sink[CxPropertyPresentation.DATA_KEY] = contextMenuProperty
+    }
+
+    private fun showContextMenu(comp: Component, x: Int, y: Int) {
+        val point = Point(x, y)
+        val index = locationToIndex(point)
+            .takeIf { it >= 0 && getCellBounds(it, it)?.contains(point) == true }
+            ?: return
+        val property = model.items.getOrNull(index) ?: return
+        if (property.key == editingKey) return
+
+        val group = ActionManager.getInstance()
+            .getAction(CONTEXT_MENU_GROUP)
+            .asSafely<ActionGroup>()
+            ?: return
+
+        contextMenuProperty = property
+
+        ActionManager.getInstance().createActionPopupMenu(CONTEXT_MENU_PLACE, group)
+            .also { it.setTargetComponent(this) }
+            .component
+            .show(comp, x, y)
     }
 
     /**
@@ -241,5 +285,8 @@ internal class CxPropertyList(
     companion object {
         @Serial
         private const val serialVersionUID: Long = 6217493082143759241L
+
+        private const val CONTEXT_MENU_GROUP = "sap.cx.properties.remote.item.menu"
+        private const val CONTEXT_MENU_PLACE = "Sap.Cx.PropertiesList"
     }
 }

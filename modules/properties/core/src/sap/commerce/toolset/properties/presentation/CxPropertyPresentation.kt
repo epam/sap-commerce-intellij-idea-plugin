@@ -18,11 +18,16 @@
 
 package sap.commerce.toolset.properties.presentation
 
+import com.intellij.openapi.actionSystem.DataKey
+
 data class CxPropertyPresentation(
     val key: String,
     val value: String,
 ) {
     companion object {
+        /** Property the invoked context menu belongs to. */
+        val DATA_KEY: DataKey<CxPropertyPresentation> = DataKey.create("sap.commerce.toolset.properties.property")
+
         fun of(key: String, value: String?) = CxPropertyPresentation(
             key = key,
             value = value.orEmpty(),
