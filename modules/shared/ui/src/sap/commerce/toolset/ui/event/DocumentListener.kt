@@ -16,10 +16,23 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.actionSystem
+package sap.commerce.toolset.ui.event
 
-object HybrisActionPlaces {
-    @Deprecated("review this usage, migrate to LoggersConstants")
-    const val LOGGERS_TOOLBAR = "SAP.Loggers.View"
-    const val PROPERTIES_TOOLBAR = "SAP.Properties.View"
+import javax.swing.event.DocumentEvent
+import javax.swing.event.DocumentListener
+
+interface DocumentListener : DocumentListener {
+    override fun insertUpdate(e: DocumentEvent) = Unit
+    override fun removeUpdate(e: DocumentEvent) = Unit
+    override fun changedUpdate(e: DocumentEvent) = Unit
+}
+
+/**
+ * A [DocumentListener] which reacts to every kind of document mutation in the same way —
+ * the common case for "re-filter as the user types" text fields.
+ */
+fun documentListener(onChange: () -> Unit) = object : DocumentListener {
+    override fun insertUpdate(e: DocumentEvent) = onChange()
+    override fun removeUpdate(e: DocumentEvent) = onChange()
+    override fun changedUpdate(e: DocumentEvent) = onChange()
 }

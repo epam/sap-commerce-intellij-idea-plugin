@@ -10,6 +10,10 @@
 - Display `AGENTS.md`, `CLAUDE.md` and `GEMINI.md` under `AI Capabilities` [#2004](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2004)
 - Display `AI Capabilities` node at the top of the tree [#2005](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2005)
 
+### `SAP CX Properties` enhancements
+- Introduced the `Properties` tool window to browse, filter and modify the runtime properties of a remote SAP Commerce instance
+- Added custom properties templates which can be composed from the remote state and applied back to a remote instance
+
 ### `Project Import` enhancements
 - Speed up the libraries sources and javadocs fetching by remembering the previous lookup outcome and no longer blocking the shared background threads [#2002](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2002)
 

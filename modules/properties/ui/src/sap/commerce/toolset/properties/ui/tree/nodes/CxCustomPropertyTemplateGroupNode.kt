@@ -16,10 +16,18 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.actionSystem
+package sap.commerce.toolset.properties.ui.tree.nodes
 
-object HybrisActionPlaces {
-    @Deprecated("review this usage, migrate to LoggersConstants")
-    const val LOGGERS_TOOLBAR = "SAP.Loggers.View"
-    const val PROPERTIES_TOOLBAR = "SAP.Properties.View"
+import com.intellij.openapi.project.Project
+import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.properties.custom.CxCustomPropertyTemplateService
+
+class CxCustomPropertyTemplateGroupNode(project: Project) : CxPropertiesNode(
+    project = project,
+    presentationName = "Custom Templates",
+    icon = HybrisIcons.Log.Template.CUSTOM,
+) {
+    override fun getNewChildren(): Map<String, CxPropertiesNode> = CxCustomPropertyTemplateService.getInstance(project)
+        .getTemplates()
+        .associate { it.uuid to CxCustomPropertyTemplateItemNode.of(project, it) }
 }
