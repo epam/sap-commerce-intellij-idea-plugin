@@ -20,6 +20,9 @@ package sap.commerce.toolset.properties.ui
 
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.application.EDT
+import com.intellij.openapi.application.invokeLater
+import com.intellij.openapi.module.Module
+import com.intellij.openapi.project.ModuleListener
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Disposer
 import com.intellij.ui.OnePixelSplitter
@@ -27,6 +30,7 @@ import com.intellij.ui.PopupHandler
 import com.intellij.ui.components.JBScrollPane
 import com.intellij.ui.dsl.builder.Align
 import com.intellij.ui.dsl.builder.panel
+import com.intellij.util.Function
 import com.intellij.util.application
 import com.intellij.util.asSafely
 import kotlinx.coroutines.*
@@ -133,6 +137,20 @@ class CxPropertiesSplitView(private val project: Project) : OnePixelSplitter(fal
                 override fun onSourceModeChanged(sourceMode: CxPropertySourceMode) = onEdt { updateTree() }
             })
 
+            // Refreshing the project renames modules when a group changes, and adds or drops them when the configured
+            // extensions change - either way the Source Code branch is stale until the tree is rebuilt.
+            subscribe(ModuleListener.TOPIC, object : ModuleListener {
+                override fun modulesAdded(project: Project, modules: List<Module>) = scheduleTreeUpdate()
+
+                override fun moduleRemoved(project: Project, module: Module) = scheduleTreeUpdate()
+
+                override fun modulesRenamed(
+                    project: Project,
+                    modules: List<Module>,
+                    oldNameProvider: Function<in Module, String>,
+                ) = scheduleTreeUpdate()
+            })
+
             subscribe(CxCustomPropertyTemplateStateListener.TOPIC, object : CxCustomPropertyTemplateStateListener {
                 override fun onTemplateUpdated(templateUUID: String) = onEdt { updateTree() }
 
@@ -170,6 +188,10 @@ class CxPropertiesSplitView(private val project: Project) : OnePixelSplitter(fal
 
     /** Listeners are notified on whatever thread published, while the tree and the views belong to the EDT. */
     private fun onEdt(block: () -> Unit) = application.invokeLater({ if (!project.isDisposed) block() }, project.disposed)
+
+    /** The module model is still being written when these arrive, so the rebuild waits for the write action to end. */
+    private fun scheduleTreeUpdate() = onEdt { updateTree() }
+
 
     private fun updateSecondComponent(node: CxPropertiesNode?, beforeUpdate: () -> Unit = {}) {
         renderJob?.cancel()
