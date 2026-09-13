@@ -12,7 +12,7 @@
 - Declare the properties a project is missing into `local.properties` or a custom extension [#2010](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2010)
 - Apply the properties a remote instance is missing to that instance [#2011](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2011)
 - Browse the properties a project declares from the new `Source Code` branch, as one chain or extension by extension [#2012](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2012)
-- Validate `project.properties` against the SAP Commerce Cloud rules, with quick fixes and inline hints
+- Validate `project.properties` against the SAP Commerce Cloud rules, with quick fixes and inline hints [#2013](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2013)
 
 ## [2026.2.4]
 
