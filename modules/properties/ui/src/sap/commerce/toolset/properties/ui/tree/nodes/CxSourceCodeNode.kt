@@ -49,7 +49,7 @@ class CxSourceCodeNode(project: Project) : CxPropertiesNode(
 
     override fun getNewChildren(): Map<String, CxPropertiesNode> = when (CxPropertyViewSettings.getInstance(project).sourceMode) {
         CxPropertySourceMode.PROJECT -> mapOf(PROJECT_KEY to CxSourceProjectNode(project))
-        CxPropertySourceMode.EXTENSIONS -> groupTree().toNodes(topLevel = true)
+        CxPropertySourceMode.EXTENSIONS -> groupTree().toNodes(inheritedIcon = null)
     }
 
     /** Extensions arranged under their module group path, the deepest group last. */
@@ -70,15 +70,17 @@ class CxSourceCodeNode(project: Project) : CxPropertiesNode(
         return root
     }
 
-    private fun GroupTree.toNodes(topLevel: Boolean): Map<String, CxPropertiesNode> {
+    private fun GroupTree.toNodes(inheritedIcon: Icon?): Map<String, CxPropertiesNode> {
         val groups = subGroups.entries
             .sortedWith(compareBy({ rankOf(it.key) }, { it.key }))
             .map { (title, subGroup) ->
+                val icon = inheritedIcon ?: iconOf(title)
+
                 CxSourceExtensionGroupNode(
                     project = project,
                     title = title,
-                    icon = iconOf(title, topLevel),
-                    groupChildren = subGroup.toNodes(topLevel = false),
+                    icon = icon,
+                    groupChildren = subGroup.toNodes(icon),
                     extensionCount = subGroup.extensionCount(),
                 )
             }
@@ -96,13 +98,12 @@ class CxSourceCodeNode(project: Project) : CxPropertiesNode(
         ?: Int.MAX_VALUE
 
     /**
-     * The icons the Project view gives these groups. It only decorates the outermost one, so a group a project names
-     * itself - `mygroup/mysubgroup` and the like - keeps the platform's own group icon there and here alike.
+     * The icon the Project view gives a group. It picks by the outermost segment of the whole group path, so every
+     * group nested under `Hybris` carries the commerce logo too - which is why the icon is handed down rather than
+     * looked up again at each level.
      */
-    private fun iconOf(title: String, topLevel: Boolean): Icon = knownGroups()
-        .takeIf { topLevel }
-        ?.entries
-        ?.firstOrNull { it.key.equals(title, true) }
+    private fun iconOf(title: String): Icon = knownGroups().entries
+        .firstOrNull { it.key.equals(title, true) }
         ?.value
         ?: AllIcons.Nodes.ModuleGroup
 
