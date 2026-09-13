@@ -1,7 +1,7 @@
 ## [2026.2.5]
 
 <cite>Release contributors</code>
-- 11 PR(s) by [Eugeni Kalenchuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.2.5+author%3Aekalenchuk+is%3Apr)
+- 12 PR(s) by [Eugeni Kalenchuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.2.5+author%3Aekalenchuk+is%3Apr)
 
 ### `SAP CX Properties` enhancements
 - Introduced the `Properties` tool window to browse, filter and modify the runtime properties of a remote SAP Commerce instance, and to compose and apply custom property templates [#1923](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1923)
@@ -14,6 +14,7 @@
 - Browse the properties a project declares from the new `Source Code` branch, as one chain or extension by extension [#2012](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2012)
 - Validate `project.properties` against the SAP Commerce Cloud rules, with quick fixes and inline hints [#2013](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2013)
 - Choose which properties go into a property template [#2015](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2015)
+- Number a template name which is already taken
 
 ## [2026.2.4]
 
