@@ -115,4 +115,52 @@ class CxPropertyComparisonTest {
         listOf(local),
         properties.map { (key, value) -> CxPropertyDeclaration(key, value, local) },
     )
+
+    @Test
+    fun `a property only one instance has is reported for that instance alone`() {
+        val first = listOf(remote("db.url", "jdbc:one"), remote("only.here", "1"))
+        val second = listOf(remote("db.url", "jdbc:two"))
+
+        assertEquals(listOf("only.here"), CxPropertyComparison.onlyIn(first, second).map { it.key })
+        assertEquals(emptyList(), CxPropertyComparison.onlyIn(second, first))
+    }
+
+    @Test
+    fun `properties only one instance has are ordered by key`() {
+        val first = listOf(remote("z.one"), remote("a.two"))
+
+        assertEquals(listOf("a.two", "z.one"), CxPropertyComparison.onlyIn(first, emptyList()).map { it.key })
+    }
+
+    @Test
+    fun `a property both instances have with the same value is not a difference`() {
+        val first = listOf(remote("db.url", "jdbc:same"))
+        val second = listOf(remote("db.url", "jdbc:same"))
+
+        assertEquals(emptyList(), CxPropertyComparison.differing(first, second))
+    }
+
+    @Test
+    fun `a property both instances have with different values carries the value of the side being listed`() {
+        val first = listOf(remote("db.url", "jdbc:one"))
+        val second = listOf(remote("db.url", "jdbc:two"))
+
+        assertEquals(listOf("jdbc:one"), CxPropertyComparison.differing(first, second).map { it.value })
+        assertEquals(listOf("jdbc:two"), CxPropertyComparison.differing(second, first).map { it.value })
+    }
+
+    @Test
+    fun `a property the other instance does not have at all is not a difference`() {
+        val first = listOf(remote("only.here", "1"))
+
+        assertEquals(emptyList(), CxPropertyComparison.differing(first, emptyList()))
+    }
+
+    @Test
+    fun `differences are ordered by key`() {
+        val first = listOf(remote("z.one", "1"), remote("a.two", "1"))
+        val second = listOf(remote("z.one", "2"), remote("a.two", "2"))
+
+        assertEquals(listOf("a.two", "z.one"), CxPropertyComparison.differing(first, second).map { it.key })
+    }
 }

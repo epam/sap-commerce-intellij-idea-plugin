@@ -76,6 +76,14 @@ class CxRemotePropertyClient(private val project: Project) {
         return result.result?.let { CxRemotePropertyPayload.parse(it) }
     }
 
+    /**
+     * Every property of the instance, in one request.
+     *
+     * The script pages from `(page - 1) * pageSize`, so asking for page 1 of an unbounded page is an offset of zero
+     * and a slice of everything - a second round trip to learn the total first would buy nothing.
+     */
+    suspend fun fetchAll(connection: HacConnectionSettingsState) = fetch(connection, pageSize = Int.MAX_VALUE)
+
     suspend fun upsert(connection: HacConnectionSettingsState, key: String, value: String): CxRemotePropertyWriteResult {
         val trimmedKey = key.trim()
 
