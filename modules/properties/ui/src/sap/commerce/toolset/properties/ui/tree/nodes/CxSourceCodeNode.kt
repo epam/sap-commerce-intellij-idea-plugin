@@ -52,13 +52,17 @@ class CxSourceCodeNode(project: Project) : CxPropertiesNode(
     companion object {
         private const val PROJECT_KEY = "project"
 
-        /** Group order, most interesting first — a developer looks at their own extensions far more often. */
+        /**
+         * Group order, most interesting first — a developer looks at their own extensions far more often.
+         *
+         * The config extension is left out on purpose: it carries `local.properties`, never a `project.properties`,
+         * so a group for it would only ever be a list of dead ends.
+         */
         private val GROUPED_TYPES = listOf(
             ModuleDescriptorType.CUSTOM,
             ModuleDescriptorType.EXT,
             ModuleDescriptorType.OOTB,
             ModuleDescriptorType.PLATFORM,
-            ModuleDescriptorType.CONFIG,
         )
     }
 }

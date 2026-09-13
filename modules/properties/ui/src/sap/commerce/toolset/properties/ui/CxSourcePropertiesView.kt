@@ -38,11 +38,13 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import sap.commerce.toolset.properties.CxRemotePropertyStateService
 import sap.commerce.toolset.properties.meta.CxPropertyCollector
 import sap.commerce.toolset.properties.meta.CxPropertyModel
 import sap.commerce.toolset.properties.meta.CxPropertyScope
+import sap.commerce.toolset.properties.meta.CxPropertySource
 import sap.commerce.toolset.properties.presentation.CxPropertyPresentation
 import sap.commerce.toolset.ui.addDocumentListener
 import sap.commerce.toolset.ui.event.documentListener
@@ -158,17 +160,24 @@ internal class CxSourcePropertiesView(private val project: Project) : Disposable
         val viewPanel = lazyViewPanel.value
 
         val chain = smartReadAction(project) { CxPropertyCollector.getInstance(project).collect() }
-        val counterpart = counterpartFor(selection, chain)
+        val source = (selection as? CxSourceSelection.Extension)?.let { sourceOf(it.name, chain) }
         val properties = when (selection) {
             is CxSourceSelection.Project -> chain.resolveAll()
                 .map { (key, value) -> CxPropertyPresentation(key, value) }
 
-            is CxSourceSelection.Extension -> declarationsOf(selection.name, chain)
+            is CxSourceSelection.Extension -> source
+                ?.let { chain.declarationsIn(it) }
+                ?.map { CxPropertyPresentation(it.key, it.value) }
+                ?: emptyList()
         }
+        val counterpart = counterpartFor(selection, chain, properties)
 
         withContext(Dispatchers.EDT) {
             rows = properties
-            titleLabel.text = titleFor(selection, chain)
+            titleLabel.text = titleFor(selection, chain, source)
+            // Only a file the running system never reads is worth flagging - the rest speak for themselves.
+            titleLabel.icon = HybrisIcons.Property.IGNORED.takeIf { source != null && !source.active }
+            propertyList.emptyText.text = emptyTextFor(selection, source)
             propertyList.counterpart = counterpart
             applyFilter()
             statusLabel.text = statusFor(selection, properties.size, counterpart.countDisagreements(properties))
@@ -178,20 +187,18 @@ internal class CxSourcePropertiesView(private val project: Project) : Disposable
         return withContext(Dispatchers.EDT) { viewPanel }
     }
 
-    /** Declarations written in the `project.properties` of one extension, in the order the file lists them. */
-    private fun declarationsOf(extension: String, chain: CxPropertyModel): List<CxPropertyPresentation> {
-        val source = chain.sources
-            .find { it.scope == CxPropertyScope.PROJECT && it.extension == extension }
-            ?: return emptyList()
+    /** The `project.properties` of one extension, or `null` when the chain holds none for it. */
+    private fun sourceOf(extension: String, chain: CxPropertyModel) = chain.sources
+        .find { it.scope == CxPropertyScope.PROJECT && it.extension == extension }
 
-        return chain.declarationsIn(source)
-            .map { CxPropertyPresentation(it.key, it.value) }
-    }
-
-    private fun counterpartFor(selection: CxSourceSelection, chain: CxPropertyModel) = when (selection) {
+    private fun counterpartFor(
+        selection: CxSourceSelection,
+        chain: CxPropertyModel,
+        properties: List<CxPropertyPresentation>,
+    ) = when (selection) {
         is CxSourceSelection.Project -> CxPropertyCounterpart.remote(fetchedRemoteValues())
         is CxSourceSelection.Extension -> CxPropertyCounterpart.effective(
-            chain.resolveProperties(declarationsOf(selection.name, chain).map { it.key })
+            chain.resolveProperties(properties.map { it.key })
         )
     }
 
@@ -203,9 +210,17 @@ internal class CxSourcePropertiesView(private val project: Project) : Disposable
         ?.associate { it.key to it.value }
         ?: emptyMap()
 
-    private fun titleFor(selection: CxSourceSelection, chain: CxPropertyModel) = when (selection) {
-        is CxSourceSelection.Project -> "Properties declared by ${chain.sources.size} file(s) of this project"
-        is CxSourceSelection.Extension -> "Properties declared by ${selection.name}/project.properties"
+    private fun titleFor(selection: CxSourceSelection, chain: CxPropertyModel, source: CxPropertySource?) = when {
+        selection is CxSourceSelection.Project -> "Properties declared by ${chain.sources.size} file(s) of this project"
+        source == null -> "${(selection as CxSourceSelection.Extension).name} has no project.properties"
+        !source.active -> "${source.presentableName} — not listed in localextensions.xml, so the running system never reads it"
+        else -> "Properties declared by ${source.presentableName}"
+    }
+
+    private fun emptyTextFor(selection: CxSourceSelection, source: CxPropertySource?) = when {
+        selection is CxSourceSelection.Project -> "This project declares no properties"
+        source == null -> "${(selection as CxSourceSelection.Extension).name} has no project.properties file"
+        else -> "${source.presentableName} declares no properties"
     }
 
     private fun statusFor(selection: CxSourceSelection, total: Int, disagreements: Int): String {
