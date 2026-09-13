@@ -19,15 +19,15 @@
 package sap.commerce.toolset.properties.ui
 
 import com.intellij.openapi.Disposable
-import com.intellij.openapi.actionSystem.AnAction
-import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.application.EDT
+import com.intellij.openapi.application.smartReadAction
 import com.intellij.openapi.observable.properties.AtomicBooleanProperty
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.ui.MessageDialogBuilder
 import com.intellij.openapi.ui.ValidationInfo
 import com.intellij.openapi.util.ClearableLazyValue
+import com.intellij.ui.CollectionListModel
 import com.intellij.ui.components.JBScrollPane
 import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.Align
@@ -37,35 +37,53 @@ import com.intellij.ui.dsl.builder.panel
 import com.intellij.util.ui.JBUI
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.properties.custom.CxCustomPropertyTemplateService
+import sap.commerce.toolset.properties.meta.CxPropertyCollector
 import sap.commerce.toolset.properties.CxPropertyKey
 import sap.commerce.toolset.properties.presentation.CxPropertyPresentation
-import sap.commerce.toolset.ui.actionButton
 import sap.commerce.toolset.ui.addDocumentListener
 import sap.commerce.toolset.ui.event.documentListener
-import java.awt.BorderLayout
-import java.awt.Dimension
-import java.awt.GridLayout
+import java.awt.Color
+import java.awt.Font
+import java.awt.GridBagConstraints
+import java.awt.GridBagLayout
+import javax.swing.Box
 import javax.swing.JComponent
+import javax.swing.JLabel
 import javax.swing.JPanel
-import javax.swing.ScrollPaneConstants
 
 class CxCustomPropertyTemplatesView(private val project: Project) : Disposable {
     private var templateUUID: String = ""
     private val showDataPanel = AtomicBooleanProperty(false)
 
-    private lateinit var dataScrollPane: JBScrollPane
     private lateinit var keyFilterField: JBTextField
     private lateinit var valueFilterField: JBTextField
     private lateinit var addKeyField: JBTextField
     private lateinit var addValueField: JBTextField
+    private lateinit var statusLabel: JLabel
+
+    private val job = SupervisorJob()
+    private val viewScope = CoroutineScope(Dispatchers.Default + job)
 
     @Volatile
     private var properties: List<CxPropertyPresentation> = emptyList()
-    private var editingPropertyKey: String? = null
-    private var editingPropertyValue: String = ""
+
+    private val listModel = CollectionListModel<CxPropertyPresentation>()
+
+    /**
+     * A template built from a remote instance holds every property that instance has, so the rows have to be
+     * virtualized: the list only ever builds renderer components for what is on screen.
+     */
+    private val propertyList = CxPropertyList(
+        parentDisposable = this,
+        model = listModel,
+        onReportClicked = { showReport(it) },
+        onEditClicked = { startInlineEdit(it) },
+        onDeleteClicked = { confirmAndDelete(it) },
+    )
 
     private val lazyViewPanel by lazy {
         object : ClearableLazyValue<DialogPanel>() {
@@ -125,9 +143,20 @@ class CxCustomPropertyTemplatesView(private val project: Project) : Disposable {
                         .visibleIf(showDataPanel)
 
                     row {
-                        dataScrollPane = JBScrollPane(JPanel()).apply { border = null }
-                        cell(dataScrollPane).align(Align.FILL).visibleIf(showDataPanel)
+                        cell(
+                            JBScrollPane(propertyList).apply {
+                                border = null
+                                background = propertyList.background
+                                viewport.background = propertyList.background
+                                setColumnHeaderView(buildColumnHeader(propertyList.background))
+                            }
+                        ).align(Align.FILL).visibleIf(showDataPanel)
                     }.resizableRow()
+
+                    row {
+                        statusLabel = label("").component
+                        cell(statusLabel).align(AlignX.FILL)
+                    }.visibleIf(showDataPanel)
                 }.apply {
                     border = JBUI.Borders.empty(JBUI.insets(10, 16, 0, 16))
                     dPanel = this
@@ -136,26 +165,42 @@ class CxCustomPropertyTemplatesView(private val project: Project) : Disposable {
         }
     }
 
-    override fun dispose() = lazyViewPanel.drop()
+    override fun dispose() {
+        job.cancel()
+        propertyList.cancelEdit()
+        lazyViewPanel.drop()
+    }
 
     suspend fun render(coroutineScope: CoroutineScope, templateUUID: String, properties: Collection<CxPropertyPresentation>): JComponent {
         this.templateUUID = templateUUID
         this.properties = properties.sortedBy { it.key }
-        if (editingPropertyKey !in this.properties.map { it.key }.toSet()) {
-            editingPropertyKey = null
-            editingPropertyValue = ""
+        val viewPanel = withContext(Dispatchers.EDT) {
+            lazyViewPanel.value.also {
+                toggleView(showDataPanel)
+                propertyList.cancelEdit()
+                renderData()
+            }
         }
-        return withContext(Dispatchers.EDT) {
-            val viewPanel = lazyViewPanel.value
 
-            toggleView(showDataPanel)
-            renderData()
-            viewPanel
-        }
+        coroutineScope.launch { compareWithProject(this@CxCustomPropertyTemplatesView.properties) }
+
+        return viewPanel
+    }
+
+    /** Holds the template against what the project's own files resolve to, marking the rows which disagree. */
+    private suspend fun compareWithProject(properties: List<CxPropertyPresentation>) {
+        val chain = smartReadAction(project) { CxPropertyCollector.getInstance(project).collect() }
+        val counterpart = CxPropertyCounterpart(
+            ownLabel = "Template",
+            otherLabel = "Project",
+            values = chain.resolveProperties(properties.map { it.key }).mapValues { (_, resolved) -> resolved.value },
+        )
+
+        withContext(Dispatchers.EDT) { propertyList.counterpart = counterpart }
     }
 
     private fun refreshDataView() {
-        if (!::dataScrollPane.isInitialized) return
+        if (!::keyFilterField.isInitialized) return
         renderData()
     }
 
@@ -167,127 +212,84 @@ class CxCustomPropertyTemplatesView(private val project: Project) : Disposable {
                 (valueNeedle.isBlank() || property.value.contains(valueNeedle, ignoreCase = true))
         }
 
-        val view = if (filtered.isEmpty()) {
-            panel {
-                row {
-                    label(
-                        if (properties.isEmpty()) "Please, use the panel above to add a property."
-                        else "No properties match the current filter."
-                    )
-                        .align(Align.CENTER)
-                        .resizableColumn()
-                }.resizableRow()
-            }
-        } else panel {
-            row {
-                cell(createPropertyColumns(createPropertyCell("Key"), createPropertyCell("Value")))
-                    .align(AlignX.FILL)
-                    .resizableColumn()
-            }.layout(RowLayout.PARENT_GRID)
+        listModel.replaceAll(filtered)
+        propertyList.emptyText.text = if (properties.isEmpty()) "Please, use the panel above to add a property."
+        else "No properties match the current filter."
+        statusLabel.text = when {
+            filtered.size == properties.size -> "${properties.size} propert${if (properties.size == 1) "y" else "ies"}"
+            else -> "${filtered.size} of ${properties.size} properties"
+        }
+    }
 
-            filtered.forEach { property ->
-                row {
-                    val keyCell = createPropertyCell(property.key)
+    private fun startInlineEdit(property: CxPropertyPresentation) {
+        propertyList.beginEdit(property) { newValue ->
+            if (newValue == property.value) return@beginEdit
 
-                    if (editingPropertyKey == property.key) {
-                        val valueField = textField()
-                            .applyToComponent { text = editingPropertyValue }
-                            .applyToComponent {
-                                document.addDocumentListener(this@CxCustomPropertyTemplatesView, documentListener { syncEditingValue(text) })
-                            }
-                            .component
+            CxCustomPropertyTemplateService.getInstance(project)
+                .updateProperty(templateUUID, property.key, newValue)
+        }
+    }
 
-                        cell(createPropertyColumns(keyCell, valueField))
-                            .align(AlignX.FILL)
-                            .resizableColumn()
+    private fun confirmAndDelete(property: CxPropertyPresentation) {
+        val confirmed = MessageDialogBuilder
+            .yesNo("Delete Property", "Delete property '${property.key}' from this template?")
+            .ask(project)
+        if (!confirmed) return
 
-                        button("Apply") {
-                            editingPropertyKey = null
-                            editingPropertyValue = ""
-                            CxCustomPropertyTemplateService.getInstance(project)
-                                .updateProperty(templateUUID, property.key, valueField.text)
-                        }
-                    } else {
-                        cell(createPropertyColumns(keyCell, createPropertyCell(property.value)))
-                            .align(AlignX.FILL)
-                            .resizableColumn()
+        propertyList.cancelEdit()
+        CxCustomPropertyTemplateService.getInstance(project).deleteProperty(templateUUID, property.key)
+    }
 
-                        actionButton(object : AnAction(null, "Edit property", HybrisIcons.Connection.EDIT) {
-                            override fun actionPerformed(e: AnActionEvent) {
-                                editingPropertyKey = property.key
-                                editingPropertyValue = property.value
-                                renderData()
-                            }
-                        })
-                    }
+    private fun showReport(property: CxPropertyPresentation) {
+        viewScope.launch {
+            val chain = smartReadAction(project) { CxPropertyCollector.getInstance(project).collect() }
 
-                    actionButton(object : AnAction(null, "Delete property", HybrisIcons.Log.Action.DELETE) {
-                        override fun actionPerformed(e: AnActionEvent) {
-                            val confirmed = MessageDialogBuilder
-                                .yesNo("Delete Property", "Delete property '${property.key}' from this template?")
-                                .ask(project)
-                            if (!confirmed) return
-
-                            if (editingPropertyKey == property.key) {
-                                editingPropertyKey = null
-                                editingPropertyValue = ""
-                            }
-                            CxCustomPropertyTemplateService.getInstance(project)
-                                .deleteProperty(templateUUID, property.key)
-                        }
-                    })
-                }.layout(RowLayout.PARENT_GRID)
+            withContext(Dispatchers.EDT) {
+                CxPropertyReportDialog(project, property, chain[property.key], chain.resolve(property.key)).show()
             }
         }
-
-        dataScrollPane.setViewportView(view)
     }
 
-    private fun createPropertyColumns(left: JComponent, right: JComponent): JComponent = JPanel(GridLayout(1, 2, JBUI.scale(COLUMN_GAP), 0)).apply {
-        isOpaque = false
-        add(wrapContentCell(left))
-        add(wrapContentCell(right))
-    }
-
-    private fun wrapContentCell(component: JComponent): JComponent = JPanel(BorderLayout()).apply {
-        isOpaque = false
-        add(component, BorderLayout.CENTER)
-    }
-
-    private fun createPropertyCell(text: String): JComponent {
-        val field = JBTextField(text).apply {
-            isEditable = false
-            isFocusable = true
-            isOpaque = false
-            border = JBUI.Borders.empty(0, 0)
-            toolTipText = text
-            caretPosition = 0
+    /** Mirrors [CxPropertyRenderer]'s layout so the headings line up with the columns underneath. */
+    private fun buildColumnHeader(bg: Color): JComponent {
+        val gap = JBUI.scale(COLUMN_GAP)
+        val header = JPanel(GridBagLayout()).apply {
+            isOpaque = true
+            background = bg
+            border = JBUI.Borders.empty(HEADER_VERTICAL_PADDING, HEADER_HORIZONTAL_PADDING)
         }
 
-        return JBScrollPane(
-            field,
-            ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER,
-            ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED,
-        ).apply {
-            border = JBUI.Borders.empty()
-            preferredSize = Dimension(JBUI.scale(COLUMN_WIDTH), field.preferredSize.height)
-            minimumSize = preferredSize
-            maximumSize = Dimension(Int.MAX_VALUE, preferredSize.height)
-            horizontalScrollBar.unitIncrement = JBUI.scale(16)
-        }
+        header.add(JLabel("Key").apply { font = font.deriveFont(Font.BOLD) }, GridBagConstraints().apply {
+            gridx = 0; gridy = 0
+            weightx = 0.5; weighty = 1.0
+            fill = GridBagConstraints.HORIZONTAL
+            anchor = GridBagConstraints.WEST
+            insets = JBUI.insets(0, 0, 0, gap / 2)
+        })
+        header.add(JLabel("Value").apply { font = font.deriveFont(Font.BOLD) }, GridBagConstraints().apply {
+            gridx = 1; gridy = 0
+            weightx = 0.5; weighty = 1.0
+            fill = GridBagConstraints.HORIZONTAL
+            anchor = GridBagConstraints.WEST
+            insets = JBUI.insets(0, gap / 2, 0, JBUI.scale(CxPropertyRowAction.totalHitWidth))
+        })
+        header.add(Box.createHorizontalStrut(JBUI.scale(CxPropertyRowAction.totalHitWidth)), GridBagConstraints().apply {
+            gridx = 2; gridy = 0
+            weightx = 0.0
+            fill = GridBagConstraints.NONE
+        })
+
+        return header
     }
 
     private fun validatePropertyKey(value: String) = CxPropertyKey.validate(value)?.let { ValidationInfo(it) }
-
-    private fun syncEditingValue(value: String) {
-        editingPropertyValue = value
-    }
 
     private fun toggleView(vararg unhide: AtomicBooleanProperty) = listOf(showDataPanel)
         .forEach { it.set(unhide.contains(it)) }
 
     companion object {
-        private const val COLUMN_WIDTH = 340
         private const val COLUMN_GAP = 8
+        private const val HEADER_VERTICAL_PADDING = 6
+        private const val HEADER_HORIZONTAL_PADDING = 12
     }
 }
