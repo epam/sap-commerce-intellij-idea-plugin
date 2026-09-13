@@ -52,4 +52,33 @@ object CxPropertyComparison {
                 ?.let { CxPropertyDifference(remoteProperty.key, it, remoteProperty.value) }
         }
         .sortedBy { it.key }
+
+    /** Properties of [first] which [second] does not have at all, ordered by key. */
+    fun onlyIn(
+        first: Collection<CxPropertyPresentation>,
+        second: Collection<CxPropertyPresentation>,
+    ): List<CxPropertyPresentation> {
+        val known = second.mapTo(HashSet(second.size)) { it.key }
+
+        return first
+            .filterNot { it.key in known }
+            .sortedBy { it.key }
+    }
+
+    /**
+     * Properties both sides have and disagree about, carrying [first]'s value.
+     *
+     * The other value is deliberately left to the caller: whichever side is being listed, the counterpart is what
+     * explains the difference, and it is already modelled as one.
+     */
+    fun differing(
+        first: Collection<CxPropertyPresentation>,
+        second: Collection<CxPropertyPresentation>,
+    ): List<CxPropertyPresentation> {
+        val other = second.associate { it.key to it.value }
+
+        return first
+            .filter { other[it.key]?.let { value -> value != it.value } == true }
+            .sortedBy { it.key }
+    }
 }
