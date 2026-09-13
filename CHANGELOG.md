@@ -16,7 +16,7 @@
 - Choose which properties go into a property template [#2015](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2015)
 - Number a template name which is already taken [#2016](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2016)
 - Navigate, complete and document properties in the files which declare them, and report the declarations and placeholders which never apply [#2018](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2018)
-- Report a password, token or API key written into a committed `project.properties`
+- Report a password, token or API key written into a committed `project.properties` [#2019](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2019)
 
 ### `AI` capabilities
 - Expose the properties of a project and its remote instances as MCP tools [#2017](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2017)
