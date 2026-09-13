@@ -19,6 +19,9 @@
 <idea-plugin>
 
     <extensions defaultExtensionNs="com.intellij">
+        <psi.referenceContributor language="Properties"
+                                  implementation="sap.commerce.toolset.properties.psi.contributor.CxPropertyReferenceContributor"/>
+
         <codeInsight.inlayProvider language="Properties"
                                    implementationClass="sap.commerce.toolset.properties.codeInsight.hints.CxPropertiesInlayHintsProvider"/>
 
