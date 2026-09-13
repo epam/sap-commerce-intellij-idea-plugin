@@ -33,12 +33,10 @@ import sap.commerce.toolset.properties.meta.CxPropertyRule
 /**
  * Base of the inspections which hold a declaration against what SAP Commerce Cloud documents about the property.
  *
- * A subclass says which files it looks at, which rules it reports, and how each problem reads; everything else - walking
- * the file, matching the catalogue, highlighting the key rather than the whole line - is the same for all of them.
+ * A subclass says which rules it reports and how each problem reads; everything else - the files to look at, walking
+ * them, matching the catalogue, highlighting the key rather than the whole line - comes from the catalogue itself.
  */
 abstract class CxPropertyInspection : LocalInspectionTool() {
-
-    protected abstract val fileNames: Set<String>
 
     protected abstract fun rules(): Set<CxPropertyRule>
     protected abstract fun problem(key: String, rule: CxPropertyRule): String
@@ -51,14 +49,18 @@ abstract class CxPropertyInspection : LocalInspectionTool() {
 
         override fun visitFile(file: PsiFile) {
             if (file.project.isNotHybrisProject) return
-            if (file.name !in fileNames) return
+
+            val reported = rules()
+            if (reported.none { file.name in it.fileNames }) return
 
             val propertiesFile = file.asSafely<PropertiesFile>() ?: return
-            val reported = rules()
 
             propertiesFile.properties.forEach { property ->
                 val key = property.key ?: return@forEach
-                val rule = CxPropertyRule.of(key)?.takeIf { it in reported } ?: return@forEach
+                // A rule reported by this inspection still only applies to the files it names.
+                val rule = CxPropertyRule.of(key)
+                    ?.takeIf { it in reported && file.name in it.fileNames }
+                    ?: return@forEach
 
                 holder.registerProblem(
                     property.psiElement,

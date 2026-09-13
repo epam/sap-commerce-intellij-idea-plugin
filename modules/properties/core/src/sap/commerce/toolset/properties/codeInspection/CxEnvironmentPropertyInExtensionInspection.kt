@@ -20,10 +20,10 @@ package sap.commerce.toolset.properties.codeInspection
 
 import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.psi.PsiFile
-import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.properties.codeInspection.fix.CxMovePropertyToLocalPropertiesFix
 import sap.commerce.toolset.properties.codeInspection.fix.CxOpenPropertyDocumentationFix
 import sap.commerce.toolset.properties.meta.CxPropertyRule
+import sap.commerce.toolset.properties.meta.CxPropertyRuleSeverity
 
 /**
  * Reports a property which SAP Commerce Cloud injects per environment being declared in an extension.
@@ -36,9 +36,7 @@ import sap.commerce.toolset.properties.meta.CxPropertyRule
  */
 class CxEnvironmentPropertyInExtensionInspection : CxPropertyInspection() {
 
-    override val fileNames = setOf(ProjectConstants.File.PROJECT_PROPERTIES)
-
-    override fun rules() = setOf(CxPropertyRule.MANAGED_BY_AUTOMATION)
+    override fun rules() = CxPropertyRule.of(CxPropertyRuleSeverity.ERROR)
 
     override fun problem(key: String, rule: CxPropertyRule) =
         "'$key' is ${rule.title}, declaring it in project.properties hard-codes one environment into every build"

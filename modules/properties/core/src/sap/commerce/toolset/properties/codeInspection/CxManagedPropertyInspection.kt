@@ -19,9 +19,9 @@
 package sap.commerce.toolset.properties.codeInspection
 
 import com.intellij.codeInspection.LocalQuickFix
-import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.properties.codeInspection.fix.CxOpenPropertyDocumentationFix
 import sap.commerce.toolset.properties.meta.CxPropertyRule
+import sap.commerce.toolset.properties.meta.CxPropertyRuleSeverity
 
 /**
  * Reports a property which the SAP Commerce Cloud build process writes itself being declared by the project.
@@ -31,12 +31,7 @@ import sap.commerce.toolset.properties.meta.CxPropertyRule
  */
 class CxManagedPropertyInspection : CxPropertyInspection() {
 
-    override val fileNames = setOf(
-        ProjectConstants.File.PROJECT_PROPERTIES,
-        ProjectConstants.File.LOCAL_PROPERTIES,
-    )
-
-    override fun rules() = setOf(CxPropertyRule.MANAGED_BY_BUILD, CxPropertyRule.CLOUD_PORTAL_ONLY)
+    override fun rules() = CxPropertyRule.of(CxPropertyRuleSeverity.WARNING)
 
     override fun problem(key: String, rule: CxPropertyRule) = "'$key' is ${rule.title}"
 
