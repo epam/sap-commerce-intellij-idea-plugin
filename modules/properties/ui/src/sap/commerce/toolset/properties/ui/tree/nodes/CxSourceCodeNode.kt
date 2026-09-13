@@ -49,7 +49,7 @@ class CxSourceCodeNode(project: Project) : CxPropertiesNode(
 
     override fun getNewChildren(): Map<String, CxPropertiesNode> = when (CxPropertyViewSettings.getInstance(project).sourceMode) {
         CxPropertySourceMode.PROJECT -> mapOf(PROJECT_KEY to CxSourceProjectNode(project))
-        CxPropertySourceMode.EXTENSIONS -> groupTree().toNodes()
+        CxPropertySourceMode.EXTENSIONS -> groupTree().toNodes(topLevel = true)
     }
 
     /** Extensions arranged under their module group path, the deepest group last. */
@@ -70,11 +70,17 @@ class CxSourceCodeNode(project: Project) : CxPropertiesNode(
         return root
     }
 
-    private fun GroupTree.toNodes(): Map<String, CxPropertiesNode> {
+    private fun GroupTree.toNodes(topLevel: Boolean): Map<String, CxPropertiesNode> {
         val groups = subGroups.entries
             .sortedWith(compareBy({ rankOf(it.key) }, { it.key }))
             .map { (title, subGroup) ->
-                CxSourceExtensionGroupNode(project, title, iconOf(title), subGroup.toNodes(), subGroup.extensionCount())
+                CxSourceExtensionGroupNode(
+                    project = project,
+                    title = title,
+                    icon = iconOf(title, topLevel),
+                    groupChildren = subGroup.toNodes(topLevel = false),
+                    extensionCount = subGroup.extensionCount(),
+                )
             }
         val extensions = this.extensions.entries
             .sortedBy { it.key }
@@ -84,21 +90,35 @@ class CxSourceCodeNode(project: Project) : CxPropertiesNode(
     }
 
     /** Keeps the well-known groups in their familiar order; anything a project names itself follows, alphabetically. */
-    private fun rankOf(title: String) = with(ApplicationSettings.getInstance()) {
-        listOf(groupCustom, groupOtherCustom, groupHybris, groupPlatform)
-            .indexOf(title)
-            .takeIf { it >= 0 }
-            ?: Int.MAX_VALUE
+    private fun rankOf(title: String) = knownGroups().keys
+        .indexOfFirst { it.equals(title, true) }
+        .takeIf { it >= 0 }
+        ?: Int.MAX_VALUE
+
+    /**
+     * The icons the Project view gives these groups. It only decorates the outermost one, so a group a project names
+     * itself - `mygroup/mysubgroup` and the like - keeps the platform's own group icon there and here alike.
+     */
+    private fun iconOf(title: String, topLevel: Boolean): Icon = knownGroups()
+        .takeIf { topLevel }
+        ?.entries
+        ?.firstOrNull { it.key.equals(title, true) }
+        ?.value
+        ?: AllIcons.Nodes.ModuleGroup
+
+    private fun knownGroups() = with(ApplicationSettings.getInstance()) {
+        linkedMapOf(
+            outermost(groupCustom) to HybrisIcons.Module.CUSTOM_GROUP,
+            outermost(groupHybris) to HybrisIcons.Module.COMMERCE_GROUP,
+            outermost(groupPlatform) to HybrisIcons.Module.PLATFORM_GROUP,
+            outermost(groupCCv2) to HybrisIcons.Module.CCV2_GROUP,
+        )
     }
 
-    private fun iconOf(title: String): Icon = with(ApplicationSettings.getInstance()) {
-        when (title) {
-            groupCustom, groupOtherCustom -> ModuleDescriptorType.CUSTOM.lazyIcon()
-            groupHybris -> ModuleDescriptorType.OOTB.lazyIcon()
-            groupPlatform -> ModuleDescriptorType.PLATFORM.lazyIcon()
-            else -> AllIcons.Nodes.ModuleGroup
-        }
-    }
+    /** A configured group may be a path such as `Custom/Unused`; only its first segment names a top level group. */
+    private fun outermost(group: String) = ApplicationSettings.toIdeaGroup(group)
+        ?.firstOrNull()
+        ?: group
 
     /** A group path and the extensions sitting at each level of it. */
     private class GroupTree {
