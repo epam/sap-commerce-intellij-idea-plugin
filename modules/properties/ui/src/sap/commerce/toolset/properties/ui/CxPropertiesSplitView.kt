@@ -40,6 +40,7 @@ import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.properties.CxRemotePropertyStateService
 import sap.commerce.toolset.properties.custom.settings.event.CxCustomPropertyTemplateStateListener
+import sap.commerce.toolset.properties.meta.CxPropertyCollector
 import sap.commerce.toolset.properties.settings.event.CxPropertyViewSettingsListener
 import sap.commerce.toolset.properties.settings.state.CxPropertySourceMode
 import sap.commerce.toolset.properties.exec.event.CxRemotePropertyStateListener
@@ -134,7 +135,7 @@ class CxPropertiesSplitView(private val project: Project) : OnePixelSplitter(fal
             })
 
             subscribe(CxPropertyViewSettingsListener.TOPIC, object : CxPropertyViewSettingsListener {
-                override fun onSourceModeChanged(sourceMode: CxPropertySourceMode) = onEdt { updateTree() }
+                override fun onSourceModeChanged(sourceMode: CxPropertySourceMode) = onEdt { updateSecondComponent(null) { updateTree() } }
             })
 
             // Refreshing the project renames modules when a group changes, and adds or drops them when the configured
@@ -190,7 +191,15 @@ class CxPropertiesSplitView(private val project: Project) : OnePixelSplitter(fal
     private fun onEdt(block: () -> Unit) = application.invokeLater({ if (!project.isDisposed) block() }, project.disposed)
 
     /** The module model is still being written when these arrive, so the rebuild waits for the write action to end. */
-    private fun scheduleTreeUpdate() = onEdt { updateTree() }
+    private fun scheduleTreeUpdate() = onEdt {
+        // The chain is cached against the project settings, which a refresh normally bumps - but not every module
+        // change goes through them, and a stale chain is worse than a scan nobody asked for.
+        CxPropertyCollector.getInstance(project).resetCache()
+
+        updateTree()
+        // Nodes survive a reload by key, so whatever is selected is re-rendered rather than left showing old values.
+        updateSecondComponent(tree.selectionPath?.pathData(CxPropertiesNode::class))
+    }
 
 
     private fun updateSecondComponent(node: CxPropertiesNode?, beforeUpdate: () -> Unit = {}) {
