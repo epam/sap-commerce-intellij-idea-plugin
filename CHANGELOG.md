@@ -17,7 +17,7 @@
 - Number a template name which is already taken [#2016](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2016)
 
 ### `AI` capabilities
-- Expose the properties of a project and its remote instances as MCP tools
+- Expose the properties of a project and its remote instances as MCP tools [#2017](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2017)
 
 ## [2026.2.4]
 
