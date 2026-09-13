@@ -23,29 +23,21 @@ import com.intellij.openapi.Disposable
 import com.intellij.openapi.application.EDT
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
-import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.platform.ide.progress.withBackgroundProgress
 import kotlinx.coroutines.*
-import kotlinx.serialization.json.*
 import org.apache.http.HttpStatus
-import org.apache.http.message.BasicNameValuePair
 import sap.commerce.toolset.Notifications
 import sap.commerce.toolset.exec.context.DefaultExecResult
-import sap.commerce.toolset.extensions.ExtensionsService
-import sap.commerce.toolset.groovy.exec.GroovyExecClient
-import sap.commerce.toolset.groovy.exec.context.GroovyExecContext
 import sap.commerce.toolset.hac.exec.HacExecConnectionService
-import sap.commerce.toolset.hac.exec.http.HacHttpClient
 import sap.commerce.toolset.hac.exec.settings.event.HacConnectionSettingsListener
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
-import sap.commerce.toolset.properties.exec.CxGroovyStringLiteral
+import sap.commerce.toolset.properties.exec.CxRemotePropertyClient
 import sap.commerce.toolset.properties.exec.CxRemotePropertyState
 import sap.commerce.toolset.properties.exec.CxRemotePropertyStatePage
 import sap.commerce.toolset.properties.exec.event.CxRemotePropertyStateListener
 import sap.commerce.toolset.properties.presentation.CxPropertyPresentation
-import sap.commerce.toolset.settings.state.TransactionMode
 import java.util.concurrent.ConcurrentHashMap
 
 @Service(Service.Level.PROJECT)
@@ -201,37 +193,19 @@ class CxRemotePropertyStateService(
         keyFilter: String,
         valueFilter: String,
     ): Result<CxRemotePropertyStatePage> {
-        val scriptContent = ExtensionsService.getInstance()
-            .findResource(CxPropertyConstants.EXTENSION_STATE_SCRIPT)
-            .replace(CxPropertyConstants.PAGE_PLACEHOLDER, page.coerceAtLeast(1).toString())
-            .replace(CxPropertyConstants.PAGE_SIZE_PLACEHOLDER, pageSize.coerceAtLeast(1).toString())
-            .replace(CxPropertyConstants.KEY_FILTER_PLACEHOLDER, CxGroovyStringLiteral.escape(keyFilter.trim()))
-            .replace(CxPropertyConstants.VALUE_FILTER_PLACEHOLDER, CxGroovyStringLiteral.escape(valueFilter.trim()))
+        val title = "Fetching Properties from SAP Commerce [${server.shortenConnectionName}]..."
 
-        val context = GroovyExecContext(
-            connection = server,
-            executionTitle = "Fetching Properties from SAP Commerce [${server.shortenConnectionName}]...",
-            content = scriptContent,
-            transactionMode = TransactionMode.ROLLBACK,
-            timeout = server.timeout,
-        )
-
-        val client = GroovyExecClient.getInstance(project)
-        val result = withBackgroundProgress(project, context.executionTitle, true) {
+        return withBackgroundProgress(project, title, true) {
             try {
-                client.execute(context)
+                CxRemotePropertyClient.getInstance(project).fetch(server, page, pageSize, keyFilter, valueFilter)
+                    ?.let { Result.success(it) }
+                    ?: Result.failure(IllegalStateException("Unable to retrieve properties state."))
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Exception) {
-                client.onError(context, e)
+                Result.failure(e)
             }
         }
-
-        return result.result
-            ?.takeIf { !result.hasError }
-            ?.let(::parseProperties)
-            ?.let { Result.success(it) }
-            ?: Result.failure(IllegalStateException(result.errorMessage ?: "Unable to retrieve properties state."))
     }
 
     fun upsertProperty(key: String, value: String, callback: (Boolean) -> Unit = {}) {
@@ -246,19 +220,9 @@ class CxRemotePropertyStateService(
         }
 
         coroutineScope.launch {
-            val response = HacHttpClient.getInstance(project).post(
-                "${server.generatedURL}/platform/configstore",
-                listOf(
-                    BasicNameValuePair("key", trimmedKey),
-                    BasicNameValuePair("val", value),
-                ),
-                true,
-                server.timeout,
-                server,
-                null,
-            )
+            val outcome = CxRemotePropertyClient.getInstance(project).upsert(server, trimmedKey, value)
 
-            if (response.statusLine.statusCode == HttpStatus.SC_OK) {
+            if (outcome.success) {
                 notify(NotificationType.INFORMATION, "Property stored") {
                     "<p>Property: ${StringUtil.escapeXmlEntities(trimmedKey)}</p><p>Server: ${server.shortenConnectionName}</p>"
                 }
@@ -266,7 +230,7 @@ class CxRemotePropertyStateService(
                 withContext(Dispatchers.EDT) { callback(true) }
             } else {
                 notify(NotificationType.ERROR, "Failed to store property") {
-                    "<p>${StringUtil.escapeXmlEntities(response.statusLine.reasonPhrase.orEmpty())}</p><p>Server: ${server.shortenConnectionName}</p>"
+                    "<p>${StringUtil.escapeXmlEntities(outcome.reason.orEmpty())}</p><p>Server: ${server.shortenConnectionName}</p>"
                 }
                 // Lets the view drop the busy indicator it raised for this request.
                 publishStateChanged(server)
@@ -288,10 +252,9 @@ class CxRemotePropertyStateService(
         coroutineScope.launch {
             // Every property is attempted even when an earlier one fails, so a single rejected
             // key cannot silently leave the rest of the template unapplied.
+            val client = CxRemotePropertyClient.getInstance(project)
             val failed = withBackgroundProgress(project, "Applying properties to SAP Commerce [${server.shortenConnectionName}]...", true) {
-                properties.filterNot { property ->
-                    CxPropertyKey.isValid(property.key.trim()) && postConfigStore(server, property.key.trim(), property.value)
-                }
+                properties.filterNot { client.upsert(server, it.key, it.value).success }
             }
 
             refetchLoaded(server)
@@ -326,16 +289,9 @@ class CxRemotePropertyStateService(
         val trimmedKey = key.trim()
 
         coroutineScope.launch {
-            val response = HacHttpClient.getInstance(project).post(
-                "${server.generatedURL}/platform/configdelete",
-                listOf(BasicNameValuePair("key", trimmedKey)),
-                true,
-                server.timeout,
-                server,
-                null,
-            )
+            val outcome = CxRemotePropertyClient.getInstance(project).delete(server, trimmedKey)
 
-            if (response.statusLine.statusCode == HttpStatus.SC_OK) {
+            if (outcome.success) {
                 notify(NotificationType.INFORMATION, "Property deleted") {
                     "<p>Property: ${StringUtil.escapeXmlEntities(trimmedKey)}</p><p>Server: ${server.shortenConnectionName}</p>"
                 }
@@ -343,7 +299,7 @@ class CxRemotePropertyStateService(
                 withContext(Dispatchers.EDT) { callback(true) }
             } else {
                 notify(NotificationType.ERROR, "Failed to delete property") {
-                    "<p>${StringUtil.escapeXmlEntities(response.statusLine.reasonPhrase.orEmpty())}</p><p>Server: ${server.shortenConnectionName}</p>"
+                    "<p>${StringUtil.escapeXmlEntities(outcome.reason.orEmpty())}</p><p>Server: ${server.shortenConnectionName}</p>"
                 }
                 // Lets the view drop the busy indicator it raised for this request.
                 publishStateChanged(server)
@@ -364,72 +320,6 @@ class CxRemotePropertyStateService(
         .syncPublisher(CxRemotePropertyStateListener.TOPIC)
         .onPropertiesStateChanged(server)
 
-    private fun parseProperties(payload: String): CxRemotePropertyStatePage? = try {
-        when (val json = Json.parseToJsonElement(payload)) {
-            is JsonObject -> parsePagedProperties(json)
-            is JsonArray -> parseLegacyProperties(json)
-            else -> null
-        }
-    } catch (e: Exception) {
-        thisLogger().warn("Unable to parse properties payload", e)
-        null
-    }
-
-    private fun parsePagedProperties(json: JsonObject): CxRemotePropertyStatePage? {
-        val page = json["page"]?.jsonPrimitive?.intOrNull ?: return null
-        val pageSize = json["pageSize"]?.jsonPrimitive?.intOrNull ?: return null
-        val totalItems = json["totalItems"]?.jsonPrimitive?.intOrNull ?: return null
-        val items = json["items"]?.jsonArray ?: return null
-
-        return CxRemotePropertyStatePage(
-            lastLoadedPage = page,
-            pageSize = pageSize,
-            totalItems = totalItems,
-            keyFilter = json["keyFilter"]?.jsonPrimitive?.content.orEmpty(),
-            valueFilter = json["valueFilter"]?.jsonPrimitive?.content.orEmpty(),
-            properties = parsePropertyItems(items),
-        )
-    }
-
-    private fun parseLegacyProperties(items: JsonArray): CxRemotePropertyStatePage = CxRemotePropertyStatePage(
-        lastLoadedPage = 1,
-        pageSize = items.size.coerceAtLeast(1),
-        totalItems = items.size,
-        keyFilter = "",
-        valueFilter = "",
-        properties = parsePropertyItems(items),
-    )
-
-    private fun parsePropertyItems(items: Iterable<JsonElement>): List<CxPropertyPresentation> = items
-        .mapNotNull {
-            val obj = it.jsonObject
-            val key = obj["key"]?.jsonPrimitive?.content ?: return@mapNotNull null
-            val value = obj["value"]?.jsonPrimitive?.content
-            CxPropertyPresentation.of(key, value)
-        }
-        .sortedBy { it.key }
-
-    private suspend fun postConfigStore(server: HacConnectionSettingsState, key: String, value: String): Boolean {
-        val response = HacHttpClient.getInstance(project).post(
-            "${server.generatedURL}/platform/configstore",
-            listOf(
-                BasicNameValuePair("key", key),
-                BasicNameValuePair("val", value),
-            ),
-            true,
-            server.timeout,
-            server,
-            null,
-        )
-
-        return response.statusLine.statusCode == HttpStatus.SC_OK
-    }
-
-    /**
-     * Reloads the current view after a mutation, preserving the scroll window: pages 1..N
-     * are fetched in a single request with an inflated pageSize equal to the previously
-     * loaded count, so the user sees no rows disappear.
-     */
     private fun refetchLoaded(server: HacConnectionSettingsState) = fetch(server)
 
     private fun notify(type: NotificationType, title: String, contentProvider: () -> String) = Notifications
