@@ -19,6 +19,9 @@
 <idea-plugin>
 
     <extensions defaultExtensionNs="com.intellij">
+        <completion.contributor language="Properties"
+                                implementationClass="sap.commerce.toolset.properties.codeInsight.completion.CxPropertyCompletionContributor"/>
+
         <psi.referenceContributor language="Properties"
                                   implementation="sap.commerce.toolset.properties.psi.contributor.CxPropertyReferenceContributor"/>
 
