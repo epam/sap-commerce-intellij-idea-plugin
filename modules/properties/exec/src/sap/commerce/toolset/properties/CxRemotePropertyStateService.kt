@@ -127,6 +127,31 @@ class CxRemotePropertyStateService(
         append = false,
     )
 
+    /**
+     * Loads every property of [server] in a single request and hands the complete snapshot over.
+     *
+     * The accumulated state only holds the pages scrolled into view, which is rarely the whole instance - anything
+     * choosing from "all of its properties" has to ask for them first.
+     */
+    fun fetchAll(server: HacConnectionSettingsState, onLoaded: (CxRemotePropertyStatePage) -> Unit) {
+        val loaded = state(server.uuid).get()
+
+        if (loaded != null && !loaded.hasMore && loaded.keyFilter.isEmpty() && loaded.valueFilter.isEmpty()) {
+            onLoaded(loaded)
+            return
+        }
+
+        fetch(
+            server = server,
+            page = 1,
+            pageSize = maxOf(loaded?.totalItems ?: 0, CxPropertyConstants.DEFAULT_PAGE_SIZE),
+            keyFilter = "",
+            valueFilter = "",
+            append = false,
+            onLoaded = onLoaded,
+        )
+    }
+
     private fun fetch(
         server: HacConnectionSettingsState,
         page: Int,
@@ -134,6 +159,7 @@ class CxRemotePropertyStateService(
         keyFilter: String,
         valueFilter: String,
         append: Boolean,
+        onLoaded: ((CxRemotePropertyStatePage) -> Unit)? = null,
     ) {
         // A newer request supersedes the one still in flight, so a slow response for an outdated filter or page can
         // never land on top of the one the user is looking at now.
@@ -179,6 +205,7 @@ class CxRemotePropertyStateService(
             } else {
                 val state = state(server.uuid)
                 if (append) state.append(newPage) else state.replace(newPage)
+                state.get()?.let { onLoaded?.invoke(it) }
                 // No success notification — the data lands in the panel's bottom toolbar
                 // ("Loaded N of M total") which is sufficient feedback. The fetch errors
                 // above still surface because failure is non-obvious.
