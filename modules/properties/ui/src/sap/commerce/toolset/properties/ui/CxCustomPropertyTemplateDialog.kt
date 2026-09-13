@@ -18,7 +18,6 @@
 
 package sap.commerce.toolset.properties.ui
 
-import com.intellij.openapi.observable.properties.AtomicBooleanProperty
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.openapi.ui.ValidationInfo
 import com.intellij.ui.CollectionListModel
@@ -31,6 +30,7 @@ import sap.commerce.toolset.properties.presentation.CxPropertyPresentation
 import sap.commerce.toolset.ui.addDocumentListener
 import sap.commerce.toolset.ui.event.documentListener
 import javax.swing.JComponent
+import javax.swing.JLabel
 
 /**
  * Names a property template and, when there is something to pick from, chooses what goes into it.
@@ -38,16 +38,20 @@ import javax.swing.JComponent
  * A template built from a remote instance would otherwise take every property that instance has — thousands of them,
  * of which a handful are usually what was meant. The picker is the same virtualized list the tool window uses, so the
  * size of the source costs nothing to display.
+ *
+ * Both the name and the selection are validated by the panel's own validators. Mixing those with an overridden
+ * [doValidate] would put two mechanisms in charge of the same OK button, which is how a dialog ends up refusing to
+ * re-enable it once the reason for the complaint is gone.
  */
 class CxCustomPropertyTemplateDialog(
     private val context: PropertyTemplateDialogContext,
 ) : DialogWrapper(context.project) {
 
     private val selecting = context.selectableProperties.isNotEmpty()
-    private val hasSelection = AtomicBooleanProperty(selecting)
 
     private lateinit var nameTextField: JBTextField
     private lateinit var filterField: JBTextField
+    private lateinit var selectionLabel: JLabel
 
     private val listModel = CollectionListModel(context.selectableProperties)
     private val propertyList = CxPropertyList(
@@ -60,7 +64,6 @@ class CxCustomPropertyTemplateDialog(
         // Nothing here is acted upon - the rows are only there to be picked.
         availableActions = emptySet()
         selectable = true
-        onSelectionChanged = { hasSelection.set(it.isNotEmpty()) }
         checkAll()
     }
 
@@ -76,25 +79,27 @@ class CxCustomPropertyTemplateDialog(
     }
 
     override fun createCenterPanel(): JComponent = panel {
-        row {
+        row("Name:") {
             nameTextField = textField()
-                .label("Name:")
                 .bindText(context.mutable.name)
                 .align(AlignX.FILL)
+                .resizableColumn()
                 .validationOnInput { validateName(it.text) }
                 .validationOnApply { validateName(it.text) }
                 .component
-        }.layout(RowLayout.PARENT_GRID)
+        }.layout(RowLayout.LABEL_ALIGNED)
 
         if (context.showRemoveSourceTemplates) {
-            row {
+            row("") {
                 checkBox("Remove source template")
                     .bindSelected(context.removeSourceTemplates)
-            }.layout(RowLayout.PARENT_GRID)
+            }.layout(RowLayout.LABEL_ALIGNED)
         }
 
         if (selecting) {
-            row {
+            separator(JBUI.CurrentTheme.Banner.INFO_BORDER_COLOR)
+
+            row("Filter:") {
                 filterField = textField()
                     .align(AlignX.FILL)
                     .resizableColumn()
@@ -106,22 +111,35 @@ class CxCustomPropertyTemplateDialog(
 
                 link("Select all") { propertyList.checkAll() }
                 link("Clear") { propertyList.clearChecked() }
-            }.layout(RowLayout.PARENT_GRID)
+            }.layout(RowLayout.LABEL_ALIGNED)
 
             row {
                 cell(JBScrollPane(propertyList))
                     .align(Align.FILL)
                     .resizableColumn()
+                    // Ticking a box has to re-run the validators itself: a JList reports nothing the panel listens for.
+                    .validationRequestor { validate ->
+                        propertyList.onSelectionChanged = {
+                            updateSelectionLabel()
+                            validate()
+                        }
+                    }
+                    .validationOnInput { selectionError() }
+                    .validationOnApply { selectionError() }
             }.resizableRow()
+
+            row("") {
+                selectionLabel = label("").component
+                cell(selectionLabel).align(AlignX.FILL)
+            }.layout(RowLayout.LABEL_ALIGNED)
         }
     }.apply {
         border = JBUI.Borders.empty(8, 16)
-        if (selecting) preferredSize = JBUI.size(DIALOG_WIDTH, DIALOG_HEIGHT)
+        if (selecting) {
+            preferredSize = JBUI.size(DIALOG_WIDTH, DIALOG_HEIGHT)
+            updateSelectionLabel()
+        }
     }
-
-    // The name is validated by the panel's own validators; only the selection needs saying here.
-    override fun doValidate(): ValidationInfo? = ValidationInfo("Select at least one property", propertyList)
-        .takeIf { selecting && !hasSelection.get() }
 
     override fun getPreferredFocusedComponent(): JComponent = nameTextField
 
@@ -138,7 +156,23 @@ class CxCustomPropertyTemplateDialog(
                 it.key.contains(needle, ignoreCase = true) || it.value.contains(needle, ignoreCase = true)
             }
         )
+
+        updateSelectionLabel()
     }
+
+    private fun updateSelectionLabel() {
+        if (!::selectionLabel.isInitialized) return
+
+        val selected = propertyList.checkedKeys.size
+        val total = context.selectableProperties.size
+        val listed = listModel.size
+
+        selectionLabel.text = "$selected of $total selected" +
+            if (listed < total) " | $listed shown" else ""
+    }
+
+    private fun selectionError() = ValidationInfo("Select at least one property", propertyList)
+        .takeIf { propertyList.checkedKeys.isEmpty() }
 
     private fun validateName(value: String) = when {
         value.isBlank() -> ValidationInfo("Template name cannot be blank", nameTextField)
@@ -157,7 +191,7 @@ class CxCustomPropertyTemplateDialog(
 
     companion object {
         private const val MAX_NAME_LENGTH = 255
-        private const val DIALOG_WIDTH = 640
-        private const val DIALOG_HEIGHT = 520
+        private const val DIALOG_WIDTH = 820
+        private const val DIALOG_HEIGHT = 560
     }
 }
