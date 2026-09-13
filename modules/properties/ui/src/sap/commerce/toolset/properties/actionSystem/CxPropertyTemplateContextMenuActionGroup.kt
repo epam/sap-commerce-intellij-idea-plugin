@@ -28,6 +28,10 @@ import sap.commerce.toolset.properties.selectedNode
 import sap.commerce.toolset.properties.ui.tree.nodes.CxCustomPropertyTemplateGroupNode
 import sap.commerce.toolset.properties.ui.tree.nodes.CxCustomPropertyTemplateItemNode
 import sap.commerce.toolset.properties.ui.tree.nodes.CxRemotePropertyStateNode
+import sap.commerce.toolset.properties.ui.tree.nodes.CxSourceCodeNode
+import sap.commerce.toolset.properties.ui.tree.nodes.CxSourceExtensionGroupNode
+import sap.commerce.toolset.properties.ui.tree.nodes.CxSourceExtensionNode
+import sap.commerce.toolset.properties.ui.tree.nodes.CxSourceProjectNode
 
 class CxPropertyTemplateContextMenuActionGroup : ActionGroup() {
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
@@ -37,6 +41,11 @@ class CxPropertyTemplateContextMenuActionGroup : ActionGroup() {
         val manager = ActionManager.getInstance()
 
         return when (selectedNode) {
+            is CxSourceCodeNode,
+            is CxSourceProjectNode,
+            is CxSourceExtensionGroupNode,
+            is CxSourceExtensionNode -> arrayOf(manager.getAction("sap.cx.properties.source.mode"))
+
             is CxRemotePropertyStateNode -> arrayOf(manager.getAction("sap.cx.properties.custom.createTemplate"))
             is CxCustomPropertyTemplateItemNode -> arrayOf(manager.getAction("sap.cx.properties.template.item.actions"))
             is CxCustomPropertyTemplateGroupNode -> arrayOf(manager.getAction("sap.cx.properties.custom.addTemplate"))
@@ -50,6 +59,10 @@ class CxPropertyTemplateContextMenuActionGroup : ActionGroup() {
             selectedNode is CxRemotePropertyStateNode
                 || selectedNode is CxCustomPropertyTemplateGroupNode
                 || selectedNode is CxCustomPropertyTemplateItemNode
+                || selectedNode is CxSourceCodeNode
+                || selectedNode is CxSourceProjectNode
+                || selectedNode is CxSourceExtensionGroupNode
+                || selectedNode is CxSourceExtensionNode
             )
     }
 }
