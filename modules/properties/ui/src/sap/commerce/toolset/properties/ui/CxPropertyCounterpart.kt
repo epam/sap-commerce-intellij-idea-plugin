@@ -67,6 +67,13 @@ internal class CxPropertyCounterpart(
             values = values,
         )
 
+        /** Rows carrying one instance's value, held against another instance of the same kind. */
+        fun instance(ownName: String, otherName: String, values: Map<String, String>) = CxPropertyCounterpart(
+            ownLabel = ownName,
+            otherLabel = otherName,
+            values = values,
+        )
+
         /** Rows carrying the declaration of one extension, held against the value the whole chain resolves to. */
         fun effective(declarations: Map<String, CxResolvedProperty>) = CxPropertyCounterpart(
             ownLabel = "Declared here",
