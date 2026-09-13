@@ -40,7 +40,10 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.hac.exec.HacExecConnectionService
+import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
 import sap.commerce.toolset.properties.CxRemotePropertyStateService
+import sap.commerce.toolset.properties.exec.CxRemotePropertyStatePage
+import sap.commerce.toolset.properties.exec.event.CxRemotePropertyStateListener
 import sap.commerce.toolset.properties.meta.CxPropertyCollector
 import sap.commerce.toolset.properties.meta.CxPropertyModel
 import sap.commerce.toolset.properties.meta.CxPropertyScope
@@ -91,6 +94,18 @@ internal class CxSourcePropertiesView(private val project: Project) : Disposable
     private lateinit var titleLabel: JLabel
 
     private var rows: List<CxPropertyPresentation> = emptyList()
+    private var currentSelection: CxSourceSelection? = null
+
+    init {
+        // The instance is compared against whatever has been fetched of it, so fetching more has to redraw this view.
+        project.messageBus.connect(this).subscribe(CxRemotePropertyStateListener.TOPIC, object : CxRemotePropertyStateListener {
+            override fun onPropertiesStateChanged(remoteConnection: HacConnectionSettingsState) {
+                val selection = currentSelection ?: return
+
+                viewScope.launch { render(selection) }
+            }
+        })
+    }
 
     private val lazyViewPanel by lazy {
         object : ClearableLazyValue<DialogPanel>() {
@@ -171,8 +186,10 @@ internal class CxSourcePropertiesView(private val project: Project) : Disposable
                 ?: emptyList()
         }
         val counterpart = counterpartFor(selection, chain, properties)
+        val remote = remoteSnapshot()
 
         withContext(Dispatchers.EDT) {
+            currentSelection = selection
             rows = properties
             titleLabel.text = titleFor(selection, chain, source)
             // Only a file the running system never reads is worth flagging - the rest speak for themselves.
@@ -180,7 +197,7 @@ internal class CxSourcePropertiesView(private val project: Project) : Disposable
             propertyList.emptyText.text = emptyTextFor(selection, source)
             propertyList.counterpart = counterpart
             applyFilter()
-            statusLabel.text = statusFor(selection, properties.size, counterpart.countDisagreements(properties))
+            statusLabel.text = statusFor(selection, properties.size, counterpart.countDisagreements(properties), remote)
             showData.set(true)
         }
 
@@ -202,10 +219,12 @@ internal class CxSourcePropertiesView(private val project: Project) : Disposable
         )
     }
 
-    /** Values of the instance the user has already fetched, so no request is made just to draw this list. */
-    private fun fetchedRemoteValues(): Map<String, String> = HacExecConnectionService.getInstance(project)
+    /** What has been fetched of the active instance so far; no request is made just to draw this list. */
+    private fun remoteSnapshot() = HacExecConnectionService.getInstance(project)
         .activeConnection
         .let { CxRemotePropertyStateService.getInstance(project).state(it.uuid).get() }
+
+    private fun fetchedRemoteValues(): Map<String, String> = remoteSnapshot()
         ?.properties
         ?.associate { it.key to it.value }
         ?: emptyMap()
@@ -223,13 +242,35 @@ internal class CxSourcePropertiesView(private val project: Project) : Disposable
         else -> "${source.presentableName} declares no properties"
     }
 
-    private fun statusFor(selection: CxSourceSelection, total: Int, disagreements: Int): String {
+    /**
+     * Says what was compared as well as what differs. A project is held against however much of the instance has been
+     * fetched, and saying so is the difference between "nothing differs" and "almost nothing was looked at".
+     */
+    private fun statusFor(
+        selection: CxSourceSelection,
+        total: Int,
+        disagreements: Int,
+        remote: CxRemotePropertyStatePage?,
+    ): String {
         val prefix = "$total propert${if (total == 1) "y" else "ies"}"
 
+        if (selection !is CxSourceSelection.Project) {
+            return if (disagreements == 0) prefix else "$prefix | $disagreements overridden further down the chain"
+        }
+
+        if (remote == null) return "$prefix | fetch a remote instance to compare these against it"
+
+        return "$prefix | $disagreements differ from ${comparedAgainst(remote)}"
+    }
+
+    /** Names how much of the instance the comparison actually covers, filters included. */
+    private fun comparedAgainst(remote: CxRemotePropertyStatePage): String {
+        val filtered = remote.keyFilter.isNotBlank() || remote.valueFilter.isNotBlank()
+
         return when {
-            disagreements == 0 -> prefix
-            selection is CxSourceSelection.Project -> "$prefix | $disagreements differ from the fetched remote instance"
-            else -> "$prefix | $disagreements overridden further down the chain"
+            remote.hasMore -> "the ${remote.loadedCount} of ${remote.totalItems} remote properties fetched so far"
+            filtered -> "the ${remote.loadedCount} remote properties matching the fetched filter"
+            else -> "the remote instance"
         }
     }
 
