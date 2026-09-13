@@ -22,27 +22,35 @@ import com.intellij.ide.projectView.PresentationData
 import com.intellij.openapi.project.Project
 import com.intellij.ui.SimpleTextAttributes
 import com.intellij.util.asSafely
-import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
+import javax.swing.Icon
 
-/** One kind of extension — Custom, Ext, Ootb, Platform or Config — mirroring how the Project view groups the modules. */
+/**
+ * One group of extensions, named and nested exactly as the Project view groups the modules.
+ *
+ * The children are handed in already built, because the whole grouping - which is a tree once `group.override`
+ * paths are in play - is worked out in one pass by [CxSourceCodeNode].
+ */
 class CxSourceExtensionGroupNode(
     project: Project,
-    private val type: ModuleDescriptorType,
-    private var extensions: List<String>,
-) : CxPropertiesNode(project, presentationName = type.title) {
+    title: String,
+    private val icon: Icon,
+    private var groupChildren: Map<String, CxPropertiesNode>,
+    private var extensionCount: Int,
+) : CxPropertiesNode(project, presentationName = title) {
 
-    override fun getNewChildren(): Map<String, CxPropertiesNode> = extensions
-        .map { CxSourceExtensionNode(project, it, type) }
-        .associateBy { it.name }
+    override fun getNewChildren() = groupChildren
 
     override fun update(presentation: PresentationData) {
         presentation.clearText()
         presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
-        presentation.addText(" ${extensions.size} extension(s)", SimpleTextAttributes.GRAYED_ITALIC_ATTRIBUTES)
-        presentation.setIcon(type.lazyIcon())
+        presentation.addText(" $extensionCount extension(s)", SimpleTextAttributes.GRAYED_ITALIC_ATTRIBUTES)
+        presentation.setIcon(icon)
     }
 
     override fun merge(newNode: CxPropertiesNode) {
-        newNode.asSafely<CxSourceExtensionGroupNode>()?.let { extensions = it.extensions }
+        newNode.asSafely<CxSourceExtensionGroupNode>()?.let {
+            groupChildren = it.groupChildren
+            extensionCount = it.extensionCount
+        }
     }
 }
