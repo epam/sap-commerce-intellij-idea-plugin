@@ -183,12 +183,12 @@ internal class CxPropertyRenderer : JPanel(), ListCellRenderer<CxPropertyPresent
         keyLabel.foreground = if (differs) VALUE_DIFFERS_COLOR else UIUtil.getLabelForeground()
         valueLabel.text = if (editing) "" else property.value
         valueLabel.foreground = if (differs) VALUE_DIFFERS_COLOR else JBColor.GRAY
-        val editable = cxList?.editable ?: true
+        val actions = cxList?.availableActions ?: CxPropertyRowAction.entries.toSet()
         checkBox.isVisible = cxList?.selectable == true && !editing
         checkBox.isSelected = cxList?.isChecked(property.key) == true
-        reportLabel.isVisible = !editing
-        editLabel.isVisible = !editing && editable
-        deleteLabel.isVisible = !editing && editable
+        reportLabel.isVisible = !editing && CxPropertyRowAction.REPORT in actions
+        editLabel.isVisible = !editing && CxPropertyRowAction.EDIT in actions
+        deleteLabel.isVisible = !editing && CxPropertyRowAction.DELETE in actions
 
         return this
     }

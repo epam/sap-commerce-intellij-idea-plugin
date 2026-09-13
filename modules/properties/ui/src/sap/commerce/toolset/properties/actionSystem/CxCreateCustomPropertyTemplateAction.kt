@@ -19,18 +19,14 @@
 package sap.commerce.toolset.properties.actionSystem
 
 import com.intellij.openapi.actionSystem.ActionUpdateThread
-import com.intellij.notification.NotificationType
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.project.DumbAwareAction
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.util.text.StringUtil
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.Notifications
 import sap.commerce.toolset.ifNotFromSearchPopup
 import sap.commerce.toolset.isHybrisProject
 import sap.commerce.toolset.properties.CxRemotePropertyStateService
 import sap.commerce.toolset.properties.custom.CxCustomPropertyTemplateService
-import sap.commerce.toolset.properties.meta.CxSecretKind
 import sap.commerce.toolset.properties.presentation.CxPropertyPresentation
 import sap.commerce.toolset.properties.selectedNode
 import sap.commerce.toolset.properties.ui.CxCustomPropertyTemplateDialog
@@ -44,10 +40,9 @@ class CxCreateCustomPropertyTemplateAction : DumbAwareAction() {
     override fun actionPerformed(e: AnActionEvent) = e.ifNotFromSearchPopup {
         val project = e.project ?: return@ifNotFromSearchPopup
         val selectedNode = e.selectedNode() ?: return@ifNotFromSearchPopup
-        val sourceProperties = sourceProperties(project, selectedNode) ?: return@ifNotFromSearchPopup
-        // Templates are saved in plain text under .idea, so the secrets of a remote instance are never copied into one.
-        val (secrets, properties) = if (selectedNode is CxRemotePropertyStateNode) sourceProperties.partition { CxSecretKind.of(it.key) != null }
-        else emptyList<CxPropertyPresentation>() to sourceProperties
+        val properties = sourceProperties(project, selectedNode)
+            ?.takeIf { it.isNotEmpty() }
+            ?: return@ifNotFromSearchPopup
         val mutable = CxCustomPropertyTemplateService.getInstance(project)
             .createTemplateFromProperties(templateName(selectedNode), properties)
             .mutable()
@@ -57,14 +52,17 @@ class CxCreateCustomPropertyTemplateAction : DumbAwareAction() {
             mutable = mutable,
             title = if (selectedNode is CxRemotePropertyStateNode) "Create a Property Template" else "Clone Template",
             showRemoveSourceTemplates = selectedNode is CxCustomPropertyTemplateItemNode,
+            selectableProperties = properties.sortedBy { it.key },
         )
+        val dialog = CxCustomPropertyTemplateDialog(context)
 
-        if (CxCustomPropertyTemplateDialog(context).showAndGet()) {
+        if (dialog.showAndGet()) {
+            dialog.applySelection()
+
             CxCustomPropertyTemplateService.getInstance(project).addTemplate(mutable.immutable())
             if (context.removeSourceTemplates.get() && selectedNode is CxCustomPropertyTemplateItemNode) {
                 CxCustomPropertyTemplateService.getInstance(project).deleteTemplates(listOf(selectedNode.uuid))
             }
-            if (secrets.isNotEmpty()) notifySecretsLeftOut(project, secrets)
         }
     }
 
@@ -81,15 +79,6 @@ class CxCreateCustomPropertyTemplateAction : DumbAwareAction() {
         is CxCustomPropertyTemplateItemNode -> node.properties
         else -> null
     }
-
-    private fun notifySecretsLeftOut(project: Project, secrets: List<CxPropertyPresentation>) = Notifications
-        .create(
-            NotificationType.INFORMATION,
-            "Secrets left out of the template",
-            "<p>${StringUtil.escapeXmlEntities(secrets.joinToString { it.key })}</p>",
-        )
-        .hideAfter(10)
-        .notify(project)
 
     private fun templateName(node: Any): String = when (node) {
         is CxRemotePropertyStateNode -> "Remote '${node.connection.shortenConnectionName}' | template"

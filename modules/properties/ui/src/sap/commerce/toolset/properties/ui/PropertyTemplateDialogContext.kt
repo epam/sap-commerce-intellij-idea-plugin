@@ -22,11 +22,17 @@ import com.intellij.openapi.observable.properties.AtomicBooleanProperty
 import com.intellij.openapi.observable.properties.MutableBooleanProperty
 import com.intellij.openapi.project.Project
 import sap.commerce.toolset.properties.custom.settings.state.CxCustomPropertyTemplateState
+import sap.commerce.toolset.properties.presentation.CxPropertyPresentation
 
+/**
+ * @param selectableProperties properties the template may be built from, offered for picking. Empty when the dialog is
+ * only there to name a template — renaming one, for instance, has nothing to pick.
+ */
 data class PropertyTemplateDialogContext(
     val project: Project,
     val mutable: CxCustomPropertyTemplateState.Mutable,
     val title: String,
     val removeSourceTemplates: MutableBooleanProperty = AtomicBooleanProperty(false),
     val showRemoveSourceTemplates: Boolean = false,
+    val selectableProperties: List<CxPropertyPresentation> = emptyList(),
 )

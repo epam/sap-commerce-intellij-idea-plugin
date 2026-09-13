@@ -94,7 +94,7 @@ internal class CxSourcePropertiesView(private val project: Project) : Disposable
         onDeleteClicked = { },
     ).apply {
         // Nothing here lives on a remote instance, so there is nothing to edit or delete.
-        editable = false
+        availableActions = setOf(CxPropertyRowAction.REPORT)
     }
 
     private lateinit var keyFilterField: JBTextField

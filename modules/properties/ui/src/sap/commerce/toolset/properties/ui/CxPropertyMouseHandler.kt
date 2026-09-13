@@ -115,7 +115,7 @@ internal class CxPropertyMouseHandler(
 
         var zoneEnd = 0
         return CxPropertyRowAction.entries
-            .filter { list.editable || !it.remote }
+            .filter { it in list.availableActions }
             .find {
                 zoneEnd += it.hitWidth
                 fromRightEdge <= JBUI.scale(zoneEnd)
