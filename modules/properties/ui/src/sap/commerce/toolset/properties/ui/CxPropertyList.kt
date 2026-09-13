@@ -278,8 +278,8 @@ internal class CxPropertyList(
 
     /**
      * Names the action icon under the cursor, or - anywhere else on the row - explains a highlighted row by spelling
-     * out what the project's own property files declare and where. Rows which agree with the remote instance, rows the
-     * project does not declare, and the row being edited have nothing to explain.
+     * out what the other side declares and where. A row which agrees, or which has no other side at all, falls back to
+     * its own key and value, since the columns clip anything long. The row being edited says nothing.
      */
     override fun getToolTipText(event: MouseEvent): String? {
         if (!isOnRow(event)) return null
@@ -292,9 +292,19 @@ internal class CxPropertyList(
 
         if (selectable && mouseHandler.isOnCheckBox(event)) return "Select property"
 
-        val counterpart = counterpart ?: return null
-        val otherValue = counterpart.disagreementWith(property) ?: return null
-        val declaration = counterpart.declarationOf(property.key)
+        val counterpart = counterpart
+        val otherValue = counterpart?.disagreementWith(property)
+        val declaration = counterpart?.declarationOf(property.key)
+
+        // Rows which agree still need reading: the columns clip a long key, and nothing else would show it in full.
+        if (otherValue == null) return buildString {
+            append("<html><body>")
+            append("<p>").append(escape(property.key)).append("</p>")
+            property.value
+                .takeIf { it.isNotBlank() }
+                ?.let { append("<p><small>").append(escape(it)).append("</small></p>") }
+            append("</body></html>")
+        }
 
         return buildString {
             append("<html><body>")
