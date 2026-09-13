@@ -71,8 +71,10 @@ class CxSourceCodeNode(project: Project) : CxPropertiesNode(
     }
 
     private fun GroupTree.toNodes(inheritedIcon: Icon?): Map<String, CxPropertiesNode> {
+        // Only the root carries no icon yet, and only there do the well-known groups have an order worth keeping.
+        val topLevel = inheritedIcon == null
         val groups = subGroups.entries
-            .sortedWith(compareBy({ rankOf(it.key) }, { it.key }))
+            .sortedWith(compareBy({ if (topLevel) rankOf(it.key) else 0 }, { it.key }))
             .map { (title, subGroup) ->
                 val icon = inheritedIcon ?: iconOf(title)
 
@@ -91,7 +93,12 @@ class CxSourceCodeNode(project: Project) : CxPropertiesNode(
         return (groups + extensions).associateBy { it.name }
     }
 
-    /** Keeps the well-known groups in their familiar order; anything a project names itself follows, alphabetically. */
+    /**
+     * Keeps the well-known groups in their familiar order; anything a project names itself follows, alphabetically.
+     *
+     * Only meaningful at the top level: a group nested inside one of them may well share its name - `Hybris/platform`
+     * does - and ranking that one would pull it out of the alphabetical order the Project view lists it in.
+     */
     private fun rankOf(title: String) = knownGroups().keys
         .indexOfFirst { it.equals(title, true) }
         .takeIf { it >= 0 }
