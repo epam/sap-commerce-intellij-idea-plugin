@@ -24,7 +24,9 @@ import com.intellij.openapi.application.readAction
 import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
+import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.openapi.project.Project
+import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiManager
 import com.intellij.util.asSafely
 import kotlinx.coroutines.Dispatchers
@@ -89,6 +91,12 @@ class CxPropertyWriteService(private val project: Project) {
                         ?.setValue(property.value)
                         ?: propertiesFile.addProperty(property.key, property.value)
                 }
+
+                // The chain is cached against the modification stamps of the files it was built from, and those only
+                // move once the document is saved - an unsaved edit would leave every reader of the chain none the wiser.
+                PsiDocumentManager.getInstance(project)
+                    .getDocument(propertiesFile.containingFile)
+                    ?.let { FileDocumentManager.getInstance().saveDocument(it) }
             }, propertiesFile.containingFile)
         }
 

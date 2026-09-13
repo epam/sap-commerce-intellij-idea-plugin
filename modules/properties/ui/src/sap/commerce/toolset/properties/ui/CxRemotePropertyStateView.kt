@@ -593,7 +593,14 @@ class CxRemotePropertyStateView(private val project: Project) : Disposable {
             val written = writeService.write(dialog.target, properties)
             if (written.isEmpty()) return@launch
 
-            withContext(Dispatchers.EDT) { propertyList.clearChecked() }
+            val declared = written.mapTo(HashSet(written.size)) { it.key }
+
+            withContext(Dispatchers.EDT) {
+                propertyList.clearChecked()
+                // They are no longer missing from the project, so they leave the report at once rather than waiting
+                // for the chain to be read again - the file has only just been written and may not have been saved yet.
+                dropFromReport { it.key in declared }
+            }
 
             val target = dialog.target
 
@@ -607,10 +614,18 @@ class CxRemotePropertyStateView(private val project: Project) : Disposable {
                 .onClick { PsiNavigationSupport.getInstance().createNavigatable(project, target.file, 0).navigate(true) }
                 .notify(project)
 
-            currentConnection
-                .takeIf { ::currentConnection.isInitialized }
-                ?.let { applyViewMode(it, statePage ?: return@launch) }
         }
+    }
+
+    /** Takes rows out of the current report, keeping the list and its count in step. */
+    private fun dropFromReport(gone: (CxPropertyPresentation) -> Boolean) {
+        val remaining = reportRows.filterNot(gone)
+        if (remaining.size == reportRows.size) return
+
+        reportRows = remaining
+        propertyList.retainCheckedWithin(remaining.map { it.key })
+        applyClientFilter()
+        statusLabel.text = reportStatus(viewMode, remaining.size, statePage?.totalItems ?: remaining.size)
     }
 
     private fun startInlineEdit(property: CxPropertyPresentation) {
