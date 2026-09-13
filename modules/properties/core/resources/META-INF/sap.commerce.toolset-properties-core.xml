@@ -33,6 +33,16 @@
                          groupName="[y] Properties" level="ERROR" language="Properties" enabledByDefault="true"
                          implementationClass="sap.commerce.toolset.properties.codeInspection.CxEnvironmentPropertyInExtensionInspection"/>
 
+        <localInspection groupPath="SAP Commerce" shortName="CxUnresolvedPropertyPlaceholderInspection"
+                         displayName="[y] Unresolvable property placeholder"
+                         groupName="[y] Properties" level="WARNING" language="Properties" enabledByDefault="true"
+                         implementationClass="sap.commerce.toolset.properties.codeInspection.CxUnresolvedPropertyPlaceholderInspection"/>
+
+        <localInspection groupPath="SAP Commerce" shortName="CxShadowedPropertyInspection"
+                         displayName="[y] Property declaration which never applies"
+                         groupName="[y] Properties" level="WARNING" language="Properties" enabledByDefault="true"
+                         implementationClass="sap.commerce.toolset.properties.codeInspection.CxShadowedPropertyInspection"/>
+
         <localInspection groupPath="SAP Commerce" shortName="CxManagedPropertyInspection"
                          displayName="[y] Property managed by SAP Commerce Cloud"
                          groupName="[y] Properties" level="WARNING" language="Properties" enabledByDefault="true"

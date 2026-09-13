@@ -1,0 +1,32 @@
+<html>
+<body>
+Reports a <code>${...}</code> placeholder the platform would never expand.
+
+<p>
+    A property value may refer to another property, and SAP Commerce substitutes it while resolving the chain. When it
+    cannot, it does not fail — it leaves the literal <code>${...}</code> in the value, which then reaches whatever reads
+    the property. A path with an unexpanded placeholder in it is a directory that does not exist; a URL with one is a
+    host nothing answers on.
+</p>
+
+<p>Three cases are reported:</p>
+<ul>
+    <li>
+        <b>No property declares this key</b> — a typo, or a property somebody meant to add and did not. The quick fix
+        declares it in <code>local.properties</code> and opens the file so a value can be typed.
+    </li>
+    <li>
+        <b>A reference cycle</b> — the placeholder leads back to the property being declared, directly or through
+        others. The platform detects this and gives up, leaving the placeholder as written.
+    </li>
+    <li>
+        <b>An empty placeholder</b> — <code>${}</code> names nothing at all.
+    </li>
+</ul>
+
+<p>
+    Only files the property chain is built from are inspected, so a resource bundle or a test fixture which happens to
+    use the same syntax is left alone.
+</p>
+</body>
+</html>
