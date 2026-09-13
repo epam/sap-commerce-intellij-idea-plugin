@@ -54,14 +54,8 @@ import sap.commerce.toolset.properties.meta.CxPropertySource
 import sap.commerce.toolset.properties.presentation.CxPropertyPresentation
 import sap.commerce.toolset.ui.addDocumentListener
 import sap.commerce.toolset.ui.event.documentListener
-import java.awt.Color
-import java.awt.Font
-import java.awt.GridBagConstraints
-import java.awt.GridBagLayout
-import javax.swing.Box
 import javax.swing.JComponent
 import javax.swing.JLabel
-import javax.swing.JPanel
 
 /**
  * Lists the properties the project's own files declare — either the chain as a whole, or the declarations of one
@@ -162,7 +156,7 @@ internal class CxSourcePropertiesView(private val project: Project) : Disposable
                             border = null
                             background = propertyList.background
                             viewport.background = propertyList.background
-                            setColumnHeaderView(buildColumnHeader(propertyList.background))
+                            setColumnHeaderView(propertyColumnHeader(propertyList.background, CxPropertyRowAction.REPORT.hitWidth))
                         }
                     ).align(Align.FILL).visibleIf(showData)
                 }.resizableRow()
@@ -322,43 +316,5 @@ internal class CxSourcePropertiesView(private val project: Project) : Disposable
                 CxPropertyReportDialog(project, property, chain[property.key], chain.resolve(property.key)).show()
             }
         }
-    }
-
-    /** Mirrors [CxPropertyRenderer]'s layout so the headings line up with the columns underneath. */
-    private fun buildColumnHeader(bg: Color): JComponent {
-        val gap = JBUI.scale(COLUMN_GAP)
-        val header = JPanel(GridBagLayout()).apply {
-            isOpaque = true
-            background = bg
-            border = JBUI.Borders.empty(HEADER_VERTICAL_PADDING, HEADER_HORIZONTAL_PADDING)
-        }
-
-        header.add(JLabel("Key").apply { font = font.deriveFont(Font.BOLD) }, GridBagConstraints().apply {
-            gridx = 0; gridy = 0
-            weightx = 0.5; weighty = 1.0
-            fill = GridBagConstraints.HORIZONTAL
-            anchor = GridBagConstraints.WEST
-            insets = JBUI.insets(0, 0, 0, gap / 2)
-        })
-        header.add(JLabel("Value").apply { font = font.deriveFont(Font.BOLD) }, GridBagConstraints().apply {
-            gridx = 1; gridy = 0
-            weightx = 0.5; weighty = 1.0
-            fill = GridBagConstraints.HORIZONTAL
-            anchor = GridBagConstraints.WEST
-            insets = JBUI.insets(0, gap / 2, 0, JBUI.scale(CxPropertyRowAction.REPORT.hitWidth))
-        })
-        header.add(Box.createHorizontalStrut(JBUI.scale(CxPropertyRowAction.REPORT.hitWidth)), GridBagConstraints().apply {
-            gridx = 2; gridy = 0
-            weightx = 0.0
-            fill = GridBagConstraints.NONE
-        })
-
-        return header
-    }
-
-    companion object {
-        private const val COLUMN_GAP = 8
-        private const val HEADER_VERTICAL_PADDING = 6
-        private const val HEADER_HORIZONTAL_PADDING = 12
     }
 }

@@ -619,6 +619,7 @@ object HybrisIcons {
         val VIEW_OPTIONS = AllIcons.Actions.Show
         val SOURCE_CODE = AllIcons.Nodes.ModuleGroup
         val SOURCE_MODE = AllIcons.Actions.GroupBy
+        val COMPARE = AllIcons.Actions.Diff
     }
 
     object WelcomeTab {

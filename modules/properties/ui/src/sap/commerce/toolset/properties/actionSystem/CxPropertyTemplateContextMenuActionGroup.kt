@@ -52,6 +52,7 @@ class CxPropertyTemplateContextMenuActionGroup : ActionGroup() {
 
             is CxRemotePropertyStateNode -> arrayOf(
                 manager.getAction("sap.cx.properties.fetch"),
+                manager.getAction("sap.cx.properties.remote.compare"),
                 manager.getAction("sap.cx.properties.custom.createTemplate"),
             )
             is CxCustomPropertyTemplateItemNode -> arrayOf(manager.getAction("sap.cx.properties.template.item.actions"))
