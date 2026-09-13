@@ -35,7 +35,7 @@ class CxManagedPropertyInspection : CxPropertyInspection() {
 
     override fun problem(key: String, rule: CxPropertyRule) = "'$key' is ${rule.title}"
 
-    override fun fixes(key: String, rule: CxPropertyRule) = arrayOf<LocalQuickFix>(
+    override fun fixes(key: String, rule: CxPropertyRule) = listOf<LocalQuickFix>(
         CxOpenPropertyDocumentationFix(rule.documentationUrl),
     )
 }

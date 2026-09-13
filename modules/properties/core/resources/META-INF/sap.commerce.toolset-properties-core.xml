@@ -36,6 +36,11 @@
                          groupName="[y] Properties" level="ERROR" language="Properties" enabledByDefault="true"
                          implementationClass="sap.commerce.toolset.properties.codeInspection.CxEnvironmentPropertyInExtensionInspection"/>
 
+        <localInspection groupPath="SAP Commerce" shortName="CxCommittedSecretPropertyInspection"
+                         displayName="[y] Secret declared in a committed property file"
+                         groupName="[y] Properties" level="ERROR" language="Properties" enabledByDefault="true"
+                         implementationClass="sap.commerce.toolset.properties.codeInspection.CxCommittedSecretPropertyInspection"/>
+
         <localInspection groupPath="SAP Commerce" shortName="CxUnresolvedPropertyPlaceholderInspection"
                          displayName="[y] Unresolvable property placeholder"
                          groupName="[y] Properties" level="WARNING" language="Properties" enabledByDefault="true"
