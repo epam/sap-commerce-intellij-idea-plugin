@@ -38,8 +38,8 @@ enum class CxPropertyRule(
     val documentationUrl: String,
     val severity: CxPropertyRuleSeverity,
     val scopes: Set<CxPropertyScope>,
-    private val keys: Set<String>,
-    private val keyPrefixes: Set<String> = emptySet(),
+    val keys: Set<String>,
+    val keyPrefixes: Set<String> = emptySet(),
 ) {
 
     /**
