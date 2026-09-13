@@ -20,7 +20,6 @@ package sap.commerce.toolset.properties.ui
 
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.application.EDT
-import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.project.ModuleListener
 import com.intellij.openapi.project.Project
@@ -41,6 +40,7 @@ import sap.commerce.toolset.i18n
 import sap.commerce.toolset.properties.CxRemotePropertyStateService
 import sap.commerce.toolset.properties.custom.settings.event.CxCustomPropertyTemplateStateListener
 import sap.commerce.toolset.properties.meta.CxPropertyCollector
+import sap.commerce.toolset.properties.meta.event.CxPropertyChainListener
 import sap.commerce.toolset.properties.settings.event.CxPropertyViewSettingsListener
 import sap.commerce.toolset.properties.settings.state.CxPropertySourceMode
 import sap.commerce.toolset.properties.exec.event.CxRemotePropertyStateListener
@@ -63,7 +63,7 @@ import java.awt.event.MouseEvent
 import java.io.Serial
 
 class CxPropertiesSplitView(private val project: Project) : OnePixelSplitter(false, 0.25f), CxToolWindowActivationAware, Disposable {
-    private val tree = CxPropertiesTree(project)
+    internal val tree = CxPropertiesTree(project)
     private val remotePropertyStateView by lazy { CxRemotePropertyStateView(project).also { Disposer.register(this, it) } }
     private val customPropertyTemplatesView by lazy { CxCustomPropertyTemplatesView(project).also { Disposer.register(this, it) } }
     private val sourcePropertiesView by lazy { CxSourcePropertiesView(project).also { Disposer.register(this, it) } }
@@ -134,6 +134,12 @@ class CxPropertiesSplitView(private val project: Project) : OnePixelSplitter(fal
                 }
             })
 
+            // A reload re-reads the files the Source Code branch is built from, so both it and the view beside it
+            // are showing yesterday's values until they are rebuilt.
+            subscribe(CxPropertyChainListener.TOPIC, object : CxPropertyChainListener {
+                override fun onChainReloaded() = rebuildTree()
+            })
+
             subscribe(CxPropertyViewSettingsListener.TOPIC, object : CxPropertyViewSettingsListener {
                 override fun onSourceModeChanged(sourceMode: CxPropertySourceMode) = onEdt { updateSecondComponent(null) { updateTree() } }
             })
@@ -195,6 +201,12 @@ class CxPropertiesSplitView(private val project: Project) : OnePixelSplitter(fal
         // The chain is cached against the project settings, which a refresh normally bumps - but not every module
         // change goes through them, and a stale chain is worse than a scan nobody asked for.
         CxPropertyCollector.getInstance(project).resetCache()
+
+        rebuildTree()
+    }
+
+    private fun rebuildTree() = invokeLater {
+        if (project.isDisposed) return@invokeLater
 
         updateTree()
         // Nodes survive a reload by key, so whatever is selected is re-rendered rather than left showing old values.

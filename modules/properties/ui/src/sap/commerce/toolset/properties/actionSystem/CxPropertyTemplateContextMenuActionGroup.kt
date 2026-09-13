@@ -41,12 +41,19 @@ class CxPropertyTemplateContextMenuActionGroup : ActionGroup() {
         val manager = ActionManager.getInstance()
 
         return when (selectedNode) {
-            is CxSourceCodeNode,
             is CxSourceProjectNode,
-            is CxSourceExtensionGroupNode,
-            is CxSourceExtensionNode -> arrayOf(manager.getAction("sap.cx.properties.source.mode"))
+            is CxSourceExtensionNode -> arrayOf(
+                manager.getAction("sap.cx.properties.fetch"),
+                manager.getAction("sap.cx.properties.source.mode"),
+            )
 
-            is CxRemotePropertyStateNode -> arrayOf(manager.getAction("sap.cx.properties.custom.createTemplate"))
+            is CxSourceCodeNode,
+            is CxSourceExtensionGroupNode -> arrayOf(manager.getAction("sap.cx.properties.source.mode"))
+
+            is CxRemotePropertyStateNode -> arrayOf(
+                manager.getAction("sap.cx.properties.fetch"),
+                manager.getAction("sap.cx.properties.custom.createTemplate"),
+            )
             is CxCustomPropertyTemplateItemNode -> arrayOf(manager.getAction("sap.cx.properties.template.item.actions"))
             is CxCustomPropertyTemplateGroupNode -> arrayOf(manager.getAction("sap.cx.properties.custom.addTemplate"))
             else -> emptyArray()

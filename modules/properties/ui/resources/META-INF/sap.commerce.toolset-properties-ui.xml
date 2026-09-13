@@ -24,7 +24,7 @@
 
     <actions>
         <action id="sap.cx.properties.applyTemplate" class="sap.commerce.toolset.properties.actionSystem.CxApplyPropertyTemplateAction"/>
-        <action id="sap.cx.properties.remote.fetch" class="sap.commerce.toolset.properties.actionSystem.CxFetchRemotePropertyStateAction"/>
+        <action id="sap.cx.properties.fetch" class="sap.commerce.toolset.properties.actionSystem.CxFetchPropertiesAction"/>
         <action id="sap.cx.properties.custom.createTemplate" class="sap.commerce.toolset.properties.actionSystem.CxCreateCustomPropertyTemplateAction"/>
         <action id="sap.cx.properties.custom.addTemplate" class="sap.commerce.toolset.properties.actionSystem.CxAddCustomPropertyTemplateAction"/>
         <action id="sap.cx.properties.custom.deleteTemplate" class="sap.commerce.toolset.properties.actionSystem.CxDeleteCustomPropertyTemplateAction"/>
@@ -37,7 +37,7 @@
 
         <group id="sap.cx.properties.toolbar.actions" searchable="false">
             <reference ref="sap.commerce.toolset.hac.chooseConnection"/>
-            <reference ref="sap.cx.properties.remote.fetch"/>
+            <reference ref="sap.cx.properties.fetch"/>
             <separator/>
             <reference ref="sap.cx.properties.source.mode"/>
         </group>

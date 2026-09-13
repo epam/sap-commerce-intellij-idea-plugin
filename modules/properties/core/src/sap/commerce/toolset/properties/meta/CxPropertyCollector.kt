@@ -20,6 +20,7 @@ package sap.commerce.toolset.properties.meta
 
 import com.intellij.lang.properties.PropertiesFileType
 import com.intellij.lang.properties.psi.PropertiesFile
+import com.intellij.openapi.application.smartReadAction
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.DumbService
@@ -30,6 +31,7 @@ import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.ModificationTracker
 import com.intellij.openapi.util.removeUserData
 import com.intellij.openapi.vfs.LocalFileSystem
+import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.VirtualFileManager
 import com.intellij.psi.PsiManager
@@ -41,6 +43,8 @@ import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
 import com.intellij.util.application
 import com.intellij.util.asSafely
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.project.ExtensionDescriptor
@@ -49,8 +53,10 @@ import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.project.settings.ySettings
 import sap.commerce.toolset.project.yExtensionName
 import sap.commerce.toolset.project.yModule
+import sap.commerce.toolset.properties.meta.event.CxPropertyChainListener
 import java.io.File
 import java.util.*
+import java.util.concurrent.atomic.AtomicBoolean
 import java.util.regex.Pattern
 
 /**
@@ -68,7 +74,16 @@ import java.util.regex.Pattern
  * because their `project.properties` still looks authoritative in the editor.
  */
 @Service(Service.Level.PROJECT)
-class CxPropertyCollector(private val project: Project) {
+class CxPropertyCollector(
+    private val project: Project,
+    private val coroutineScope: CoroutineScope,
+) {
+
+    private val reloading = AtomicBoolean(false)
+
+    /** Whether a reload from disk is still running, so the action that started it can say so. */
+    val ready: Boolean
+        get() = !reloading.get()
 
     /**
      * Cached snapshot of the chain. Acquires a read action on its own, so it is safe to call from anywhere.
@@ -99,6 +114,37 @@ class CxPropertyCollector(private val project: Project) {
     }
 
     fun resetCache() = project.removeUserData(CACHE_KEY)
+
+    /**
+     * Re-reads the property files from disk and drops the cached chain, so a change made outside the IDE - a
+     * `git pull`, a generated `local.properties` - is picked up without waiting for the VFS to notice on its own.
+     *
+     * @param extensions names whose `project.properties` to re-read, or `null` for every file of the chain. Refreshing
+     * only what was asked for keeps the cost of one extension from being the cost of all of them.
+     */
+    fun reload(extensions: Collection<String>? = null) {
+        if (!reloading.compareAndSet(false, true)) return
+
+        coroutineScope.launch {
+            try {
+                val files = smartReadAction(project) { collect() }.sources
+                    .filter { extensions == null || (it.scope == CxPropertyScope.PROJECT && it.extension in extensions) }
+                    .mapNotNull { it.file }
+
+                if (files.isNotEmpty()) {
+                    VfsUtil.markDirtyAndRefresh(false, false, false, *files.toTypedArray())
+                }
+
+                // The chain is cached against the stamps the refresh has just moved, but a file which vanished
+                // leaves no stamp behind to invalidate it - dropping the cache outright covers both.
+                resetCache()
+            } finally {
+                reloading.set(false)
+            }
+
+            project.messageBus.syncPublisher(CxPropertyChainListener.TOPIC).onChainReloaded()
+        }
+    }
 
     private fun buildModel(): CxPropertyModel {
         val sources = mutableListOf<CxPropertySource>()

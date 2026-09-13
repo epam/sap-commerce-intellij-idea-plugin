@@ -20,14 +20,17 @@ package sap.commerce.toolset.properties.ui
 
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionManager
+import com.intellij.openapi.actionSystem.DataSink
 import com.intellij.openapi.actionSystem.DefaultActionGroup
+import com.intellij.openapi.actionSystem.UiDataProvider
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Disposer
 import sap.commerce.toolset.actionSystem.HybrisActionPlaces
+import sap.commerce.toolset.properties.ui.tree.CxPropertiesTree
 import sap.commerce.toolset.ui.toolwindow.CxToolWindow
 import java.io.Serial
 
-class CxPropertiesToolWindow(project: Project, parentDisposable: Disposable) : CxToolWindow() {
+class CxPropertiesToolWindow(project: Project, parentDisposable: Disposable) : CxToolWindow(), UiDataProvider {
     private val splitView = CxPropertiesSplitView(project)
 
     init {
@@ -40,6 +43,11 @@ class CxPropertiesToolWindow(project: Project, parentDisposable: Disposable) : C
 
     override fun onActivated() = splitView.onActivated()
     override fun dispose() = Unit
+
+    // The toolbar aims at this panel, so without this the actions on it cannot see what the tree has selected.
+    override fun uiDataSnapshot(sink: DataSink) {
+        sink[CxPropertiesTree.DATA_KEY] = splitView.tree
+    }
 
     private fun installToolbar() {
         val toolbar = with(DefaultActionGroup()) {

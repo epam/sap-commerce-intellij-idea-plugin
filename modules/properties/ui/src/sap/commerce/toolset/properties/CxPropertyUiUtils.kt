@@ -26,8 +26,8 @@ import sap.commerce.toolset.properties.ui.tree.CxPropertiesTree
 import sap.commerce.toolset.properties.ui.tree.nodes.CxPropertiesNode
 import javax.swing.tree.DefaultMutableTreeNode
 
-private fun AnActionEvent.tree(): CxPropertiesTree? = getData(PlatformCoreDataKeys.CONTEXT_COMPONENT)
-    ?.asSafely<CxPropertiesTree>()
+private fun AnActionEvent.tree(): CxPropertiesTree? = getData(CxPropertiesTree.DATA_KEY)
+    ?: getData(PlatformCoreDataKeys.CONTEXT_COMPONENT)?.asSafely<CxPropertiesTree>()
 
 internal fun AnActionEvent.selectedNode(): Any? = tree()
     ?.selectionPath

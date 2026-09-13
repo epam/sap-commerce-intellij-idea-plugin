@@ -19,6 +19,7 @@
 package sap.commerce.toolset.properties.ui.tree
 
 import com.intellij.openapi.Disposable
+import com.intellij.openapi.actionSystem.DataKey
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Disposer
 import com.intellij.ui.TreeUIHelper
@@ -63,6 +64,9 @@ class CxPropertiesTree(project: Project) : Tree(), CxToolWindowActivationAware, 
     }
 
     companion object {
+        /** Lets a toolbar action reach the selection, which it cannot do through the context component. */
+        val DATA_KEY: DataKey<CxPropertiesTree> = DataKey.create("sap.commerce.toolset.properties.tree")
+
         @Serial
         private const val serialVersionUID: Long = -3253518826500184703L
     }
