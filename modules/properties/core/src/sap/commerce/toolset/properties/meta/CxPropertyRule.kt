@@ -29,10 +29,15 @@ package sap.commerce.toolset.properties.meta
  *   to work correctly", and "You can only modify the properties specified in the Customer column."
  *
  * Adding a rule is adding an entry: everything which reports, explains and fixes it is driven off this catalogue.
+ *
+ * @param scopes tiers of the chain the rule is reported in. A value injected by the platform at runtime matches the
+ * catalogue too, but it is not the project's doing and there is nothing to fix about it.
  */
 enum class CxPropertyRule(
     val title: String,
     val documentationUrl: String,
+    val severity: CxPropertyRuleSeverity,
+    val scopes: Set<CxPropertyScope>,
     private val keys: Set<String>,
     private val keyPrefixes: Set<String> = emptySet(),
 ) {
@@ -44,6 +49,8 @@ enum class CxPropertyRule(
     MANAGED_BY_AUTOMATION(
         title = "set by SAP Commerce Cloud automation for each environment",
         documentationUrl = "https://help.sap.com/docs/SAP_COMMERCE_CLOUD_PUBLIC_CLOUD/1be46286b36a4aa48205be5a96240672/d090fb3dd48a418d967a1dfdca9fcac6.html",
+        severity = CxPropertyRuleSeverity.ERROR,
+        scopes = setOf(CxPropertyScope.PROJECT),
         keys = setOf(
             "db.url",
             "db.driver",
@@ -73,6 +80,8 @@ enum class CxPropertyRule(
     MANAGED_BY_BUILD(
         title = "set by the SAP Commerce Cloud build process",
         documentationUrl = "https://help.sap.com/docs/SAP_COMMERCE_CLOUD_PUBLIC_CLOUD/1be46286b36a4aa48205be5a96240672/a30160b786b545959184898b51c737fa.html",
+        severity = CxPropertyRuleSeverity.WARNING,
+        scopes = setOf(CxPropertyScope.PROJECT, CxPropertyScope.LOCAL),
         keys = setOf(
             "tomcat.generaloptions.jmxsettings",
             "tomcat.jmx.port",
@@ -110,6 +119,8 @@ enum class CxPropertyRule(
     CLOUD_PORTAL_ONLY(
         title = "only safe to edit in the Cloud Portal, using the hcs_admin aspect",
         documentationUrl = "https://help.sap.com/docs/SAP_COMMERCE_CLOUD_PUBLIC_CLOUD/1be46286b36a4aa48205be5a96240672/a30160b786b545959184898b51c737fa.html",
+        severity = CxPropertyRuleSeverity.WARNING,
+        scopes = setOf(CxPropertyScope.PROJECT, CxPropertyScope.LOCAL),
         keys = setOf(
             "bootstrap.init.type.system.custom.indices.use.items.definitions",
             "bootstrap.init.type.system.custom.index.ignore.names.starting.with",
@@ -119,7 +130,13 @@ enum class CxPropertyRule(
 
     fun matches(key: String) = key in keys || keyPrefixes.any { key.startsWith(it) }
 
+    /** Files the rule is reported in, which is how an inspection knows whether to look at the one it was given. */
+    val fileNames
+        get() = scopes.mapNotNull { it.fileName }.toSet()
+
     companion object {
         fun of(key: String) = entries.find { it.matches(key) }
+
+        fun of(severity: CxPropertyRuleSeverity) = entries.filterTo(mutableSetOf()) { it.severity == severity }
     }
 }
