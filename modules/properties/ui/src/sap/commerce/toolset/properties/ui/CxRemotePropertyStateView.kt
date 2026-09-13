@@ -600,16 +600,11 @@ class CxRemotePropertyStateView(private val project: Project) : Disposable {
             Notifications.create(
                 NotificationType.INFORMATION,
                 "Properties declared",
-                "<p>Declared ${written.size} propert${if (written.size == 1) "y" else "ies"} in ${target.presentableName}</p>" +
-                    "<p><small>${target.path}</small></p>",
+                "<p>Declared ${written.size} propert${if (written.size == 1) "y" else "ies"} in " +
+                    "<a href=\"$OPEN_TARGET\">${target.presentableName}</a></p>",
             )
-                // The file is rarely the one on screen, and a notification naming it should be able to open it.
-                .addAction("Open ${target.presentableName}") { _, notification ->
-                    PsiNavigationSupport.getInstance()
-                        .createNavigatable(project, target.file, 0)
-                        .navigate(true)
-                    notification.expire()
-                }
+                // The file is rarely the one on screen, so the one named in the message opens it.
+                .onClick { PsiNavigationSupport.getInstance().createNavigatable(project, target.file, 0).navigate(true) }
                 .notify(project)
 
             currentConnection
@@ -756,6 +751,7 @@ class CxRemotePropertyStateView(private val project: Project) : Disposable {
     }
 
     companion object {
+        private const val OPEN_TARGET = "open-target"
         private const val FILTER_DEBOUNCE_MS = 500
         private const val SCROLL_TRIGGER_THRESHOLD = 96
         private const val SCROLL_UNIT_INCREMENT = 16
