@@ -38,5 +38,9 @@ data class CxPropertyTarget(
             ?.let { "$it/${file.name}" }
             ?: file.name
 
+    /** Full path, so two files of the same name can be told apart. */
+    val path: String
+        get() = file.path
+
     override fun toString() = presentableName
 }

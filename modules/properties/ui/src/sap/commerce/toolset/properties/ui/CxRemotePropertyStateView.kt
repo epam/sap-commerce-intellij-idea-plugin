@@ -28,6 +28,7 @@ import com.intellij.openapi.ui.MessageDialogBuilder
 import com.intellij.openapi.ui.ValidationInfo
 import com.intellij.openapi.util.ClearableLazyValue
 import com.intellij.ui.AnimatedIcon
+import com.intellij.ide.util.PsiNavigationSupport
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.actionSystem.ActionGroup
 import com.intellij.openapi.actionSystem.ActionManager
@@ -594,11 +595,22 @@ class CxRemotePropertyStateView(private val project: Project) : Disposable {
 
             withContext(Dispatchers.EDT) { propertyList.clearChecked() }
 
+            val target = dialog.target
+
             Notifications.create(
                 NotificationType.INFORMATION,
                 "Properties declared",
-                "<p>Declared ${written.size} propert${if (written.size == 1) "y" else "ies"} in ${dialog.target.presentableName}</p>",
-            ).notify(project)
+                "<p>Declared ${written.size} propert${if (written.size == 1) "y" else "ies"} in ${target.presentableName}</p>" +
+                    "<p><small>${target.path}</small></p>",
+            )
+                // The file is rarely the one on screen, and a notification naming it should be able to open it.
+                .addAction("Open ${target.presentableName}") { _, notification ->
+                    PsiNavigationSupport.getInstance()
+                        .createNavigatable(project, target.file, 0)
+                        .navigate(true)
+                    notification.expire()
+                }
+                .notify(project)
 
             currentConnection
                 .takeIf { ::currentConnection.isInitialized }
