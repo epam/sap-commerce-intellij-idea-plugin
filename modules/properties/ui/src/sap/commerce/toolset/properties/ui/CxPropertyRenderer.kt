@@ -158,7 +158,8 @@ internal class CxPropertyRenderer : JPanel(), ListCellRenderer<CxPropertyPresent
         // When this row is being edited, the inline editor overlay is laid on top, so the
         // cell behind it should be blank — otherwise the underlying text / action icons would
         // bleed through any transparent gap in the overlay.
-        hovered = !editing && cxList?.hoveredIndex == index
+        // The menu row stays lit while its menu is open, so it is clear what the menu will act on.
+        hovered = !editing && (cxList?.hoveredIndex == index || cxList?.contextMenuProperty == property)
 
         // A property which is not declared by the project at all is not a disagreement - only a
         // locally declared key resolving to something else counts as one.

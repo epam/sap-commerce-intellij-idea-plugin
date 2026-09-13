@@ -46,6 +46,8 @@ import javax.swing.JComponent
 import javax.swing.ListSelectionModel
 import javax.swing.SwingUtilities
 import javax.swing.ToolTipManager
+import javax.swing.event.PopupMenuEvent
+import javax.swing.event.PopupMenuListener
 import javax.swing.event.ListDataEvent
 import javax.swing.event.ListDataListener
 
@@ -109,8 +111,18 @@ internal class CxPropertyList(
 
     private var editorOverlay: InlinePropertyEditor? = null
 
-    /** Row the currently open context menu was invoked on. */
-    private var contextMenuProperty: CxPropertyPresentation? = null
+    /**
+     * Row the currently open context menu was invoked on. The list keeps no selection, so without remembering it the
+     * row would lose its highlight the moment the cursor moved onto the menu, leaving nothing to say what the menu
+     * is about to act on.
+     */
+    var contextMenuProperty: CxPropertyPresentation? = null
+        private set(value) {
+            if (field != value) {
+                field = value
+                repaint()
+            }
+        }
 
     init {
         // Match the surrounding DialogPanel background so the data area doesn't look like a
@@ -178,7 +190,23 @@ internal class CxPropertyList(
         ActionManager.getInstance().createActionPopupMenu(CONTEXT_MENU_PLACE, group)
             .also { it.setTargetComponent(this) }
             .component
+            .apply { addPopupMenuListener(ContextMenuHighlightListener()) }
             .show(comp, x, y)
+    }
+
+    /**
+     * Drops the highlight once the menu is gone. The clearing is deferred, since Swing hides a menu before running
+     * the action that was chosen from it.
+     */
+    private inner class ContextMenuHighlightListener : PopupMenuListener {
+
+        override fun popupMenuWillBecomeVisible(e: PopupMenuEvent) = Unit
+
+        override fun popupMenuWillBecomeInvisible(e: PopupMenuEvent) = clearLater()
+
+        override fun popupMenuCanceled(e: PopupMenuEvent) = clearLater()
+
+        private fun clearLater() = invokeLater { contextMenuProperty = null }
     }
 
     /**
