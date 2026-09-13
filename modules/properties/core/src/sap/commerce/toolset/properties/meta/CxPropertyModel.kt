@@ -78,36 +78,23 @@ class CxPropertyModel private constructor(
     }
 
     private fun expand(value: String, visited: Set<String>): String {
-        if (!value.contains(PLACEHOLDER_PREFIX)) return value
+        val placeholders = CxPropertyPlaceholder.of(value)
+        if (placeholders.isEmpty()) return value
 
         val expanded = StringBuilder(value.length)
         var index = 0
 
-        while (index < value.length) {
-            val start = value.indexOf(PLACEHOLDER_PREFIX, index)
-            val end = if (start < 0) -1 else value.indexOf(PLACEHOLDER_SUFFIX, start + PLACEHOLDER_PREFIX.length)
-
-            if (start < 0 || end < 0) {
-                expanded.append(value, index, value.length)
-                break
-            }
-
-            val placeholder = value.substring(start, end + PLACEHOLDER_SUFFIX.length)
-            val nestedKey = value.substring(start + PLACEHOLDER_PREFIX.length, end)
-
-            expanded.append(value, index, start)
-            expanded.append(resolveNested(nestedKey, visited) ?: placeholder)
-
-            index = end + PLACEHOLDER_SUFFIX.length
+        placeholders.forEach { placeholder ->
+            expanded.append(value, index, placeholder.range.first)
+            // A placeholder which cannot be expanded is left exactly as it is written, which is what the platform does.
+            expanded.append(resolveNested(placeholder.key, visited) ?: value.substring(placeholder.range.first, placeholder.range.last + 1))
+            index = placeholder.range.last + 1
         }
 
-        return expanded.toString()
+        return expanded.append(value, index, value.length).toString()
     }
 
     companion object {
-        private const val PLACEHOLDER_PREFIX = "\${"
-        private const val PLACEHOLDER_SUFFIX = "}"
-
         val EMPTY = CxPropertyModel(emptyMap(), emptyList())
 
         fun of(sources: Collection<CxPropertySource>, declarations: Collection<CxPropertyDeclaration>) = CxPropertyModel(
