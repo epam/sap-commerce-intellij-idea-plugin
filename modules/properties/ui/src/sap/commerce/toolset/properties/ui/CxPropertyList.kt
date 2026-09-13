@@ -125,14 +125,15 @@ internal class CxPropertyList(
     private lateinit var mouseHandler: CxPropertyMouseHandler
 
     /**
-     * Whether the rows stand for properties which exist on the remote instance. A report of properties the remote
-     * instance is missing cannot offer to edit or delete them there, so their icons and hit zones are dropped.
+     * Actions the rows offer. A report of properties the remote instance does not have cannot offer to edit or delete
+     * them there; a list which is only there to be picked from offers none at all. Icons and hit zones follow this
+     * set together, so what can be clicked is always what is drawn.
      */
-    var editable: Boolean = true
+    var availableActions: Set<CxPropertyRowAction> = CxPropertyRowAction.entries.toSet()
         set(value) {
             if (field != value) {
                 field = value
-                if (!value) cancelEdit()
+                if (CxPropertyRowAction.EDIT !in value) cancelEdit()
                 repaint()
             }
         }
