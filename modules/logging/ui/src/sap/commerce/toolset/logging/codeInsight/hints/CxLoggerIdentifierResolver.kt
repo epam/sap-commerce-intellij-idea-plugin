@@ -31,7 +31,30 @@ class CxLoggerIdentifierResolver(private val project: Project) {
     fun resolve(field: PsiField): String? {
         val contextClass = field.containingClass ?: return null
         val initializer = field.initializer ?: return null
+        if (!isLoggerInitializer(initializer, mutableSetOf())) return null
         return resolveExpression(initializer, contextClass, mutableSetOf())
+    }
+
+    private fun isLoggerInitializer(expression: PsiExpression, visited: MutableSet<PsiElement>): Boolean = when (expression) {
+        is PsiMethodCallExpression -> isLoggerFactoryCall(expression)
+        is PsiReferenceExpression -> expression.resolve()
+            ?.asSafely<PsiVariable>()
+            ?.takeIf { visited.add(it) }
+            ?.initializer
+            ?.let { isLoggerInitializer(it, visited) }
+            ?: false
+
+        else -> false
+    }
+
+    private fun isLoggerFactoryCall(expression: PsiMethodCallExpression): Boolean {
+        if (expression.methodExpression.referenceName !in CxLogConstants.LOGGER_FACTORY_METHOD_NAMES) return false
+        val containingClass = expression.resolveMethod()?.containingClass?.qualifiedName
+            ?: expression.methodExpression.qualifierExpression.asSafely<PsiReferenceExpression>()
+                ?.resolve()
+                ?.asSafely<PsiClass>()
+                ?.qualifiedName
+        return containingClass in CxLogConstants.LOGGER_FACTORY_CLASS_NAMES
     }
 
     private fun resolveExpression(expression: PsiExpression, contextClass: PsiClass, visited: MutableSet<PsiElement>): String? {
@@ -67,12 +90,7 @@ class CxLoggerIdentifierResolver(private val project: Project) {
 
         return when (methodName) {
             in CxLogConstants.LOGGER_FACTORY_METHOD_NAMES -> {
-                val containingClass = expression.resolveMethod()?.containingClass?.qualifiedName
-                    ?: qualifier.asSafely<PsiReferenceExpression>()
-                        ?.resolve()
-                        ?.asSafely<PsiClass>()
-                        ?.qualifiedName
-                if (containingClass !in CxLogConstants.LOGGER_FACTORY_CLASS_NAMES) return null
+                if (!isLoggerFactoryCall(expression)) return null
                 if (args.isEmpty()) contextClass.qualifiedName
                 else resolveExpression(args.first(), contextClass, visited)
             }
