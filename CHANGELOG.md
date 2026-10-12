@@ -3,8 +3,8 @@
 <cite>Release contributors</code>
 - 1 PR(s) by [Eugeni Kalenchuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.2.5+author%3Aekalenchuk+is%3Apr)
 
-### Fixes
-- Show `SAP CX Logging` log level inlay hints only for logger fields [#NNNN](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/NNNN)
+### `SAP CX Logging` enhancements
+- Show log level inlay hints only for logger fields [#NNNN](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/NNNN)
 
 ## [2026.2.4]
 
