@@ -13,6 +13,9 @@
 ### `Project Import` enhancements
 - Speed up the libraries sources and javadocs fetching by remembering the previous lookup outcome and no longer blocking the shared background threads [#2002](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2002)
 
+### Fixes
+- Show `SAP CX Logging` log level inlay hints only for logger fields [#NNNN](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/NNNN)
+
 ## [2026.2.3]
 
 <cite>Release contributors</code>
