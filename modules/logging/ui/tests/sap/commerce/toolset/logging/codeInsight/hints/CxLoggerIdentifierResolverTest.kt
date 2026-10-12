@@ -87,6 +87,18 @@ class CxLoggerIdentifierResolverTest : LightJavaCodeInsightFixtureTestCase() {
         assertNull(identifier)
     }
 
+    fun `test cyclic field references are not treated as a logger`() {
+        val identifier = resolveField(
+            "FIRST",
+            """
+                private static final Logger FIRST = SECOND;
+                private static final Logger SECOND = FIRST;
+            """.trimIndent()
+        )
+
+        assertNull(identifier)
+    }
+
     private fun resolveField(fieldName: String, body: String): String? {
         val file = myFixture.configureByText(
             "Sample.java",

@@ -31,20 +31,27 @@ class CxLoggerIdentifierResolver(private val project: Project) {
     fun resolve(field: PsiField): String? {
         val contextClass = field.containingClass ?: return null
         val initializer = field.initializer ?: return null
-        if (!isLoggerInitializer(initializer, mutableSetOf())) return null
+        if (!isLoggerInitializer(initializer)) return null
         return resolveExpression(initializer, contextClass, mutableSetOf())
     }
 
-    private fun isLoggerInitializer(expression: PsiExpression, visited: MutableSet<PsiElement>): Boolean = when (expression) {
-        is PsiMethodCallExpression -> isLoggerFactoryCall(expression)
-        is PsiReferenceExpression -> expression.resolve()
-            ?.asSafely<PsiVariable>()
-            ?.takeIf { visited.add(it) }
-            ?.initializer
-            ?.let { isLoggerInitializer(it, visited) }
-            ?: false
+    private fun isLoggerInitializer(initializer: PsiExpression): Boolean {
+        val visited = mutableSetOf<PsiVariable>()
+        var expression: PsiExpression? = initializer
 
-        else -> false
+        while (expression != null) {
+            expression = when (expression) {
+                is PsiMethodCallExpression -> return isLoggerFactoryCall(expression)
+                is PsiReferenceExpression -> expression.resolve()
+                    ?.asSafely<PsiVariable>()
+                    ?.takeIf { visited.add(it) }
+                    ?.initializer
+
+                else -> return false
+            }
+        }
+
+        return false
     }
 
     private fun isLoggerFactoryCall(expression: PsiMethodCallExpression): Boolean {
