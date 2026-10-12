@@ -1,3 +1,11 @@
+## [2026.2.5]
+
+<cite>Release contributors</code>
+- 1 PR(s) by [Eugeni Kalenchuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.2.5+author%3Aekalenchuk+is%3Apr)
+
+### Fixes
+- Show `SAP CX Logging` log level inlay hints only for logger fields [#NNNN](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/NNNN)
+
 ## [2026.2.4]
 
 <cite>Release contributors</code>
@@ -12,9 +20,6 @@
 
 ### `Project Import` enhancements
 - Speed up the libraries sources and javadocs fetching by remembering the previous lookup outcome and no longer blocking the shared background threads [#2002](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2002)
-
-### Fixes
-- Show `SAP CX Logging` log level inlay hints only for logger fields [#NNNN](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/NNNN)
 
 ## [2026.2.3]
 
