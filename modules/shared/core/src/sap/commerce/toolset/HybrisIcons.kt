@@ -610,6 +610,15 @@ object HybrisIcons {
         }
     }
 
+    object Property {
+        val COPY = AllIcons.Actions.Copy
+        val REPORT = AllIcons.Actions.PreviewDetails
+        val EFFECTIVE = AllIcons.General.InspectionsOK
+        val SHADOWED = AllIcons.General.Information
+        val IGNORED = AllIcons.General.Warning
+        val VIEW_OPTIONS = AllIcons.Actions.Show
+    }
+
     object WelcomeTab {
         val PLUGIN_LOGO = PLUGIN_SETTINGS
         val ACTION_MORE = AllIcons.Actions.More
