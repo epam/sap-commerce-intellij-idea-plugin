@@ -1,0 +1,39 @@
+<html>
+<body>
+Reports a property that SAP Commerce Cloud injects per environment being declared in an extension's
+<code>project.properties</code>.
+
+<p>
+    A <code>project.properties</code> file is part of every build, and every build runs on every environment, so a
+    database URL or a storage account written there hard-codes one environment into all of them. The value SAP Commerce
+    Cloud injects at deployment time wins regardless, which makes the declaration misleading to read — and, for
+    credentials such as <code>db.password</code>, a secret committed to the repository.
+</p>
+
+<p>
+    <code>local.properties</code> is where these belong: it describes the developer's own machine and takes no part in a
+    cloud build.
+</p>
+
+<p>Reported for the properties SAP documents as set by automation, among them:</p>
+<ul>
+    <li><code>db.url</code>, <code>db.driver</code>, <code>db.username</code>, <code>db.password</code></li>
+    <li><code>media.default.storage.strategy</code> and the
+        <code>media.globalSettings.cloudAzureBlobStorageStrategy.*</code> family
+    </li>
+    <li><code>azure.hotfolder.storage.account.*</code>, <code>initialpassword.admin</code></li>
+    <li>everything under <code>modelt.</code>, <code>businessmetrics.</code> and <code>ccv2.services.</code></li>
+</ul>
+
+<p>
+    The quick fix moves the declaration to <code>local.properties</code>, replacing an existing declaration of the same
+    key rather than duplicating it.
+</p>
+
+<p>
+    See
+    <a href="https://help.sap.com/docs/SAP_COMMERCE_CLOUD_PUBLIC_CLOUD/1be46286b36a4aa48205be5a96240672/d090fb3dd48a418d967a1dfdca9fcac6.html">Properties</a>
+    on the SAP Help Portal.
+</p>
+</body>
+</html>
