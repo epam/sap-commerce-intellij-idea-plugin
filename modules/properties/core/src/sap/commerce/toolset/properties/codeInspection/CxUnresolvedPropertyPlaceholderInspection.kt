@@ -48,7 +48,7 @@ class CxUnresolvedPropertyPlaceholderInspection : LocalInspectionTool() {
 
             val propertiesFile = file.asSafely<PropertiesFile>() ?: return
             val chain = CxPropertyCollector.getInstance(file.project).collect()
-            if (chain.sources.none { it.file == file.originalFile.virtualFile }) return
+            if (!chain.isReadFrom(file.originalFile.virtualFile)) return
 
             propertiesFile.properties.forEach { property ->
                 val element = property.psiElement
@@ -64,7 +64,7 @@ class CxUnresolvedPropertyPlaceholderInspection : LocalInspectionTool() {
                         element,
                         TextRange(valueOffset + placeholder.range.first, valueOffset + placeholder.range.last + 1),
                         problem.message,
-                        *problem.fixes(placeholder.key),
+                        *problem.fixes(placeholder.key, file),
                     )
                 }
             }
@@ -74,8 +74,8 @@ class CxUnresolvedPropertyPlaceholderInspection : LocalInspectionTool() {
     private fun problemOf(placeholder: CxPropertyPlaceholder, key: String?, chain: CxPropertyModel) = when {
         placeholder.key.isBlank() -> Problem.EMPTY
         placeholder.key !in chain -> Problem.UNDECLARED
-        // Asking the chain is the only honest way to find a cycle: it is the thing which walks the references.
-        key != null && chain.resolve(key)?.contains(CxPropertyPlaceholder.PREFIX + placeholder.key + CxPropertyPlaceholder.SUFFIX) == true -> Problem.CYCLE
+        // A cycle may take several steps - `a=${b}`, `b=${a}` - so the references are walked rather than one expansion read.
+        key != null && chain.leadsBackTo(placeholder.key, key) -> Problem.CYCLE
 
         else -> null
     }
@@ -86,8 +86,8 @@ class CxUnresolvedPropertyPlaceholderInspection : LocalInspectionTool() {
         CYCLE("This placeholder leads back to the property being declared, so the platform gives up expanding it"),
         ;
 
-        fun fixes(key: String): Array<LocalQuickFix> = when (this) {
-            UNDECLARED -> arrayOf(CxDeclarePropertyInLocalPropertiesFix(key))
+        fun fixes(key: String, file: PsiFile): Array<LocalQuickFix> = when {
+            this == UNDECLARED && CxDeclarePropertyInLocalPropertiesFix.isAvailable(file.project) -> arrayOf(CxDeclarePropertyInLocalPropertiesFix(key))
             else -> emptyArray()
         }
     }

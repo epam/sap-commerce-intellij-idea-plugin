@@ -41,7 +41,7 @@ class CxPropertyPsiDocumentationTargetProvider : PsiDocumentationTargetProvider 
         val key = property.key ?: return null
         val file = element.containingFile?.originalFile?.virtualFile ?: return null
 
-        if (CxPropertyCollector.getInstance(element.project).collect().sources.none { it.file == file }) return null
+        if (!CxPropertyCollector.getInstance(element.project).collect().isReadFrom(file)) return null
 
         return CxPropertyDocumentationTarget(element, key)
     }

@@ -18,6 +18,7 @@
 
 package sap.commerce.toolset.properties.lang.documentation
 
+import com.intellij.openapi.util.text.StringUtil
 import sap.commerce.toolset.properties.lang.documentation.renderer.propertyDoc
 import sap.commerce.toolset.properties.meta.CxProperty
 import sap.commerce.toolset.properties.meta.CxPropertyModel
@@ -39,25 +40,25 @@ object CxPropertyDocumentation {
             effective?.let { value ->
                 val raw = property.rawValue
                 if (raw != null && raw != value) {
-                    subHeader("<code>$value</code>", "written as <code>${raw.escaped()}</code>")
+                    subHeader("<code>${value.escaped()}</code>", "written as <code>${raw.escaped()}</code>")
                 } else {
                     subHeader("<code>${value.escaped()}</code>")
                 }
             }
 
             property.declaration
-                ?.let { contentsWithSeparator("Applied from <b>${it.source.presentableName}</b>") }
+                ?.let { contentsWithSeparator("Applied from <b>${it.source.presentableName.escaped()}</b>") }
                 ?: contentsWithSeparator("Declared only where the running system never reads it")
 
             property.shadowedDeclarations
                 .takeIf { it.isNotEmpty() }
-                ?.let { shadowed -> list(*shadowed.map { "${it.source.presentableName} &mdash; <code>${it.value.escaped()}</code>" }.toTypedArray()) }
+                ?.let { shadowed -> list(*shadowed.map { "${it.source.presentableName.escaped()} &mdash; <code>${it.value.escaped()}</code>" }.toTypedArray()) }
 
             property.ignoredDeclarations
                 .takeIf { it.isNotEmpty() }
                 ?.let { ignored ->
                     texts("Not read by the running system:")
-                    list(*ignored.map { "${it.source.presentableName} &mdash; <code>${it.value.escaped()}</code>" }.toTypedArray())
+                    list(*ignored.map { "${it.source.presentableName.escaped()} &mdash; <code>${it.value.escaped()}</code>" }.toTypedArray())
                 }
 
             CxPropertyRule.of(key)?.let { rule ->
@@ -78,5 +79,5 @@ object CxPropertyDocumentation {
             ?: texts("No file of this project declares it.")
     }.build()
 
-    private fun String.escaped() = replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+    private fun String.escaped(): String = StringUtil.escapeXmlEntities(this)
 }

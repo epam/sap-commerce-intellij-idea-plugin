@@ -25,6 +25,7 @@ import com.intellij.platform.backend.presentation.TargetPresentation
 import com.intellij.pom.Navigatable
 import com.intellij.psi.PsiElement
 import com.intellij.psi.createSmartPointer
+import com.intellij.util.asSafely
 import sap.commerce.toolset.properties.meta.CxPropertyCollector
 
 class CxPropertyDocumentationTarget(private val element: PsiElement, private val key: String) : DocumentationTarget {
@@ -49,7 +50,7 @@ class CxPropertyDocumentationTarget(private val element: PsiElement, private val
     override fun computeDocumentation() = documentation()?.let { DocumentationResult.documentation(it) }
 
     override val navigatable: Navigatable?
-        get() = element as? Navigatable
+        get() = element.asSafely<Navigatable>()
 
     private fun documentation() = CxPropertyDocumentation.of(key, CxPropertyCollector.getInstance(element.project).collect())
 }

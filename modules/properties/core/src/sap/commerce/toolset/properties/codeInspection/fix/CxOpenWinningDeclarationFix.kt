@@ -18,6 +18,7 @@
 
 package sap.commerce.toolset.properties.codeInspection.fix
 
+import com.intellij.codeInsight.intention.preview.IntentionPreviewInfo
 import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.ProblemDescriptor
 import com.intellij.ide.util.PsiNavigationSupport
@@ -38,6 +39,11 @@ class CxOpenWinningDeclarationFix(private val key: String, private val presentab
     override fun getName() = "Open the declaration in $presentableName"
 
     override fun availableInBatchMode() = false
+
+    // Nothing is changed, so there is neither a write action to start nor a preview to show.
+    override fun startInWriteAction() = false
+
+    override fun generatePreview(project: Project, previewDescriptor: ProblemDescriptor) = IntentionPreviewInfo.EMPTY
 
     override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
         val declaration = CxPropertyCollector.getInstance(project).collect()[key]?.declaration ?: return

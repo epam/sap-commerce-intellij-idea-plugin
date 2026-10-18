@@ -46,10 +46,7 @@ class CxPropertyReferenceProvider : PsiReferenceProvider() {
     private fun partOfTheChain(element: PsiElement): Boolean {
         val file = element.containingFile?.originalFile?.virtualFile ?: return false
 
-        return CxPropertyCollector.getInstance(element.project)
-            .collect()
-            .sources
-            .any { it.file == file }
+        return CxPropertyCollector.getInstance(element.project).collect().isReadFrom(file)
     }
 
     private fun referencesOf(element: PsiElement) = CachedValuesManager.getManager(element.project).getCachedValue(element) {
