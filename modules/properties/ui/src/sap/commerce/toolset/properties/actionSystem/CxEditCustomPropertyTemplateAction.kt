@@ -40,7 +40,12 @@ class CxEditCustomPropertyTemplateAction : DumbAwareAction() {
         val item = e.selectedNode()?.asSafely<CxCustomPropertyTemplateItemNode>() ?: return@ifNotFromSearchPopup
         val mutable = CxCustomPropertyTemplateService.getInstance(project).findTemplate(item.uuid)?.mutable() ?: return@ifNotFromSearchPopup
 
-        val context = PropertyTemplateDialogContext(project, mutable, "Update a Property Template")
+        val context = PropertyTemplateDialogContext(
+            project = project,
+            mutable = mutable,
+            title = "Update a Property Template",
+            takenNames = CxCustomPropertyTemplateService.getInstance(project).templateNames(exceptUUID = item.uuid),
+        )
         if (CxCustomPropertyTemplateDialog(context).showAndGet()) {
             CxCustomPropertyTemplateService.getInstance(project).updateTemplate(mutable.immutable())
         }

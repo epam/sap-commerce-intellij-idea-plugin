@@ -83,10 +83,12 @@ class CxCustomPropertyTemplateService(private val project: Project) {
         .find { it.uuid == templateUUID }
 
     /** [name], or the first `name (N)` no template is using yet. */
-    fun uniqueTemplateName(name: String) = uniqueName(
-        name,
-        CxCustomPropertyTemplatesSettings.getInstance(project).templates.map { it.name },
-    )
+    fun uniqueTemplateName(name: String) = uniqueName(name, templateNames())
+
+    /** Names the templates use, leaving out the one with [exceptUUID] - a template may keep its own name. */
+    fun templateNames(exceptUUID: String? = null) = CxCustomPropertyTemplatesSettings.getInstance(project).templates
+        .filter { it.uuid != exceptUUID }
+        .mapTo(HashSet()) { it.name }
 
     fun createTemplateFromProperties(templateName: String, properties: Collection<CxPropertyPresentation>) =
         CxCustomPropertyTemplateState(
@@ -121,29 +123,7 @@ class CxCustomPropertyTemplateService(private val project: Project) {
     }
 
     companion object {
-        /**
-         * Numbers a name until it is free: `template`, then `template (1)`, `template (2)`.
-         *
-         * A name which already ends in such a number is counted up rather than nested, so cloning a copy gives
-         * `Copy of 'X' (2)` instead of `Copy of 'X' (1) (1)`.
-         */
-        fun uniqueName(name: String, existingNames: Collection<String>): String {
-            val taken = existingNames.toSet()
-            if (name !in taken) return name
-
-            val base = NUMBERED_SUFFIX.matchEntire(name)
-                ?.groupValues
-                ?.get(1)
-                ?: name
-
-            return generateSequence(1) { it + 1 }
-                .map { "$base ($it)" }
-                .first { it !in taken }
-        }
-
         fun getInstance(project: Project): CxCustomPropertyTemplateService = project.service()
-
-        private val NUMBERED_SUFFIX = Regex("""(.*) \((\d+)\)""")
     }
 }
 

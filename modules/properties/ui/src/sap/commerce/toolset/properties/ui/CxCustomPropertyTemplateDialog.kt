@@ -183,6 +183,7 @@ class CxCustomPropertyTemplateDialog(
     private fun validateName(value: String) = when {
         value.isBlank() -> ValidationInfo("Template name cannot be blank", nameTextField)
         value.length > MAX_NAME_LENGTH -> ValidationInfo("Template name cannot exceed $MAX_NAME_LENGTH characters", nameTextField)
+        value.trim() in context.takenNames -> ValidationInfo("A template named '${value.trim()}' already exists", nameTextField)
         else -> null
     }
 

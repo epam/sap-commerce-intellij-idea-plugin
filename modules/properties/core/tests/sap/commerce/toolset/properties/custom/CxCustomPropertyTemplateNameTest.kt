@@ -18,6 +18,7 @@
 
 package sap.commerce.toolset.properties.custom
 
+import sap.commerce.toolset.properties.uniqueName
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -66,6 +67,5 @@ class CxCustomPropertyTemplateNameTest {
         assertEquals("Template", unique("Template"))
     }
 
-    private fun unique(name: String, vararg existing: String) = CxCustomPropertyTemplateService
-        .uniqueName(name, existing.toList())
+    private fun unique(name: String, vararg existing: String) = uniqueName(name, existing.toList())
 }

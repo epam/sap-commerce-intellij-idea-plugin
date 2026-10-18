@@ -40,7 +40,12 @@ class CxAddCustomPropertyTemplateAction : DumbAwareAction() {
         e.selectedNode()?.asSafely<CxCustomPropertyTemplateGroupNode>() ?: return@ifNotFromSearchPopup
 
         val mutable = CxCustomPropertyTemplateState().mutable()
-        val context = PropertyTemplateDialogContext(project, mutable, "Create a Property Template")
+        val context = PropertyTemplateDialogContext(
+            project = project,
+            mutable = mutable,
+            title = "Create a Property Template",
+            takenNames = CxCustomPropertyTemplateService.getInstance(project).templateNames(),
+        )
         if (CxCustomPropertyTemplateDialog(context).showAndGet()) {
             CxCustomPropertyTemplateService.getInstance(project).addTemplate(mutable.immutable())
         }
