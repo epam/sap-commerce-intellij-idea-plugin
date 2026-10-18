@@ -38,7 +38,6 @@ class CxRemotePropertyStateNode(
         if (myProject == null || myProject.isDisposed) return
         val activeConnection = HacExecConnectionService.getInstance(project).activeConnection
         val active = activeConnection == connection
-        val icon = if (active) HybrisIcons.Y.REMOTE else HybrisIcons.Y.REMOTE_GREEN
 
         presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
         if (active) {
@@ -48,7 +47,7 @@ class CxRemotePropertyStateNode(
                 SimpleTextAttributes.GRAYED_ITALIC_ATTRIBUTES,
             )
         }
-        presentation.setIcon(icon)
+        presentation.setIcon(HybrisIcons.Y.REMOTE)
     }
 
     override fun merge(newNode: CxPropertiesNode) {

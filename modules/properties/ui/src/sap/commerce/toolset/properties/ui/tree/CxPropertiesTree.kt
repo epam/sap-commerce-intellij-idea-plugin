@@ -24,6 +24,7 @@ import com.intellij.openapi.util.Disposer
 import com.intellij.ui.TreeUIHelper
 import com.intellij.ui.tree.AsyncTreeModel
 import com.intellij.ui.treeStructure.Tree
+import com.intellij.util.asSafely
 import com.intellij.util.containers.Convertor
 import sap.commerce.toolset.properties.ui.tree.nodes.CxPropertiesNode
 import sap.commerce.toolset.properties.ui.tree.nodes.CxPropertiesRootNode
@@ -41,10 +42,12 @@ class CxPropertiesTree(project: Project) : Tree(), CxToolWindowActivationAware, 
         isRootVisible = false
 
         TreeUIHelper.getInstance().installTreeSpeedSearch(this, Convertor { path: TreePath ->
-            when (val userObject = (path.lastPathComponent as DefaultMutableTreeNode).userObject) {
-                is CxPropertiesNode -> userObject.name
-                else -> ""
-            }
+            path.lastPathComponent
+                .asSafely<DefaultMutableTreeNode>()
+                ?.userObject
+                ?.asSafely<CxPropertiesNode>()
+                ?.name
+                .orEmpty()
         }, true)
     }
 

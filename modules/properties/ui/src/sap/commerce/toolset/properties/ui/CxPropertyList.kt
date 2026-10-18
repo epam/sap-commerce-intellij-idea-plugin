@@ -183,9 +183,6 @@ internal class CxPropertyList(
         this >= 0 && getCellBounds(this, this)?.contains(e.point) == true
     }
 
-    @Suppress("unused")
-    fun overlayComponent(): JComponent? = editorOverlay
-
     companion object {
         @Serial
         private const val serialVersionUID: Long = 6217493082143759241L
