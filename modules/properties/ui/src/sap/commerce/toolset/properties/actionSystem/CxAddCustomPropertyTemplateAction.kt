@@ -19,11 +19,12 @@
 package sap.commerce.toolset.properties.actionSystem
 
 import com.intellij.openapi.actionSystem.ActionUpdateThread
-import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.project.DumbAwareAction
 import com.intellij.util.asSafely
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.ifNotFromSearchPopup
+import sap.commerce.toolset.isHybrisProject
 import sap.commerce.toolset.properties.custom.CxCustomPropertyTemplateService
 import sap.commerce.toolset.properties.custom.settings.state.CxCustomPropertyTemplateState
 import sap.commerce.toolset.properties.selectedNode
@@ -31,7 +32,7 @@ import sap.commerce.toolset.properties.ui.CxCustomPropertyTemplateDialog
 import sap.commerce.toolset.properties.ui.PropertyTemplateDialogContext
 import sap.commerce.toolset.properties.ui.tree.nodes.CxCustomPropertyTemplateGroupNode
 
-class CxAddCustomPropertyTemplateAction : AnAction() {
+class CxAddCustomPropertyTemplateAction : DumbAwareAction() {
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     override fun actionPerformed(e: AnActionEvent) = e.ifNotFromSearchPopup {
@@ -46,6 +47,7 @@ class CxAddCustomPropertyTemplateAction : AnAction() {
     }
 
     override fun update(e: AnActionEvent) {
+        e.presentation.isEnabledAndVisible = e.isHybrisProject && e.selectedNode() is CxCustomPropertyTemplateGroupNode
         e.presentation.text = "New Template"
         e.presentation.icon = HybrisIcons.Log.Template.ADD_CUSTOM_TEMPLATE
     }

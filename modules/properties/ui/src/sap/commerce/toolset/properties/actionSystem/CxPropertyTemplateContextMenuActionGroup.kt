@@ -20,14 +20,18 @@ package sap.commerce.toolset.properties.actionSystem
 
 import com.intellij.openapi.actionSystem.ActionGroup
 import com.intellij.openapi.actionSystem.ActionManager
+import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
+import sap.commerce.toolset.isHybrisProject
 import sap.commerce.toolset.properties.selectedNode
 import sap.commerce.toolset.properties.ui.tree.nodes.CxCustomPropertyTemplateGroupNode
 import sap.commerce.toolset.properties.ui.tree.nodes.CxCustomPropertyTemplateItemNode
 import sap.commerce.toolset.properties.ui.tree.nodes.CxRemotePropertyStateNode
 
 class CxPropertyTemplateContextMenuActionGroup : ActionGroup() {
+    override fun getActionUpdateThread() = ActionUpdateThread.BGT
+
     override fun getChildren(e: AnActionEvent?): Array<AnAction> {
         val selectedNode = e?.selectedNode() ?: return emptyArray()
         val manager = ActionManager.getInstance()
@@ -42,8 +46,10 @@ class CxPropertyTemplateContextMenuActionGroup : ActionGroup() {
 
     override fun update(e: AnActionEvent) {
         val selectedNode = e.selectedNode()
-        e.presentation.isEnabledAndVisible = selectedNode is CxRemotePropertyStateNode
-            || selectedNode is CxCustomPropertyTemplateGroupNode
-            || selectedNode is CxCustomPropertyTemplateItemNode
+        e.presentation.isEnabledAndVisible = e.isHybrisProject && (
+            selectedNode is CxRemotePropertyStateNode
+                || selectedNode is CxCustomPropertyTemplateGroupNode
+                || selectedNode is CxCustomPropertyTemplateItemNode
+            )
     }
 }

@@ -19,26 +19,27 @@
 package sap.commerce.toolset.properties.actionSystem
 
 import com.intellij.openapi.actionSystem.ActionUpdateThread
-import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.ui.Messages
+import com.intellij.openapi.project.DumbAwareAction
+import com.intellij.openapi.ui.MessageDialogBuilder
 import com.intellij.util.asSafely
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.ifNotFromSearchPopup
+import sap.commerce.toolset.isHybrisProject
 import sap.commerce.toolset.properties.custom.CxCustomPropertyTemplateService
 import sap.commerce.toolset.properties.selectedNodes
 import sap.commerce.toolset.properties.ui.tree.nodes.CxCustomPropertyTemplateItemNode
 
-class CxDeleteCustomPropertyTemplateAction : AnAction() {
+class CxDeleteCustomPropertyTemplateAction : DumbAwareAction() {
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     override fun actionPerformed(e: AnActionEvent) = e.ifNotFromSearchPopup {
         val project = e.project ?: return@ifNotFromSearchPopup
-        val selectedNodes = customTemplateItemNodes(e) ?: return@ifNotFromSearchPopup
+        val selectedNodes = customTemplateItemNodes(e).takeIf { it.isNotEmpty() } ?: return@ifNotFromSearchPopup
         val message = if (selectedNodes.size == 1) "Delete template \"${selectedNodes.first().name}\"?"
         else "Delete ${selectedNodes.size} templates?"
 
-        if (Messages.showYesNoDialog(project, message, "Confirm Deletion", HybrisIcons.Log.Action.DELETE) != Messages.YES) {
+        if (!MessageDialogBuilder.yesNo("Confirm Deletion", message).icon(HybrisIcons.Log.Action.DELETE).ask(project)) {
             return@ifNotFromSearchPopup
         }
 
@@ -46,11 +47,13 @@ class CxDeleteCustomPropertyTemplateAction : AnAction() {
     }
 
     override fun update(e: AnActionEvent) {
-        val selectedNodes = customTemplateItemNodes(e) ?: return
+        val selectedNodes = customTemplateItemNodes(e)
+        e.presentation.isEnabledAndVisible = e.isHybrisProject && selectedNodes.isNotEmpty()
         e.presentation.text = if (selectedNodes.size == 1) "Delete Template" else "Delete Templates"
         e.presentation.icon = HybrisIcons.Log.Template.DELETE_CUSTOM_TEMPLATE
     }
 
     private fun customTemplateItemNodes(e: AnActionEvent) = e.selectedNodes()
         ?.mapNotNull { it.asSafely<CxCustomPropertyTemplateItemNode>() }
+        .orEmpty()
 }

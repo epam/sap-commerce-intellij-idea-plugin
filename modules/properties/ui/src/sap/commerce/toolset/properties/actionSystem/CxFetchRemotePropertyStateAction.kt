@@ -19,14 +19,15 @@
 package sap.commerce.toolset.properties.actionSystem
 
 import com.intellij.openapi.actionSystem.ActionUpdateThread
-import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.project.DumbAwareAction
 import com.intellij.ui.AnimatedIcon
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.ifNotFromSearchPopup
+import sap.commerce.toolset.isHybrisProject
 import sap.commerce.toolset.properties.CxRemotePropertyStateService
 
-class CxFetchRemotePropertyStateAction : AnAction() {
+class CxFetchRemotePropertyStateAction : DumbAwareAction() {
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     override fun actionPerformed(e: AnActionEvent) = e.ifNotFromSearchPopup {
@@ -36,6 +37,9 @@ class CxFetchRemotePropertyStateAction : AnAction() {
 
     override fun update(e: AnActionEvent) = e.ifNotFromSearchPopup {
         val project = e.project ?: return@ifNotFromSearchPopup
+        e.presentation.isVisible = e.isHybrisProject
+        if (!e.presentation.isVisible) return@ifNotFromSearchPopup
+
         val service = CxRemotePropertyStateService.getInstance(project)
         val stateInitialized = service.stateInitialized
 

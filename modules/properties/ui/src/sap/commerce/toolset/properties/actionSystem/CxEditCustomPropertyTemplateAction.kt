@@ -19,11 +19,12 @@
 package sap.commerce.toolset.properties.actionSystem
 
 import com.intellij.openapi.actionSystem.ActionUpdateThread
-import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.project.DumbAwareAction
 import com.intellij.util.asSafely
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.ifNotFromSearchPopup
+import sap.commerce.toolset.isHybrisProject
 import sap.commerce.toolset.properties.custom.CxCustomPropertyTemplateService
 import sap.commerce.toolset.properties.selectedNode
 import sap.commerce.toolset.properties.selectedNodes
@@ -31,7 +32,7 @@ import sap.commerce.toolset.properties.ui.CxCustomPropertyTemplateDialog
 import sap.commerce.toolset.properties.ui.PropertyTemplateDialogContext
 import sap.commerce.toolset.properties.ui.tree.nodes.CxCustomPropertyTemplateItemNode
 
-class CxEditCustomPropertyTemplateAction : AnAction() {
+class CxEditCustomPropertyTemplateAction : DumbAwareAction() {
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     override fun actionPerformed(e: AnActionEvent) = e.ifNotFromSearchPopup {
@@ -46,6 +47,7 @@ class CxEditCustomPropertyTemplateAction : AnAction() {
     }
 
     override fun update(e: AnActionEvent) {
+        e.presentation.isVisible = e.isHybrisProject && e.selectedNode() is CxCustomPropertyTemplateItemNode
         e.presentation.text = "Edit Template"
         e.presentation.icon = HybrisIcons.Log.Template.EDIT_CUSTOM_TEMPLATE
         e.presentation.isEnabled = e.selectedNodes()?.size == 1
