@@ -28,6 +28,7 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.currentCoroutineContext
 import sap.commerce.toolset.ai.mcp.regexOrContainsMatcher
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
+import sap.commerce.toolset.properties.CxRemotePropertyStateService
 import sap.commerce.toolset.properties.exec.CxRemotePropertyClient
 import sap.commerce.toolset.properties.exec.CxRemotePropertyStatePage
 import sap.commerce.toolset.properties.mcp.context.CxComparePropertiesMcpRequest
@@ -58,6 +59,7 @@ import sap.commerce.toolset.properties.presentation.CxPropertyPresentation
 class PropertiesMcpService(private val project: Project) {
 
     suspend fun listRemoteProperties(request: CxListRemotePropertiesMcpRequest): CxRemotePropertiesDto {
+        requirePositive(request.limit)
         val connection = request.connection(project)
         val page = fetchRemote(connection, request.keyFilter, request.valueFilter, request.limit)
         val items = page.properties.take(request.limit)
@@ -77,6 +79,7 @@ class PropertiesMcpService(private val project: Project) {
         val connection = request.connection(project)
         val value = request.value.orEmpty()
         val outcome = CxRemotePropertyClient.getInstance(project).upsert(connection, request.key, value)
+        if (outcome.success) refreshToolWindow(connection)
 
         return CxRemotePropertyWriteDto(
             connection = connection.connectionName,
@@ -90,6 +93,7 @@ class PropertiesMcpService(private val project: Project) {
     suspend fun deleteRemoteProperty(request: CxWriteRemotePropertyMcpRequest): CxRemotePropertyWriteDto {
         val connection = request.connection(project)
         val outcome = CxRemotePropertyClient.getInstance(project).delete(connection, request.key)
+        if (outcome.success) refreshToolWindow(connection)
 
         return CxRemotePropertyWriteDto(
             connection = connection.connectionName,
@@ -100,28 +104,28 @@ class PropertiesMcpService(private val project: Project) {
     }
 
     suspend fun compareProperties(request: CxComparePropertiesMcpRequest): CxPropertyComparisonDto {
+        requirePositive(request.limit)
         val connection = request.connection(project)
         val chain = chain()
-        // The instance filters server-side, so the project side has to be narrowed the same way or the two halves
-        // would be compared against different populations and everything outside the filter would read as missing.
+        // Both halves go through the same matcher: the instance only knows a literal substring, so a regex handed to it
+        // would select another population than on the project side and everything outside it would read as missing.
         val matches = request.keyFilter
             ?.trim()
             ?.takeIf { it.isNotEmpty() }
             ?.let { regexOrContainsMatcher(it) }
             ?: { true }
 
-        val remote = fetchRemote(connection, request.keyFilter, null, Int.MAX_VALUE).properties
+        // The script pages from offset 0, so an unbounded page is every property of the instance.
+        val remote = (CxRemotePropertyClient.getInstance(project).fetch(connection, pageSize = Int.MAX_VALUE)
+            ?: error("${connection.connectionName} returned no readable properties payload."))
+            .properties
+            .filter { matches(it.key) }
         val declared = chain.resolveAll().filterKeys(matches)
 
         val missingInProject = CxPropertyComparison.missingInProject(remote, chain).filter { matches(it.key) }
         val missingOnRemote = CxPropertyComparison.missingOnRemote(remote, chain).filter { matches(it.key) }
-        val differing = remote
-            .mapNotNull { remoteProperty ->
-                declared[remoteProperty.key]
-                    ?.takeIf { it != remoteProperty.value }
-                    ?.let { CxPropertyDifferenceDto(remoteProperty.key, it, remoteProperty.value) }
-            }
-            .sortedBy { it.key }
+        val differing = CxPropertyComparison.differing(remote, declared)
+            .map { CxPropertyDifferenceDto(it.key, it.project, it.remote) }
 
         return CxPropertyComparisonDto(
             connection = connection.connectionName,
@@ -168,9 +172,17 @@ class PropertiesMcpService(private val project: Project) {
     }
 
     suspend fun validateProperties(request: CxValidatePropertiesMcpRequest): CxPropertyValidationDto {
+        requirePositive(request.limit)
+        val severity = request.severity
+            ?.trim()
+            ?.takeIf { it.isNotEmpty() }
+            ?.let {
+                CxPropertyRuleSeverity.of(it)
+                    ?: error("Invalid severity '$it'. Valid values: ${CxPropertyRuleSeverity.entries.joinToString { severity -> severity.title }}")
+            }
         val chain = chain()
         val violations = CxPropertyValidator.validate(chain)
-            .filter { request.severity == null || it.severity == request.severity }
+            .filter { severity == null || it.severity == severity }
             .filter { request.extension == null || it.source.extension == request.extension }
 
         return CxPropertyValidationDto(
@@ -203,6 +215,13 @@ class PropertiesMcpService(private val project: Project) {
             .takeIf { it.sources.isNotEmpty() }
             ?: error("No SAP Commerce property files were found in this project.")
     }
+
+    private fun requirePositive(limit: Int) = require(limit > 0) { "'limit' must be greater than 0." }
+
+    /** An open Properties tool window showing [connection] would otherwise keep the value it read before the write. */
+    private fun refreshToolWindow(connection: HacConnectionSettingsState) = CxRemotePropertyStateService.getInstance(project)
+        .takeIf { it.state(connection.uuid).initialized() }
+        ?.fetch(connection)
 
     private suspend fun fetchRemote(
         connection: HacConnectionSettingsState,

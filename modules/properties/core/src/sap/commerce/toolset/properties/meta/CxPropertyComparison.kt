@@ -43,4 +43,13 @@ object CxPropertyComparison {
             .map { (key, value) -> CxPropertyPresentation(key, value) }
             .sortedBy { it.key }
     }
+
+    /** Properties both sides declare with different values, ordered by key; [declared] is what the project resolves to. */
+    fun differing(remote: Collection<CxPropertyPresentation>, declared: Map<String, String>) = remote
+        .mapNotNull { remoteProperty ->
+            declared[remoteProperty.key]
+                ?.takeIf { it != remoteProperty.value }
+                ?.let { CxPropertyDifference(remoteProperty.key, it, remoteProperty.value) }
+        }
+        .sortedBy { it.key }
 }
