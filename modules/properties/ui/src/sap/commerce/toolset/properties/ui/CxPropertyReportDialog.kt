@@ -60,7 +60,7 @@ class CxPropertyReportDialog(
 
     private fun reportPanel() = panel {
         row("Property:") {
-            label(remote.key)
+            label(plain(remote.key))
         }.layout(RowLayout.PARENT_GRID)
 
         row("Remote value:") {
@@ -75,7 +75,7 @@ class CxPropertyReportDialog(
 
             declared.isIgnored -> row {
                 icon(HybrisIcons.Property.IGNORED)
-                label("Declared only by extensions which `localextensions.xml` does not list, so the running system never reads them.")
+                label("Declared only by extensions which localextensions.xml does not list, so the running system never reads them.")
             }
 
             else -> row("Project value:") {
@@ -98,15 +98,18 @@ class CxPropertyReportDialog(
         if (declaration.navigatable) {
             link(declaration.source.presentableName) { navigate(declaration) }
         } else {
-            label(declaration.source.presentableName)
+            label(plain(declaration.source.presentableName))
         }
 
         valueLabel(declaration.value)
         label(statusText(property, declaration))
     }.layout(RowLayout.PARENT_GRID)
 
-    private fun Row.valueLabel(value: String) = label(StringUtil.shortenTextWithEllipsis(value.ifBlank { EMPTY_VALUE }, VALUE_MAX_LENGTH, VALUE_SUFFIX_LENGTH))
-        .applyToComponent { toolTipText = value.takeIf { it.isNotBlank() } }
+    private fun Row.valueLabel(value: String) = label(plain(StringUtil.shortenTextWithEllipsis(value.ifBlank { EMPTY_VALUE }, VALUE_MAX_LENGTH, VALUE_SUFFIX_LENGTH)))
+        .applyToComponent { toolTipText = value.takeIf { it.isNotBlank() }?.let { plain(it) } }
+
+    /** A label renders text starting with `<html>` as markup, so a value read from an instance is always escaped. */
+    private fun plain(text: String) = "<html>${StringUtil.escapeXmlEntities(text)}</html>"
 
     private fun statusIcon(property: CxProperty, declaration: CxPropertyDeclaration) = when {
         !declaration.source.active -> HybrisIcons.Property.IGNORED

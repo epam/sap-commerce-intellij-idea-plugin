@@ -39,7 +39,7 @@ import com.intellij.util.ui.JBUI
 import com.intellij.util.ui.UIUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
@@ -68,8 +68,7 @@ class CxRemotePropertyStateView(private val project: Project) : Disposable {
     private val showDataPanel = AtomicBooleanProperty(false)
     private val showFetchingState = AtomicBooleanProperty(false)
 
-    private val job = SupervisorJob()
-    private val viewScope = CoroutineScope(Dispatchers.Default + job)
+    private val viewScope = CxPropertiesViewScopeService.getInstance(project).childScope()
 
     private val listModel = CollectionListModel<CxPropertyPresentation>()
     private val propertyList = CxPropertyList(
@@ -214,7 +213,7 @@ class CxRemotePropertyStateView(private val project: Project) : Disposable {
     }
 
     override fun dispose() {
-        job.cancel()
+        viewScope.cancel()
         filterDebounceTimer.stop()
         propertyList.cancelEdit()
         lazyViewPanel.drop()

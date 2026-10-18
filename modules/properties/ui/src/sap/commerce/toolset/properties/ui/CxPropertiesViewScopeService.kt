@@ -22,10 +22,18 @@ import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.job
 
 /** Lends the Properties tool window a coroutine scope which the platform cancels together with the project. */
 @Service(Service.Level.PROJECT)
 class CxPropertiesViewScopeService(val coroutineScope: CoroutineScope) {
+
+    /**
+     * A scope for a single view: a child of [coroutineScope], so it ends with the project at the latest, which the view
+     * cancels itself when it is disposed. A failing child does not cancel its siblings.
+     */
+    fun childScope() = CoroutineScope(coroutineScope.coroutineContext + SupervisorJob(coroutineScope.coroutineContext.job))
 
     companion object {
         fun getInstance(project: Project): CxPropertiesViewScopeService = project.service()
