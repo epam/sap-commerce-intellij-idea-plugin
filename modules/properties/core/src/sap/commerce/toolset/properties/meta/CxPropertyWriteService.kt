@@ -54,26 +54,13 @@ class CxPropertyWriteService(private val project: Project) {
             .filter { it.type == ModuleDescriptorType.CUSTOM }
             .mapTo(HashSet(), ExtensionDescriptor::name)
 
-        return CxPropertyCollector.getInstance(project).collect().sources
-            .mapNotNull { source ->
-                val file = source.file ?: return@mapNotNull null
-
-                when {
-                    source.scope == CxPropertyScope.LOCAL -> CxPropertyTarget(file, source.scope)
-                    source.scope == CxPropertyScope.PROJECT && source.extension in customExtensions ->
-                        CxPropertyTarget(file, source.scope, source.extension)
-
-                    else -> null
-                }
-            }
-            .distinct()
-            .sortedWith(compareBy({ it.scope != CxPropertyScope.LOCAL }, { it.presentableName }))
+        return targetsOf(CxPropertyCollector.getInstance(project).collect().sources, customExtensions)
     }
 
     /**
      * Declares [properties] in [target], replacing the value of the ones it already declares.
      *
-     * @return the properties actually written, or an empty list when the target turned out not to be a properties file.
+     * @return [properties] once written, or an empty list when the target turned out not to be a properties file.
      */
     suspend fun write(target: CxPropertyTarget, properties: Collection<CxPropertyPresentation>): List<CxPropertyPresentation> {
         if (properties.isEmpty()) return emptyList()
@@ -107,6 +94,22 @@ class CxPropertyWriteService(private val project: Project) {
 
     companion object {
         private const val COMMAND_NAME = "Declare SAP Commerce Properties"
+
+        /** The [sources] a declaration may be added to: `local.properties` first, then the custom extensions by name. */
+        internal fun targetsOf(sources: Collection<CxPropertySource>, customExtensions: Set<String>) = sources
+            .mapNotNull { source ->
+                val file = source.file ?: return@mapNotNull null
+
+                when {
+                    source.scope == CxPropertyScope.LOCAL -> CxPropertyTarget(file, source.scope)
+                    source.scope == CxPropertyScope.PROJECT && source.extension in customExtensions ->
+                        CxPropertyTarget(file, source.scope, source.extension)
+
+                    else -> null
+                }
+            }
+            .distinct()
+            .sortedWith(compareBy({ it.scope != CxPropertyScope.LOCAL }, { it.presentableName }))
 
         fun getInstance(project: Project): CxPropertyWriteService = project.service()
     }

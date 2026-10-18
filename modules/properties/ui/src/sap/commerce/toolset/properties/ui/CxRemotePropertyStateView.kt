@@ -33,6 +33,7 @@ import com.intellij.notification.NotificationType
 import com.intellij.openapi.actionSystem.ActionGroup
 import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.DefaultActionGroup
+import com.intellij.openapi.util.text.StringUtil
 import com.intellij.ui.CollectionListModel
 import com.intellij.ui.components.JBScrollPane
 import com.intellij.ui.components.JBTextField
@@ -58,7 +59,9 @@ import sap.commerce.toolset.properties.exec.CxRemotePropertyStatePage
 import sap.commerce.toolset.properties.meta.CxPropertyCollector
 import sap.commerce.toolset.properties.meta.CxPropertyComparison
 import sap.commerce.toolset.properties.meta.CxPropertyModel
+import sap.commerce.toolset.properties.meta.CxPropertyScope
 import sap.commerce.toolset.properties.meta.CxPropertyWriteService
+import sap.commerce.toolset.properties.meta.CxSecretKind
 import sap.commerce.toolset.properties.settings.CxPropertyViewSettings
 import sap.commerce.toolset.properties.settings.event.CxPropertyViewSettingsListener
 import sap.commerce.toolset.properties.settings.state.CxPropertyViewMode
@@ -590,8 +593,21 @@ class CxRemotePropertyStateView(private val project: Project) : Disposable {
                 CxDeclarePropertiesDialog(project, targets, properties).takeIf { it.showAndGet() }
             } ?: return@launch
 
-            val written = writeService.write(dialog.target, properties)
-            if (written.isEmpty()) return@launch
+            val target = dialog.target
+            // A committed file is no place for a secret: its key is declared there, its value is left to local.properties.
+            val withheld = if (target.scope == CxPropertyScope.LOCAL) emptySet()
+            else properties.filter { CxSecretKind.of(it.key) != null }.mapTo(HashSet()) { it.key }
+            val toWrite = properties.map { if (it.key in withheld) it.copy(value = "") else it }
+
+            val written = writeService.write(target, toWrite)
+            if (written.isEmpty()) {
+                Notifications.create(
+                    NotificationType.WARNING,
+                    "Nothing declared",
+                    "<p>${StringUtil.escapeXmlEntities(target.presentableName)} is not a properties file.</p>",
+                ).notify(project)
+                return@launch
+            }
 
             val declared = written.mapTo(HashSet(written.size)) { it.key }
 
@@ -602,13 +618,13 @@ class CxRemotePropertyStateView(private val project: Project) : Disposable {
                 dropFromReport { it.key in declared }
             }
 
-            val target = dialog.target
-
             Notifications.create(
                 NotificationType.INFORMATION,
                 "Properties declared",
                 "<p>Declared ${written.size} propert${if (written.size == 1) "y" else "ies"} in " +
-                    "<a href=\"$OPEN_TARGET\">${target.presentableName}</a></p>",
+                    "<a href=\"$OPEN_TARGET\">${StringUtil.escapeXmlEntities(target.presentableName)}</a></p>" +
+                    if (withheld.isEmpty()) ""
+                    else "<p>${withheld.size} secret${if (withheld.size == 1) " was" else "s were"} declared without a value</p>",
             )
                 // The file is rarely the one on screen, so the one named in the message opens it.
                 .onClick { PsiNavigationSupport.getInstance().createNavigatable(project, target.file, 0).navigate(true) }

@@ -67,7 +67,8 @@ class CxDeclarePropertiesDialog(
         }.layout(RowLayout.PARENT_GRID)
 
         row {
-            comment("An existing declaration of the same property in the chosen file is replaced.")
+            comment("An existing declaration of the same property in the chosen file is replaced. " +
+                "Outside local.properties, passwords, secrets, tokens and keys are declared without their value.")
         }
 
         group("Properties") {
