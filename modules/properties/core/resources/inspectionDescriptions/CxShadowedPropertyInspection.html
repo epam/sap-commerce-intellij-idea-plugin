@@ -1,0 +1,27 @@
+<html>
+<body>
+Reports a property declaration that never applies.
+
+<p>
+    The SAP Commerce property chain is layered, and a declaration in a higher layer beating one in a lower layer is the
+    chain working as designed — <code>local.properties</code> overriding an extension is the entire point of
+    <code>local.properties</code>, and it is <b>not</b> reported. What is reported are the two cases where the losing
+    declaration is a surprise rather than a design:
+</p>
+
+<ul>
+    <li>
+        <b>Two extensions declare the same key.</b> Neither is more important than the other by layer, so the winner is
+        decided by the extension load order — something nobody wrote down and which changes when
+        <code>localextensions.xml</code> changes. The value you are reading may simply not be the one that applies.
+    </li>
+    <li>
+        <b>The extension is not listed in <code>localextensions.xml</code>.</b> The platform never loads its
+        <code>project.properties</code> at all, so the declaration is not overridden — it is absent. The file still
+        reads as though it configures something.
+    </li>
+</ul>
+
+<p>Quick fixes open the declaration that actually applies, or remove the one that does not.</p>
+</body>
+</html>

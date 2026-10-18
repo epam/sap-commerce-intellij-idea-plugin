@@ -78,6 +78,19 @@ class Notifications private constructor(type: NotificationType, title: String, c
         return this
     }
 
+    /**
+     * Handles a link clicked inside the content, the `href` of the link handed to [handler].
+     *
+     * The platform steers towards [addAction] for anything the user has to choose, and that is the right shape for a
+     * command. A file named in the middle of a sentence, though, reads as a link where it is written rather than as a
+     * button underneath - so the deprecated listener is kept, in one place, for that.
+     */
+    @Suppress("DEPRECATION")
+    fun onClick(handler: (String) -> Unit): Notifications {
+        notification.setListener { _, event -> handler(event.description) }
+        return this
+    }
+
     fun notify(project: Project?) {
         notification.notify(project)
         if (delay != null) {
