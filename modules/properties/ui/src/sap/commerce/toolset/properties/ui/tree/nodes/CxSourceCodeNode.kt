@@ -1,0 +1,147 @@
+/*
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+package sap.commerce.toolset.properties.ui.tree.nodes
+
+import com.intellij.icons.AllIcons
+import com.intellij.openapi.module.ModuleManager
+import com.intellij.openapi.project.Project
+import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
+import sap.commerce.toolset.settings.ApplicationSettings
+import sap.commerce.toolset.project.settings.ySettings
+import sap.commerce.toolset.project.yExtensionDescriptor
+import sap.commerce.toolset.project.yExtensionName
+import sap.commerce.toolset.properties.settings.CxPropertyViewSettings
+import sap.commerce.toolset.properties.settings.state.CxPropertySourceMode
+import javax.swing.Icon
+
+/**
+ * The project's own property files, as opposed to what a running instance reports.
+ *
+ * What hangs underneath depends on [CxPropertyViewSettings.sourceMode]: either a single node standing for the project
+ * as a whole, or one node per extension, grouped the way the Project view groups the modules.
+ *
+ * That grouping is not recomputed here - it is read back off the module names the import produced, where the group
+ * path is the qualified prefix. Whatever the Project view shows, this shows: the configured group names, the nesting
+ * of a custom extension's directories, and any `group.override` a project declares.
+ */
+class CxSourceCodeNode(project: Project) : CxPropertiesNode(
+    project = project,
+    presentationName = "Source Code",
+    icon = HybrisIcons.Property.SOURCE_CODE,
+) {
+
+    override fun getNewChildren(): Map<String, CxPropertiesNode> = when (CxPropertyViewSettings.getInstance(project).sourceMode) {
+        CxPropertySourceMode.PROJECT -> mapOf(PROJECT_KEY to CxSourceProjectNode(project))
+        CxPropertySourceMode.EXTENSIONS -> groupTree().toNodes(inheritedIcon = null)
+    }
+
+    /** Extensions arranged under their module group path, the deepest group last. */
+    private fun groupTree(): CxSourceGroupTree {
+        val moduleMapping = project.ySettings.module2extensionMapping
+        val root = CxSourceGroupTree()
+
+        ModuleManager.getInstance(project).modules
+            .forEach { module ->
+                val descriptor = module.yExtensionDescriptor ?: return@forEach
+                // Sub-modules carry their owner's properties, so only the extension itself is worth a node.
+                if (descriptor.subModuleType != null || descriptor.type !in GROUPED_TYPES) return@forEach
+                val extension = module.yExtensionName(moduleMapping) ?: return@forEach
+
+                root.put(module.name.split(MODULE_GROUP_SEPARATOR).dropLast(1), extension, descriptor.type)
+            }
+
+        return root
+    }
+
+    private fun CxSourceGroupTree.toNodes(inheritedIcon: Icon?): Map<String, CxPropertiesNode> {
+        // Only the root carries no icon yet, and only there do the well-known groups have an order worth keeping.
+        val topLevel = inheritedIcon == null
+        val groups = subGroups.entries
+            .sortedWith(compareBy({ if (topLevel) rankOf(it.key) else 0 }, { it.key }))
+            .map { (title, subGroup) ->
+                val icon = inheritedIcon ?: iconOf(title)
+
+                CxSourceExtensionGroupNode(
+                    project = project,
+                    title = title,
+                    icon = icon,
+                    groupChildren = subGroup.toNodes(icon),
+                    extensionCount = subGroup.extensionCount(),
+                )
+            }
+        val extensions = this.extensions.entries
+            .sortedBy { it.key }
+            .map { (extension, type) -> CxSourceExtensionNode(project, extension, type) }
+
+        // A group and an extension may share a name at one level - `platform` under `Hybris` - so their keys are kept apart.
+        return groups.associateBy { "group:${it.name}" } + extensions.associateBy { "extension:${it.name}" }
+    }
+
+    /**
+     * Keeps the well-known groups in their familiar order; anything a project names itself follows, alphabetically.
+     *
+     * Only meaningful at the top level: a group nested inside one of them may well share its name - `Hybris/platform`
+     * does - and ranking that one would pull it out of the alphabetical order the Project view lists it in.
+     */
+    private fun rankOf(title: String) = knownGroups().keys
+        .indexOfFirst { it.equals(title, true) }
+        .takeIf { it >= 0 }
+        ?: Int.MAX_VALUE
+
+    /**
+     * The icon the Project view gives a group. It picks by the outermost segment of the whole group path, so every
+     * group nested under `Hybris` carries the commerce logo too - which is why the icon is handed down rather than
+     * looked up again at each level.
+     */
+    private fun iconOf(title: String): Icon = knownGroups().entries
+        .firstOrNull { it.key.equals(title, true) }
+        ?.value
+        ?: AllIcons.Nodes.ModuleGroup
+
+    private fun knownGroups() = with(ApplicationSettings.getInstance()) {
+        linkedMapOf(
+            outermost(groupCustom) to HybrisIcons.Module.CUSTOM_GROUP,
+            outermost(groupHybris) to HybrisIcons.Module.COMMERCE_GROUP,
+            outermost(groupPlatform) to HybrisIcons.Module.PLATFORM_GROUP,
+            outermost(groupCCv2) to HybrisIcons.Module.CCV2_GROUP,
+        )
+    }
+
+    /** A configured group may be a path such as `Custom/Unused`; only its first segment names a top level group. */
+    private fun outermost(group: String) = ApplicationSettings.toIdeaGroup(group)
+        ?.firstOrNull()
+        ?: group
+
+    companion object {
+        private const val PROJECT_KEY = "project"
+        private const val MODULE_GROUP_SEPARATOR = '.'
+
+        /**
+         * The config extension is left out on purpose: it carries `local.properties`, never a `project.properties`,
+         * so a group for it would only ever be a list of dead ends.
+         */
+        private val GROUPED_TYPES = setOf(
+            ModuleDescriptorType.CUSTOM,
+            ModuleDescriptorType.EXT,
+            ModuleDescriptorType.OOTB,
+            ModuleDescriptorType.PLATFORM,
+        )
+    }
+}
