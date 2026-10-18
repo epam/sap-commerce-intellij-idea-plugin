@@ -24,6 +24,7 @@ import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.currentCoroutineContext
 import sap.commerce.toolset.ai.mcp.regexOrContainsMatcher
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
@@ -147,9 +148,9 @@ class PropertiesMcpService(private val project: Project) {
             return report(key, property, effectiveValue, rule)
         }
 
-        val connection = runCatching { request.connection(project) }
+        val connection = catching { request.connection(project) }
         val remote = connection.getOrNull()
-            ?.let { server -> runCatching { fetchRemote(server, key, null, REMOTE_LOOKUP_LIMIT) } }
+            ?.let { server -> catching { fetchRemote(server, key, null, REMOTE_LOOKUP_LIMIT) } }
 
         val remoteValue = remote
             ?.getOrNull()
@@ -264,6 +265,18 @@ class PropertiesMcpService(private val project: Project) {
          * which happens to match thousands from being answered in full.
          */
         private const val REMOTE_LOOKUP_LIMIT = 200
+
+        /**
+         * [runCatching] for suspend code: a failed lookup becomes part of the answer, while a cancelled tool call is
+         * rethrown so it actually stops instead of being reported as a remote error.
+         */
+        private inline fun <T> catching(block: () -> T): Result<T> = try {
+            Result.success(block())
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
 
         suspend fun getInstance(): PropertiesMcpService = currentCoroutineContext().project.service()
     }
