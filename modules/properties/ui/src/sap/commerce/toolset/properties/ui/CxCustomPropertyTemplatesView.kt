@@ -37,7 +37,7 @@ import com.intellij.ui.dsl.builder.panel
 import com.intellij.util.ui.JBUI
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import sap.commerce.toolset.properties.custom.CxCustomPropertyTemplateService
@@ -65,8 +65,7 @@ class CxCustomPropertyTemplatesView(private val project: Project) : Disposable {
     private lateinit var addValueField: JBTextField
     private lateinit var statusLabel: JLabel
 
-    private val job = SupervisorJob()
-    private val viewScope = CoroutineScope(Dispatchers.Default + job)
+    private val viewScope = CxPropertiesViewScopeService.getInstance(project).childScope()
 
     @Volatile
     private var properties: List<CxPropertyPresentation> = emptyList()
@@ -166,7 +165,7 @@ class CxCustomPropertyTemplatesView(private val project: Project) : Disposable {
     }
 
     override fun dispose() {
-        job.cancel()
+        viewScope.cancel()
         propertyList.cancelEdit()
         lazyViewPanel.drop()
     }
