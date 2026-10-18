@@ -39,12 +39,6 @@ internal enum class CxInstanceComparisonSection(val title: String) {
         ONLY_IN_SECOND -> "$title $second"
         DIFFERING -> title
     }
-
-    /** The instance whose value a row of this section carries, of the two given. */
-    fun <T> own(first: T, second: T) = if (this == ONLY_IN_SECOND) second else first
-
-    /** The instance a row of this section is held against, which is the other one. */
-    fun <T> other(first: T, second: T) = if (this == ONLY_IN_SECOND) first else second
 }
 
 /** The whole comparison, computed once so switching sections costs nothing. */

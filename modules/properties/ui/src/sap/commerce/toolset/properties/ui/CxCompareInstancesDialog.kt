@@ -18,22 +18,27 @@
 
 package sap.commerce.toolset.properties.ui
 
-import com.intellij.openapi.Disposable
 import com.intellij.openapi.application.EDT
 import com.intellij.openapi.observable.properties.AtomicBooleanProperty
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogWrapper
+import com.intellij.openapi.util.Disposer
 import com.intellij.ui.CollectionListModel
+import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.components.JBScrollPane
 import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.Align
 import com.intellij.ui.dsl.builder.AlignX
 import com.intellij.ui.dsl.builder.panel
+import com.intellij.util.asSafely
 import com.intellij.util.ui.JBUI
-import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
@@ -43,8 +48,6 @@ import sap.commerce.toolset.properties.presentation.CxPropertyPresentation
 import sap.commerce.toolset.ui.addDocumentListener
 import sap.commerce.toolset.ui.event.documentListener
 import javax.swing.Action
-import javax.swing.DefaultListCellRenderer
-import javax.swing.JList
 import javax.swing.JComponent
 import javax.swing.JLabel
 
@@ -60,10 +63,12 @@ internal class CxCompareInstancesDialog(
     private val project: Project,
     private val first: HacConnectionSettingsState,
     private val candidates: List<HacConnectionSettingsState>,
-) : DialogWrapper(project), Disposable {
+) : DialogWrapper(project) {
 
-    private val job = SupervisorJob()
-    private val dialogScope = CoroutineScope(Dispatchers.Default + job)
+    private val dialogScope = CxPropertiesViewScopeService.getInstance(project).childScope()
+
+    /** The comparison being read; choosing another instance replaces it rather than racing it. */
+    private var reloadJob: Job? = null
 
     private val showData = AtomicBooleanProperty(false)
 
@@ -89,13 +94,9 @@ internal class CxCompareInstancesDialog(
 
     init {
         title = "Compare Properties of Two Instances"
+        Disposer.register(disposable) { dialogScope.cancel() }
         init()
         reload()
-    }
-
-    override fun dispose() {
-        job.cancel()
-        super.dispose()
     }
 
     /** Read-only, so there is nothing to confirm - only a way out. */
@@ -109,10 +110,10 @@ internal class CxCompareInstancesDialog(
                 .align(AlignX.FILL)
                 .resizableColumn()
                 .applyToComponent {
-                    renderer = ConnectionRenderer()
+                    renderer = SimpleListCellRenderer.create("") { it.connectionName }
                     selectedItem = second
                     addActionListener {
-                        second = selectedItem as? HacConnectionSettingsState
+                        second = selectedItem.asSafely<HacConnectionSettingsState>()
                         reload()
                     }
                 }
@@ -123,10 +124,14 @@ internal class CxCompareInstancesDialog(
                 .align(AlignX.FILL)
                 .resizableColumn()
                 .applyToComponent {
-                    renderer = SectionRenderer { comparison }
+                    renderer = SimpleListCellRenderer.create("") { section ->
+                        comparison
+                            ?.let { "${section.titleFor(it.first, it.second)} (${it.rowsOf(section).size})" }
+                            ?: section.title
+                    }
                     selectedItem = section
                     addActionListener {
-                        section = selectedItem as? CxInstanceComparisonSection ?: section
+                        section = selectedItem.asSafely<CxInstanceComparisonSection>() ?: section
                         render()
                     }
                 }
@@ -177,18 +182,22 @@ internal class CxCompareInstancesDialog(
         listModel.replaceAll(emptyList())
         statusLabel.text = "Reading ${first.connectionName} and ${other.connectionName}..."
 
-        dialogScope.launch {
+        reloadJob?.cancel()
+        reloadJob = dialogScope.launch {
             val client = CxRemotePropertyClient.getInstance(project)
-            val loaded = runCatching {
-                val firstPage = async { client.fetchAll(first) }
-                val secondPage = async { client.fetchAll(other) }
+            val (firstProperties, secondProperties) = try {
+                // Its own scope, so one instance failing ends up here instead of cancelling the whole reload.
+                coroutineScope {
+                    val firstPage = async { client.fetchAll(first) }
+                    val secondPage = async { client.fetchAll(other) }
 
-                (firstPage.await()?.properties ?: error("${first.connectionName} returned no properties.")) to
-                    (secondPage.await()?.properties ?: error("${other.connectionName} returned no properties."))
-            }
-
-            val (firstProperties, secondProperties) = loaded.getOrElse {
-                withContext(Dispatchers.EDT) { statusLabel.text = it.message ?: "Unable to read both instances." }
+                    (firstPage.await()?.properties ?: error("${first.connectionName} returned no properties.")) to
+                        (secondPage.await()?.properties ?: error("${other.connectionName} returned no properties."))
+                }
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                withContext(Dispatchers.EDT) { statusLabel.text = e.message ?: "Unable to read both instances." }
                 return@launch
             }
 
@@ -203,6 +212,7 @@ internal class CxCompareInstancesDialog(
                 secondValues = secondProperties.associate { it.key to it.value },
             )
 
+            ensureActive()
             withContext(Dispatchers.EDT) {
                 comparison = computed
                 showData.set(true)
@@ -236,35 +246,6 @@ internal class CxCompareInstancesDialog(
         val counts = "${computed.first}: ${computed.firstTotal} properties | ${computed.second}: ${computed.secondTotal}"
 
         return if (filtered) "$shown of $total shown | $counts" else "$total | $counts"
-    }
-
-    private class ConnectionRenderer : DefaultListCellRenderer() {
-        override fun getListCellRendererComponent(
-            list: JList<*>?,
-            value: Any?,
-            index: Int,
-            selected: Boolean,
-            focused: Boolean,
-        ) = super.getListCellRendererComponent(list, value, index, selected, focused).also {
-            text = (value as? HacConnectionSettingsState)?.connectionName.orEmpty()
-        }
-    }
-
-    private class SectionRenderer(private val comparison: () -> CxInstanceComparison?) : DefaultListCellRenderer() {
-        override fun getListCellRendererComponent(
-            list: JList<*>?,
-            value: Any?,
-            index: Int,
-            selected: Boolean,
-            focused: Boolean,
-        ) = super.getListCellRendererComponent(list, value, index, selected, focused).also {
-            val section = value as? CxInstanceComparisonSection ?: return@also
-            val computed = comparison()
-
-            text = computed
-                ?.let { "${section.titleFor(it.first, it.second)} (${it.rowsOf(section).size})" }
-                ?: section.title
-        }
     }
 
     companion object {
