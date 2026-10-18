@@ -31,6 +31,7 @@ import com.intellij.openapi.util.ModificationTracker
 import com.intellij.openapi.util.removeUserData
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.openapi.vfs.VirtualFileManager
 import com.intellij.psi.PsiManager
 import com.intellij.psi.search.DelegatingGlobalSearchScope
 import com.intellij.psi.search.FileTypeIndex
@@ -76,10 +77,15 @@ class CxPropertyCollector(private val project: Project) {
             CachedValuesManager.getManager(project).getCachedValue(project, CACHE_KEY, {
                 val model = buildModel()
                 // Nothing to track yet - never cache an empty chain, the files may still appear
+                val psiManager = PsiManager.getInstance(project)
                 val dependencies = model.sources
                     .mapNotNull { it.file }
+                    // A PsiFile also changes with unsaved edits, which a VirtualFile only notices once they are saved
+                    .mapNotNull { psiManager.findFile(it) }
                     .takeIf { it.isNotEmpty() }
                     ?.plus(project.ySettings)
+                    // A property file which appears or vanishes changes the chain without touching any tracked file
+                    ?.plus(VirtualFileManager.VFS_STRUCTURE_MODIFICATIONS)
                     ?.toTypedArray()
                     ?: arrayOf<Any>(ModificationTracker.EVER_CHANGED)
 
@@ -180,7 +186,7 @@ class CxPropertyCollector(private val project: Project) {
                 System.getenv()
                     .filter { it.key.startsWith(prefix) }
                     .forEach { (name, value) ->
-                        declarations.add(CxPropertyDeclaration(name.substring(prefix.length).asPropertyKey(), value, ENVIRONMENT_SOURCE))
+                        declarations.add(CxPropertyDeclaration(CxEnvironmentProperty.keyOf(name.substring(prefix.length)), value, ENVIRONMENT_SOURCE))
                     }
             }
 
@@ -269,11 +275,6 @@ class CxPropertyCollector(private val project: Project) {
     private fun GlobalSearchScope.withFileNames(vararg names: String) = object : DelegatingGlobalSearchScope(this) {
         override fun contains(file: VirtualFile) = file.name in names && super.contains(file)
     }
-
-    /** `SAP_CX_my__property_name` becomes `my_property.name`, the way the platform un-escapes environment variables. */
-    private fun String.asPropertyKey() = replace("__", "##")
-        .replace("_", ".")
-        .replace("##", "_")
 
     companion object {
         private val CACHE_KEY = Key.create<CachedValue<CxPropertyModel>>("sap.commerce.toolset.properties.meta")

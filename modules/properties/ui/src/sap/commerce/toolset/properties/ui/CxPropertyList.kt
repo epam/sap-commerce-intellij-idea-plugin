@@ -132,8 +132,8 @@ internal class CxPropertyList(
         this.addMouseMotionListener(parentDisposable, mouseHandler)
         cellRenderer = CxPropertyRenderer()
 
-        // JList never consults the renderer for tooltips, so the manager has to be told about the
-        // list itself - `getToolTipText` below answers for whichever row is under the cursor.
+        // The tooltip depends on the counterpart rather than on the renderer's labels, so it is composed
+        // per row in `getToolTipText` below, and the manager has to be told about the list itself.
         ToolTipManager.sharedInstance().registerComponent(this)
     }
 
