@@ -18,6 +18,7 @@
 
 package sap.commerce.toolset.properties.codeInspection.fix
 
+import com.intellij.codeInsight.intention.preview.IntentionPreviewUtils
 import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.ProblemDescriptor
 import com.intellij.lang.properties.psi.Property
@@ -41,6 +42,7 @@ class CxClearPropertyValueFix : LocalQuickFix {
 
         property.setValue("")
 
-        CxPropertyCollector.getInstance(project).resetCache()
+        // A preview runs against a copy, while the cache belongs to the real project.
+        if (!IntentionPreviewUtils.isIntentionPreviewActive()) CxPropertyCollector.getInstance(project).resetCache()
     }
 }
