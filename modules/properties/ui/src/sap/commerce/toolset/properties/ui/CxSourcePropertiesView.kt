@@ -35,8 +35,8 @@ import com.intellij.ui.dsl.builder.panel
 import com.intellij.util.asSafely
 import com.intellij.util.ui.JBUI
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import sap.commerce.toolset.HybrisIcons
@@ -74,8 +74,10 @@ internal class CxSourcePropertiesView(private val project: Project) : Disposable
 
     private val showData = AtomicBooleanProperty(false)
 
-    private val job = SupervisorJob()
-    private val viewScope = CoroutineScope(Dispatchers.Default + job)
+    private val viewScope = CxPropertiesViewScopeService.getInstance(project).childScope()
+
+    /** The redraw a remote event asked for; a newer event supersedes it rather than racing it to the EDT. */
+    private var redrawJob: Job? = null
 
     private val listModel = CollectionListModel<CxPropertyPresentation>()
     private val propertyList = CxPropertyList(
@@ -95,6 +97,7 @@ internal class CxSourcePropertiesView(private val project: Project) : Disposable
     private lateinit var titleLabel: JLabel
 
     private var rows: List<CxPropertyPresentation> = emptyList()
+    @Volatile
     private var currentSelection: CxSourceSelection? = null
 
     init {
@@ -103,7 +106,8 @@ internal class CxSourcePropertiesView(private val project: Project) : Disposable
             override fun onPropertiesStateChanged(remoteConnection: HacConnectionSettingsState) {
                 val selection = currentSelection ?: return
 
-                viewScope.launch { render(selection) }
+                redrawJob?.cancel()
+                redrawJob = viewScope.launch { render(selection) }
             }
         })
     }
@@ -167,8 +171,14 @@ internal class CxSourcePropertiesView(private val project: Project) : Disposable
         }
     }
 
+    /** Called once another node is selected, so remote events stop redrawing a view nobody is looking at. */
+    fun forget() {
+        currentSelection = null
+        redrawJob?.cancel()
+    }
+
     override fun dispose() {
-        job.cancel()
+        viewScope.cancel()
         lazyViewPanel.drop()
     }
 
@@ -230,17 +240,19 @@ internal class CxSourcePropertiesView(private val project: Project) : Disposable
         ?.associate { it.key to it.value }
         ?: emptyMap()
 
-    private fun titleFor(selection: CxSourceSelection, chain: CxPropertyModel, source: CxPropertySource?) = when {
-        selection is CxSourceSelection.Project -> "Properties declared by ${chain.sources.size} file(s) of this project"
-        source == null -> "${(selection as CxSourceSelection.Extension).name} has no project.properties"
-        !source.active -> "${source.presentableName} — not listed in localextensions.xml, so the running system never reads it"
-        else -> "Properties declared by ${source.presentableName}"
+    private fun titleFor(selection: CxSourceSelection, chain: CxPropertyModel, source: CxPropertySource?) = when (selection) {
+        is CxSourceSelection.Project -> "Properties declared by ${chain.sources.size} file(s) of this project"
+        is CxSourceSelection.Extension -> when {
+            source == null -> "${selection.name} has no project.properties"
+            !source.active -> "${source.presentableName} — not listed in localextensions.xml, so the running system never reads it"
+            else -> "Properties declared by ${source.presentableName}"
+        }
     }
 
-    private fun emptyTextFor(selection: CxSourceSelection, source: CxPropertySource?) = when {
-        selection is CxSourceSelection.Project -> "This project declares no properties"
-        source == null -> "${(selection as CxSourceSelection.Extension).name} has no project.properties file"
-        else -> "${source.presentableName} declares no properties"
+    private fun emptyTextFor(selection: CxSourceSelection, source: CxPropertySource?) = when (selection) {
+        is CxSourceSelection.Project -> "This project declares no properties"
+        is CxSourceSelection.Extension -> if (source == null) "${selection.name} has no project.properties file"
+        else "${source.presentableName} declares no properties"
     }
 
     /**

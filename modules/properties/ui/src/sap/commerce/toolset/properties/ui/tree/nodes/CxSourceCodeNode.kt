@@ -53,9 +53,9 @@ class CxSourceCodeNode(project: Project) : CxPropertiesNode(
     }
 
     /** Extensions arranged under their module group path, the deepest group last. */
-    private fun groupTree(): GroupTree {
+    private fun groupTree(): CxSourceGroupTree {
         val moduleMapping = project.ySettings.module2extensionMapping
-        val root = GroupTree()
+        val root = CxSourceGroupTree()
 
         ModuleManager.getInstance(project).modules
             .forEach { module ->
@@ -70,7 +70,7 @@ class CxSourceCodeNode(project: Project) : CxPropertiesNode(
         return root
     }
 
-    private fun GroupTree.toNodes(inheritedIcon: Icon?): Map<String, CxPropertiesNode> {
+    private fun CxSourceGroupTree.toNodes(inheritedIcon: Icon?): Map<String, CxPropertiesNode> {
         // Only the root carries no icon yet, and only there do the well-known groups have an order worth keeping.
         val topLevel = inheritedIcon == null
         val groups = subGroups.entries
@@ -90,7 +90,8 @@ class CxSourceCodeNode(project: Project) : CxPropertiesNode(
             .sortedBy { it.key }
             .map { (extension, type) -> CxSourceExtensionNode(project, extension, type) }
 
-        return (groups + extensions).associateBy { it.name }
+        // A group and an extension may share a name at one level - `platform` under `Hybris` - so their keys are kept apart.
+        return groups.associateBy { "group:${it.name}" } + extensions.associateBy { "extension:${it.name}" }
     }
 
     /**
@@ -127,20 +128,6 @@ class CxSourceCodeNode(project: Project) : CxPropertiesNode(
     private fun outermost(group: String) = ApplicationSettings.toIdeaGroup(group)
         ?.firstOrNull()
         ?: group
-
-    /** A group path and the extensions sitting at each level of it. */
-    private class GroupTree {
-        val subGroups = linkedMapOf<String, GroupTree>()
-        val extensions = linkedMapOf<String, ModuleDescriptorType>()
-
-        fun put(groupPath: List<String>, extension: String, type: ModuleDescriptorType) {
-            val target = groupPath.fold(this) { tree, group -> tree.subGroups.getOrPut(group) { GroupTree() } }
-
-            target.extensions[extension] = type
-        }
-
-        fun extensionCount(): Int = extensions.size + subGroups.values.sumOf { it.extensionCount() }
-    }
 
     companion object {
         private const val PROJECT_KEY = "project"

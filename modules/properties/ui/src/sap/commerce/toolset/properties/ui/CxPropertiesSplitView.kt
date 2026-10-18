@@ -66,7 +66,8 @@ class CxPropertiesSplitView(private val project: Project) : OnePixelSplitter(fal
     internal val tree = CxPropertiesTree(project)
     private val remotePropertyStateView by lazy { CxRemotePropertyStateView(project).also { Disposer.register(this, it) } }
     private val customPropertyTemplatesView by lazy { CxCustomPropertyTemplatesView(project).also { Disposer.register(this, it) } }
-    private val sourcePropertiesView by lazy { CxSourcePropertiesView(project).also { Disposer.register(this, it) } }
+    private val sourcePropertiesViewDelegate = lazy { CxSourcePropertiesView(project).also { Disposer.register(this, it) } }
+    private val sourcePropertiesView by sourcePropertiesViewDelegate
     private val nothingSelectedPanel = panel {
         row {
             label(i18n("empty.text.nothing.selected"))
@@ -211,9 +212,11 @@ class CxPropertiesSplitView(private val project: Project) : OnePixelSplitter(fal
         updateSecondComponent(tree.selectionPath?.pathData(CxPropertiesNode::class))
     }
 
-
     private fun updateSecondComponent(node: CxPropertiesNode?, beforeUpdate: () -> Unit = {}) {
         renderJob?.cancel()
+        if (node !is CxSourceProjectNode && node !is CxSourceExtensionNode && sourcePropertiesViewDelegate.isInitialized()) {
+            sourcePropertiesView.forget()
+        }
         renderJob = coroutineScope.launch {
             if (project.isDisposed) return@launch
 

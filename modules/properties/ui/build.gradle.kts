@@ -42,6 +42,8 @@ dependencies {
     implementation(project(":exec-core"))
     implementation(project(":hac-exec"))
 
+    testImplementation(kotlin("test"))
+
     intellijPlatform {
         intellijIdea(properties("intellij.version")) {
             useInstaller = true
