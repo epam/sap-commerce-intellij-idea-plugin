@@ -19,6 +19,7 @@
 package sap.commerce.toolset.properties.codeInsight.lookup
 
 import com.intellij.codeInsight.lookup.LookupElementBuilder
+import com.intellij.openapi.util.text.StringUtil
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.properties.meta.CxProperty
 import sap.commerce.toolset.properties.meta.CxPropertyModel
@@ -33,7 +34,8 @@ object CxPropertyLookupElementFactory {
      */
     fun build(property: CxProperty, chain: CxPropertyModel) = LookupElementBuilder.create(property.key)
         .withTypeText(property.declaration?.source?.presentableName, true)
-        .withTailText(chain.resolve(property.key)?.let { " = $it" }, true)
+        // A value may run over many lines or many characters; the popup only has room for a glimpse of it.
+        .withTailText(chain.resolve(property.key)?.let { " = ${StringUtil.shortenTextWithEllipsis(it.replace('\n', ' '), TAIL_MAX_LENGTH, 0)}" }, true)
         .withIcon(
             when {
                 CxPropertyRule.of(property.key)?.severity == CxPropertyRuleSeverity.ERROR -> HybrisIcons.Property.IGNORED
@@ -55,4 +57,6 @@ object CxPropertyLookupElementFactory {
                 CxPropertyRuleSeverity.WARNING -> HybrisIcons.Property.SHADOWED
             }
         )
+
+    private const val TAIL_MAX_LENGTH = 60
 }

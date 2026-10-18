@@ -18,6 +18,8 @@
 
 package sap.commerce.toolset.properties.meta
 
+import com.intellij.openapi.vfs.VirtualFile
+
 /**
  * Immutable snapshot of the local SAP Commerce property chain.
  *
@@ -39,6 +41,9 @@ class CxPropertyModel private constructor(
     operator fun get(key: String) = properties[key]
 
     operator fun contains(key: String) = properties.containsKey(key)
+
+    /** Whether [file] is one of the files this chain was read from - only those get the chain's editor support. */
+    fun isReadFrom(file: VirtualFile?) = file != null && sources.any { it.file == file }
 
     /** Value the platform would apply for the [key], with all placeholders expanded. */
     fun resolve(key: String): String? = properties[key]
@@ -64,6 +69,19 @@ class CxPropertyModel private constructor(
             CxResolvedProperty.of(property, value)?.let { key to it }
         }
         .toMap(LinkedHashMap())
+
+    /**
+     * Whether expanding [from] ever reaches [target] again - a reference cycle, which the platform gives up expanding.
+     * Undeclared keys and cycles which do not pass through [target] end the walk.
+     */
+    fun leadsBackTo(from: String, target: String, visited: Set<String> = emptySet()): Boolean {
+        if (from == target) return true
+        if (from in visited) return false
+
+        val rawValue = properties[from]?.rawValue ?: return false
+
+        return CxPropertyPlaceholder.of(rawValue).any { leadsBackTo(it.key, target, visited + from) }
+    }
 
     /** Declarations contributed by the [source], ordered by key. */
     fun declarationsIn(source: CxPropertySource) = properties.values

@@ -54,6 +54,16 @@ class CxShadowedPropertyInspection : LocalInspectionTool() {
             val chain = CxPropertyCollector.getInstance(file.project).collect()
             val source = chain.sources.find { it.file == virtualFile } ?: return
 
+            if (!source.active) {
+                // Every line would carry the same warning, so the file says it once.
+                holder.registerProblem(
+                    file,
+                    "${source.presentableName} belongs to an extension localextensions.xml does not list, " +
+                        "so the running system never reads any value declared here",
+                )
+                return
+            }
+
             propertiesFile.properties.forEach { property ->
                 val key = property.key ?: return@forEach
                 val collected = chain[key] ?: return@forEach
@@ -73,10 +83,6 @@ class CxShadowedPropertyInspection : LocalInspectionTool() {
         val winner = property.declaration
 
         return when {
-            // Nothing active declares it at all, so the value only looks like it is configured.
-            !source.active -> "'${property.key}' is declared in an extension localextensions.xml does not list, " +
-                "so the running system never reads this value"
-
             winner == null || winner.source == source -> null
             // A different tier winning is the chain working as designed; the same tier is the load order deciding
             // something nobody wrote down.

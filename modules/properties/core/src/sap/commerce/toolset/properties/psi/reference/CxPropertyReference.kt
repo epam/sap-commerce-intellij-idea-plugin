@@ -21,6 +21,7 @@ package sap.commerce.toolset.properties.psi.reference
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceBase
+import com.intellij.psi.impl.source.resolve.ResolveCache
 import sap.commerce.toolset.properties.meta.CxPropertyCollector
 import sap.commerce.toolset.properties.psi.findPsi
 
@@ -37,7 +38,10 @@ class CxPropertyReference(
     private val key: String,
 ) : PsiReferenceBase<PsiElement>(element, rangeInElement, true) {
 
-    override fun resolve() = CxPropertyCollector.getInstance(element.project)
+    // Resolution looks up the chain and the target file, so it is cached until the PSI changes.
+    override fun resolve(): PsiElement? = ResolveCache.getInstance(element.project).resolveWithCaching(this, RESOLVER, false, false)
+
+    private fun resolveUncached() = CxPropertyCollector.getInstance(element.project)
         .collect()[key]
         ?.declaration
         ?.findPsi(element.project)
@@ -47,4 +51,8 @@ class CxPropertyReference(
         .collect()
         .keys
         .toTypedArray()
+
+    companion object {
+        private val RESOLVER = ResolveCache.AbstractResolver<CxPropertyReference, PsiElement> { reference, _ -> reference.resolveUncached() }
+    }
 }

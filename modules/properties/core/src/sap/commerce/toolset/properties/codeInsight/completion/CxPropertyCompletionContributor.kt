@@ -47,7 +47,7 @@ class CxPropertyCompletionContributor : CompletionContributor() {
         if (project.isNotHybrisProject) return
 
         val file = parameters.originalFile.virtualFile ?: return
-        if (CxPropertyCollector.getInstance(project).collect().sources.none { it.file == file }) return
+        if (!CxPropertyCollector.getInstance(project).collect().isReadFrom(file)) return
 
         super.fillCompletionVariants(parameters, result)
     }
