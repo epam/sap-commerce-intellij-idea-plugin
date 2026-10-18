@@ -21,7 +21,7 @@ package sap.commerce.toolset.properties.settings.state
 import com.intellij.util.xmlb.annotations.OptionTag
 import com.intellij.util.xmlb.annotations.Tag
 
-@Tag("Settings")
+@Tag("CxPropertyViewSettings")
 data class CxPropertyViewSettingsState(
     @JvmField @OptionTag val viewMode: CxPropertyViewMode = CxPropertyViewMode.ALL,
 )

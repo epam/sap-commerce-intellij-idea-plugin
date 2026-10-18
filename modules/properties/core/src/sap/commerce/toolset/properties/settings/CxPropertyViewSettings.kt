@@ -27,7 +27,6 @@ import sap.commerce.toolset.properties.settings.state.CxPropertyViewSettingsStat
 
 @State(
     name = "[y] SAP CX Properties View settings",
-    category = SettingsCategory.PLUGINS,
     storages = [Storage(value = HybrisConstants.STORAGE_HYBRIS_DEVELOPER_SPECIFIC_PROJECT_SETTINGS, roamingType = RoamingType.LOCAL)]
 )
 @Service(Service.Level.PROJECT)
@@ -39,11 +38,8 @@ class CxPropertyViewSettings(private val project: Project) : SerializablePersist
         get() = state.viewMode
         set(value) {
             updateState { it.copy(viewMode = value) }
+            project.messageBus.syncPublisher(CxPropertyViewSettingsListener.TOPIC).onViewModeChanged(value)
         }
-
-    fun fireViewModeChanged(viewMode: CxPropertyViewMode) = project.messageBus
-        .syncPublisher(CxPropertyViewSettingsListener.TOPIC)
-        .onViewModeChanged(viewMode)
 
     companion object {
         fun getInstance(project: Project): CxPropertyViewSettings = project.service()

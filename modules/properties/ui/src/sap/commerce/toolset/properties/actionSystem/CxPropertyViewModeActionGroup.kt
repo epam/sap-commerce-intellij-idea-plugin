@@ -24,6 +24,7 @@ import com.intellij.openapi.actionSystem.DefaultActionGroup
 import com.intellij.openapi.actionSystem.ToggleAction
 import com.intellij.openapi.project.DumbAware
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.isHybrisProject
 import sap.commerce.toolset.properties.cxPropertyViewSettings
 import sap.commerce.toolset.properties.settings.state.CxPropertyViewMode
 
@@ -51,13 +52,16 @@ private class CxPropertyViewModeToggleAction(private val viewMode: CxPropertyVie
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
+    override fun update(e: AnActionEvent) {
+        super.update(e)
+        e.presentation.isEnabledAndVisible = e.isHybrisProject
+    }
+
     override fun isSelected(e: AnActionEvent) = e.cxPropertyViewSettings?.viewMode == viewMode
 
     override fun setSelected(e: AnActionEvent, state: Boolean) {
         if (!state) return
 
-        val settings = e.cxPropertyViewSettings ?: return
-        settings.viewMode = viewMode
-        settings.fireViewModeChanged(viewMode)
+        e.cxPropertyViewSettings?.viewMode = viewMode
     }
 }

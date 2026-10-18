@@ -46,6 +46,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import sap.commerce.toolset.actionSystem.HybrisActionPlaces
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
 import sap.commerce.toolset.properties.CxPropertyConstants
 import sap.commerce.toolset.properties.CxPropertyKey
@@ -108,6 +109,10 @@ class CxRemotePropertyStateView(private val project: Project) : Disposable {
 
     /** Rows of the current report, before the client side filter is applied. Empty in [CxPropertyViewMode.ALL]. */
     private var reportRows: List<CxPropertyPresentation> = emptyList()
+
+    /** The connection a full fetch was already asked of for the current report, so a failed or partial one is not retried forever. */
+    @Volatile
+    private var fullFetchRequestedFor: String? = null
 
     private val viewMode
         get() = CxPropertyViewSettings.getInstance(project).viewMode
@@ -235,6 +240,7 @@ class CxRemotePropertyStateView(private val project: Project) : Disposable {
                 val connection = currentConnection.takeIf { ::currentConnection.isInitialized } ?: return
                 val page = statePage ?: return
 
+                fullFetchRequestedFor = null
                 viewScope.launch { applyViewMode(connection, page) }
             }
         })
@@ -333,18 +339,33 @@ class CxRemotePropertyStateView(private val project: Project) : Disposable {
             return
         }
 
+        val service = CxRemotePropertyStateService.getInstance(project)
+
         if (statePage.hasMore || statePage.keyFilter.isNotEmpty() || statePage.valueFilter.isNotEmpty()) {
+            // The broadcast that starts a fetch still carries the old page - the report waits for the one that ends it.
+            if (service.isFetching(connection)) return
+
+            if (fullFetchRequestedFor == connection.uuid) {
+                // The full fetch has already ended without everything in it; asking again would only loop.
+                withContext(Dispatchers.EDT) {
+                    setFetching(false)
+                    statusLabel.text = "Unable to load every property of the instance"
+                }
+                return
+            }
+
+            fullFetchRequestedFor = connection.uuid
             withContext(Dispatchers.EDT) {
                 keyFilterField.text = ""
                 valueFilterField.text = ""
                 setFetching(true)
             }
-            CxRemotePropertyStateService.getInstance(project).resetAndFetch(
-                server = connection,
-                pageSize = maxOf(statePage.totalItems, CxPropertyConstants.DEFAULT_PAGE_SIZE),
-            )
+            // The script pages from offset 0, so an unbounded page is every property - totalItems may be a filtered count.
+            service.resetAndFetch(server = connection, pageSize = Int.MAX_VALUE)
             return
         }
+
+        fullFetchRequestedFor = null
 
         val chain = smartReadAction(project) { CxPropertyCollector.getInstance(project).collect() }
         val rows = when (mode) {
@@ -550,7 +571,7 @@ class CxRemotePropertyStateView(private val project: Project) : Disposable {
             ?: return JPanel()
 
         return ActionManager.getInstance()
-            .createActionToolbar("Sap.Cx.PropertiesViewOptions", DefaultActionGroup(group), true)
+            .createActionToolbar(HybrisActionPlaces.PROPERTIES_VIEW_OPTIONS, DefaultActionGroup(group), true)
             .also { it.targetComponent = propertyList }
             .component
     }

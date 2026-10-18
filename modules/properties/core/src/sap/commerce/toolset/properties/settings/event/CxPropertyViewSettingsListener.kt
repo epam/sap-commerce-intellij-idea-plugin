@@ -26,6 +26,7 @@ interface CxPropertyViewSettingsListener {
     fun onViewModeChanged(viewMode: CxPropertyViewMode) = Unit
 
     companion object {
-        val TOPIC = Topic(CxPropertyViewSettingsListener::class.java)
+        @Topic.ProjectLevel
+        val TOPIC = Topic(CxPropertyViewSettingsListener::class.java, Topic.BroadcastDirection.NONE)
     }
 }
