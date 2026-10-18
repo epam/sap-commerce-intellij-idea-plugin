@@ -170,8 +170,8 @@ internal class CxPropertyList(
     }
 
     /** Checks every row currently listed; rows filtered out are left alone. */
-    fun checkAll() {
-        checked.addAll(model.items.map { it.key })
+    fun checkAll(except: Set<String> = emptySet()) {
+        checked.addAll(model.items.map { it.key }.filterNot { it in except })
 
         onSelectionChanged(checkedKeys)
         repaint()
