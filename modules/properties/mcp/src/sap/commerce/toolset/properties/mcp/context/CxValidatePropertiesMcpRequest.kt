@@ -18,10 +18,8 @@
 
 package sap.commerce.toolset.properties.mcp.context
 
-import sap.commerce.toolset.properties.meta.CxPropertyRuleSeverity
-
 data class CxValidatePropertiesMcpRequest(
-    val severity: CxPropertyRuleSeverity?,
+    val severity: String?,
     val extension: String?,
     val limit: Int,
 )

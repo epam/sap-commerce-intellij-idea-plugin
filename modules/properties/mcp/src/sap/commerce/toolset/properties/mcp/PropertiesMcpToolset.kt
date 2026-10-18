@@ -30,7 +30,6 @@ import sap.commerce.toolset.properties.mcp.context.CxListRemotePropertiesMcpRequ
 import sap.commerce.toolset.properties.mcp.context.CxPropertyReportMcpRequest
 import sap.commerce.toolset.properties.mcp.context.CxValidatePropertiesMcpRequest
 import sap.commerce.toolset.properties.mcp.context.CxWriteRemotePropertyMcpRequest
-import sap.commerce.toolset.properties.meta.CxPropertyRuleSeverity
 
 class PropertiesMcpToolset : McpToolset {
 
@@ -56,7 +55,7 @@ class PropertiesMcpToolset : McpToolset {
         outputFormat: String = McpConstants.Formats.JSON,
     ): String {
         val mapper = resolveMapper(outputFormat)
-        val request = CxListRemotePropertiesMcpRequest(connectionName, keyFilter, valueFilter, positiveLimit(limit))
+        val request = CxListRemotePropertiesMcpRequest(connectionName, keyFilter, valueFilter, limit)
         val result = PropertiesMcpService.getInstance().listRemoteProperties(request)
         return mapper.map(result)
     }
@@ -155,7 +154,7 @@ class PropertiesMcpToolset : McpToolset {
         outputFormat: String = McpConstants.Formats.JSON,
     ): String {
         val mapper = resolveMapper(outputFormat)
-        val request = CxComparePropertiesMcpRequest(connectionName, keyFilter, positiveLimit(limit))
+        val request = CxComparePropertiesMcpRequest(connectionName, keyFilter, limit)
         val result = PropertiesMcpService.getInstance().compareProperties(request)
         return mapper.map(result)
     }
@@ -180,12 +179,9 @@ class PropertiesMcpToolset : McpToolset {
     ): String {
         val mapper = resolveMapper(outputFormat)
         val request = CxValidatePropertiesMcpRequest(
-            severity = severity?.trim()?.takeIf { it.isNotEmpty() }?.let { requested ->
-                CxPropertyRuleSeverity.entries.find { it.title.equals(requested, ignoreCase = true) || it.name.equals(requested, ignoreCase = true) }
-                    ?: error("Invalid severity '$severity'. Valid values: ${CxPropertyRuleSeverity.entries.joinToString { it.title }}")
-            },
+            severity = severity,
             extension = extension?.trim()?.takeIf { it.isNotEmpty() },
-            limit = positiveLimit(limit),
+            limit = limit,
         )
         val result = PropertiesMcpService.getInstance().validateProperties(request)
         return mapper.map(result)
@@ -206,7 +202,4 @@ class PropertiesMcpToolset : McpToolset {
         val result = PropertiesMcpService.getInstance().listRules()
         return mapper.map(result)
     }
-
-    private fun positiveLimit(limit: Int) = limit.takeIf { it > 0 }
-        ?: error("'limit' must be greater than 0.")
 }

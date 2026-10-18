@@ -26,4 +26,10 @@ enum class CxPropertyRuleSeverity(val title: String) {
 
     /** The declaration is at best ignored and at worst breaks a build, but it harms nothing by being read. */
     WARNING("warning"),
+    ;
+
+    companion object {
+        /** The severity named by its [title] or its name, whichever case it is written in. */
+        fun of(value: String) = entries.find { it.title.equals(value, true) || it.name.equals(value, true) }
+    }
 }
