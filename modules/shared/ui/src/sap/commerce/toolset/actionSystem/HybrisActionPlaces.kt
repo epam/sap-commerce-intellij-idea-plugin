@@ -21,4 +21,6 @@ package sap.commerce.toolset.actionSystem
 object HybrisActionPlaces {
     @Deprecated("review this usage, migrate to LoggersConstants")
     const val LOGGERS_TOOLBAR = "SAP.Loggers.View"
+    const val PROPERTIES_TOOLBAR = "SAP.Properties.View"
+    const val PROPERTIES_VIEW_OPTIONS = "Sap.Cx.PropertiesViewOptions"
 }
