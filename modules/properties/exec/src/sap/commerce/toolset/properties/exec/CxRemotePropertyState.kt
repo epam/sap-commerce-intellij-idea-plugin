@@ -18,19 +18,24 @@
 
 package sap.commerce.toolset.properties.exec
 
+/**
+ * The accumulated snapshot of one connection.
+ *
+ * Written by the fetch coroutines and read by the UI, so the page is published through a volatile field and every
+ * write that derives the next page from the current one holds the lock.
+ */
 class CxRemotePropertyState(initial: CxRemotePropertyStatePage? = null) {
+    @Volatile
     private var statePage = initial
-    private var initialized = initial != null
 
-    fun initialized(): Boolean = initialized
+    fun initialized(): Boolean = statePage != null
 
-    fun get(): CxRemotePropertyStatePage? = if (initialized) statePage else null
+    fun get(): CxRemotePropertyStatePage? = statePage
 
     /** Replaces the accumulated list. Used for the first page of a fresh filter. */
     fun replace(newState: CxRemotePropertyStatePage) {
         synchronized(this) {
-            statePage = newState.copy(properties = newState.properties.toList())
-            initialized = true
+            statePage = newState
         }
     }
 
@@ -51,16 +56,14 @@ class CxRemotePropertyState(initial: CxRemotePropertyStatePage? = null) {
                 val merged = current.properties + newState.properties.filter { it.key !in seenKeys }
                 newState.copy(properties = merged.sortedBy { it.key })
             } else {
-                newState.copy(properties = newState.properties.toList())
+                newState
             }
-            initialized = true
         }
     }
 
     fun clear() {
         synchronized(this) {
             statePage = null
-            initialized = false
         }
     }
 }
