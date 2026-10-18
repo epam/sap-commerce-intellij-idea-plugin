@@ -205,9 +205,7 @@ class CxPropertiesSplitView(private val project: Project) : OnePixelSplitter(fal
         rebuildTree()
     }
 
-    private fun rebuildTree() = invokeLater {
-        if (project.isDisposed) return@invokeLater
-
+    private fun rebuildTree() = onEdt {
         updateTree()
         // Nodes survive a reload by key, so whatever is selected is re-rendered rather than left showing old values.
         updateSecondComponent(tree.selectionPath?.pathData(CxPropertiesNode::class))

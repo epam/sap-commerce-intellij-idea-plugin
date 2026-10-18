@@ -32,6 +32,7 @@ import com.intellij.ui.dsl.builder.Align
 import com.intellij.ui.dsl.builder.AlignX
 import com.intellij.ui.dsl.builder.RowLayout
 import com.intellij.ui.dsl.builder.panel
+import com.intellij.util.asSafely
 import com.intellij.util.ui.JBUI
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -172,10 +173,10 @@ internal class CxSourcePropertiesView(private val project: Project) : Disposable
     }
 
     suspend fun render(selection: CxSourceSelection): JComponent {
-        val viewPanel = lazyViewPanel.value
+        val viewPanel = withContext(Dispatchers.EDT) { lazyViewPanel.value }
 
         val chain = smartReadAction(project) { CxPropertyCollector.getInstance(project).collect() }
-        val source = (selection as? CxSourceSelection.Extension)?.let { sourceOf(it.name, chain) }
+        val source = selection.asSafely<CxSourceSelection.Extension>()?.let { sourceOf(it.name, chain) }
         val properties = when (selection) {
             is CxSourceSelection.Project -> chain.resolveAll()
                 .map { (key, value) -> CxPropertyPresentation(key, value) }

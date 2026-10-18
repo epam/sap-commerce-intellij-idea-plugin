@@ -19,12 +19,14 @@
 package sap.commerce.toolset.properties.actionSystem
 
 import com.intellij.openapi.actionSystem.ActionUpdateThread
-import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.project.DumbAwareAction
 import com.intellij.ui.AnimatedIcon
+import com.intellij.util.asSafely
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
 import sap.commerce.toolset.ifNotFromSearchPopup
+import sap.commerce.toolset.isHybrisProject
 import sap.commerce.toolset.properties.CxRemotePropertyStateService
 import sap.commerce.toolset.properties.meta.CxPropertyCollector
 import sap.commerce.toolset.properties.selectedNodes
@@ -39,7 +41,7 @@ import sap.commerce.toolset.properties.ui.tree.nodes.CxSourceProjectNode
  * Nothing else in the tree has a source to go back to, so the action stays disabled there rather than quietly doing
  * something to a node the user was not looking at.
  */
-class CxFetchPropertiesAction : AnAction() {
+class CxFetchPropertiesAction : DumbAwareAction() {
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     override fun actionPerformed(e: AnActionEvent) = e.ifNotFromSearchPopup {
@@ -54,6 +56,8 @@ class CxFetchPropertiesAction : AnAction() {
 
     override fun update(e: AnActionEvent) = e.ifNotFromSearchPopup {
         val project = e.project ?: return@ifNotFromSearchPopup
+        e.presentation.isVisible = e.isHybrisProject
+        if (!e.presentation.isVisible) return@ifNotFromSearchPopup
 
         when (val target = e.target()) {
             is Target.Remote -> {
@@ -92,14 +96,14 @@ class CxFetchPropertiesAction : AnAction() {
         val nodes = selectedNodes()?.takeIf { it.isNotEmpty() } ?: return null
 
         nodes.singleOrNull()
-            ?.let { it as? CxRemotePropertyStateNode }
+            ?.asSafely<CxRemotePropertyStateNode>()
             ?.let { return Target.Remote(it.connection) }
 
         // The whole chain is what the Project node shows, so anything selected beside it is already covered by it.
         if (nodes.any { it is CxSourceProjectNode }) return Target.Chain(null)
 
         return nodes
-            .mapNotNull { (it as? CxSourceExtensionNode)?.extension }
+            .mapNotNull { it.asSafely<CxSourceExtensionNode>()?.extension }
             .takeIf { it.size == nodes.size }
             ?.let { Target.Chain(it) }
     }
