@@ -40,6 +40,11 @@ class CxCustomPropertyTemplatesSettings :
             updateState { it.copy(templates = value) }
         }
 
+    /** Derives the next templates from the current ones atomically, so concurrent changes cannot overwrite each other. */
+    fun updateTemplates(transform: (List<CxCustomPropertyTemplateState>) -> List<CxCustomPropertyTemplateState>) {
+        updateState { it.copy(templates = transform(it.templates)) }
+    }
+
     override fun getModificationCount() = stateModificationCount
 
     companion object {
