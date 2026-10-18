@@ -19,11 +19,13 @@
 package sap.commerce.toolset.properties.actionSystem
 
 import com.intellij.openapi.actionSystem.ActionUpdateThread
-import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.project.DumbAwareAction
+import com.intellij.util.asSafely
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import sap.commerce.toolset.ifNotFromSearchPopup
+import sap.commerce.toolset.isHybrisProject
 import sap.commerce.toolset.properties.selectedNode
 import sap.commerce.toolset.properties.ui.CxCompareInstancesDialog
 import sap.commerce.toolset.properties.ui.tree.nodes.CxRemotePropertyStateNode
@@ -34,7 +36,7 @@ import sap.commerce.toolset.properties.ui.tree.nodes.CxRemotePropertyStateNode
  * Needs a second instance to compare against, so it is only offered when there is one - a single connection has
  * nothing to be held against but the project, which the view already does.
  */
-class CxCompareRemotePropertiesAction : AnAction() {
+class CxCompareRemotePropertiesAction : DumbAwareAction() {
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
@@ -55,9 +57,10 @@ class CxCompareRemotePropertiesAction : AnAction() {
 
         e.presentation.text = "Compare with Another Instance..."
         e.presentation.icon = HybrisIcons.Property.COMPARE
-        e.presentation.isEnabledAndVisible = connection != null
+        e.presentation.isEnabledAndVisible = e.isHybrisProject
+            && connection != null
             && HacExecConnectionService.getInstance(project).connections.any { it.uuid != connection.uuid }
     }
 
-    private fun AnActionEvent.connection() = (selectedNode() as? CxRemotePropertyStateNode)?.connection
+    private fun AnActionEvent.connection() = selectedNode().asSafely<CxRemotePropertyStateNode>()?.connection
 }
