@@ -187,7 +187,12 @@ class CxCustomPropertyTemplateDialog(
     }
 
     /** Replaces the template's properties with the ones the user kept. */
-    fun applySelection() {
+    override fun doOKAction() {
+        applySelection()
+        super.doOKAction()
+    }
+
+    private fun applySelection() {
         if (!selecting) return
 
         context.mutable.properties.set(

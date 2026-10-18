@@ -34,6 +34,7 @@ import sap.commerce.toolset.properties.selectedNode
 import sap.commerce.toolset.properties.ui.CxCustomPropertyTemplateDialog
 import sap.commerce.toolset.properties.ui.PropertyTemplateDialogContext
 import sap.commerce.toolset.properties.ui.tree.nodes.CxCustomPropertyTemplateItemNode
+import sap.commerce.toolset.properties.ui.tree.nodes.CxPropertiesNode
 import sap.commerce.toolset.properties.ui.tree.nodes.CxRemotePropertyStateNode
 
 class CxCreateCustomPropertyTemplateAction : DumbAwareAction() {
@@ -46,6 +47,7 @@ class CxCreateCustomPropertyTemplateAction : DumbAwareAction() {
             // The accumulated state holds only the pages scrolled into view, so the instance is loaded in full first.
             is CxRemotePropertyStateNode -> CxRemotePropertyStateService.getInstance(project)
                 .fetchAll(selectedNode.connection) { page ->
+                    // The dialog opens in the default modality, not inside whatever the fetch resumed on.
                     invokeLater { createTemplate(project, selectedNode, page.properties) }
                 }
 
@@ -55,7 +57,7 @@ class CxCreateCustomPropertyTemplateAction : DumbAwareAction() {
         }
     }
 
-    private fun createTemplate(project: Project, selectedNode: Any, properties: Collection<CxPropertyPresentation>) {
+    private fun createTemplate(project: Project, selectedNode: CxPropertiesNode, properties: Collection<CxPropertyPresentation>) {
         if (properties.isEmpty()) return
 
         val templateService = CxCustomPropertyTemplateService.getInstance(project)
@@ -76,8 +78,6 @@ class CxCreateCustomPropertyTemplateAction : DumbAwareAction() {
         val dialog = CxCustomPropertyTemplateDialog(context)
 
         if (dialog.showAndGet()) {
-            dialog.applySelection()
-
             templateService.addTemplate(mutable.immutable())
             if (context.removeSourceTemplates.get() && selectedNode is CxCustomPropertyTemplateItemNode) {
                 templateService.deleteTemplates(listOf(selectedNode.uuid))
@@ -93,7 +93,7 @@ class CxCreateCustomPropertyTemplateAction : DumbAwareAction() {
         e.presentation.icon = HybrisIcons.Log.Action.SAVE_AS_TEMPLATE
     }
 
-    private fun templateName(node: Any): String = when (node) {
+    private fun templateName(node: CxPropertiesNode): String = when (node) {
         is CxRemotePropertyStateNode -> "Remote '${node.connection.shortenConnectionName}' | template"
         is CxCustomPropertyTemplateItemNode -> "Copy of '${node.name}'"
         else -> ""

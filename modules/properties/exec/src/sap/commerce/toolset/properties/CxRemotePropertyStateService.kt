@@ -141,15 +141,17 @@ class CxRemotePropertyStateService(
             return
         }
 
-        fetch(
-            server = server,
-            page = 1,
-            pageSize = maxOf(loaded?.totalItems ?: 0, CxPropertyConstants.DEFAULT_PAGE_SIZE),
-            keyFilter = "",
-            valueFilter = "",
-            append = false,
-            onLoaded = onLoaded,
-        )
+        // A request of its own: the accumulated view, its filter and the fetch it may have in flight are left alone.
+        coroutineScope.launch {
+            // The script pages from offset 0, so an unbounded page is every property - totalItems may be a filtered count.
+            val page = loadPage(server, 1, Int.MAX_VALUE, "", "")
+
+            page.getOrNull()
+                ?.let { withContext(Dispatchers.EDT) { onLoaded(it) } }
+                ?: notify(NotificationType.ERROR, "Failed to retrieve properties") {
+                    page.exceptionOrNull()?.message ?: "Unable to retrieve properties state."
+                }
+        }
     }
 
     private fun fetch(
@@ -159,53 +161,25 @@ class CxRemotePropertyStateService(
         keyFilter: String,
         valueFilter: String,
         append: Boolean,
-        onLoaded: ((CxRemotePropertyStatePage) -> Unit)? = null,
     ) {
         // A newer request supersedes the one still in flight, so a slow response for an outdated filter or page can
         // never land on top of the one the user is looking at now.
         fetchJobs.remove(server.uuid)?.cancel()
 
         val job = coroutineScope.launch(start = CoroutineStart.LAZY) {
-            val scriptContent = ExtensionsService.getInstance()
-                .findResource(CxPropertyConstants.EXTENSION_STATE_SCRIPT)
-                .replace(CxPropertyConstants.PAGE_PLACEHOLDER, page.coerceAtLeast(1).toString())
-                .replace(CxPropertyConstants.PAGE_SIZE_PLACEHOLDER, pageSize.coerceAtLeast(1).toString())
-                .replace(CxPropertyConstants.KEY_FILTER_PLACEHOLDER, CxGroovyStringLiteral.escape(keyFilter.trim()))
-                .replace(CxPropertyConstants.VALUE_FILTER_PLACEHOLDER, CxGroovyStringLiteral.escape(valueFilter.trim()))
-
-            val context = GroovyExecContext(
-                connection = server,
-                executionTitle = "Fetching Properties from SAP Commerce [${server.shortenConnectionName}]...",
-                content = scriptContent,
-                transactionMode = TransactionMode.ROLLBACK,
-                timeout = server.timeout,
-            )
-
-            val client = GroovyExecClient.getInstance(project)
-            val result = withBackgroundProgress(project, context.executionTitle, true) {
-                try {
-                    client.execute(context)
-                } catch (e: CancellationException) {
-                    throw e
-                } catch (e: Exception) {
-                    client.onError(context, e)
-                }
-            }
+            val newPage = loadPage(server, page, pageSize, keyFilter, valueFilter)
             ensureActive()
 
-            val newPage = result.result
-                ?.takeIf { !result.hasError }
-                ?.let(::parseProperties)
+            val loaded = newPage.getOrNull()
 
-            if (newPage == null) {
+            if (loaded == null) {
                 // What is already loaded stays on screen: a failed refresh or next page says nothing about it.
                 notify(NotificationType.ERROR, "Failed to retrieve properties") {
-                    result.errorMessage ?: "Unable to retrieve properties state."
+                    newPage.exceptionOrNull()?.message ?: "Unable to retrieve properties state."
                 }
             } else {
                 val state = state(server.uuid)
-                if (append) state.append(newPage) else state.replace(newPage)
-                state.get()?.let { onLoaded?.invoke(it) }
+                if (append) state.append(loaded) else state.replace(loaded)
                 // No success notification — the data lands in the panel's bottom toolbar
                 // ("Loaded N of M total") which is sufficient feedback. The fetch errors
                 // above still surface because failure is non-obvious.
@@ -217,6 +191,47 @@ class CxRemotePropertyStateService(
         job.invokeOnCompletion { if (fetchJobs.remove(server.uuid, job)) publishStateChanged(server) }
         publishStateChanged(server)
         job.start()
+    }
+
+    /** One page of [server]'s properties, or why it could not be read. */
+    private suspend fun loadPage(
+        server: HacConnectionSettingsState,
+        page: Int,
+        pageSize: Int,
+        keyFilter: String,
+        valueFilter: String,
+    ): Result<CxRemotePropertyStatePage> {
+        val scriptContent = ExtensionsService.getInstance()
+            .findResource(CxPropertyConstants.EXTENSION_STATE_SCRIPT)
+            .replace(CxPropertyConstants.PAGE_PLACEHOLDER, page.coerceAtLeast(1).toString())
+            .replace(CxPropertyConstants.PAGE_SIZE_PLACEHOLDER, pageSize.coerceAtLeast(1).toString())
+            .replace(CxPropertyConstants.KEY_FILTER_PLACEHOLDER, CxGroovyStringLiteral.escape(keyFilter.trim()))
+            .replace(CxPropertyConstants.VALUE_FILTER_PLACEHOLDER, CxGroovyStringLiteral.escape(valueFilter.trim()))
+
+        val context = GroovyExecContext(
+            connection = server,
+            executionTitle = "Fetching Properties from SAP Commerce [${server.shortenConnectionName}]...",
+            content = scriptContent,
+            transactionMode = TransactionMode.ROLLBACK,
+            timeout = server.timeout,
+        )
+
+        val client = GroovyExecClient.getInstance(project)
+        val result = withBackgroundProgress(project, context.executionTitle, true) {
+            try {
+                client.execute(context)
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                client.onError(context, e)
+            }
+        }
+
+        return result.result
+            ?.takeIf { !result.hasError }
+            ?.let(::parseProperties)
+            ?.let { Result.success(it) }
+            ?: Result.failure(IllegalStateException(result.errorMessage ?: "Unable to retrieve properties state."))
     }
 
     fun upsertProperty(key: String, value: String, callback: (Boolean) -> Unit = {}) {
