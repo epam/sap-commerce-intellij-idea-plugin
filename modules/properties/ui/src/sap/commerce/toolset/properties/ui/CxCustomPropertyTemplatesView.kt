@@ -25,7 +25,7 @@ import com.intellij.openapi.application.EDT
 import com.intellij.openapi.observable.properties.AtomicBooleanProperty
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogPanel
-import com.intellij.openapi.ui.Messages
+import com.intellij.openapi.ui.MessageDialogBuilder
 import com.intellij.openapi.ui.ValidationInfo
 import com.intellij.openapi.util.ClearableLazyValue
 import com.intellij.ui.components.JBScrollPane
@@ -40,6 +40,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.properties.custom.CxCustomPropertyTemplateService
+import sap.commerce.toolset.properties.CxPropertyKey
 import sap.commerce.toolset.properties.presentation.CxPropertyPresentation
 import sap.commerce.toolset.ui.actionButton
 import sap.commerce.toolset.ui.addDocumentListener
@@ -54,7 +55,6 @@ import javax.swing.ScrollPaneConstants
 class CxCustomPropertyTemplatesView(private val project: Project) : Disposable {
     private var templateUUID: String = ""
     private val showDataPanel = AtomicBooleanProperty(false)
-    private val canApply = AtomicBooleanProperty(false)
 
     private lateinit var dataScrollPane: JBScrollPane
     private lateinit var keyFilterField: JBTextField
@@ -62,6 +62,7 @@ class CxCustomPropertyTemplatesView(private val project: Project) : Disposable {
     private lateinit var addKeyField: JBTextField
     private lateinit var addValueField: JBTextField
 
+    @Volatile
     private var properties: List<CxPropertyPresentation> = emptyList()
     private var editingPropertyKey: String? = null
     private var editingPropertyValue: String = ""
@@ -111,8 +112,7 @@ class CxCustomPropertyTemplatesView(private val project: Project) : Disposable {
                             .component
 
                         button("Apply Property") {
-                            canApply.set(dPanel.validateAll().all { it.okEnabled })
-                            if (!canApply.get()) return@button
+                            if (!dPanel.validateAll().all { it.okEnabled }) return@button
 
                             CxCustomPropertyTemplateService.getInstance(project)
                                 .addProperty(templateUUID, addKeyField.text.trim(), addValueField.text)
@@ -145,11 +145,13 @@ class CxCustomPropertyTemplatesView(private val project: Project) : Disposable {
             editingPropertyKey = null
             editingPropertyValue = ""
         }
-        val viewPanel = lazyViewPanel.value
+        return withContext(Dispatchers.EDT) {
+            val viewPanel = lazyViewPanel.value
 
-        toggleView(showDataPanel)
-        withContext(Dispatchers.EDT) { renderData() }
-        return viewPanel
+            toggleView(showDataPanel)
+            renderData()
+            viewPanel
+        }
     }
 
     private fun refreshDataView() {
@@ -221,12 +223,9 @@ class CxCustomPropertyTemplatesView(private val project: Project) : Disposable {
 
                     actionButton(object : AnAction(null, "Delete property", HybrisIcons.Log.Action.DELETE) {
                         override fun actionPerformed(e: AnActionEvent) {
-                            val confirmed = Messages.showYesNoDialog(
-                                project,
-                                "Delete property '${property.key}' from this template?",
-                                "Delete Property",
-                                Messages.getQuestionIcon(),
-                            ) == Messages.YES
+                            val confirmed = MessageDialogBuilder
+                                .yesNo("Delete Property", "Delete property '${property.key}' from this template?")
+                                .ask(project)
                             if (!confirmed) return
 
                             if (editingPropertyKey == property.key) {
@@ -278,11 +277,7 @@ class CxCustomPropertyTemplatesView(private val project: Project) : Disposable {
         }
     }
 
-    private fun validatePropertyKey(value: String): ValidationInfo? = when {
-        value.isBlank() -> ValidationInfo("Property key is not allowed to be empty")
-        value.any(Char::isWhitespace) -> ValidationInfo("Property key cannot contain whitespace")
-        else -> null
-    }
+    private fun validatePropertyKey(value: String) = CxPropertyKey.validate(value)?.let { ValidationInfo(it) }
 
     private fun syncEditingValue(value: String) {
         editingPropertyValue = value

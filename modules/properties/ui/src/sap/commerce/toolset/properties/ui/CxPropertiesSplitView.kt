@@ -27,6 +27,7 @@ import com.intellij.ui.PopupHandler
 import com.intellij.ui.components.JBScrollPane
 import com.intellij.ui.dsl.builder.Align
 import com.intellij.ui.dsl.builder.panel
+import com.intellij.util.application
 import com.intellij.util.asSafely
 import kotlinx.coroutines.*
 import sap.commerce.toolset.hac.exec.HacExecConnectionService
@@ -62,8 +63,8 @@ class CxPropertiesSplitView(private val project: Project) : OnePixelSplitter(fal
         }.resizableRow()
     }
 
-    private var job = SupervisorJob()
-    private var coroutineScope = CoroutineScope(Dispatchers.Default + job)
+    private val coroutineScope = CxPropertiesViewScopeService.getInstance(project).coroutineScope
+    private var renderJob: Job? = null
 
     init {
         firstComponent = JBScrollPane(tree)
@@ -95,38 +96,38 @@ class CxPropertiesSplitView(private val project: Project) : OnePixelSplitter(fal
 
         with(project.messageBus.connect(this)) {
             subscribe(HacConnectionSettingsListener.TOPIC, object : HacConnectionSettingsListener {
-                override fun onActivate(connection: HacConnectionSettingsState) = updateTree()
-                override fun onSave(settings: Collection<HacConnectionSettingsState>) = updateTree()
-                override fun onCreate(connection: HacConnectionSettingsState) = updateTree()
+                override fun onActivate(connection: HacConnectionSettingsState) = onEdt { updateTree() }
+                override fun onSave(settings: Collection<HacConnectionSettingsState>) = onEdt { updateTree() }
+                override fun onCreate(connection: HacConnectionSettingsState) = onEdt { updateTree() }
             })
 
             subscribe(CxRemotePropertyStateListener.TOPIC, object : CxRemotePropertyStateListener {
-                override fun onPropertiesStateChanged(remoteConnection: HacConnectionSettingsState) {
+                override fun onPropertiesStateChanged(remoteConnection: HacConnectionSettingsState) = onEdt {
                     val node = tree.lastSelectedPathComponent
                         ?.asSafely<CxPropertiesTreeNode>()
                         ?.userObject
                         ?.asSafely<CxRemotePropertyStateNode>()
                         ?.takeIf { it.connection.uuid == remoteConnection.uuid }
-                        ?: return
+                        ?: return@onEdt
 
                     updateSecondComponent(node) { node.update() }
                 }
             })
 
             subscribe(CxCustomPropertyTemplateStateListener.TOPIC, object : CxCustomPropertyTemplateStateListener {
-                override fun onTemplateUpdated(templateUUID: String) = updateTree()
+                override fun onTemplateUpdated(templateUUID: String) = onEdt { updateTree() }
 
-                override fun onTemplatesDeleted() {
+                override fun onTemplatesDeleted() = onEdt {
                     updateSecondComponent(null) { updateTree() }
                 }
 
-                override fun onPropertyDeleted(modifiedTemplate: CxPropertyTemplatePresentation) {
+                override fun onPropertyDeleted(modifiedTemplate: CxPropertyTemplatePresentation) = onEdt {
                     customTemplateNode(modifiedTemplate)?.let { node ->
                         updateSecondComponent(node) { node.update(modifiedTemplate) }
                     }
                 }
 
-                override fun onPropertyUpdated(modifiedTemplate: CxPropertyTemplatePresentation) {
+                override fun onPropertyUpdated(modifiedTemplate: CxPropertyTemplatePresentation) = onEdt {
                     customTemplateNode(modifiedTemplate)?.let { node ->
                         updateSecondComponent(node) { node.update(modifiedTemplate) }
                     }
@@ -142,36 +143,34 @@ class CxPropertiesSplitView(private val project: Project) : OnePixelSplitter(fal
     }
 
     override fun onActivated() = updateTree()
-    override fun dispose() = Unit
+    override fun dispose() {
+        renderJob?.cancel()
+    }
 
     private fun updateTree() = tree.onActivated()
 
-    private fun updateSecondComponent(node: CxPropertiesNode?, beforeUpdate: () -> Unit = {}) {
-        job.cancel()
-        job = SupervisorJob()
-        coroutineScope = CoroutineScope(Dispatchers.Default + job)
+    /** Listeners are notified on whatever thread published, while the tree and the views belong to the EDT. */
+    private fun onEdt(block: () -> Unit) = application.invokeLater({ if (!project.isDisposed) block() }, project.disposed)
 
-        coroutineScope.launch {
-            ensureActive()
+    private fun updateSecondComponent(node: CxPropertiesNode?, beforeUpdate: () -> Unit = {}) {
+        renderJob?.cancel()
+        renderJob = coroutineScope.launch {
             if (project.isDisposed) return@launch
 
             withContext(Dispatchers.EDT) { beforeUpdate() }
 
             val component = when (node) {
                 is CxRemotePropertyStateNode -> remotePropertyStateView.render(
-                    coroutineScope,
+                    this,
                     node.connection,
                     CxRemotePropertyStateService.getInstance(project).state(node.connection.uuid).get(),
                 )
-                is CxCustomPropertyTemplateItemNode -> customPropertyTemplatesView.render(coroutineScope, node.uuid, node.properties)
+                is CxCustomPropertyTemplateItemNode -> customPropertyTemplatesView.render(this, node.uuid, node.properties)
 
                 else -> nothingSelectedPanel
             }
 
-            withContext(Dispatchers.EDT) {
-                ensureActive()
-                secondComponent = component
-            }
+            withContext(Dispatchers.EDT) { secondComponent = component }
         }
     }
 

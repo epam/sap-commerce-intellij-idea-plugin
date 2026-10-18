@@ -23,7 +23,7 @@ import com.intellij.openapi.application.EDT
 import com.intellij.openapi.observable.properties.AtomicBooleanProperty
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogPanel
-import com.intellij.openapi.ui.Messages
+import com.intellij.openapi.ui.MessageDialogBuilder
 import com.intellij.openapi.ui.ValidationInfo
 import com.intellij.openapi.util.ClearableLazyValue
 import com.intellij.ui.AnimatedIcon
@@ -41,6 +41,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
 import sap.commerce.toolset.properties.CxPropertyConstants
+import sap.commerce.toolset.properties.CxPropertyKey
 import sap.commerce.toolset.properties.CxRemotePropertyStateService
 import sap.commerce.toolset.properties.exec.CxRemotePropertyStatePage
 import sap.commerce.toolset.properties.presentation.CxPropertyPresentation
@@ -62,7 +63,6 @@ class CxRemotePropertyStateView(private val project: Project) : Disposable {
     private val showFetchProperties = AtomicBooleanProperty(false)
     private val showDataPanel = AtomicBooleanProperty(false)
     private val showFetchingState = AtomicBooleanProperty(false)
-    private val canApply = AtomicBooleanProperty(false)
 
     private val listModel = CollectionListModel<CxPropertyPresentation>()
     private val propertyList = CxPropertyList(
@@ -84,6 +84,7 @@ class CxRemotePropertyStateView(private val project: Project) : Disposable {
     private lateinit var fetchingLabel: JLabel
 
     private lateinit var currentConnection: HacConnectionSettingsState
+    @Volatile
     private var statePage: CxRemotePropertyStatePage? = null
     private var lastSeenLoadedCount: Int = -1
     private var lastSeenFilterSignature: String = ""
@@ -131,8 +132,7 @@ class CxRemotePropertyStateView(private val project: Project) : Disposable {
                             .component
 
                         button("Apply Property") {
-                            canApply.set(dPanel.validateAll().all { it.okEnabled })
-                            if (!canApply.get()) return@button
+                            if (!dPanel.validateAll().all { it.okEnabled }) return@button
 
                             setFetching(true)
                             CxRemotePropertyStateService.getInstance(project)
@@ -142,6 +142,8 @@ class CxRemotePropertyStateView(private val project: Project) : Disposable {
                                         addValueField.text = ""
                                     }
                                 }
+                        }.applyToComponent {
+                            toolTipText = "Stored in the runtime configuration of the node serving the request, until it restarts"
                         }
                     }.visibleIf(showDataPanel)
                         .layout(RowLayout.PARENT_GRID)
@@ -213,11 +215,12 @@ class CxRemotePropertyStateView(private val project: Project) : Disposable {
         connection: HacConnectionSettingsState,
         statePage: CxRemotePropertyStatePage?,
     ): JComponent {
-        val viewPanel = lazyViewPanel.value
+        val viewPanel = withContext(Dispatchers.EDT) { lazyViewPanel.value }
         val service = CxRemotePropertyStateService.getInstance(project)
 
         if (statePage == null) {
             currentConnection = connection
+            this.statePage = null
             withContext(Dispatchers.EDT) {
                 fetchingLabel.text = "Fetching data from '${connection.shortenConnectionName}'"
                 setFetching(service.isFetching(connection))
@@ -342,12 +345,9 @@ class CxRemotePropertyStateView(private val project: Project) : Disposable {
     }
 
     private fun confirmAndDelete(property: CxPropertyPresentation) {
-        val confirmed = Messages.showYesNoDialog(
-            project,
-            "Delete property '${property.key}' from '${currentConnection.shortenConnectionName}'?",
-            "Delete Property",
-            Messages.getQuestionIcon(),
-        ) == Messages.YES
+        val confirmed = MessageDialogBuilder
+            .yesNo("Delete Property", "Delete property '${property.key}' from '${currentConnection.shortenConnectionName}'?")
+            .ask(project)
         if (!confirmed) return
 
         propertyList.cancelEdit()
@@ -355,11 +355,7 @@ class CxRemotePropertyStateView(private val project: Project) : Disposable {
         CxRemotePropertyStateService.getInstance(project).deleteProperty(currentConnection, property.key)
     }
 
-    private fun validatePropertyKey(value: String): ValidationInfo? = when {
-        value.isBlank() -> ValidationInfo("Property key is not allowed to be empty")
-        value.any(Char::isWhitespace) -> ValidationInfo("Property key cannot contain whitespace")
-        else -> null
-    }
+    private fun validatePropertyKey(value: String) = CxPropertyKey.validate(value)?.let { ValidationInfo(it) }
 
     private fun setFetching(fetching: Boolean) {
         showFetchingState.set(fetching)
