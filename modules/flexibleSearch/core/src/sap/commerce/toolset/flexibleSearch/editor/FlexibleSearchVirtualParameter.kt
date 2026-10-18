@@ -92,10 +92,27 @@ data class FlexibleSearchVirtualParameter(
                     .split("\n")
                     .map { it.trim() }
                     .filter { it.isNotBlank() }
-                    .joinToString(",")
-                else plainValue
+                    .joinToString(",") { toSqlLiteral(it) }
+                else toSqlLiteral(plainValue)
             }
             ?: ""
+    }
+
+    // untyped values: emit numbers and booleans as-is, quote everything else to keep the SQL valid
+    private fun toSqlLiteral(value: String): String = when {
+        value.toBigDecimalOrNull() != null -> value
+        value.equals("true", ignoreCase = true) || value.equals("false", ignoreCase = true) -> value
+        else -> "'${value.replace("'", "''")}'"
+    }
+
+    private fun coerceRawValue(value: Any?): Any? {
+        val stringValue = value?.asSafely<String>() ?: return value
+
+        return when (type) {
+            Boolean::class -> stringValue == "1" || stringValue.equals("true", ignoreCase = true)
+            Date::class -> parseDate(stringValue) ?: value
+            else -> value
+        }
     }
 
     private fun evaluatePresentationValue(): String = when (type) {
@@ -113,6 +130,8 @@ data class FlexibleSearchVirtualParameter(
 
         const val DATE_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS"
 
+        private val PARSE_DATE_FORMATS = listOf(DATE_FORMAT, "yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd")
+
         fun of(bindParameter: FlexibleSearchBindParameter, currentParameters: Map<String, FlexibleSearchVirtualParameter>) = of(
             bindParameter = bindParameter,
             rawValue = currentParameters[bindParameter.value]?.rawValue
@@ -123,7 +142,11 @@ data class FlexibleSearchVirtualParameter(
             operand = bindParameter.expression?.elementType,
             rawType = bindParameter.itemType,
         ).apply {
-            this.rawValue = rawValue
+            this.rawValue = coerceRawValue(rawValue)
+        }
+
+        private fun parseDate(value: String): Date? = PARSE_DATE_FORMATS.firstNotNullOfOrNull { format ->
+            runCatching { SimpleDateFormat(format).apply { isLenient = false }.parse(value) }.getOrNull()
         }
     }
 }
