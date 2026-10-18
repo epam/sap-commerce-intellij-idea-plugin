@@ -1,0 +1,33 @@
+<html>
+<body>
+Reports a property that the SAP Commerce Cloud build process writes itself being declared by the project.
+
+<p>
+    SAP states plainly what follows from overriding them: <em>"Modifying these properties may cause your builds to
+    fail."</em> They are reported wherever the declaration lives, <code>local.properties</code> included, because a value
+    that works locally is exactly the one that breaks the cloud build.
+</p>
+
+<p>Two families are reported:</p>
+<ul>
+    <li>
+        <b>Set by the build process</b> — connector and JMX ports (<code>tomcat.http.port</code>,
+        <code>tomcat.ssl.port</code>, <code>tomcat.ajp.port</code>, <code>proxy.http.port</code>, …), JVM options
+        (<code>tomcat.javaoptions</code>, <code>java.mem</code>, <code>standalone.javaoptions</code>, …), caching
+        (<code>regioncache.entityregion.size</code>, <code>cms.cache.enabled</code>), the
+        <code>authserver.keystore.*</code> settings and the <code>audit.siem.*</code> settings.
+    </li>
+    <li>
+        <b>Editable in the Cloud Portal only</b> — <code>bootstrap.init.type.system.custom.indices.use.items.definitions</code>
+        and <code>bootstrap.init.type.system.custom.index.ignore.names.starting.with</code>, which an update overwrites
+        or removes unless they are edited in the Cloud Portal using the <code>hcs_admin</code> aspect.
+    </li>
+</ul>
+
+<p>
+    See
+    <a href="https://help.sap.com/docs/SAP_COMMERCE_CLOUD_PUBLIC_CLOUD/1be46286b36a4aa48205be5a96240672/a30160b786b545959184898b51c737fa.html">Managed
+    Properties</a> on the SAP Help Portal.
+</p>
+</body>
+</html>
