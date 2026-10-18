@@ -20,17 +20,13 @@ package sap.commerce.toolset.properties.ui
 
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogWrapper
-import com.intellij.ui.JBColor
 import com.intellij.ui.components.JBScrollPane
-import com.intellij.ui.table.JBTable
 import com.intellij.ui.dsl.builder.Align
 import com.intellij.ui.dsl.builder.RowLayout
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.util.ui.JBUI
 import sap.commerce.toolset.properties.presentation.CxPropertyPresentation
 import javax.swing.JComponent
-import javax.swing.table.AbstractTableModel
-import javax.swing.table.DefaultTableCellRenderer
 
 /**
  * Confirms writing the chosen project properties into the configuration store of a remote instance.
@@ -56,12 +52,12 @@ class CxApplyPropertiesToRemoteDialog(
         }
 
         row {
-            comment("A property which the instance already has is overwritten. The change is not persisted to any file.")
+            comment("A property which the instance already has is overwritten. The change lives in the runtime configuration of the node serving the request until it restarts; it is not persisted to any file.")
         }
 
         group("Properties") {
             row {
-                cell(JBScrollPane(propertiesPreview()))
+                cell(JBScrollPane(CxPropertiesPreviewTable(properties)))
                     .align(Align.FILL)
                     .resizableColumn()
             }.resizableRow()
@@ -71,35 +67,8 @@ class CxApplyPropertiesToRemoteDialog(
         preferredSize = JBUI.size(DIALOG_WIDTH, DIALOG_HEIGHT)
     }
 
-    /**
-     * A table rather than a row per property: keys and values line up in their own columns as they do in the tool
-     * window this selection came from, and a table builds no Swing component per row - a selection running to
-     * thousands of properties would otherwise freeze the dialog before it appeared.
-     */
-    private fun propertiesPreview() = JBTable(PropertiesTableModel(properties)).apply {
-        setShowGrid(false)
-        rowSelectionAllowed = false
-        tableHeader.reorderingAllowed = false
-        columnModel.getColumn(VALUE_COLUMN).cellRenderer = DefaultTableCellRenderer()
-            .apply { foreground = JBColor.GRAY }
-    }
-
-    private class PropertiesTableModel(private val properties: List<CxPropertyPresentation>) : AbstractTableModel() {
-
-        override fun getRowCount() = properties.size
-
-        override fun getColumnCount() = 2
-
-        override fun getColumnName(column: Int) = if (column == VALUE_COLUMN) "Value" else "Key"
-
-        override fun getValueAt(row: Int, column: Int) = properties[row]
-            .let { if (column == VALUE_COLUMN) it.value.ifBlank { EMPTY_VALUE } else it.key }
-    }
-
     companion object {
-        private const val VALUE_COLUMN = 1
         private const val DIALOG_WIDTH = 640
         private const val DIALOG_HEIGHT = 420
-        private const val EMPTY_VALUE = "<empty>"
     }
 }

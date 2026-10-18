@@ -413,7 +413,7 @@ class CxRemotePropertyStateView(private val project: Project) : Disposable {
             propertyList.cancelEdit()
             // A property the remote instance does not have cannot be edited or deleted there.
             propertyList.editable = mode != CxPropertyViewMode.MISSING_ON_REMOTE
-            // Only the properties the project is missing can be declared into it.
+            // Report rows can be checked to act on them in the report's direction.
             setSelectable(mode)
             propertyList.retainCheckedWithin(rows.map { it.key })
             lastSeenLoadedCount = -1
@@ -668,20 +668,12 @@ class CxRemotePropertyStateView(private val project: Project) : Disposable {
         val properties = propertyList.checkedProperties.takeIf { it.isNotEmpty() } ?: return
         val connection = currentConnection.takeIf { ::currentConnection.isInitialized } ?: return
 
-        viewScope.launch {
-            val confirmed = withContext(Dispatchers.EDT) {
-                CxApplyPropertiesToRemoteDialog(project, connection.shortenConnectionName, properties).showAndGet()
-            }
-            if (!confirmed) return@launch
+        if (!CxApplyPropertiesToRemoteDialog(project, connection.shortenConnectionName, properties).showAndGet()) return
 
-            withContext(Dispatchers.EDT) {
-                propertyList.clearChecked()
-                setFetching(true)
-            }
-
-            // The service refetches the instance once it is done, which rebuilds the report without these rows.
-            CxRemotePropertyStateService.getInstance(project).applyProperties(connection, properties)
-        }
+        propertyList.clearChecked()
+        setFetching(true)
+        // The service refetches the instance once it is done, which rebuilds the report without these rows.
+        CxRemotePropertyStateService.getInstance(project).applyProperties(connection, properties)
     }
 
     private fun startInlineEdit(property: CxPropertyPresentation) {
