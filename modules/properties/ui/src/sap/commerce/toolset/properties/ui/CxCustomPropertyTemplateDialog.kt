@@ -64,7 +64,7 @@ class CxCustomPropertyTemplateDialog(
         // Nothing here is acted upon - the rows are only there to be picked.
         availableActions = emptySet()
         selectable = true
-        checkAll()
+        checkAll(except = context.uncheckedByDefault)
     }
 
     /** Properties the user kept, in the order the source listed them. */
@@ -127,6 +127,12 @@ class CxCustomPropertyTemplateDialog(
                     .validationOnInput { selectionError() }
                     .validationOnApply { selectionError() }
             }.resizableRow()
+
+            if (context.uncheckedByDefault.isNotEmpty()) {
+                row("") {
+                    comment("Passwords, secrets, tokens and keys are left unchecked: templates are saved in plain text under .idea.")
+                }.layout(RowLayout.LABEL_ALIGNED)
+            }
 
             row("") {
                 selectionLabel = label("").component

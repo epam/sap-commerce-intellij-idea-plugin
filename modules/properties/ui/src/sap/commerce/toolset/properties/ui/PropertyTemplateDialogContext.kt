@@ -35,4 +35,6 @@ data class PropertyTemplateDialogContext(
     val removeSourceTemplates: MutableBooleanProperty = AtomicBooleanProperty(false),
     val showRemoveSourceTemplates: Boolean = false,
     val selectableProperties: List<CxPropertyPresentation> = emptyList(),
+    /** Keys offered for selection but left unchecked until the user ticks them. */
+    val uncheckedByDefault: Set<String> = emptySet(),
 )

@@ -28,6 +28,7 @@ import sap.commerce.toolset.ifNotFromSearchPopup
 import sap.commerce.toolset.isHybrisProject
 import sap.commerce.toolset.properties.CxRemotePropertyStateService
 import sap.commerce.toolset.properties.custom.CxCustomPropertyTemplateService
+import sap.commerce.toolset.properties.meta.CxSecretKind
 import sap.commerce.toolset.properties.presentation.CxPropertyPresentation
 import sap.commerce.toolset.properties.selectedNode
 import sap.commerce.toolset.properties.ui.CxCustomPropertyTemplateDialog
@@ -68,6 +69,9 @@ class CxCreateCustomPropertyTemplateAction : DumbAwareAction() {
             title = if (selectedNode is CxRemotePropertyStateNode) "Create a Property Template" else "Clone Template",
             showRemoveSourceTemplates = selectedNode is CxCustomPropertyTemplateItemNode,
             selectableProperties = properties.sortedBy { it.key },
+            // The secrets of a remote instance only go into a template, which is stored in plain text, when asked for.
+            uncheckedByDefault = if (selectedNode is CxRemotePropertyStateNode) properties.map { it.key }.filter { CxSecretKind.of(it) != null }.toSet()
+            else emptySet(),
         )
         val dialog = CxCustomPropertyTemplateDialog(context)
 
