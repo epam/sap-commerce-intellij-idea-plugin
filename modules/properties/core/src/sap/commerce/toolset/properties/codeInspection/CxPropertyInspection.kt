@@ -44,6 +44,9 @@ abstract class CxPropertyInspection : LocalInspectionTool() {
     protected abstract fun problem(key: String, rule: CxPropertyRule): String
     protected open fun fixes(key: String, rule: CxPropertyRule): Array<LocalQuickFix> = emptyArray()
 
+    /** The fixes for a problem in [file], for a subclass whose fixes depend on what the project has. */
+    protected open fun fixes(key: String, rule: CxPropertyRule, file: PsiFile): Array<LocalQuickFix> = fixes(key, rule)
+
     final override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor = object : PsiElementVisitor() {
 
         override fun visitFile(file: PsiFile) {
@@ -61,7 +64,7 @@ abstract class CxPropertyInspection : LocalInspectionTool() {
                     property.psiElement,
                     keyRangeOf(property, key),
                     problem(key, rule),
-                    *fixes(key, rule),
+                    *fixes(key, rule, file),
                 )
             }
         }

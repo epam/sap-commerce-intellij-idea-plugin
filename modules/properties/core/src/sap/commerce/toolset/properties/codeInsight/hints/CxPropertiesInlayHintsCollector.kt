@@ -27,7 +27,6 @@ import com.intellij.psi.util.endOffset
 import com.intellij.util.asSafely
 import sap.commerce.toolset.codeInsight.hints.SystemAwareInlayHintsCollector
 import sap.commerce.toolset.properties.meta.CxPropertyCollector
-import sap.commerce.toolset.properties.meta.CxResolvedProperty
 
 /**
  * Annotates each declaration with what the chain makes of it:
@@ -51,20 +50,10 @@ class CxPropertiesInlayHintsCollector(editor: Editor) : SystemAwareInlayHintsCol
         val chain = CxPropertyCollector.getInstance(project).collect()
         val resolved = chain.resolveProperties(listOf(key))[key] ?: return true
 
-        hintFor(resolved, declaringFile.path, property.value)
+        CxPropertyHint.of(resolved, declaringFile.path, property.value)
             ?.let { sink.addInlineElement(element.endOffset, true, textPresentation(it), true) }
 
         return true
-    }
-
-    private fun hintFor(resolved: CxResolvedProperty, declaringPath: String, declaredValue: String?): String? {
-        val winningPath = resolved.source.path
-
-        return when {
-            winningPath != null && winningPath != declaringPath -> "overridden by ${resolved.source.presentableName}"
-            resolved.value != declaredValue -> "= ${resolved.value}"
-            else -> null
-        }
     }
 
     private fun textPresentation(text: String) = with(factory) {

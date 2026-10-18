@@ -19,6 +19,7 @@
 package sap.commerce.toolset.properties.codeInspection
 
 import com.intellij.codeInspection.LocalQuickFix
+import com.intellij.psi.PsiFile
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.properties.codeInspection.fix.CxMovePropertyToLocalPropertiesFix
 import sap.commerce.toolset.properties.codeInspection.fix.CxOpenPropertyDocumentationFix
@@ -42,8 +43,8 @@ class CxEnvironmentPropertyInExtensionInspection : CxPropertyInspection() {
     override fun problem(key: String, rule: CxPropertyRule) =
         "'$key' is ${rule.title}, declaring it in project.properties hard-codes one environment into every build"
 
-    override fun fixes(key: String, rule: CxPropertyRule) = arrayOf<LocalQuickFix>(
-        CxMovePropertyToLocalPropertiesFix(),
+    override fun fixes(key: String, rule: CxPropertyRule, file: PsiFile) = listOfNotNull(
+        CxMovePropertyToLocalPropertiesFix().takeIf { CxMovePropertyToLocalPropertiesFix.isAvailable(file.project) },
         CxOpenPropertyDocumentationFix(rule.documentationUrl),
-    )
+    ).toTypedArray<LocalQuickFix>()
 }
