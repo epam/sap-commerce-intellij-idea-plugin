@@ -71,6 +71,7 @@ class CxCreateCustomPropertyTemplateAction : DumbAwareAction() {
             title = if (selectedNode is CxRemotePropertyStateNode) "Create a Property Template" else "Clone Template",
             showRemoveSourceTemplates = selectedNode is CxCustomPropertyTemplateItemNode,
             selectableProperties = properties.sortedBy { it.key },
+            takenNames = templateService.templateNames(),
             // The secrets of a remote instance only go into a template, which is stored in plain text, when asked for.
             uncheckedByDefault = if (selectedNode is CxRemotePropertyStateNode) properties.map { it.key }.filter { CxSecretKind.of(it) != null }.toSet()
             else emptySet(),

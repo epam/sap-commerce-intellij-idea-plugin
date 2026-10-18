@@ -40,3 +40,25 @@ fun CxCustomPropertyTemplateState.withoutProperty(key: String) = copy(properties
 fun List<CxCustomPropertyTemplateState>.replacing(template: CxCustomPropertyTemplateState) =
     if (any { it.uuid == template.uuid }) map { if (it.uuid == template.uuid) template else it }
     else this + template
+
+/**
+ * Numbers a name until it is free: `template`, then `template (1)`, `template (2)`.
+ *
+ * A name which already ends in such a number is counted up rather than nested, so cloning a copy gives
+ * `Copy of 'X' (2)` instead of `Copy of 'X' (1) (1)`.
+ */
+fun uniqueName(name: String, existingNames: Collection<String>): String {
+    val taken = existingNames.toSet()
+    if (name !in taken) return name
+
+    val base = NUMBERED_SUFFIX.matchEntire(name)
+        ?.groupValues
+        ?.get(1)
+        ?: name
+
+    return generateSequence(1) { it + 1 }
+        .map { "$base ($it)" }
+        .first { it !in taken }
+}
+
+private val NUMBERED_SUFFIX = Regex("""(.*) \((\d+)\)""")

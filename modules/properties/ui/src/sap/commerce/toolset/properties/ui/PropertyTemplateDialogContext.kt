@@ -37,4 +37,6 @@ data class PropertyTemplateDialogContext(
     val selectableProperties: List<CxPropertyPresentation> = emptyList(),
     /** Keys offered for selection but left unchecked until the user ticks them. */
     val uncheckedByDefault: Set<String> = emptySet(),
+    /** Names other templates already use, which this one may not take. */
+    val takenNames: Set<String> = emptySet(),
 )
