@@ -38,6 +38,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.hac.exec.HacExecConnectionService
@@ -76,8 +78,12 @@ internal class CxSourcePropertiesView(private val project: Project) : Disposable
 
     private val viewScope = CxPropertiesViewScopeService.getInstance(project).childScope()
 
-    /** The redraw a remote event asked for; a newer event supersedes it rather than racing it to the EDT. */
+    /** The redraw a remote event asked for; a newer event or selection supersedes it rather than racing it to the EDT. */
+    @Volatile
     private var redrawJob: Job? = null
+
+    /** A redraw and a render started by the tree may overlap, so only one of them fills the panel at a time. */
+    private val drawMutex = Mutex()
 
     private val listModel = CollectionListModel<CxPropertyPresentation>()
     private val propertyList = CxPropertyList(
@@ -107,7 +113,7 @@ internal class CxSourcePropertiesView(private val project: Project) : Disposable
                 val selection = currentSelection ?: return
 
                 redrawJob?.cancel()
-                redrawJob = viewScope.launch { render(selection) }
+                redrawJob = viewScope.launch { drawMutex.withLock { draw(selection) } }
             }
         })
     }
@@ -183,6 +189,13 @@ internal class CxSourcePropertiesView(private val project: Project) : Disposable
     }
 
     suspend fun render(selection: CxSourceSelection): JComponent {
+        currentSelection = selection
+        redrawJob?.cancel()
+
+        return drawMutex.withLock { draw(selection) }
+    }
+
+    private suspend fun draw(selection: CxSourceSelection): JComponent {
         val viewPanel = withContext(Dispatchers.EDT) { lazyViewPanel.value }
 
         val chain = smartReadAction(project) { CxPropertyCollector.getInstance(project).collect() }
@@ -200,7 +213,9 @@ internal class CxSourcePropertiesView(private val project: Project) : Disposable
         val remote = remoteSnapshot()
 
         withContext(Dispatchers.EDT) {
-            currentSelection = selection
+            // Another node was selected meanwhile - its own render fills the panel.
+            if (selection != currentSelection) return@withContext
+
             rows = properties
             titleLabel.text = titleFor(selection, chain, source)
             // Only a file the running system never reads is worth flagging - the rest speak for themselves.
