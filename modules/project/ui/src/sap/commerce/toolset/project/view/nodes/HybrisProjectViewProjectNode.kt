@@ -50,6 +50,8 @@ class HybrisProjectViewProjectNode(project: Project, viewSettings: ViewSettings)
 
         val nodes = modulesAndGroups(modules).toMutableList()
 
+        nodes.add(FavoritesProjectViewNode(project, settings))
+
         project.directory
             ?.let { LocalFileSystem.getInstance().findFileByPath(it) }
             ?.let { baseDir ->

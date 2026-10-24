@@ -25,7 +25,7 @@ import sap.commerce.toolset.ui.toolwindow.CxToolWindowContentProvider
 
 class BSToolWindowContentProvider : CxToolWindowContentProvider(
     "Bean System",
-    HybrisIcons.TypeSystem.FILE,
+    HybrisIcons.BeanSystem.FILE,
     2,
 ) {
     override fun createComponent(project: Project, parentDisposable: Disposable) = BSToolWindow(project, parentDisposable)

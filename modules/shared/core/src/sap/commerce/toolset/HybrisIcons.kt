@@ -540,6 +540,8 @@ object HybrisIcons {
 
     object ProjectView {
         val NODE_JUNK = AllIcons.Modules.ExcludedGeneratedRoot
+        val FAVORITES = AllIcons.Nodes.Favorite
+        val FAVORITES_EMPTY = AllIcons.General.Information
     }
 
     object AI {
