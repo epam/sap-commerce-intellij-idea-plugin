@@ -18,17 +18,21 @@
 
 package sap.commerce.toolset.project.codeInsight.lookup
 
+import com.intellij.codeInsight.completion.PrioritizedLookupElement
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.i18nFallback
 
 object LookupElementFactory {
 
-    fun buildLanguage(isoCode: String) = LookupElementBuilder.create(isoCode.lowercase())
+    fun buildLanguage(isoCode: String) = PrioritizedLookupElement.withPriority(
+        LookupElementBuilder.create(isoCode.lowercase())
         .withTypeText(
             i18nFallback("hybris.completion.column.language.${isoCode.lowercase()}", "")
                 .let { " $it" }
         )
         .withCaseSensitivity(false)
-        .withIcon(HybrisIcons.TypeSystem.LOCALIZED)
+        .withIcon(HybrisIcons.TypeSystem.LOCALIZED),
+        1.0
+    )
 }

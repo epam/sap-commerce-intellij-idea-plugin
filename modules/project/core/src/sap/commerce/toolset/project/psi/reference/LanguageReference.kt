@@ -18,6 +18,7 @@
 
 package sap.commerce.toolset.project.psi.reference
 
+import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.TextRange
 import com.intellij.pom.references.PomService
@@ -28,7 +29,7 @@ import sap.commerce.toolset.project.PropertyService
 import sap.commerce.toolset.project.codeInsight.lookup.LookupElementFactory
 import sap.commerce.toolset.psi.getValidResults
 
-class LanguageReference(owner: PsiElement) : PsiReferenceBase.Poly<PsiElement>(owner) {
+class LanguageReference(owner: PsiElement, private val extraVariants: Array<LookupElement> = emptyArray()) : PsiReferenceBase.Poly<PsiElement>(owner) {
 
     override fun calculateDefaultRangeInElement(): TextRange {
         val language = element.text.trim()
@@ -39,10 +40,13 @@ class LanguageReference(owner: PsiElement) : PsiReferenceBase.Poly<PsiElement>(o
         .getParameterizedCachedValue(element, CACHE_KEY, provider, false, this)
         .let { getValidResults(it) }
 
-    override fun getVariants() = PropertyService.getInstance(element.project)
-        .getLanguages()
-        .map { LookupElementFactory.buildLanguage(it) }
-        .toTypedArray()
+    override fun getVariants(): Array<LookupElement> {
+        val languages = PropertyService.getInstance(element.project).getLanguages()
+            .map { LookupElementFactory.buildLanguage(it) }
+            .toTypedArray()
+
+        return extraVariants + languages
+    }
 
     companion object {
         val CACHE_KEY = Key.create<ParameterizedCachedValue<Array<ResolveResult>, LanguageReference>>("HYBRIS_LANGUAGE_CACHED_REFERENCE")

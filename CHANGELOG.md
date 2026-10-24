@@ -2,13 +2,16 @@
 
 <cite>Release contributors</code>
 - 1 PR(s) by [Eugeni Kalenchuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.2.5+author%3Aekalenchuk+is%3Apr)
-- 1 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.2.5+author%3Amlytvyn+is%3Apr)
+- 2 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.2.5+author%3Amlytvyn+is%3Apr)
 
 ### `SAP CX Logging` enhancements
 - Show log level inlay hints only for logger fields [#2022](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2022)
 
 ### `Project View` enhancements
 - Introduced possibility to manage favorite directories via project view node [#2023](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2023)
+
+### `FlexibleSearch` enhancements
+- Added support of the `any` for localized attributes [#2024](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2024)
 
 ## [2026.2.4]
 

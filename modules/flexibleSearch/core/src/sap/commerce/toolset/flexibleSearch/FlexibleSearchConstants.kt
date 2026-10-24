@@ -26,6 +26,8 @@ import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchTypes
 object FlexibleSearchConstants {
     val FILE_NODE_TYPE = IFileElementType(FlexibleSearchLanguage)
 
+    const val ANY_LANGUAGE = "any"
+
     const val TABLE_ALIAS_SEPARATOR_DOT = "."
     const val TABLE_ALIAS_SEPARATOR_COLON = ":"
     const val TABLE_POSTFIX_EXCLAMATION_MARK = "!"
