@@ -19,6 +19,7 @@
 package sap.commerce.toolset.flexibleSearch.psi.impl
 
 import com.intellij.lang.ASTNode
+import sap.commerce.toolset.flexibleSearch.codeInsight.lookup.FxSLookupElementFactory
 import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchColumnLocalizedName
 import sap.commerce.toolset.project.psi.reference.LanguageReference
 import sap.commerce.toolset.psi.impl.ASTWrapperReferencePsiElement
@@ -26,7 +27,7 @@ import java.io.Serial
 
 abstract class FlexibleSearchColumnLocalizedNameMixin(node: ASTNode) : ASTWrapperReferencePsiElement(node), FlexibleSearchColumnLocalizedName {
 
-    override fun createReference() = LanguageReference(this)
+    override fun createReference() = LanguageReference(this, arrayOf(FxSLookupElementFactory.buildAnyLanguage()))
 
     companion object {
         @Serial

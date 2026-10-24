@@ -22,6 +22,7 @@ import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiElementVisitor
+import sap.commerce.toolset.flexibleSearch.FlexibleSearchConstants
 import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchColumnLocalizedName
 import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchVisitor
 import sap.commerce.toolset.i18n
@@ -36,6 +37,9 @@ class FlexibleSearchNotSupportedLanguageInspection : LocalInspectionTool() {
 
         override fun visitColumnLocalizedName(element: FlexibleSearchColumnLocalizedName) {
             val language = element.text.trim()
+
+            if (language == FlexibleSearchConstants.ANY_LANGUAGE) return
+
             val propertyService = PropertyService.getInstance(element.project)
             val supportedLanguages = propertyService.getLanguages()
 

@@ -19,6 +19,7 @@
 package sap.commerce.toolset.flexibleSearch.codeInsight.lookup
 
 import com.intellij.codeInsight.completion.InsertionContext
+import com.intellij.codeInsight.completion.PrioritizedLookupElement
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.psi.ResolveResult
@@ -33,6 +34,14 @@ import sap.commerce.toolset.settings.state.FlexibleSearchSettingsState
 import sap.commerce.toolset.typeSystem.psi.reference.result.TSResolveResultUtil
 
 object FxSLookupElementFactory {
+
+    fun buildAnyLanguage() = PrioritizedLookupElement.withPriority(
+        LookupElementBuilder.create(FlexibleSearchConstants.ANY_LANGUAGE)
+            .withTypeText(" lookup across all languages")
+            .withCaseSensitivity(true)
+            .withIcon(HybrisIcons.TypeSystem.LOCALIZED_ANY),
+        2.0
+    )
 
     fun buildYColumn(addComma: Boolean) = LookupElementBuilder.create("{}" + if (addComma) "," else "")
         .withPresentableText(" ")

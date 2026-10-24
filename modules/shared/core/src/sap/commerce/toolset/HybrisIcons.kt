@@ -282,6 +282,7 @@ object HybrisIcons {
         val DEPLOYMENT_MODEL = AllIcons.Nodes.Undeploy
 
         val LOCALIZED = getIcon("/icons/typeSystem/localized.svg")
+        val LOCALIZED_ANY = getIcon("/icons/typeSystem/localized_any.svg")
         val INTERCEPTOR = getIcon("/icons/typeSystem/interceptor.svg")
 
         val GROUP_ATOMIC = getIcon("/icons/typeSystem/groupByAtomic.svg")
