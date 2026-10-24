@@ -8,7 +8,7 @@
 - Show log level inlay hints only for logger fields [#2022](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2022)
 
 ### `Project View` enhancements
-- Introduced possibility to manage favorite directories via project view node [#2021](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2021)
+- Introduced possibility to manage favorite directories via project view node [#2023](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2023)
 
 ## [2026.2.4]
 
