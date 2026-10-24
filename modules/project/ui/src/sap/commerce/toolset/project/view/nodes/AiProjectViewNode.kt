@@ -50,4 +50,7 @@ class AiProjectViewNode(
     }
 
     override fun getSortOrder(settings: NodeSortSettings) = NodeSortOrder.PROJECT_ROOT
+
+    override fun getSortKey(): Comparable<*> = 1
+    override fun getTypeSortKey(): Comparable<*> = 1
 }

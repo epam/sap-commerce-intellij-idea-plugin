@@ -30,7 +30,6 @@ import com.intellij.ui.components.JBPanel
 import sap.commerce.toolset.beanSystem.meta.BSGlobalMetaModel
 import sap.commerce.toolset.beanSystem.meta.BSMetaModelStateService
 import sap.commerce.toolset.beanSystem.meta.event.BSMetaModelChangeListener
-import sap.commerce.toolset.beanSystem.settings.BSViewSettings
 import sap.commerce.toolset.beanSystem.settings.event.BSViewSettingsListener
 import sap.commerce.toolset.beanSystem.settings.state.ChangeType
 import sap.commerce.toolset.i18n
@@ -41,7 +40,6 @@ import java.io.Serial
 class BSToolWindow(private val project: Project, parentDisposable: Disposable) : CxToolWindow() {
 
     private var initialized = false
-    private val mySettings = BSViewSettings.getInstance(project)
     private val myTreePane = BSTreePanel(project)
 
     override fun dispose() {

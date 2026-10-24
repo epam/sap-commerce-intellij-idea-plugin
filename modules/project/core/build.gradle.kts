@@ -40,6 +40,8 @@ dependencies {
     implementation(project(":project-extensioninfo"))
     implementation(project(":project-localextensions"))
 
+    testImplementation(kotlin("test"))
+
     intellijPlatform {
         intellijIdea(properties("intellij.version")) {
             useInstaller = true

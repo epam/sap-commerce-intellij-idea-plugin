@@ -31,6 +31,16 @@
                              bundle="i18n.HybrisBundle"
                              key="hybris.settings.project.title"
                              provider="sap.commerce.toolset.project.options.ProjectSettingsConfigurableProvider"/>
-
     </extensions>
+
+    <actions>
+        <action id="sap.commerce.toolset.project.view.favorites.add"
+                class="sap.commerce.toolset.project.actionSystem.AddFolderToFavoritesAction">
+            <add-to-group group-id="ProjectViewPopupMenu" anchor="last"/>
+        </action>
+        <action id="sap.commerce.toolset.project.view.favorites.remove"
+                class="sap.commerce.toolset.project.actionSystem.RemoveFolderFromFavoritesAction">
+            <add-to-group group-id="ProjectViewPopupMenu" anchor="last"/>
+        </action>
+    </actions>
 </idea-plugin>
