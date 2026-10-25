@@ -47,6 +47,7 @@ data class ImpExExecContext(
         connection = connection,
         content = content,
         dialect = dialect,
+        executionMode = executionMode,
         validationMode = settings.validationMode,
         maxThreads = settings.maxThreads,
         timeout = settings.timeout,
