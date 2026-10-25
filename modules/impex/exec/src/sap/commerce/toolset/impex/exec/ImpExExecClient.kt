@@ -61,8 +61,9 @@ class ImpExExecClient(project: Project, coroutineScope: CoroutineScope) : Defaul
         try {
             val document = Jsoup.parse(response.entity.content, Charsets.UTF_8.name(), "")
 
+            // in the SAP CX 2211.20 SAP updated `impexResult` & `validationResultMsg`
             return when (context.executionMode) {
-                ImpExExecutionMode.IMPORT -> processResponse(document, "impexResult") { element ->
+                ImpExExecutionMode.IMPORT -> processResponse(document, listOf("impexResult", "impexResultSuccess", "impexResultFailed")) { element ->
                     if (element.attr("data-level") == "error") DefaultExecResult(
                         statusCode = HttpStatus.SC_BAD_REQUEST,
                         errorMessage = element.attr("data-result").takeIf { it.isNotBlank() },
@@ -75,7 +76,7 @@ class ImpExExecClient(project: Project, coroutineScope: CoroutineScope) : Defaul
                     )
                 }
 
-                ImpExExecutionMode.VALIDATE -> processResponse(document, "validationResultMsg") { element ->
+                ImpExExecutionMode.VALIDATE -> processResponse(document, listOf("validationResultMsg", "validationValidResultMsg", "validationInvalidResultMsg")) { element ->
                     if ("error" == element.attr("data-level")) DefaultExecResult(
                         statusCode = HttpStatus.SC_BAD_REQUEST,
                         errorMessage = element.attr("data-result").takeIf { it.isNotBlank() }
@@ -94,7 +95,8 @@ class ImpExExecClient(project: Project, coroutineScope: CoroutineScope) : Defaul
         }
     }
 
-    private fun processResponse(document: Document, id: String, mapper: (Element) -> DefaultExecResult) = document.getElementById(id)
+    private fun processResponse(document: Document, ids: List<String>, mapper: (Element) -> DefaultExecResult) = ids
+        .firstNotNullOfOrNull { id -> document.getElementById(id) }
         ?.takeIf { it.hasAttr("data-level") && it.hasAttr("data-result") }
         ?.let { mapper.invoke(it) }
         ?: DefaultExecResult(

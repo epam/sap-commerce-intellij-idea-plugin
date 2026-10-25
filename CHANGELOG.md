@@ -1,3 +1,11 @@
+## [2026.2.6]
+
+<cite>Release contributors</code>
+- 1 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.2.6+author%3Amlytvyn+is%3Apr)
+
+### `ImpEx` enhancements
+- Align import and validate logic according to `2211.20` API changes [#2025](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2025)
+
 ## [2026.2.5]
 
 <cite>Release contributors</code>
