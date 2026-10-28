@@ -18,6 +18,7 @@
 
 package sap.commerce.toolset.ccv2.ui
 
+import com.intellij.icons.AllIcons
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
@@ -96,7 +97,7 @@ class CCv2HacConnectionSettingsProviderDialog(
         }
 
         row {
-            icon(EditorNotificationPanel.Status.Info.icon)
+            icon(EditorNotificationPanel.Status.Info.icon ?: AllIcons.General.Information)
                 .visibleIf(noSubscriptions)
                 .gap(RightGap.SMALL)
             text(

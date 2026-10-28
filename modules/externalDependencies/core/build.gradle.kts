@@ -48,6 +48,7 @@ dependencies {
         }
 
         bundledPlugins(
+            "com.intellij.xml",
             "org.jetbrains.idea.maven",
         )
     }

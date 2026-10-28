@@ -61,6 +61,7 @@ dependencies {
         }
 
         bundledModules(
+            "intellij.platform.debugger.impl.ui",
             "intellij.platform.structureView"
         )
     }

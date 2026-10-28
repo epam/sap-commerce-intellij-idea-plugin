@@ -45,6 +45,10 @@ dependencies {
             useInstaller = true
         }
 
+        bundledModules(
+            "intellij.platform.externalSystem",
+        )
+
         compatiblePlugins(
             "AngularJS"                         // Angular              https://plugins.jetbrains.com/plugin/6971-angular
         )

@@ -21,7 +21,6 @@ import com.intellij.java.workspace.entities.javaSettings
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.platform.workspace.jps.entities.ModuleEntity
 import com.intellij.platform.workspace.jps.entities.modifyModuleEntity
-import com.intellij.platform.workspace.jps.entities.sourceRoots
 import com.intellij.platform.workspace.storage.MutableEntityStorage
 import com.intellij.platform.workspace.storage.entities
 import sap.commerce.toolset.project.configurator.ProjectStorageSaveConfigurator
@@ -38,7 +37,9 @@ class SaveModulesStorageConfigurator : ProjectStorageSaveConfigurator {
         val previouslyLoadedExtensions = context.project.ySettings.module2extensionMapping
 
         val currentEntities = storage.entities<ModuleEntity>()
-            // remove all facets, they will be re-created with legacy API in scope of the post-import configurator
+            // remove all facets, they will be re-created with legacy API in scope of the post-import configurator.
+            // Facets and source roots must not be assigned via the `ModuleEntity.Builder`: since 2026.3 facets are exposed as `moduleSettings`
+            // and the `facets` / `sourceRoots` builder properties no longer exist. Source roots are transferred as children of the content roots.
             .onEach { currentEntity -> currentEntity.facets.forEach { storage.removeEntity(it) } }
             .mapNotNull { currentEntity ->
                 val extensionName = previouslyLoadedExtensions[currentEntity.name]
@@ -58,9 +59,7 @@ class SaveModulesStorageConfigurator : ProjectStorageSaveConfigurator {
                     this.name = newEntity.name
                     this.type = newEntity.type
                     this.dependencies = newEntity.dependencies
-                    this.facets = newEntity.facets
                     this.contentRoots = newEntity.contentRoots
-                    this.sourceRoots = newEntity.sourceRoots
                     this.javaSettings = newEntity.javaSettings
                 }
             } else {

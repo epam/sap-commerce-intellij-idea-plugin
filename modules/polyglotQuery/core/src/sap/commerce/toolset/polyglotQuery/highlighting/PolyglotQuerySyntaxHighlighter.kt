@@ -34,7 +34,7 @@ import sap.commerce.toolset.polyglotQuery.psi.PolyglotQueryTypes
 class PolyglotQuerySyntaxHighlighter : SyntaxHighlighterBase() {
     override fun getHighlightingLexer(): Lexer = PolyglotQueryLexer()
 
-    override fun getTokenHighlights(tokenType: IElementType?) = cache[tokenType]
+    override fun getTokenHighlights(tokenType: IElementType) = cache[tokenType]
         ?: emptyArray()
 
     companion object {
