@@ -6,6 +6,9 @@
 ### Other enhancements
 - Compatibility release for IntelliJ IDEA `2026.3`
 
+### `Project Import` enhancements
+- Skip Groovy-compiled classes (e.g. Spock specifications) during the decompilation of the OOTB binaries to prevent out of memory errors
+
 ### Fixes
 - Fix project refresh failure on IntelliJ IDEA 2026.3 caused by removed `facets` and `sourceRoots` module builder properties
 
