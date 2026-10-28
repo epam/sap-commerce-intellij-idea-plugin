@@ -60,7 +60,12 @@ dependencies {
             useInstaller = true
         }
 
+        bundledPlugins(
+            "com.intellij.xml",
+        )
+
         bundledModules(
+            "intellij.platform.debugger.impl.ui",
             "intellij.platform.structureView"
         )
     }

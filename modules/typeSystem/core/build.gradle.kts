@@ -52,11 +52,13 @@ dependencies {
         }
 
         bundledModules(
+            "intellij.regexp",
             "intellij.spellchecker",
             "intellij.spellchecker.xml",
         )
 
         bundledPlugins(
+            "com.intellij.xml",
             "com.intellij.java",
             "com.intellij.properties",
         )

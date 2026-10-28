@@ -1,3 +1,17 @@
+## [2026.3.0]
+
+<cite>Release contributors</code>
+- 1 PR(s) by [Mihai Sprinceana](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.3.0+author%3AMihaiSprinceana+is%3Apr)
+
+### Other enhancements
+- Compatibility release for IntelliJ IDEA `2026.3`
+
+### `Project Import` enhancements
+- Skip Groovy-compiled classes (e.g. Spock specifications) during the decompilation of the OOTB binaries to prevent out of memory errors
+
+### Fixes
+- Fix project refresh failure on IntelliJ IDEA 2026.3 caused by removed `facets` and `sourceRoots` module builder properties
+
 ## [2026.2.6]
 
 <cite>Release contributors</code>

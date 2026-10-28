@@ -44,6 +44,7 @@ import sap.commerce.toolset.java.decompilation.DecompilerConsent
 import sap.commerce.toolset.java.decompilation.DecompilerService
 import sap.commerce.toolset.java.decompilation.JarDecompileContext
 import sap.commerce.toolset.java.decompilation.JarDecompileResult
+import sap.commerce.toolset.java.decompilation.isGroovyCompiledClass
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.configurator.ProjectPostImportConfigurator
 import sap.commerce.toolset.project.context.ProjectPostImportContext
@@ -177,6 +178,7 @@ class DecompileOotbBinariesConfigurator : ProjectPostImportConfigurator {
 
             var decompiledCount = 0
             var failedCount = 0
+            var skippedGroovyCount = 0
 
             JarFile(jarPath.toFile()).use { jf ->
                 val classEntryNames = buildSet {
@@ -201,6 +203,14 @@ class DecompileOotbBinariesConfigurator : ProjectPostImportConfigurator {
                         // IntelliJ decompiler reconstructs them into the outer class output anyway, so writing them separately
                         // produces duplicate-looking sources (Outer.java and Outer$Inner.java).
                         if (shouldSkipInnerClassEntry(entryName, classEntryNames)) continue
+
+                        // Groovy-compiled classes (e.g. Spock specifications shipped in OOTB server jars) make Fernflower run out of memory
+                        // and their decompiled Java sources are useless anyway.
+                        if (jf.getInputStream(entry).use { it.readAllBytes() }.isGroovyCompiledClass()) {
+                            skippedGroovyCount++
+                            logger.debug("Skipped Groovy-compiled class ${jarPath.fileName}!/$entryName")
+                            continue
+                        }
 
                         it.indeterminateStep("Decompiling class: $entryName") {
                             val source = runCatching {
@@ -233,7 +243,9 @@ class DecompileOotbBinariesConfigurator : ProjectPostImportConfigurator {
                 return@withContext JarDecompileResult.Failed
             }
 
-            if (failedCount > 0) logger.debug("Partially decompiled ${jarPath.fileName}: ok=$decompiledCount, failed=$failedCount")
+            if (failedCount > 0 || skippedGroovyCount > 0) {
+                logger.debug("Partially decompiled ${jarPath.fileName}: ok=$decompiledCount, failed=$failedCount, skippedGroovy=$skippedGroovyCount")
+            }
 
             Files.writeString(marker, "ok")
             VfsUtil.markDirtyAndRefresh(true, true, true, outputRoot.toFile())

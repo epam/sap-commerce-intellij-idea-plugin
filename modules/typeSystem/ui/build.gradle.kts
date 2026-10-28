@@ -52,6 +52,7 @@ dependencies {
         }
 
         bundledPlugins(
+            "com.intellij.structureView",
             "com.intellij.java",
             "com.intellij.modules.xml",
             "com.intellij.properties",
