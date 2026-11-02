@@ -48,6 +48,10 @@ dependencies {
             useInstaller = true
         }
 
+        bundledPlugins(
+            "com.intellij.xml",
+        )
+
         bundledModules(
             "intellij.spellchecker",
             "intellij.spellchecker.xml",

@@ -40,6 +40,7 @@ dependencies {
         }
 
         bundledPlugins(
+            "com.intellij.xml",
             "com.intellij.java",
             "com.intellij.gradle",
             "org.jetbrains.kotlin",

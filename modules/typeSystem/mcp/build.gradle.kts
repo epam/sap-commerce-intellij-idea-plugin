@@ -47,6 +47,7 @@ dependencies {
         }
 
         bundledPlugins(
+            "com.intellij.xml",
             "com.intellij.mcpServer",
         )
     }

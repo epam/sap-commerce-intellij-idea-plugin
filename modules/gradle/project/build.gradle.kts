@@ -44,6 +44,11 @@ dependencies {
             useInstaller = true
         }
 
+        bundledModules(
+            "intellij.platform.externalSystem",
+            "intellij.platform.externalSystem.impl",
+        )
+
         bundledPlugins(
             "com.intellij.gradle",
         )

@@ -48,5 +48,9 @@ dependencies {
         intellijIdea(properties("intellij.version")) {
             useInstaller = true
         }
+
+        bundledPlugins(
+            "com.intellij.xml",
+        )
     }
 }

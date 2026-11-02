@@ -44,6 +44,10 @@ dependencies {
             useInstaller = true
         }
 
+        bundledModules(
+            "intellij.platform.externalSystem",
+        )
+
         bundledPlugins(
             "org.jetbrains.idea.maven",
         )

@@ -52,6 +52,10 @@ dependencies {
             useInstaller = true
         }
 
+        bundledPlugins(
+            "com.intellij.xml",
+        )
+
         testFramework(TestFrameworkType.Platform)
 
         bundledModules(

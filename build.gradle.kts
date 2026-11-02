@@ -250,6 +250,10 @@ dependencies {
             }
 
         bundledModules(
+            "intellij.platform.debugger.impl.ui",
+            "intellij.platform.externalSystem",
+            "intellij.platform.externalSystem.impl",
+            "intellij.regexp",
             "intellij.grid.impl",
             "intellij.spellchecker",
             "intellij.spellchecker.xml",
@@ -258,6 +262,8 @@ dependencies {
 
         // printBundledPlugins for bundled plugins
         bundledPlugins(
+            "com.intellij.structureView",
+            "com.intellij.xml",
             "com.intellij.modules.jcef",
             "intellij.grid.plugin",
             "com.intellij.java",

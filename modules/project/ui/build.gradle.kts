@@ -45,5 +45,13 @@ dependencies {
         intellijIdea(properties("intellij.version")) {
             useInstaller = true
         }
+
+        bundledModules(
+            "intellij.platform.externalSystem",
+        )
+
+        bundledPlugins(
+            "com.intellij.xml",
+        )
     }
 }

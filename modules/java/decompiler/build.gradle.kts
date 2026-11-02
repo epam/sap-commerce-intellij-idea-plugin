@@ -16,6 +16,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import org.jetbrains.intellij.platform.gradle.TestFrameworkType
+
 fun properties(key: String) = providers.gradleProperty(key)
 
 plugins {
@@ -28,16 +30,24 @@ sourceSets {
         java.srcDirs("src")
         resources.srcDirs("resources")
     }
+    test {
+        java.srcDirs("tests")
+    }
 }
 
 dependencies {
     implementation(project(":shared-core"))
     implementation(project(":java-core"))
     implementation(project(":project-core"))
+
+    testImplementation(kotlin("test"))
+
     intellijPlatform {
         intellijIdea(properties("intellij.version")) {
             useInstaller = true
         }
+
+        testFramework(TestFrameworkType.Platform)
 
         bundledPlugins(
             "com.intellij.java",
