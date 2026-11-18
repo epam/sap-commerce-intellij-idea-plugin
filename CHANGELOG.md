@@ -1,7 +1,10 @@
 ## [2026.3.1]
 
 <cite>Release contributors</code>
-- 12 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.3.1+author%3Amlytvyn+is%3Apr)
+- 13 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.3.1+author%3Amlytvyn+is%3Apr)
+
+### `Project Import` enhancements
+- Address import progress dialog failure caused by an unsuitable parent window [#2040](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2040)
 
 ### `CCv2` enhancements
 - Address log unscrambling failure for the clipboard text which is valid JSON but not a log entry [#2036](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2036)
