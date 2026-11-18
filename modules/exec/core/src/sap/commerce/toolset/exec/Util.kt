@@ -18,6 +18,25 @@
 
 package sap.commerce.toolset.exec
 
+import com.intellij.util.net.JdkProxyProvider
+import org.apache.http.impl.client.HttpClientBuilder
+import org.apache.http.impl.client.SystemDefaultCredentialsProvider
+import org.apache.http.impl.conn.SystemDefaultRoutePlanner
+import java.net.Proxy
+import java.net.ProxySelector
+import java.net.URI
+
+private fun ideProxySelector(): ProxySelector = JdkProxyProvider.getInstance().proxySelector
+
+fun HttpClientBuilder.useIdeProxy(proxySelector: ProxySelector = ideProxySelector()): HttpClientBuilder = this
+    .setRoutePlanner(SystemDefaultRoutePlanner(proxySelector))
+    .setDefaultCredentialsProvider(SystemDefaultCredentialsProvider())
+
+fun ideProxyFor(url: String, proxySelector: ProxySelector = ideProxySelector()): Proxy = runCatching { proxySelector.select(URI(url)) }
+    .getOrNull()
+    ?.firstOrNull()
+    ?: Proxy.NO_PROXY
+
 fun generateUrl(ssl: Boolean, host: String?, port: String?, webroot: String?) = buildString {
     if (ssl) append(ExecConstants.HTTPS_PROTOCOL)
     else append(ExecConstants.HTTP_PROTOCOL)
