@@ -23,6 +23,15 @@ import com.intellij.psi.PsiClass
 import com.intellij.spring.java.SpringJavaClassInfo
 import com.intellij.spring.model.SpringBeanPointer
 import com.intellij.spring.model.xml.beans.SpringBean
+import java.util.*
+
+private val PLACEHOLDER_REGEX = "\\$\\{([^:}]+)(?::([^}]*))?}".toRegex()
+
+internal fun String.resolvePlaceholders(properties: Properties) = PLACEHOLDER_REGEX.replace(this) { match ->
+    properties.getProperty(match.groupValues[1])
+        ?: match.groups[2]?.value
+        ?: match.value
+}
 
 internal fun PsiClass.resolveInterceptorBeansLazy(
     name: String? = null
