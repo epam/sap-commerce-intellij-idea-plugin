@@ -19,6 +19,7 @@
 package sap.commerce.toolset.project
 
 import com.intellij.notification.NotificationType
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.module.ModifiableModuleModel
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.project.Project
@@ -27,6 +28,7 @@ import com.intellij.packaging.artifacts.ModifiableArtifactModel
 import com.intellij.projectImport.ProjectImportBuilder
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.Notifications
+import sap.commerce.toolset.exceptions.HybrisConfigurationException
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.project.configurator.ProjectBeforeCreateConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
@@ -75,8 +77,19 @@ open class HybrisProjectImportBuilder : ProjectImportBuilder<ModuleDescriptor>()
         modulesProvider: ModulesProvider?,
         artifactModel: ModifiableArtifactModel?
     ): List<Module> {
-        val context = context
-            ?.immutable(project)
+        val context = try {
+            context?.immutable(project)
+        } catch (e: HybrisConfigurationException) {
+            thisLogger().warn(e.message, e)
+
+            Notifications.error(
+                title = i18n("hybris.notification.project.import.title"),
+                content = i18n("hybris.notification.project.import.not.ready.content", e.message ?: ""),
+            )
+                .notify(project)
+
+            null
+        }
             ?: return emptyList()
 
         ProjectImportTask.getInstance(project).execute(context)
