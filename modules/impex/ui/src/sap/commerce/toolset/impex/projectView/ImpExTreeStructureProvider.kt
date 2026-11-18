@@ -41,7 +41,7 @@ class ImpExTreeStructureProvider : TreeStructureProvider {
     override fun modify(
         parent: AbstractTreeNode<*>,
         children: Collection<AbstractTreeNode<*>>,
-        settings: ViewSettings
+        settings: ViewSettings?
     ): @Unmodifiable Collection<AbstractTreeNode<*>> {
         if (!parent.project.yDeveloperSettings.impexSettings.groupLocalizedFiles) return children
         if (parent is LocalizedImpExNode) return children

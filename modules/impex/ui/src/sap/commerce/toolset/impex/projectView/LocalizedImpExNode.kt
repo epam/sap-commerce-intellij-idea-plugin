@@ -33,7 +33,7 @@ class LocalizedImpExNode(
     name: String,
     project: Project,
     children: Collection<AbstractTreeNode<*>>,
-    viewSettings: ViewSettings,
+    viewSettings: ViewSettings?,
     private val presentableName: String = "$name.${ImpExFileType.defaultExtension}",
 ) : ProjectViewNode<Collection<AbstractTreeNode<*>>>(project, children, viewSettings) {
 
