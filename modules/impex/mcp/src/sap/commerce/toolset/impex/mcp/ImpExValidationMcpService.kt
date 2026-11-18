@@ -29,6 +29,7 @@ import com.intellij.openapi.application.readAction
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.Document
+import com.intellij.openapi.editor.EditorFactory
 import com.intellij.openapi.progress.coroutineToIndicator
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
@@ -47,6 +48,7 @@ import sap.commerce.toolset.impex.mcp.dto.ImpExSyntaxIssueDto
 import sap.commerce.toolset.impex.mcp.dto.ImpExValidationResultDto
 import sap.commerce.toolset.impex.psi.ImpExElementFactory
 import sap.commerce.toolset.path
+import java.nio.file.InvalidPathException
 import java.nio.file.Path
 
 @Service(Service.Level.PROJECT)
@@ -127,28 +129,40 @@ class ImpExValidationMcpService(private val project: Project) {
     }
 
     private suspend fun resolveTarget(context: ImpExValidationMcpRequest): Triple<PsiFile, Document, String?> {
-        context.filePath
+        val filePath = context.filePath?.takeIf { it.isNotBlank() }
+
+        filePath
             ?.let { resolveVirtualFile(it) }
             ?.let { virtualFile ->
                 val psiFile = readAction { PsiManager.getInstance(project).findFile(virtualFile) }
-                    ?: error("File is not recognized as part of the project: ${context.filePath}")
+                    ?: error("File is not recognized as part of the project: $filePath")
                 val document = readAction { PsiDocumentManager.getInstance(project).getDocument(psiFile) }
-                    ?: error("Could not obtain a document for file: ${context.filePath}")
+                    ?: error("Could not obtain a document for file: $filePath")
                 return Triple(psiFile, document, virtualFile.path)
             }
 
         val content = context.content
-            ?: error("Either 'content' or an existing 'filePath' must be provided.")
+            ?: error(
+                if (filePath == null) "Either 'content' or 'filePath' must be provided."
+                else "File not found: $filePath. Provide an existing project file (absolute path, or relative to the project directory) or pass 'content' instead."
+            )
 
-        val psiFile = readAction { ImpExElementFactory.createFile(project, content) }
-        val document = readAction { PsiDocumentManager.getInstance(project).getDocument(psiFile) }
-            ?: error("Could not create an in-memory document for the given content.")
+        // PsiDocumentManager does not provide documents for non-physical files, build one from the (normalized) PSI text
+        val (psiFile, document) = readAction {
+            val file = ImpExElementFactory.createFile(project, content)
+
+            file to EditorFactory.getInstance().createDocument(file.text)
+        }
 
         return Triple(psiFile, document, null)
     }
 
     private fun resolveVirtualFile(filePath: String): VirtualFile? {
-        val path = Path.of(filePath)
+        val path = try {
+            Path.of(filePath)
+        } catch (_: InvalidPathException) {
+            return null
+        }
         val absolute = if (path.isAbsolute) path else project.path?.resolve(path) ?: return null
         return LocalFileSystem.getInstance().refreshAndFindFileByNioFile(absolute)
     }
