@@ -1,3 +1,11 @@
+## [2026.3.1]
+
+<cite>Release contributors</code>
+- 1 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.3.1+author%3Amlytvyn+is%3Apr)
+
+### Other enhancements
+- Compatibility release for IntelliJ IDEA `2026.3` - grid plugin [#2028](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2028)
+
 ## [2026.3.0]
 
 <cite>Release contributors</code>

@@ -72,7 +72,7 @@ class ImpExProjectSettingsConfigurableProvider(private val project: Project) : C
                         checkBox("Trim whitespace")
                             .bindSelected(mutable.editMode::trimWhitespace)
                     }
-                }.rowComment("This functionality relies and expects that 'intellij.grid.plugin' is available and enabled.")
+                }.rowComment("This functionality relies and expects that 'com.intellij.grid' is available and enabled.")
 
                 group("Code Completion") {
                     row {

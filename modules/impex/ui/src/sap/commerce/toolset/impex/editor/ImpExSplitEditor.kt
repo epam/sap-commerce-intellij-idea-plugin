@@ -24,7 +24,6 @@ import com.intellij.openapi.actionSystem.PlatformDataKeys
 import com.intellij.openapi.application.edtWriteAction
 import com.intellij.openapi.fileEditor.TextEditor
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.util.Key
 import com.intellij.psi.SmartPsiElementPointer
 import com.intellij.util.asSafely
@@ -36,7 +35,6 @@ import sap.commerce.toolset.impex.psi.ImpExMacroDeclaration
 import sap.commerce.toolset.ui.editor.SplitEditorBase
 import java.io.Serial
 import kotlin.time.Duration
-import kotlin.time.Duration.Companion.milliseconds
 
 fun AnActionEvent.impexSplitEditorEx() = this.getData(PlatformDataKeys.FILE_EDITOR)
     ?.asSafely<ImpExSplitEditorEx>()
@@ -123,7 +121,7 @@ class ImpExSplitEditorBase(textEditor: TextEditor, project: Project) : SplitEdit
     private fun getParametrizedText(virtualParameters: Map<SmartPsiElementPointer<ImpExMacroDeclaration>, ImpExVirtualParameter>): String {
         var text = editor.document.text
         virtualParameters
-            .toSortedMap(compareByDescending { it.element?.textRange?.startOffset ?: 0 })
+            .toSortedMap(compareBy { it.element?.textRange?.startOffset ?: 0 })
             .forEach { (pointer, virtualParameter) ->
                 val element = pointer.element
                 if (element != null) {

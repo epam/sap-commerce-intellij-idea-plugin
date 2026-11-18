@@ -265,7 +265,7 @@ dependencies {
             "com.intellij.structureView",
             "com.intellij.xml",
             "com.intellij.modules.jcef",
-            "intellij.grid.plugin",
+            "com.intellij.grid",
             "com.intellij.java",
             "org.jetbrains.java.decompiler",
             "com.intellij.java-i18n",
