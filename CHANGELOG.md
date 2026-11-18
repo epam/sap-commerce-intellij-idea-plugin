@@ -1,7 +1,10 @@
 ## [2026.3.1]
 
 <cite>Release contributors</code>
-- 16 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.3.1+author%3Amlytvyn+is%3Apr)
+- 17 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.3.1+author%3Amlytvyn+is%3Apr)
+
+### `Access Control Lists` enhancements
+- Address PSI lookup error for the non-ACL and light file editors [#2044](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2044)
 
 ### `Project Import` enhancements
 - Address import progress dialog failure caused by an unsuitable parent window [#2040](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2040)
