@@ -29,5 +29,8 @@ open class CngMeta<DOM : DomElement>(
 ) {
     fun retrieveDom(): DOM? = domAnchor.retrieveDomElement()
 
+    // stub-based DOM logs an error on attribute access if its own tag cannot be found
+    fun retrieveAttachedDom(): DOM? = retrieveDom()?.takeIf { it.isValid && it.xmlTag != null }
+
     override fun toString() = "Name: $fileName | custom: $custom"
 }

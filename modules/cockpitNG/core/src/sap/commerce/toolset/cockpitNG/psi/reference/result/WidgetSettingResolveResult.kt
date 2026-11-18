@@ -24,6 +24,6 @@ import sap.commerce.toolset.cockpitNG.meta.model.CngMetaWidgetSetting
 class WidgetSettingResolveResult(
     val meta: CngMetaWidgetSetting
 ) : ResolveResult {
-    override fun getElement() = meta.retrieveDom()?.key?.xmlAttributeValue
-    override fun isValidResult() = element != null && (meta.retrieveDom()?.isValid ?: false)
+    override fun getElement() = meta.retrieveAttachedDom()?.key?.xmlAttributeValue
+    override fun isValidResult() = element != null
 }
