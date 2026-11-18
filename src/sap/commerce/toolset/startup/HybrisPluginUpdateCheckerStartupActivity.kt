@@ -17,20 +17,20 @@
  */
 package sap.commerce.toolset.startup
 
-import com.intellij.openapi.application.runInEdt
+import com.intellij.openapi.application.EDT
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.startup.ProjectActivity
 import com.intellij.openapi.updateSettings.impl.UpdateSettings
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class HybrisPluginUpdateCheckerStartupActivity : ProjectActivity {
 
-    override suspend fun execute(project: Project) {
-        runInEdt {
-            if (project.isDisposed) return@runInEdt
+    // cancellable, unlike `runInEdt`, so it does not run while the plugin is being unloaded
+    override suspend fun execute(project: Project) = withContext(Dispatchers.EDT) {
+        if (project.isDisposed) return@withContext
 
-            UpdateSettings.getInstance().state.isCheckNeeded = true
-            val checker = HybrisStandalonePluginUpdateChecker.getInstance(project)
-            checker.pluginUsed()
-        }
+        UpdateSettings.getInstance().state.isCheckNeeded = true
+        HybrisStandalonePluginUpdateChecker.getInstance(project).pluginUsed()
     }
 }
