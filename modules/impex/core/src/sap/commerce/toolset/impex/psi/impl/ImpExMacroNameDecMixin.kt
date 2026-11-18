@@ -17,7 +17,6 @@
  */
 package sap.commerce.toolset.impex.psi.impl
 
-import com.intellij.database.dialects.base.findChild
 import com.intellij.extapi.psi.ASTWrapperPsiElement
 import com.intellij.lang.ASTNode
 import com.intellij.openapi.fileEditor.FileEditorManager
@@ -43,7 +42,8 @@ abstract class ImpExMacroNameDecMixin(node: ASTNode) : ASTWrapperPsiElement(node
         Key.create("SAP_CX_IMPEX_RESOLVED_VALUE_" + evaluatedMacroUsages.size),
         {
             val resolvedValue = resolveVirtualParameter()
-                ?: this.parent.findChild(ImpExTypes.MACRO_VALUES_DEC)
+                ?: this.parent.node.findChildByType(ImpExTypes.MACRO_VALUES_DEC)
+                    ?.psi
                     ?.childLeafs()
                     ?.map { psi ->
                         psi.takeIf { it.elementType == ImpExTypes.MACRO_USAGE }
