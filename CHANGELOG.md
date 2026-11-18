@@ -1,7 +1,7 @@
 ## [2026.3.1]
 
 <cite>Release contributors</code>
-- 11 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.3.1+author%3Amlytvyn+is%3Apr)
+- 12 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.3.1+author%3Amlytvyn+is%3Apr)
 
 ### `CCv2` enhancements
 - Address log unscrambling failure for the clipboard text which is valid JSON but not a log entry [#2036](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2036)
@@ -25,6 +25,7 @@
 - Address possible NPE for the View Settings in the Tree view [#2030](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2030)
 
 ### Other enhancements
+- Address plugin update check failure during the plugin dynamic unload [#2039](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2039)
 - Support IDEA Proxy Configuration [#2029](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2029)
 - Compatibility release for IntelliJ IDEA `2026.3` - grid plugin [#2028](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2028)
 
