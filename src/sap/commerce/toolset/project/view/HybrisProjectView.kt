@@ -284,8 +284,9 @@ open class HybrisProjectView(val project: Project) : TreeStructureProvider, Dumb
             }
         }
 
+        // children of the other nodes (e.g. module groups) are not needed and may refer to already invalid files
         return children
-            .map { recursivelyCompactEmptyMiddlePackages(it, it.children) }
+            .map { if (it is PsiDirectoryNode) recursivelyCompactEmptyMiddlePackages(it, it.children) else it }
             .toMutableList()
     }
 
