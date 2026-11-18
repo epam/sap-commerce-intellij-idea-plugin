@@ -43,6 +43,8 @@ dependencies {
     implementation(project(":project-extensioninfo"))
     implementation(project(":project-import-core"))
 
+    testImplementation(kotlin("test"))
+
     intellijPlatform {
         intellijIdea(properties("intellij.version")) {
             useInstaller = true

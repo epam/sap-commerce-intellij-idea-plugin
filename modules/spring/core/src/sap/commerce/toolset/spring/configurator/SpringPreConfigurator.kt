@@ -31,10 +31,12 @@ import sap.commerce.toolset.project.descriptor.YModuleDescriptor
 import sap.commerce.toolset.project.descriptor.YRegularModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YCoreExtModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YWebSubModuleDescriptor
+import sap.commerce.toolset.spring.resolvePlaceholders
 import sap.commerce.toolset.util.directoryExists
 import sap.commerce.toolset.util.fileExists
 import java.io.IOException
 import java.nio.file.Files
+import java.nio.file.InvalidPathException
 import java.nio.file.Path
 import java.util.*
 import java.util.regex.Pattern
@@ -122,7 +124,7 @@ class SpringPreConfigurator : ProjectImportConfigurator {
                         projectProperties.getProperty(key)
                             .split(",")
                             .dropLastWhile { it.isEmpty() }
-                            .toTypedArray()
+                            .map { it.resolvePlaceholders(projectProperties) }
                             .filterNot { addSpringXmlFile(moduleDescriptorMap, relevantModule, relevantModule.resourcesPath, it) }
                             .forEach { fileName ->
                                 val dir = hackGuessLocation(relevantModule)
@@ -366,9 +368,14 @@ class SpringPreConfigurator : ProjectImportConfigurator {
         resourcesDir: Path,
         fileName: String
     ): Boolean {
-        val fileNamePath = fileName.removePrefix("/")
-            .split("/")
-            .let { Path(it.first(), *it.drop(1).toTypedArray()) }
+        val fileNamePath = try {
+            fileName.removePrefix("/")
+                .split("/", "\\")
+                .let { Path(it.first(), *it.drop(1).toTypedArray()) }
+        } catch (_: InvalidPathException) {
+            // e.g. an unresolved `${placeholder:default}` — cannot point to a file
+            return false
+        }
         return resourcesDir.resolve(fileNamePath)
             .takeIf { it.fileExists }
             ?.let { processSpringFile(moduleDescriptorMap, moduleDescriptor, it) }
