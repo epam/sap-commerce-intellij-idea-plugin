@@ -30,7 +30,6 @@ class SpringStartupConfigurator : ProjectStartupConfigurator {
         Plugin.SPRING.ifActive {
             SpringGeneralSettings.getInstance(project)?.apply {
                 isShowMultipleContextsPanel = false
-                isShowProfilesPanel = false
             }
         }
     }
