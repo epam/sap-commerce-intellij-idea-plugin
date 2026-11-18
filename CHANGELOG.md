@@ -1,9 +1,10 @@
 ## [2026.3.1]
 
 <cite>Release contributors</code>
-- 3 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.3.1+author%3Amlytvyn+is%3Apr)
+- 4 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.3.1+author%3Amlytvyn+is%3Apr)
 
 ### `ImpEx` enhancements
+- Do not rely on the Database plugin in the macro value resolution [#2031](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2031)
 - Address possible NPE for the View Settings in the Tree view [#2030](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2030)
 
 ### Other enhancements
