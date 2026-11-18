@@ -1,7 +1,7 @@
 ## [2026.3.1]
 
 <cite>Release contributors</code>
-- 20 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.3.1+author%3Amlytvyn+is%3Apr)
+- 21 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.3.1+author%3Amlytvyn+is%3Apr)
 
 ### `Type System` enhancements
 - Address references validation outside of a read action [#2047](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2047)
@@ -32,6 +32,7 @@
 - Improve spring context resolution in case of the placeholder imports [#2032](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2032)
 
 ### `ImpEx` enhancements
+- Address rename of the non-ImpEx elements failing on the text mismatch check [#2048](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2048)
 - Address highlighting of the references in the attribute values with multiple entries [#2046](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2046)
 - Address value references resolution outside of a read action [#2043](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2043)
 - Address ImpEx content validation via MCP and clarify the unresolved file path errors [#2037](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2037)
