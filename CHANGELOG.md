@@ -1,7 +1,7 @@
 ## [2026.3.1]
 
 <cite>Release contributors</code>
-- 9 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.3.1+author%3Amlytvyn+is%3Apr)
+- 10 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.3.1+author%3Amlytvyn+is%3Apr)
 
 ### `CCv2` enhancements
 - Address log unscrambling failure for the clipboard text which is valid JSON but not a log entry [#2036](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2036)
@@ -19,6 +19,7 @@
 - Improve spring context resolution in case of the placeholder imports [#2032](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2032)
 
 ### `ImpEx` enhancements
+- Address ImpEx content validation via MCP and clarify the unresolved file path errors [#2037](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2037)
 - Do not rely on the Database plugin in the macro value resolution [#2031](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2031)
 - Address possible NPE for the View Settings in the Tree view [#2030](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2030)
 
