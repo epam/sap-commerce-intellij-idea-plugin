@@ -1,7 +1,7 @@
 ## [2026.3.1]
 
 <cite>Release contributors</code>
-- 15 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.3.1+author%3Amlytvyn+is%3Apr)
+- 16 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.3.1+author%3Amlytvyn+is%3Apr)
 
 ### `Project Import` enhancements
 - Address import progress dialog failure caused by an unsuitable parent window [#2040](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2040)
@@ -25,6 +25,7 @@
 - Improve spring context resolution in case of the placeholder imports [#2032](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2032)
 
 ### `ImpEx` enhancements
+- Address value references resolution outside of a read action [#2043](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2043)
 - Address ImpEx content validation via MCP and clarify the unresolved file path errors [#2037](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2037)
 - Do not rely on the Database plugin in the macro value resolution [#2031](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2031)
 - Address possible NPE for the View Settings in the Tree view [#2030](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2030)
