@@ -1,7 +1,10 @@
 ## [2026.3.1]
 
 <cite>Release contributors</code>
-- 5 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.3.1+author%3Amlytvyn+is%3Apr)
+- 6 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.3.1+author%3Amlytvyn+is%3Apr)
+
+### `Cockpit NG` enhancements
+- Improve validation of the resolved references [#2033](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2033)
 
 ### `Spring` enhancements
 - Improve spring context resolution in case of the placeholder imports [#2032](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2032)
