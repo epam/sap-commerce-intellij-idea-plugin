@@ -1,7 +1,7 @@
 ## [2026.3.1]
 
 <cite>Release contributors</code>
-- 18 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.3.1+author%3Amlytvyn+is%3Apr)
+- 19 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.3.1+author%3Amlytvyn+is%3Apr)
 
 ### `Access Control Lists` enhancements
 - Address PSI lookup error for the non-ACL and light file editors [#2044](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2044)
@@ -29,6 +29,7 @@
 - Improve spring context resolution in case of the placeholder imports [#2032](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2032)
 
 ### `ImpEx` enhancements
+- Address highlighting of the references in the attribute values with multiple entries [#2046](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2046)
 - Address value references resolution outside of a read action [#2043](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2043)
 - Address ImpEx content validation via MCP and clarify the unresolved file path errors [#2037](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2037)
 - Do not rely on the Database plugin in the macro value resolution [#2031](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2031)
