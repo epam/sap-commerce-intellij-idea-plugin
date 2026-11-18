@@ -43,7 +43,7 @@ class ProjectImportTask(private val project: Project) {
     private val logger = thisLogger()
 
     fun execute(context: ProjectImportContext) = runWithModalProgressBlocking(
-        owner = ModalTaskOwner.guess(),
+        owner = ModalTaskOwner.project(project),
         title = if (context.refresh) i18n("hybris.project.refresh.commit")
         else i18n("hybris.project.import.commit"),
     ) {
