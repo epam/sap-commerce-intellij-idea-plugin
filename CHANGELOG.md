@@ -1,7 +1,7 @@
 ## [2026.3.1]
 
 <cite>Release contributors</code>
-- 14 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.3.1+author%3Amlytvyn+is%3Apr)
+- 15 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.3.1+author%3Amlytvyn+is%3Apr)
 
 ### `Project Import` enhancements
 - Address import progress dialog failure caused by an unsuitable parent window [#2040](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2040)
@@ -13,6 +13,7 @@
 - Address loggers tree update outside of the Event Dispatch Thread [#2035](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2035)
 
 ### `Project View` enhancements
+- Address module groups referring to invalid files during the empty middle folders compaction [#2042](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2042)
 - Improve validation of the tree nodes existence [#2034](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2034)
 
 ### `Cockpit NG` enhancements
