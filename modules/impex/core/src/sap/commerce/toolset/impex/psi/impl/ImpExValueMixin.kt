@@ -20,6 +20,7 @@ package sap.commerce.toolset.impex.psi.impl
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement
 import com.intellij.lang.ASTNode
+import com.intellij.openapi.application.runReadAction
 import com.intellij.openapi.util.text.StringUtilRt
 import com.intellij.psi.LiteralTextEscaper
 import com.intellij.psi.PsiElement
@@ -51,11 +52,14 @@ abstract class ImpExValueMixin(node: ASTNode) : ASTWrapperPsiElement(node), PsiL
     override fun getFieldValue(index: Int): PsiElement? = getFieldValues()
         .getOrNull(index)
 
-    override fun getReferences(): Array<PsiReference> = CachedValuesManager.getManager(project).getCachedValue(this) {
-        CachedValueProvider.Result.create(
-            collectReferences(),
-            TSModificationTracker.getInstance(project), this
-        )
+    // references were observed being requested on EDT outside of a read action
+    override fun getReferences(): Array<PsiReference> = runReadAction {
+        CachedValuesManager.getManager(project).getCachedValue(this) {
+            CachedValueProvider.Result.create(
+                collectReferences(),
+                TSModificationTracker.getInstance(project), this
+            )
+        }
     }
 
     override fun isNonImportable(): Boolean = !isImportable()
