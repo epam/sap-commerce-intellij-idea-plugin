@@ -203,9 +203,15 @@ class SpringPreConfigurator : ProjectImportConfigurator {
 
         patternSplitByComma.split(contextConfigLocation)
             .filter { it.endsWith(".xml") }
-            .map { webModuleDir.resolve(it) }
-            .filter { it.fileExists }
-            .forEach { processSpringFile(moduleDescriptorMap, moduleDescriptor, it) }
+            .forEach { location ->
+                when {
+                    location.startsWith("classpath*:") -> addSpringOnClasspathMultiple(moduleDescriptorMap, moduleDescriptor, location.removePrefix("classpath*:"))
+                    location.startsWith("classpath:") -> addSpringOnClasspath(moduleDescriptorMap, moduleDescriptor, location.removePrefix("classpath:"))
+                    else -> resolveOrNull(webModuleDir, location)
+                        ?.takeIf { it.fileExists }
+                        ?.let { processSpringFile(moduleDescriptorMap, moduleDescriptor, it) }
+                }
+            }
 
         // In addition to plain xml files also scan jars in the WEB-INF/lib
         val webInfLibDir = moduleDescriptor.moduleRootPath.resolve(ProjectConstants.Paths.WEBROOT_WEB_INF_LIB)
@@ -240,6 +246,12 @@ class SpringPreConfigurator : ProjectImportConfigurator {
                 }
             }
         }
+    }
+
+    private fun resolveOrNull(directory: Path, location: String): Path? = try {
+        directory.resolve(location)
+    } catch (_: InvalidPathException) {
+        null
     }
 
     private fun processSpringFile(

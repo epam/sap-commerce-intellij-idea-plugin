@@ -1,7 +1,7 @@
 ## [2026.3.1]
 
 <cite>Release contributors</code>
-- 13 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.3.1+author%3Amlytvyn+is%3Apr)
+- 14 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.3.1+author%3Amlytvyn+is%3Apr)
 
 ### `Project Import` enhancements
 - Address import progress dialog failure caused by an unsuitable parent window [#2040](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2040)
@@ -19,6 +19,7 @@
 - Improve validation of the resolved references [#2033](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2033)
 
 ### `Spring` enhancements
+- Address classpath context locations of the web modules on Windows [#2041](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2041)
 - Address possible NPE for the Spring settings on project startup [#2038](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2038)
 - Improve spring context resolution in case of the placeholder imports [#2032](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2032)
 
