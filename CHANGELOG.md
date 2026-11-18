@@ -16,7 +16,7 @@
 - Improve validation of the resolved references [#2033](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2033)
 
 ### `Spring` enhancements
-- Address project startup failure when the Spring general settings are not available and do not force the profiles panel visibility [#2038](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2038)
+- Address possible NPE for the Spring settings on project startup [#2038](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2038)
 - Improve spring context resolution in case of the placeholder imports [#2032](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2032)
 
 ### `ImpEx` enhancements
