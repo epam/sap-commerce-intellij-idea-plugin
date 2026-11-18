@@ -1,7 +1,10 @@
 ## [2026.3.1]
 
 <cite>Release contributors</code>
-- 8 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.3.1+author%3Amlytvyn+is%3Apr)
+- 9 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.3.1+author%3Amlytvyn+is%3Apr)
+
+### `CCv2` enhancements
+- Address log unscrambling failure for the clipboard text which is valid JSON but not a log entry [#2036](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2036)
 
 ### `SAP CX Logging` enhancements
 - Address loggers tree update outside of the Event Dispatch Thread [#2035](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2035)
