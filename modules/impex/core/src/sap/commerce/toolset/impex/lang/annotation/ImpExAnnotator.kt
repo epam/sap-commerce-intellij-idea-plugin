@@ -129,13 +129,16 @@ class ImpExAnnotator : AbstractAnnotator() {
             }
 
             ImpExTypes.ATTRIBUTE_VALUE -> {
-                element.parent.references.forEach { reference ->
-                    when (reference) {
-                        is ImpExValueTSStaticEnumReference,
-                        is ImpExValueTSClassifierReference,
-                        is ImpExDocumentIdUsageReference -> holder.highlightReference(reference, ImpExHighlighterColors.VALUE_REFERENCE)
+                // the parent may hold references of the sibling values, an annotation range must be inside the annotated element
+                element.parent.references
+                    .filter { element.textRange.contains(it.absoluteRange) }
+                    .forEach { reference ->
+                        when (reference) {
+                            is ImpExValueTSStaticEnumReference,
+                            is ImpExValueTSClassifierReference,
+                            is ImpExDocumentIdUsageReference -> holder.highlightReference(reference, ImpExHighlighterColors.VALUE_REFERENCE)
+                        }
                     }
-                }
             }
 
             ImpExTypes.USER_RIGHTS_ATTRIBUTE_VALUE -> {
