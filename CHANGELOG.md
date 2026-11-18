@@ -4,7 +4,7 @@
 - 8 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.3.1+author%3Amlytvyn+is%3Apr)
 
 ### `SAP CX Logging` enhancements
-- Address loggers tree update outside of the Event Dispatch Thread
+- Address loggers tree update outside of the Event Dispatch Thread [#2035](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2035)
 
 ### `Project View` enhancements
 - Improve validation of the tree nodes existence [#2034](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2034)
