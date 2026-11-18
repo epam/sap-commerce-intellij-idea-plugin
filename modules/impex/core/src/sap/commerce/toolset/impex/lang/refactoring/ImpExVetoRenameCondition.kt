@@ -21,9 +21,12 @@ package sap.commerce.toolset.impex.lang.refactoring
 import com.intellij.openapi.util.Condition
 import com.intellij.psi.PsiElement
 import sap.commerce.toolset.impex.ImpExConstants
+import sap.commerce.toolset.impex.ImpExLanguage
 
 class ImpExVetoRenameCondition : Condition<PsiElement> {
 
-    override fun value(t: PsiElement?) = t?.text?.startsWith(ImpExConstants.MACRO_CONFIG_COMPLETE_MARKER)
-        ?: false
+    // invoked for the elements of all languages, do not read the text (e.g. of a whole file) of the foreign ones
+    override fun value(t: PsiElement?) = t != null
+        && t.language == ImpExLanguage
+        && t.text.startsWith(ImpExConstants.MACRO_CONFIG_COMPLETE_MARKER)
 }
