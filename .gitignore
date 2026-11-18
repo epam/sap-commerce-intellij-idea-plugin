@@ -18,6 +18,8 @@
 .idea/gradle.xml
 .idea/codeStyles
 
+.codemie
+
 .kotlin
 
 **/out/

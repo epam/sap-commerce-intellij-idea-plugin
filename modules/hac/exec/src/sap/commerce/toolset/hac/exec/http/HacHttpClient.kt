@@ -46,6 +46,8 @@ import org.jsoup.Connection
 import org.jsoup.Jsoup
 import sap.commerce.toolset.exec.ExecConstants
 import sap.commerce.toolset.exec.context.ReplicaContext
+import sap.commerce.toolset.exec.ideProxyFor
+import sap.commerce.toolset.exec.useIdeProxy
 import sap.commerce.toolset.hac.auth.HacManualAuthenticator
 import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import sap.commerce.toolset.hac.exec.settings.state.AuthMode
@@ -255,6 +257,7 @@ class HacHttpClient(private val project: Project) {
         }
 
         return HttpClients.custom()
+            .useIdeProxy()
             .setConnectionManager(
                 BasicHttpClientConnectionManager(
                     RegistryBuilder.create<ConnectionSocketFactory>()
@@ -352,7 +355,7 @@ class HacHttpClient(private val project: Project) {
         sc.init(null, trustAllCerts, SecureRandom())
         HttpsURLConnection.setDefaultSSLSocketFactory(sc.socketFactory)
         HttpsURLConnection.setDefaultHostnameVerifier(NoopHostnameVerifier())
-        return Jsoup.connect(url)
+        return Jsoup.connect(url).proxy(ideProxyFor(url))
     }
 
     private val Credentials.basicAuth: String?

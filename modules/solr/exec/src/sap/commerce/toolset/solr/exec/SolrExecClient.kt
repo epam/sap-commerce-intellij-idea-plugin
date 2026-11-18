@@ -25,6 +25,7 @@ import com.intellij.util.asSafely
 import com.intellij.util.containers.mapSmartNotNull
 import kotlinx.coroutines.CoroutineScope
 import org.apache.http.HttpStatus
+import org.apache.http.impl.client.HttpClients
 import org.apache.solr.client.solrj.SolrQuery
 import org.apache.solr.client.solrj.SolrRequest
 import org.apache.solr.client.solrj.impl.HttpSolrClient
@@ -36,6 +37,7 @@ import org.apache.solr.common.params.CoreAdminParams
 import org.apache.solr.common.util.NamedList
 import sap.commerce.toolset.exec.DefaultExecClient
 import sap.commerce.toolset.exec.context.DefaultExecResult
+import sap.commerce.toolset.exec.useIdeProxy
 import sap.commerce.toolset.solr.exec.context.SolrCoreData
 import sap.commerce.toolset.solr.exec.context.SolrQueryExecContext
 import sap.commerce.toolset.solr.exec.settings.state.SolrConnectionSettingsState
@@ -50,8 +52,7 @@ class SolrExecClient(project: Project, coroutineScope: CoroutineScope) : Default
         val queryRequest = buildQueryRequest(solrQuery, settings)
         val url = "${settings.generatedURL}/${context.core}"
 
-        return buildHttpSolrClient(settings, url)
-            .runCatching { request(queryRequest) }
+        return withSolrClient(settings, url) { it.request(queryRequest) }
             .map { namedList ->
                 DefaultExecResult(
                     output = (namedList["response"] as String).takeIf { it.isNotBlank() }
@@ -78,7 +79,7 @@ class SolrExecClient(project: Project, coroutineScope: CoroutineScope) : Default
             setAction(CoreAdminParams.CoreAdminAction.STATUS)
             setBasicAuthCredentials(username, password)
         }
-        .runCatching { process(buildHttpSolrClient(settings, settings.generatedURL)) }
+        .let { request -> withSolrClient(settings, settings.generatedURL) { request.process(it) } }
         .map { parseCoreResponse(it) }
         .getOrElse {
             throw it
@@ -98,10 +99,20 @@ class SolrExecClient(project: Project, coroutineScope: CoroutineScope) : Default
         (it["index"] as NamedList<*>)["numDocs"] as Int
     )
 
-    private fun buildHttpSolrClient(settings: SolrConnectionSettingsState, url: String) = HttpSolrClient.Builder(url)
-        .withConnectionTimeout(settings.timeout)
-        .withSocketTimeout(settings.socketTimeout)
-        .build()
+    private fun <T> withSolrClient(settings: SolrConnectionSettingsState, url: String, request: (HttpSolrClient) -> T): Result<T> = runCatching {
+        HttpClients.custom()
+            .useSystemProperties()
+            .useIdeProxy()
+            .build()
+            .use { httpClient ->
+                HttpSolrClient.Builder(url)
+                    .withHttpClient(httpClient)
+                    .withConnectionTimeout(settings.timeout)
+                    .withSocketTimeout(settings.socketTimeout)
+                    .build()
+                    .use(request)
+            }
+    }
 
     private fun buildQueryRequest(solrQuery: SolrQuery, settings: SolrConnectionSettingsState) = QueryRequest(solrQuery).apply {
         val credentials = SolrExecConnectionService.getInstance(project).getCredentials(settings.uuid)
