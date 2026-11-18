@@ -23,13 +23,16 @@ import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.event.EditorFactoryEvent
 import com.intellij.openapi.editor.event.EditorFactoryListener
+import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.testFramework.LightVirtualFile
 import com.intellij.util.asSafely
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import sap.commerce.toolset.acl.editor.AclEditorMarkupModelHelper
+import sap.commerce.toolset.acl.file.AclFileType
 import sap.commerce.toolset.acl.psi.AclFile
 import sap.commerce.toolset.acl.psi.AclUserRightsValueLineType
 
@@ -46,6 +49,10 @@ class AclLineEditorFactoryListener : EditorFactoryListener {
 private class AclLineHighlighterService(private val project: Project, private val coroutineScope: CoroutineScope) {
 
     fun highlight(editor: Editor) {
+        // the listener is invoked for every editor, ask for PSI only for the real ACL files
+        val file = FileDocumentManager.getInstance().getFile(editor.document) ?: return
+        if (file is LightVirtualFile || file.fileType != AclFileType) return
+
         coroutineScope.launch {
             readAction {
                 PsiDocumentManager.getInstance(project).getPsiFile(editor.document)
