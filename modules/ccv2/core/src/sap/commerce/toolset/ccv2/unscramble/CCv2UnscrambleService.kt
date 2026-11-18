@@ -21,6 +21,7 @@ package sap.commerce.toolset.ccv2.unscramble
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.util.application
+import com.intellij.util.asSafely
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.*
 
@@ -39,8 +40,8 @@ class CCv2UnscrambleService {
         append("$indent$name: $message\n")
 
         obj["extendedStackTrace"]
-            ?.jsonArray
-            ?.map { it.jsonObject }
+            ?.asSafely<JsonArray>()
+            ?.mapNotNull { it.asSafely<JsonObject>() }
             ?.forEach {
                 val className = it["class"]?.jsonPrimitive?.contentOrNull ?: "UnknownClass"
                 val methodName = it["method"]?.jsonPrimitive?.contentOrNull ?: "unknownMethod"
@@ -53,8 +54,7 @@ class CCv2UnscrambleService {
 
 
         obj["cause"]
-            ?.takeUnless { it is JsonNull }
-            ?.jsonObject
+            ?.asSafely<JsonObject>()
             ?.let {
                 append("${indent}Caused by: ${buildStackTraceString(it, indent)}")
             }
@@ -63,9 +63,9 @@ class CCv2UnscrambleService {
 
     private fun getThrown(text: String) = try {
         Json.parseToJsonElement(text)
-            .jsonObject["thrown"]
-            ?.takeUnless { it is JsonNull }
-            ?.jsonObject
+            .asSafely<JsonObject>()
+            ?.get("thrown")
+            ?.asSafely<JsonObject>()
             ?.takeIf { it.containsKey("extendedStackTrace") }
     } catch (_: SerializationException) {
         null
