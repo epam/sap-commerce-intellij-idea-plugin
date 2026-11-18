@@ -28,9 +28,8 @@ class SpringStartupConfigurator : ProjectStartupConfigurator {
 
     override suspend  fun configure(project: Project) {
         Plugin.SPRING.ifActive {
-            with(SpringGeneralSettings.getInstance(project)) {
+            SpringGeneralSettings.getInstance(project)?.apply {
                 isShowMultipleContextsPanel = false
-                isShowProfilesPanel = false
             }
         }
     }
