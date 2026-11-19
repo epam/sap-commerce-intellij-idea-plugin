@@ -646,7 +646,7 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
         project: Project,
         subscription: CCv2Subscription,
         build: CCv2BuildDto,
-        onCompleteCallback: (Collection<VirtualFile>) -> Unit
+        onCompleteCallback: suspend (Collection<VirtualFile>) -> Unit
     ) {
         coroutineScope.launch {
             withBackgroundProgress(project, "Downloading CCv2 Build Logs - ${build.code}...") {

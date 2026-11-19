@@ -19,7 +19,6 @@
 package sap.commerce.toolset.ccv2.actionSystem
 
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.application.runInEdt
 import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.fileEditor.FileEditorOpenRequest
 import com.intellij.openapi.project.Project
@@ -46,13 +45,11 @@ class CCv2DownloadBuildLogsAction : CCv2Action(
         CCv2Service.getInstance(project).downloadBuildLogs(project, subscription, build, onCompleteCallback(project))
     }
 
-    private fun onCompleteCallback(project: Project): (Collection<VirtualFile>) -> Unit = { files ->
+    private fun onCompleteCallback(project: Project): suspend (Collection<VirtualFile>) -> Unit = { files ->
         fetching = false
 
-        runInEdt {
-            files.forEach { vf ->
-                FileEditorManager.getInstance(project).requestOpenFile(vf, FileEditorOpenRequest.withFocus(true))
-            }
+        files.forEach { vf ->
+            FileEditorManager.getInstance(project).openFile(vf, FileEditorOpenRequest.withFocus(true))
         }
     }
 
