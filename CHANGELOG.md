@@ -40,6 +40,7 @@
 - Address possible NPE for the View Settings in the Tree view [#2030](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2030)
 
 ### Other enhancements
+- Address internal IntelliJ Platform API usage in the console Clear All action
 - Address plugin update check failure during the plugin dynamic unload [#2039](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2039)
 - Support IDEA Proxy Configuration [#2029](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2029)
 - Compatibility release for IntelliJ IDEA `2026.3` - grid plugin [#2028](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2028)
