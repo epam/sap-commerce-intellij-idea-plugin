@@ -19,7 +19,7 @@
 <idea-plugin>
 
     <extensions defaultExtensionNs="org.jetbrains.plugins.terminal">
-        <localTerminalCustomizer implementation="sap.commerce.toolset.terminal.HybrisProjectTerminalCustomizer"/>
+        <workingDirectoryCustomizer implementation="sap.commerce.toolset.terminal.HybrisProjectTerminalCustomizer"/>
     </extensions>
 
 </idea-plugin>
