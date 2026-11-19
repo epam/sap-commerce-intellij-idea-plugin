@@ -4,14 +4,20 @@
 
 1. Read `skills/dev-plugin.md` (Kotlin conventions, MCP patterns, service/DTO rules).
 2. Read the area-specific skill (`skills/dev-type-system.md`, `skills/lang-impex.md`, etc.).
-3. `git checkout -b <area>-<short-topic>` — never implement on `main`.
+3. `git checkout -b <area>-<short-topic> --no-track main` — never implement on `main`.
 
 ## Remote topology
 
 - `origin` — contributor's fork. Push branches here.
 - `upstream` — `epam/sap-commerce-intellij-idea-plugin`. PR target; merges into `epam:main`.
-- Never commit to `main` directly. Branch: `git checkout -b <area>-<short-topic>`.
+- Never commit to `main` directly. Branch: `git checkout -b <area>-<short-topic> --no-track main`.
 - Push: `git push -u origin <area>-<short-topic>`.
+
+### Feature branches
+
+- Track `origin/<branch>` only. Never `upstream/main` as start point, rebase target or upstream.
+- Refresh `main`: `git fetch upstream` + `git merge --ff-only upstream/main`. Branch from / rebase onto local `main`.
+- Wrong tracking: `git branch --unset-upstream <branch>`. Verify: `git branch -vv`.
 
 ## Commit messages
 

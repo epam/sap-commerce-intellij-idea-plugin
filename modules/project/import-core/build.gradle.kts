@@ -47,7 +47,7 @@ dependencies {
         }
 
         bundledModules(
-            "intellij.platform.vcs.impl",
+            "intellij.platform.vcs",
             "intellij.spellchecker",
         )
 

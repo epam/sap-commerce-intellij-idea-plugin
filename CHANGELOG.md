@@ -1,7 +1,7 @@
 ## [2026.3.1]
 
 <cite>Release contributors</code>
-- 24 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.3.1+author%3Amlytvyn+is%3Apr)
+- 25 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.3.1+author%3Amlytvyn+is%3Apr)
 
 ### `Type System` enhancements
 - Address references validation outside of a read action [#2047](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2047)
@@ -10,6 +10,7 @@
 - Address PSI lookup error for the non-ACL and light file editors [#2044](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2044)
 
 ### `Project Import` enhancements
+- Address import progress dialog failure on reimport for a project without a frame [#2052](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2052)
 - Notify about the missing platform or config modules instead of failing the import commit [#2045](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2045)
 - Address import progress dialog failure caused by an unsuitable parent window [#2040](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2040)
 
