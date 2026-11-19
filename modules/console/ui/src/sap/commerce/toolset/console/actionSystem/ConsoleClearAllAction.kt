@@ -18,7 +18,6 @@
 
 package sap.commerce.toolset.console.actionSystem
 
-import com.intellij.execution.ExecutionBundle
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
@@ -26,10 +25,11 @@ import com.intellij.openapi.actionSystem.LangDataKeys
 import com.intellij.openapi.project.DumbAwareAction
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.console.HybrisConsoleService
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.ifNotFromSearchPopup
 
 class ConsoleClearAllAction : DumbAwareAction(
-    ExecutionBundle.message("clear.all.from.console.action.name"),
+    i18n("clear.all.from.console.action.name"),
     "Clear the contents of the console",
     HybrisIcons.Actions.CLEAR_ALL
 ) {
