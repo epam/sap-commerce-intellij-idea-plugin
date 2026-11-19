@@ -10,6 +10,7 @@
 - Address PSI lookup error for the non-ACL and light file editors [#2044](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2044)
 
 ### `Project Import` enhancements
+- Address import progress dialog failure on reimport for a project without a frame [#2052](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2052)
 - Notify about the missing platform or config modules instead of failing the import commit [#2045](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2045)
 - Address import progress dialog failure caused by an unsuitable parent window [#2040](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2040)
 
