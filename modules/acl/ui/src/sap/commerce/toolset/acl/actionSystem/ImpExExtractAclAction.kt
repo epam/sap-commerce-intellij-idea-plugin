@@ -26,6 +26,7 @@ import com.intellij.openapi.application.EDT
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.fileEditor.FileEditorManager
+import com.intellij.openapi.fileEditor.FileEditorOpenRequest
 import com.intellij.openapi.ui.Messages
 import com.intellij.openapi.ui.popup.Balloon
 import com.intellij.openapi.ui.popup.JBPopupFactory
@@ -127,7 +128,7 @@ class ImpExExtractAclAction : AnAction() {
                         .forEach { it.delete() }
 
                     aclTargetFile.virtualFile?.let { aclVirtualFile ->
-                        FileEditorManager.getInstance(project).openFile(aclVirtualFile, true)
+                        FileEditorManager.getInstance(project).requestOpenFile(aclVirtualFile, FileEditorOpenRequest.withFocus(true))
                     }
                 }
 

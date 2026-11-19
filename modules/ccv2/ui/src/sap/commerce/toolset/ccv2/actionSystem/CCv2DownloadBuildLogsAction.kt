@@ -21,6 +21,7 @@ package sap.commerce.toolset.ccv2.actionSystem
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.application.runInEdt
 import com.intellij.openapi.fileEditor.FileEditorManager
+import com.intellij.openapi.fileEditor.FileEditorOpenRequest
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import sap.commerce.toolset.HybrisIcons
@@ -50,7 +51,7 @@ class CCv2DownloadBuildLogsAction : CCv2Action(
 
         runInEdt {
             files.forEach { vf ->
-                FileEditorManager.getInstance(project).openFile(vf, true)
+                FileEditorManager.getInstance(project).requestOpenFile(vf, FileEditorOpenRequest.withFocus(true))
             }
         }
     }
