@@ -18,7 +18,6 @@
 
 package sap.commerce.toolset.cockpitNG
 
-import com.intellij.openapi.module.Module
 import com.intellij.psi.xml.XmlFile
 import com.intellij.util.xml.DomFileDescription
 import sap.commerce.toolset.HybrisIcons
@@ -31,7 +30,7 @@ class CngWidgetsDomFileDescription : DomFileDescription<Widgets>(Widgets::class.
 
     override fun getFileIcon(flags: Int): Icon = HybrisIcons.CockpitNG.WIDGETS
 
-    override fun isMyFile(file: XmlFile, module: Module?) = super.isMyFile(file, module)
+    override fun isMyFile(file: XmlFile) = super.isMyFile(file)
         && (hasNamespace(file) || "backoffice-widgets.xml" == file.name)
         && file.isHybrisProject
 

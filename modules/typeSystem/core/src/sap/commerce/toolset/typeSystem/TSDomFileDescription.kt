@@ -17,7 +17,6 @@
  */
 package sap.commerce.toolset.typeSystem
 
-import com.intellij.openapi.module.Module
 import com.intellij.openapi.util.Iconable.IconFlags
 import com.intellij.psi.xml.XmlFile
 import com.intellij.util.xml.DomFileDescription
@@ -31,9 +30,7 @@ class TSDomFileDescription : DomFileDescription<Items>(Items::class.java, TSCons
 
     override fun getFileIcon(@IconFlags flags: Int): Icon = HybrisIcons.TypeSystem.FILE
 
-    override fun isMyFile(
-        file: XmlFile, module: Module?
-    ) = super.isMyFile(file, module)
+    override fun isMyFile(file: XmlFile) = super.isMyFile(file)
         && file.name.endsWith(HybrisConstants.HYBRIS_ITEMS_XML_FILE_ENDING)
         && hasNamespace(file)
         && file.isHybrisProject

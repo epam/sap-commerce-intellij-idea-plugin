@@ -18,7 +18,6 @@
 
 package sap.commerce.toolset.businessProcess
 
-import com.intellij.openapi.module.Module
 import com.intellij.psi.xml.XmlFile
 import com.intellij.util.xml.DomFileDescription
 import sap.commerce.toolset.HybrisIcons
@@ -30,6 +29,6 @@ class BpDomFileDescription : DomFileDescription<Process>(Process::class.java, Bp
 
     override fun getFileIcon(flags: Int): Icon = HybrisIcons.BusinessProcess.FILE
 
-    override fun isMyFile(file: XmlFile, module: Module?) = super.isMyFile(file, module)
+    override fun isMyFile(file: XmlFile) = super.isMyFile(file)
         && file.isHybrisProject
 }

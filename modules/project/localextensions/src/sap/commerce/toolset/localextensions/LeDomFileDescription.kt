@@ -18,7 +18,6 @@
 
 package sap.commerce.toolset.localextensions
 
-import com.intellij.openapi.module.Module
 import com.intellij.psi.xml.XmlFile
 import com.intellij.util.xml.DomFileDescription
 import sap.commerce.toolset.HybrisIcons
@@ -30,7 +29,7 @@ class LeDomFileDescription : DomFileDescription<Hybrisconfig>(Hybrisconfig::clas
 
     override fun getFileIcon(flags: Int): Icon = HybrisIcons.LocalExtensions.FILE
 
-    override fun isMyFile(file: XmlFile, module: Module?) = super.isMyFile(file, module)
+    override fun isMyFile(file: XmlFile) = super.isMyFile(file)
         && file.name == LeConstants.LOCAL_EXTENSIONS_XML
         && file.isHybrisProject
 

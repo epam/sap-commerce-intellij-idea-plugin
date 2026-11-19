@@ -18,7 +18,6 @@
 
 package sap.commerce.toolset.beanSystem
 
-import com.intellij.openapi.module.Module
 import com.intellij.psi.xml.XmlFile
 import com.intellij.util.xml.DomFileDescription
 import sap.commerce.toolset.HybrisConstants
@@ -31,7 +30,7 @@ class BSDomFileDescription : DomFileDescription<Beans>(Beans::class.java, "beans
 
     override fun getFileIcon(flags: Int): Icon = HybrisIcons.BeanSystem.FILE
 
-    override fun isMyFile(file: XmlFile, module: Module?) = super.isMyFile(file, module)
+    override fun isMyFile(file: XmlFile) = super.isMyFile(file)
         && file.name.endsWith(HybrisConstants.HYBRIS_BEANS_XML_FILE_ENDING)
         && hasNamespace(file)
         && file.isHybrisProject
