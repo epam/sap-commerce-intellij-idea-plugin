@@ -40,7 +40,7 @@
 - Address possible NPE for the View Settings in the Tree view [#2030](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2030)
 
 ### Other enhancements
-- Upgrade IntelliJ Platform Gradle Plugin to `2.20.1` and update the libraries
+- Upgrade IntelliJ Platform Gradle Plugin to `2.20.1` and update the libraries [#2050](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2050)
 - Address internal IntelliJ Platform API usage in the console Clear All action [#2049](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2049)
 - Address plugin update check failure during the plugin dynamic unload [#2039](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2039)
 - Support IDEA Proxy Configuration [#2029](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2029)
