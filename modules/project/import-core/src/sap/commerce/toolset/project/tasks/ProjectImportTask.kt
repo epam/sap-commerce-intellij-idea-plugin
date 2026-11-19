@@ -24,6 +24,8 @@ import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.externalSystem.model.ExternalSystemDataKeys
 import com.intellij.openapi.progress.checkCanceled
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.wm.IdeFocusManager
+import com.intellij.openapi.wm.WindowManager
 import com.intellij.platform.ide.progress.ModalTaskOwner
 import com.intellij.platform.ide.progress.runWithModalProgressBlocking
 import com.intellij.platform.util.progress.reportProgressScope
@@ -43,7 +45,7 @@ class ProjectImportTask(private val project: Project) {
     private val logger = thisLogger()
 
     fun execute(context: ProjectImportContext) = runWithModalProgressBlocking(
-        owner = ModalTaskOwner.project(project),
+        owner = modalTaskOwner(),
         title = if (context.refresh) i18n("hybris.project.refresh.commit")
         else i18n("hybris.project.import.commit"),
     ) {
@@ -55,6 +57,15 @@ class ProjectImportTask(private val project: Project) {
             project.putUserData(ExternalSystemDataKeys.NEWLY_CREATED_PROJECT, true)
         }
     }
+
+    // the project being created has no frame yet, the window suggested for it may not be suitable for the progress dialog
+    private fun modalTaskOwner(): ModalTaskOwner = ModalTaskOwner.project(
+        project.takeIf { WindowManager.getInstance().getIdeFrame(it) != null }
+            ?: IdeFocusManager.getGlobalInstance().lastFocusedFrame
+                ?.project
+                ?.takeUnless { it.isDefault || it.isDisposed }
+            ?: project
+    )
 
     private suspend fun importProject(context: ProjectImportContext) {
         val configurators = ProjectImportConfigurator.EP.extensionList
