@@ -21,6 +21,8 @@ import org.jetbrains.changelog.markdownToHTML
 import org.jetbrains.intellij.platform.gradle.IntelliJPlatformType
 import org.jetbrains.intellij.platform.gradle.models.ProductRelease
 import org.jetbrains.intellij.platform.gradle.tasks.RunIdeTask
+import org.jetbrains.kotlin.gradle.dsl.JvmDefaultMode
+import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
 import sap.commerce.toolset.gradle.api.CxFetchPRsGradleTask
 import java.nio.file.Files
 
@@ -46,6 +48,17 @@ kotlin {
     jvmToolchain {
         languageVersion = JavaLanguageVersion.of(25)
         vendor = JvmVendorSpec.JETBRAINS
+    }
+}
+
+allprojects {
+    // do not generate bridges to the deprecated default methods of the platform interfaces
+    plugins.withId("org.jetbrains.kotlin.jvm") {
+        extensions.configure<KotlinJvmProjectExtension> {
+            compilerOptions {
+                jvmDefault = JvmDefaultMode.NO_COMPATIBILITY
+            }
+        }
     }
 }
 

@@ -20,14 +20,15 @@ package sap.commerce.toolset.terminal
 
 import com.intellij.openapi.components.PathMacroManager
 import com.intellij.openapi.project.Project
-import org.jetbrains.plugins.terminal.LocalTerminalCustomizer
+import org.jetbrains.plugins.terminal.startup.TerminalWorkingDirectoryCustomizer
 import sap.commerce.toolset.isNotHybrisProject
+import java.nio.file.Path
 
-class HybrisProjectTerminalCustomizer : LocalTerminalCustomizer() {
+class HybrisProjectTerminalCustomizer : TerminalWorkingDirectoryCustomizer {
 
-    override fun getDefaultFolder(project: Project): String? {
+    override fun getDefaultStartWorkingDirectory(project: Project): Path? {
         if (project.isNotHybrisProject) return null
 
-        return PathMacroManager.getInstance(project).expandPath("\$PROJECT_DIR$")
+        return Path.of(PathMacroManager.getInstance(project).expandPath("\$PROJECT_DIR$"))
     }
 }

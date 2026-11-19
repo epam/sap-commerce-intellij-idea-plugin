@@ -18,7 +18,6 @@
 
 package sap.commerce.toolset.externalDependencies
 
-import com.intellij.openapi.module.Module
 import com.intellij.psi.xml.XmlFile
 import org.jetbrains.idea.maven.dom.MavenDomProjectModelDescription
 import sap.commerce.toolset.HybrisIcons
@@ -29,7 +28,7 @@ class EDDomFileDescription : MavenDomProjectModelDescription() {
 
     override fun getFileIcon(flags: Int): Icon = HybrisIcons.ExternalDependencies.FILE
 
-    override fun isMyFile(file: XmlFile, module: Module?) = super.isMyFile(file, module)
+    override fun isMyFile(file: XmlFile) = super.isMyFile(file)
         && file.name == EdConstants.EXTERNAL_DEPENDENCIES_XML
         && file.isHybrisProject
 

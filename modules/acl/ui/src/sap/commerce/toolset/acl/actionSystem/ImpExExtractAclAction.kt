@@ -26,9 +26,11 @@ import com.intellij.openapi.application.EDT
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.fileEditor.FileEditorManager
+import com.intellij.openapi.fileEditor.FileEditorOpenRequest
 import com.intellij.openapi.ui.Messages
 import com.intellij.openapi.ui.popup.Balloon
 import com.intellij.openapi.ui.popup.JBPopupFactory
+import com.intellij.openapi.util.Computable
 import com.intellij.openapi.vfs.ReadonlyStatusHandler
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiFileFactory
@@ -105,7 +107,7 @@ class ImpExExtractAclAction : AnAction() {
                         .joinToString("\n\n") { it.text }
                 }
 
-                WriteCommandAction.runWriteCommandAction(project) {
+                val aclVirtualFile = WriteCommandAction.runWriteCommandAction(project, Computable {
                     val psiDocumentManager = PsiDocumentManager.getInstance(project)
 
                     val aclTargetFile = aclExistingFile
@@ -126,9 +128,11 @@ class ImpExExtractAclAction : AnAction() {
                         .filter { it.isValid }
                         .forEach { it.delete() }
 
-                    aclTargetFile.virtualFile?.let { aclVirtualFile ->
-                        FileEditorManager.getInstance(project).openFile(aclVirtualFile, true)
-                    }
+                    aclTargetFile.virtualFile
+                })
+
+                aclVirtualFile?.let {
+                    FileEditorManager.getInstance(project).openFile(it, FileEditorOpenRequest.withFocus(true))
                 }
 
                 EditorNotifications.getInstance(project).updateNotifications(impExFile)

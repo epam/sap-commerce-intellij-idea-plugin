@@ -55,7 +55,7 @@ class ImpExDataEditModeLineMarkerProvider : LineMarkerProvider {
         Function { "Enter Data Edit Mode" },
         { _, e ->
             ImpExDataEditModeHandler.extract(e)
-                ?.let { FileEditorManager.getInstance(leaf.project).openFile(it) }
+                ?.let { FileEditorManager.getInstance(leaf.project).requestOpenFile(it) }
         },
         GutterIconRenderer.Alignment.CENTER,
         Supplier { "Enter Data Edit Mode" }

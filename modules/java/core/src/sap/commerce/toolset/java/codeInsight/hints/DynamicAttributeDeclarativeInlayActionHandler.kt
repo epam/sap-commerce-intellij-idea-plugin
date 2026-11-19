@@ -23,6 +23,7 @@ import com.intellij.codeInsight.hints.declarative.PsiPointerInlayActionPayload
 import com.intellij.openapi.application.runInEdt
 import com.intellij.openapi.editor.event.EditorMouseEvent
 import com.intellij.openapi.fileEditor.FileEditorManager
+import com.intellij.openapi.fileEditor.FileEditorOpenRequest
 import com.intellij.psi.PsiClass
 import com.intellij.util.asSafely
 
@@ -35,7 +36,7 @@ class DynamicAttributeDeclarativeInlayActionHandler : InlayActionHandler {
             ?.asSafely<PsiClass>()
             ?.let {
                 runInEdt {
-                    FileEditorManager.getInstance(it.project).openFile(it.containingFile.virtualFile, true)
+                    FileEditorManager.getInstance(it.project).requestOpenFile(it.containingFile.virtualFile, FileEditorOpenRequest.withFocus(true))
                 }
             }
     }

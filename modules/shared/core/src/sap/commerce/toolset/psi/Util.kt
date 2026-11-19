@@ -20,7 +20,7 @@ package sap.commerce.toolset.psi
 
 import com.intellij.codeInspection.ProblemDescriptor
 import com.intellij.codeInspection.ProblemDescriptorBase
-import com.intellij.openapi.application.runReadAction
+import com.intellij.openapi.application.runReadActionBlocking
 import com.intellij.patterns.PlatformPatterns
 import com.intellij.patterns.StandardPatterns
 import com.intellij.patterns.XmlAttributeValuePattern
@@ -102,7 +102,7 @@ fun shouldCreateNewReference(reference: PsiReference?, text: String?) = when {
 }
 
 // validation of the results reads PSI/DOM; references were observed being resolved on EDT outside of a read action
-fun getValidResults(resolveResults: Array<out ResolveResult>) = runReadAction {
+fun getValidResults(resolveResults: Array<out ResolveResult>) = runReadActionBlocking {
     resolveResults
         .filter { it.isValidResult }
         .toTypedArray()

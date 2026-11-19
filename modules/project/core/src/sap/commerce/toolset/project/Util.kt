@@ -86,7 +86,7 @@ fun VirtualFileUrlManager.fromPath(path: Path) = path
 
 fun VirtualFileUrlManager.fromJar(path: Path) = LocalFileSystem.getInstance().refreshAndFindFileByNioFile(path)
     ?.let { JarFileSystem.getInstance().getJarRootForLocalFile(it) }
-    ?.let { this.getOrCreateFromUrl(it.url) }
+    ?.let { this.storeAndGet(it.url) }
 
 fun Project.yModule(extensionName: String): Module? {
     val moduleMapping = this.ySettings.module2extensionMapping

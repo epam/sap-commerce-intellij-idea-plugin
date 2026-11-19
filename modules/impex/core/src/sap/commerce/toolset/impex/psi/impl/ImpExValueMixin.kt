@@ -20,7 +20,7 @@ package sap.commerce.toolset.impex.psi.impl
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement
 import com.intellij.lang.ASTNode
-import com.intellij.openapi.application.runReadAction
+import com.intellij.openapi.application.runReadActionBlocking
 import com.intellij.openapi.util.text.StringUtilRt
 import com.intellij.psi.LiteralTextEscaper
 import com.intellij.psi.PsiElement
@@ -53,7 +53,7 @@ abstract class ImpExValueMixin(node: ASTNode) : ASTWrapperPsiElement(node), PsiL
         .getOrNull(index)
 
     // references were observed being requested on EDT outside of a read action
-    override fun getReferences(): Array<PsiReference> = runReadAction {
+    override fun getReferences(): Array<PsiReference> = runReadActionBlocking {
         CachedValuesManager.getManager(project).getCachedValue(this) {
             CachedValueProvider.Result.create(
                 collectReferences(),

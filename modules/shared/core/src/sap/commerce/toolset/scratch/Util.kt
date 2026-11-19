@@ -24,6 +24,7 @@ import com.intellij.openapi.application.EDT
 import com.intellij.openapi.application.edtWriteAction
 import com.intellij.openapi.fileEditor.FileEditor
 import com.intellij.openapi.fileEditor.FileEditorManager
+import com.intellij.openapi.fileEditor.FileEditorOpenRequest
 import com.intellij.openapi.fileTypes.FileTypeRegistry
 import com.intellij.openapi.fileTypes.LanguageFileType
 import com.intellij.openapi.project.Project
@@ -48,7 +49,7 @@ fun createScratchFile(
             ?: return@launch
 
         withContext(Dispatchers.EDT) {
-            FileEditorManager.getInstance(project).openFile(vf, true)
+            FileEditorManager.getInstance(project).openFile(vf, FileEditorOpenRequest.withFocus(true))
         }
     }
 }
@@ -71,7 +72,8 @@ fun createScratchFile(
             ?: return@launch
 
         withContext(Dispatchers.EDT) {
-            FileEditorManager.getInstance(project).openFile(vf, true)
+            FileEditorManager.getInstance(project).openFile(vf, FileEditorOpenRequest.withFocus(true))
+                .allEditors
                 .firstOrNull()
                 ?.let { onOpen(it) }
         }

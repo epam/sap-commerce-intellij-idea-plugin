@@ -371,7 +371,7 @@ class JavaLibrarySourcesConfigurator : ProjectPostImportConfigurator {
         .takeIf { it.fileExists }
         ?.let { LocalFileSystem.getInstance().refreshAndFindFileByNioFile(it) }
         ?.let { JarFileSystem.getInstance().getJarRootForLocalFile(it) }
-        ?.let { vfUrlManager.getOrCreateFromUrl(it.url) }
+        ?.let { vfUrlManager.storeAndGet(it.url) }
         ?.let { LibraryRoot(it, type.id) }
 
     private fun getLibrarySourceDir(): Path? {
