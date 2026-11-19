@@ -13,12 +13,11 @@
 - Never commit to `main` directly. Branch: `git checkout -b <area>-<short-topic> --no-track main`.
 - Push: `git push -u origin <area>-<short-topic>`.
 
-### Feature branches and `upstream/main`
+### Feature branches
 
-- A feature branch tracks only `origin/<branch>` — **never** `upstream/main`. Do not use `upstream/main` as the start point (`git checkout -b <branch> upstream/main` silently sets it as the tracking branch), and do not set it as upstream.
-- Refresh local `main` first: `git fetch upstream`, then `git checkout main && git merge --ff-only upstream/main`. Create new branches from local `main` and rebase onto local `main` (`git rebase main`).
-- Before the first push the branch has no tracking branch; `git push -u origin <branch>` sets `origin/<branch>`. If a branch already tracks `upstream/main`, run `git branch --unset-upstream <branch>`.
-- Check with `git branch -vv`: a feature branch must show `[origin/<branch>]` or no tracking at all.
+- Track `origin/<branch>` only. Never `upstream/main` as start point, rebase target or upstream.
+- Refresh `main`: `git fetch upstream` + `git merge --ff-only upstream/main`. Branch from / rebase onto local `main`.
+- Wrong tracking: `git branch --unset-upstream <branch>`. Verify: `git branch -vv`.
 
 ## Commit messages
 
