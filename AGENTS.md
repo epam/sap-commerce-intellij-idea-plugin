@@ -82,7 +82,7 @@ Read each applicable skill **completely and sequentially** before opening any fi
 
 ### Phase 2 — Implementation
 
-1. Identify the affected area and create a feature branch: `git checkout -b <area>-<short-topic>`.
+1. Identify the affected area and create a feature branch from local `main`: `git checkout -b <area>-<short-topic> --no-track main`. Feature branches track `origin/<branch>` only — never `upstream/main` (see `skills/workflow-github.md`).
 2. Implement focused change; commit iterative progress as you work — don't accumulate all changes into one diff.
 3. Before each commit verify affected modules compile: `GITHUB_SKIP_TASK_FETCH_PRS=true ./gradlew <module>:compileKotlin`.
 4. Run relevant tests.

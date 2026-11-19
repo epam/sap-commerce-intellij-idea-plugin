@@ -4,14 +4,21 @@
 
 1. Read `skills/dev-plugin.md` (Kotlin conventions, MCP patterns, service/DTO rules).
 2. Read the area-specific skill (`skills/dev-type-system.md`, `skills/lang-impex.md`, etc.).
-3. `git checkout -b <area>-<short-topic>` — never implement on `main`.
+3. `git checkout -b <area>-<short-topic> --no-track main` — never implement on `main`.
 
 ## Remote topology
 
 - `origin` — contributor's fork. Push branches here.
 - `upstream` — `epam/sap-commerce-intellij-idea-plugin`. PR target; merges into `epam:main`.
-- Never commit to `main` directly. Branch: `git checkout -b <area>-<short-topic>`.
+- Never commit to `main` directly. Branch: `git checkout -b <area>-<short-topic> --no-track main`.
 - Push: `git push -u origin <area>-<short-topic>`.
+
+### Feature branches and `upstream/main`
+
+- A feature branch tracks only `origin/<branch>` — **never** `upstream/main`. Do not use `upstream/main` as the start point (`git checkout -b <branch> upstream/main` silently sets it as the tracking branch), and do not set it as upstream.
+- Refresh local `main` first: `git fetch upstream`, then `git checkout main && git merge --ff-only upstream/main`. Create new branches from local `main` and rebase onto local `main` (`git rebase main`).
+- Before the first push the branch has no tracking branch; `git push -u origin <branch>` sets `origin/<branch>`. If a branch already tracks `upstream/main`, run `git branch --unset-upstream <branch>`.
+- Check with `git branch -vv`: a feature branch must show `[origin/<branch>]` or no tracking at all.
 
 ## Commit messages
 
