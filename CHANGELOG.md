@@ -1,7 +1,7 @@
 ## [2026.3.1]
 
 <cite>Release contributors</code>
-- 21 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.3.1+author%3Amlytvyn+is%3Apr)
+- 22 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.3.1+author%3Amlytvyn+is%3Apr)
 
 ### `Type System` enhancements
 - Address references validation outside of a read action [#2047](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2047)
@@ -40,7 +40,7 @@
 - Address possible NPE for the View Settings in the Tree view [#2030](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2030)
 
 ### Other enhancements
-- Address internal IntelliJ Platform API usage in the console Clear All action
+- Address internal IntelliJ Platform API usage in the console Clear All action [#2049](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2049)
 - Address plugin update check failure during the plugin dynamic unload [#2039](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2039)
 - Support IDEA Proxy Configuration [#2029](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2029)
 - Compatibility release for IntelliJ IDEA `2026.3` - grid plugin [#2028](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2028)
