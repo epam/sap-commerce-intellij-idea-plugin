@@ -1,7 +1,7 @@
 ## [2026.3.1]
 
 <cite>Release contributors</code>
-- 24 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.3.1+author%3Amlytvyn+is%3Apr)
+- 25 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.3.1+author%3Amlytvyn+is%3Apr)
 
 ### `Type System` enhancements
 - Address references validation outside of a read action [#2047](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2047)
