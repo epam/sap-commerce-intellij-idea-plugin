@@ -62,7 +62,7 @@ public class DomGenPanel {
         mySchemaLocation = new TextFieldWithBrowseButton();
         mySchemaLocation.addBrowseFolderListener(
             myProject,
-            FileChooserDescriptorFactory.createSingleFileDescriptor()
+            FileChooserDescriptorFactory.singleFile()
                 .withExtensionFilter("Files (.xsd, .dtd)", "xsd", "dtd")
                 .withTitle("Choose XSD or DTD Schema")
                 .withDescription("Make sure there are only necessary schemes in directory where your XSD or DTD schema is located")
