@@ -16,28 +16,20 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.actionSystem
+package sap.commerce.toolset.ui
 
-import com.intellij.openapi.actionSystem.ActionUpdateThread
-import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.project.DumbAwareAction
-import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.editor.SplitEditor
+import com.intellij.icons.AllIcons
+import java.awt.BorderLayout
+import javax.swing.Icon
 
-class HideInEditorResultsAction : DumbAwareAction(
-    "Hide",
-    "Hide in-editor results panel",
-    HybrisIcons.Actions.HIDE
+/**
+ * The edge of the editor a collapsible panel is docked to, the collapsed panel is a strip along this edge.
+ */
+enum class CollapseEdge(
+    val collapseIcon: Icon,
+    val expandIcon: Icon,
+    val constraint: String,
 ) {
-
-    override fun getActionUpdateThread() = ActionUpdateThread.EDT
-
-    override fun update(e: AnActionEvent) {
-        e.presentation.isEnabledAndVisible = e.getData(SplitEditor.DATA_KEY_SPLIT_EDITOR) != null
-    }
-
-    override fun actionPerformed(e: AnActionEvent) {
-        val editor = e.getData(SplitEditor.DATA_KEY_SPLIT_EDITOR) ?: return
-        editor.dismissInEditorResults()
-    }
+    RIGHT(AllIcons.General.ChevronRight, AllIcons.General.ChevronLeft, BorderLayout.EAST),
+    BOTTOM(AllIcons.General.ChevronDown, AllIcons.General.ChevronUp, BorderLayout.SOUTH),
 }

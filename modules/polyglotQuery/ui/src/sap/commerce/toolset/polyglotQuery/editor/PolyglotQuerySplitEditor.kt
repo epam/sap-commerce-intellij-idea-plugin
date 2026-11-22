@@ -30,6 +30,7 @@ import kotlinx.coroutines.*
 import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecResult
 import sap.commerce.toolset.typeSystem.meta.TSGlobalMetaModel
 import sap.commerce.toolset.typeSystem.meta.event.TSMetaModelChangeListener
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.ui.editor.SplitEditorBase
 import java.io.Serial
 import kotlin.time.Duration
@@ -49,6 +50,9 @@ class PolyglotQuerySplitEditorBase(textEditor: TextEditor, project: Project) : S
     }
 
     override val inEditorResultsTitle = "Polyglot Query Execution Results"
+
+    override val inEditorParametersTitle: String
+        get() = i18n("hybris.pgq.editor.virtual_parameters.title")
 
     override var retrieveAllData: Boolean
         get() = getOrCreateUserData(KEY_RETRIEVE_ALL_DATA) { false }

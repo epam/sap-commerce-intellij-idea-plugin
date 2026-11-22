@@ -68,6 +68,18 @@ Add bullet under current unreleased version's matching `### \`<Area>\`` section 
 - <Imperative description> [#NNNN](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/NNNN)
 ```
 
-Flow: commit without link → push → open PR → add `[#NNNN](…)` → follow-up commit → push.
+Flow: commit without link → push → open PR → add `[#NNNN](…)` and bump the release contributors → follow-up commit → push.
+
+### Release contributors
+
+The unreleased version starts with a `<cite>Release contributors</code>` block (the broken closing tag is intentional, keep it):
+
+```
+- <N> PR(s) by [<Name>](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A<version>+author%3A<login>+is%3Apr)
+```
+
+- `<N>` is the number of the author's PRs in the milestone, see `gh pr list --repo epam/sap-commerce-intellij-idea-plugin --state all --search "milestone:<version> author:<login>"`; the new PR counts.
+- Increment it in the same follow-up commit as the PR link; a first PR of a new contributor in the milestone adds a line.
+- Do not forget it: every PR bumps the count, e.g. `ImpEx | Update the release contributors of the changelog`.
 
 Keep `<!-- Plugin description -->` / `<!-- Plugin description end -->` markers in README intact.

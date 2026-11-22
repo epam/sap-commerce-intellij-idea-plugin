@@ -19,7 +19,6 @@
 package sap.commerce.toolset.ui.editor
 
 import com.intellij.openapi.Disposable
-import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.application.edtWriteAction
 import com.intellij.openapi.fileEditor.FileEditorState
 import com.intellij.openapi.fileEditor.TextEditor
@@ -31,14 +30,15 @@ import com.intellij.openapi.util.getOrCreateUserData
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.pom.Navigatable
 import com.intellij.psi.PsiDocumentManager
-import com.intellij.ui.OnePixelSplitter
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.gridLayout.UnscaledGaps
 import com.intellij.util.application
 import com.intellij.util.ui.JBUI
 import kotlinx.coroutines.*
-import sap.commerce.toolset.editor.SplitEditor
+import sap.commerce.toolset.ui.CollapseEdge
+import sap.commerce.toolset.ui.CollapsibleSplitter
 import sap.commerce.toolset.ui.actionButton
+import sap.commerce.toolset.ui.collapseButton
 import java.awt.BorderLayout
 import java.beans.PropertyChangeListener
 import java.io.Serial
@@ -67,7 +67,7 @@ abstract class SplitEditorBase(
         get() = getOrCreateUserData(KEY_IN_EDITOR_RESULTS) { inEditorResultsByDefault }
         set(state) {
             putUserData(KEY_IN_EDITOR_RESULTS, state)
-            verticalSplitter.secondComponent?.isVisible = state
+            verticalSplitter.showSecond(state)
         }
 
     override fun dismissInEditorResults() {
@@ -78,6 +78,8 @@ abstract class SplitEditorBase(
         get() = verticalSplitter.secondComponent
         set(view) {
             application.invokeLater {
+                // the new results are what the user is waiting for
+                if (view != null) verticalSplitter.collapsed = false
                 verticalSplitter.secondComponent = view?.let { buildResultsPanel(it) }
             }
         }
@@ -90,10 +92,8 @@ abstract class SplitEditorBase(
                         .bold()
                         .gap(RightGap.SMALL)
                     inEditorResultsActions().forEach { actionButton(it) }
-                    actionButton(
-                        ActionManager.getInstance().getAction("sap.commerce.toolset.splitEditor.hideInEditorResults"),
-                        sinkExtender = { sink -> sink[SplitEditor.DATA_KEY_SPLIT_EDITOR] = this@SplitEditorBase }
-                    ).align(AlignX.RIGHT)
+                    collapseButton(CollapseEdge.BOTTOM, inEditorResultsTitle) { verticalSplitter.collapsed = true }
+                        .align(AlignX.RIGHT)
                 }
                     .topGap(TopGap.SMALL)
             }.customize(UnscaledGaps(0, 14, 0, 14))
@@ -110,17 +110,17 @@ abstract class SplitEditorBase(
         }
     }
 
-    protected val horizontalSplitter = OnePixelSplitter(false).apply {
-        isShowDividerControls = true
-        splitterProportionKey = "$javaClass.horizontalSplitter"
-        setHonorComponentsMinimumSize(true)
-    }
+    protected val horizontalSplitter = CollapsibleSplitter(
+        vertical = false,
+        proportionKey = "$javaClass.horizontalSplitter",
+        title = { inEditorParametersTitle },
+    )
 
-    protected val verticalSplitter = OnePixelSplitter(true).apply {
-        isShowDividerControls = true
-        splitterProportionKey = "$javaClass.verticalSplitter"
-        setHonorComponentsMinimumSize(true)
-    }
+    protected val verticalSplitter = CollapsibleSplitter(
+        vertical = true,
+        proportionKey = "$javaClass.verticalSplitter",
+        title = { inEditorResultsTitle },
+    )
 
     private val rootPanel = JPanel(BorderLayout()).apply {
         add(verticalSplitter, BorderLayout.CENTER)
@@ -144,7 +144,7 @@ abstract class SplitEditorBase(
             }
 
             component.requestFocus()
-            horizontalSplitter.firstComponent.requestFocus()
+            horizontalSplitter.firstComponent?.requestFocus()
 
             reparseTextEditor()
         }
@@ -154,6 +154,15 @@ abstract class SplitEditorBase(
         set(view) {
             horizontalSplitter.secondComponent = view
         }
+
+    open var inEditorParametersCollapsed: Boolean
+        get() = horizontalSplitter.collapsed
+        set(state) {
+            horizontalSplitter.collapsed = state
+        }
+
+    protected open val inEditorParametersTitle: String
+        get() = ""
 
     var virtualParametersDisposable: Disposable? = null
 

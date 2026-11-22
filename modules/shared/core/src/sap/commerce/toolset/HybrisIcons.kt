@@ -572,7 +572,6 @@ object HybrisIcons {
         val SHOW_DIAGRAM = AllIcons.FileTypes.Diagram
         val TOGGLE_IN_EDITOR_PARAMETERS = AllIcons.General.LayoutEditorPreview
         val TOGGLE_IN_EDITOR_RESULTS = AllIcons.General.EditorPreviewVertical
-        val HIDE = AllIcons.General.HideToolWindow
     }
 
     object Log {

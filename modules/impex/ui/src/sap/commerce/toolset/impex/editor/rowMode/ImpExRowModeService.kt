@@ -27,7 +27,7 @@ import kotlinx.coroutines.CoroutineScope
 @Service(Service.Level.PROJECT)
 class ImpExRowModeService(private val project: Project, private val coroutineScope: CoroutineScope) {
 
-    fun createPanel(editor: Editor) = ImpExRowModePanel(project, coroutineScope, editor)
+    fun createPanel(editor: Editor, onCollapse: () -> Unit) = ImpExRowModePanel(project, coroutineScope, editor, onCollapse)
 
     companion object {
         fun getInstance(project: Project): ImpExRowModeService = project.service()

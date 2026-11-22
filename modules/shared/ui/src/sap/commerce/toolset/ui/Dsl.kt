@@ -29,6 +29,7 @@ import com.intellij.openapi.fileTypes.FileType
 import com.intellij.openapi.ide.CopyPasteManager
 import com.intellij.openapi.observable.util.addItemListener
 import com.intellij.openapi.project.DumbAware
+import com.intellij.openapi.project.DumbAwareAction
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
 import com.intellij.openapi.ui.popup.JBPopupFactory
@@ -49,6 +50,7 @@ import com.intellij.util.ui.JBFont
 import com.intellij.util.ui.JBUI
 import org.jetbrains.annotations.NonNls
 import sap.commerce.toolset.Notifications
+import sap.commerce.toolset.i18n
 import java.awt.Color
 import java.awt.Dimension
 import java.awt.Font
@@ -299,16 +301,34 @@ fun Panel.scrollRow(
 /**
  * The header of an in-editor panel: the title and the separator, which takes the whole width of the panel.
  * The sections of the panel are expected to have their own gaps, otherwise the border of the panel would cut the separator.
+ *
+ * @param actions the cells next to the title, e.g. the action buttons aligned to the right
  */
-fun Panel.header(title: String) {
+fun Panel.header(title: String, actions: Row.() -> Unit = {}) {
     panel {
         row {
-            label(title).bold()
+            label(title).bold().gap(RightGap.SMALL)
+            actions()
         }.topGap(TopGap.SMALL)
     }.customize(UnscaledGaps(0, 16, 0, 16))
 
     separator(JBUI.CurrentTheme.Banner.INFO_BORDER_COLOR)
 }
+
+/**
+ * The button of the header, which collapses the panel docked to the [edge] of the editor, see [CollapsibleSplitter].
+ */
+fun Row.collapseButton(edge: CollapseEdge, title: String, onCollapse: () -> Unit) = actionButton(
+    object : DumbAwareAction(
+        i18n("hybris.editor.collapse"),
+        i18n("hybris.editor.collapse.description", title),
+        edge.collapseIcon
+    ) {
+        override fun getActionUpdateThread() = ActionUpdateThread.EDT
+
+        override fun actionPerformed(e: AnActionEvent) = onCollapse()
+    }
+)
 
 /**
  * The label in its own row right above the row with the input, it is not truncated by the width of the column unlike the label next to the input.
