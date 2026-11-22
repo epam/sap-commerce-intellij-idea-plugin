@@ -1,7 +1,7 @@
 ## [2026.3.2]
 
 <cite>Release contributors</code>
-- 5 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.3.2+author%3Amlytvyn+is%3Apr)
+- 6 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.3.2+author%3Amlytvyn+is%3Apr)
 
 ### `JSP` enhancements
 - Address invalid property access during the code folding after the properties file was edited [#2057](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2057)
@@ -17,6 +17,9 @@
 
 ### `ImpEx` enhancements
 - Address inspection problems anchored in a non-physical file during the ImpEx content validation via MCP [#2054](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2054)
+
+### Other enhancements
+- Upgrade Gradle to `9.9.1` [#2058](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2058)
 
 ## [2026.3.1]
 
