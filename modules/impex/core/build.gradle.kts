@@ -16,6 +16,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import org.jetbrains.intellij.platform.gradle.TestFrameworkType
+
 fun properties(key: String) = providers.gradleProperty(key)
 
 plugins {
@@ -44,12 +46,14 @@ dependencies {
     implementation(project(":typeSystem-core"))
     implementation(project(":project-core"))
 
-    testImplementation(kotlin("test"))
+    testImplementation(kotlin("test-junit"))
 
     intellijPlatform {
         intellijIdea(properties("intellij.version")) {
             useInstaller = true
         }
+
+        testFramework(TestFrameworkType.Platform)
 
         bundledModules(
             "intellij.grid.impl"
