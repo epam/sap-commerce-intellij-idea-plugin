@@ -213,17 +213,19 @@ class ImpExRowModePanel(
         synchronizers = cellSynchronizers
 
         return panel {
-            row(i18n("hybris.impex.editor.row_mode.header_type")) {
-                link(valueLine.headerType) { navigate(pointer, ImpExRowNavigation::headerTypeDeclaration) }
-            }
-            valueLine.subType?.let {
-                row(i18n("hybris.impex.editor.row_mode.sub_type")) {
-                    link(it) { navigate(pointer, ImpExRowNavigation::subTypeDeclaration) }
+            group(i18n("hybris.impex.editor.row_mode.details"), indent = false) {
+                row(i18n("hybris.impex.editor.row_mode.header_type")) {
+                    link(valueLine.headerType) { navigate(pointer, ImpExRowNavigation::headerTypeDeclaration) }
                 }
-            }
+                valueLine.subType?.let {
+                    row(i18n("hybris.impex.editor.row_mode.sub_type")) {
+                        link(it) { navigate(pointer, ImpExRowNavigation::subTypeDeclaration) }
+                    }
+                }
 
-            row(i18n("hybris.impex.editor.row_mode.line")) {
-                label(valueLine.lineNumber(editor.document).toString())
+                row(i18n("hybris.impex.editor.row_mode.line")) {
+                    label(valueLine.lineNumber(editor.document).toString())
+                }
             }
 
             separator()
