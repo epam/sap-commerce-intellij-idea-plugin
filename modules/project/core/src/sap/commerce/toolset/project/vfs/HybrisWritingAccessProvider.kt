@@ -22,6 +22,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.ReadonlyStatusHandler
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.WritingAccessProvider
+import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.ifHybrisProject
 import sap.commerce.toolset.project.settings.ProjectSettings
 import sap.commerce.toolset.project.settings.ySettings
@@ -30,7 +31,7 @@ class HybrisWritingAccessProvider(private val project: Project) : WritingAccessP
 
     override fun requestWriting(files: Collection<VirtualFile>) = project.ifHybrisProject {
         val projectSettings = project.ySettings
-        val (proxies, regular) = files.partition { OriginalFile.of(it) != null }
+        val (proxies, regular) = files.partition { it.originalFile() != null }
 
         val readOnly = regular
             .filter { isFileReadOnly(it, projectSettings) }
@@ -39,12 +40,12 @@ class HybrisWritingAccessProvider(private val project: Project) : WritingAccessP
         if (proxies.isNotEmpty()) {
             // all the providers have to be asked about the original file, they may refuse only when the modification is requested
             val readOnlyOriginals = ReadonlyStatusHandler.getInstance(project)
-                .ensureFilesWritable(proxies.mapNotNull { OriginalFile.of(it) }.distinct())
+                .ensureFilesWritable(proxies.mapNotNull { it.originalFile() }.distinct())
                 .readonlyFiles
                 .toSet()
 
             proxies
-                .filter { OriginalFile.of(it) in readOnlyOriginals }
+                .filter { it.originalFile() in readOnlyOriginals }
                 .forEach { readOnly.add(it) }
         }
 
@@ -52,11 +53,13 @@ class HybrisWritingAccessProvider(private val project: Project) : WritingAccessP
     } ?: mutableSetOf()
 
     override fun isPotentiallyWritable(file: VirtualFile) = project.ifHybrisProject {
-        val original = OriginalFile.of(file)
+        val original = file.originalFile()
 
         if (original != null) original.isWritable && isPotentiallyWritable(original, project)
         else !isFileReadOnly(file, project.ySettings)
     } ?: super.isPotentiallyWritable(file)
+
+    private fun VirtualFile.originalFile() = getUserData(HybrisConstants.Keys.ORIGINAL_FILE)
 
     private fun isFileReadOnly(file: VirtualFile, projectSettings: ProjectSettings): Boolean {
         if (!projectSettings.importOotbModulesInReadOnlyMode) return false

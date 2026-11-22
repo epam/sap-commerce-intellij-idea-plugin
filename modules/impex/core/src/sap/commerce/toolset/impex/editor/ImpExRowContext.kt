@@ -24,10 +24,10 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.SmartPsiElementPointer
 import com.intellij.psi.util.PsiTreeUtil
+import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.impex.psi.ImpExHeaderLine
 import sap.commerce.toolset.impex.psi.ImpExValueLine
 import sap.commerce.toolset.impex.psi.util.getLineNumber
-import sap.commerce.toolset.project.vfs.OriginalFile
 
 /**
  * A cell of the row mode is edited in a standalone ImpEx file, which contains only the header and the cell.
@@ -42,7 +42,7 @@ object ImpExRowContext {
     }
 
 
-    fun isAttachedTo(file: VirtualFile): Boolean = file.getUserData(KEY_VALUE_LINE) != null || OriginalFile.of(file) != null
+    fun isAttachedTo(file: VirtualFile): Boolean = file.getUserData(KEY_VALUE_LINE) != null || file.getUserData(HybrisConstants.Keys.ORIGINAL_FILE) != null
 
     fun valueLineOf(element: PsiElement): ImpExValueLine? = element.containingFile
         // a completion works on a copy of the file
