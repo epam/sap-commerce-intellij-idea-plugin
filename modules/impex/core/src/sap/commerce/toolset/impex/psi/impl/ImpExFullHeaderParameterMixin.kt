@@ -92,12 +92,6 @@ abstract class ImpExFullHeaderParameterMixin(node: ASTNode) : ASTWrapperPsiEleme
         .rootParameter.attributes[AttributeModifier.UNIQUE.modifierName]
         ?.resolvedValue == "true"
 
-    // the modifier is read as is, resolving of its value requires the type system, see isUnique
-    override fun hasUniqueModifier(): Boolean = getAttribute(AttributeModifier.UNIQUE)
-        ?.anyAttributeValue
-        ?.text
-        ?.trim() == "true"
-
     override fun isDocumentIdDeclaration(): Boolean = anyHeaderParameterName.documentIdDec != null
 
     override fun getAttribute(attributeModifier: AttributeModifier): ImpExAttribute? = this.modifiersList

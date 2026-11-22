@@ -54,8 +54,6 @@ public interface ImpExFullHeaderParameter extends PsiElement {
 
   boolean isUnique();
 
-  boolean hasUniqueModifier();
-
   boolean isDocumentIdDeclaration();
 
   @Nullable ImpExHeaderParameterTSContext getTypeSystemContext();

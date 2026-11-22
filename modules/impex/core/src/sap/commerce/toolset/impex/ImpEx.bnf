@@ -379,7 +379,7 @@ full_header_parameter ::= any_header_parameter_name parameters? modifiers* param
     mixin="sap.commerce.toolset.impex.psi.impl.ImpExFullHeaderParameterMixin"
     methods=[
                 getHeaderLine getColumnNumber getAttribute getAttributeValue getValueGroups
-                isUnique hasUniqueModifier isDocumentIdDeclaration getTypeSystemContext getDocIdUsages
+                isUnique isDocumentIdDeclaration getTypeSystemContext getDocIdUsages
                 collectDocIdReferences collectTSReferences resolveDefaultValue getParametersContext
             ]
 }
