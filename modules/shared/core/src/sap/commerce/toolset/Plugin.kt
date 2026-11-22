@@ -65,9 +65,10 @@ enum class Plugin(val id: String, val url: String? = null, val dependencies: Set
         isLoaded(pluginId) && !isDisabled(pluginId)
     }
 
-    fun <T> ifActive(operation: () -> T): T? = if (isActive()) operation() else null
+    // inline: a non-inline lambda links its signature types eagerly, failing with NoClassDefFoundError when the plugin classes are absent
+    inline fun <T> ifActive(operation: () -> T): T? = if (isActive()) operation() else null
 
-    fun <T> ifDisabled(operation: () -> T): T? = if (isDisabled()) operation() else null
+    inline fun <T> ifDisabled(operation: () -> T): T? = if (isDisabled()) operation() else null
 
     fun isDisabled() = !isActive()
 
