@@ -1,7 +1,10 @@
 ## [2026.3.2]
 
 <cite>Release contributors</code>
-- 3 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.3.2+author%3Amlytvyn+is%3Apr)
+- 4 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.3.2+author%3Amlytvyn+is%3Apr)
+
+### `Spring` enhancements
+- Address project opening failure in a non-Ultimate IDE edition caused by the unavailable Spring classes [#2056](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2056)
 
 ### `CCv2` enhancements
 - Address tool window failure when project settings cannot be loaded [#2055](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2055)
