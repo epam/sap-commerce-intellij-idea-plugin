@@ -247,8 +247,8 @@ class ImpExRowCellSynchronizer(
         val editableStartOffset: Int,
         val editableEndOffset: Int,
     ) {
-        fun isCrossingBorderOfCell(startOffset: Int, endOffset: Int) = (startOffset < editableStartOffset && endOffset > editableStartOffset)
-            || (startOffset < editableEndOffset && endOffset > editableEndOffset)
+        fun isCrossingBorderOfCell(startOffset: Int, endOffset: Int) = (editableStartOffset in (startOffset + 1)..<endOffset)
+            || (editableEndOffset in (startOffset + 1)..<endOffset)
     }
 
     companion object {
