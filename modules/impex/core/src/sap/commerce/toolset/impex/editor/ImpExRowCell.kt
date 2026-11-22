@@ -20,11 +20,8 @@ package sap.commerce.toolset.impex.editor
 
 import com.intellij.openapi.util.TextRange
 
-/**
- * @property contextPrefix text of a standalone ImpEx file in front of the cell, which makes the cell parse and resolve like in the source file
- */
 data class ImpExRowCell(
     val label: String,
     val range: TextRange,
-    val contextPrefix: String = "",
+    val unique: Boolean = false,
 )

@@ -89,12 +89,13 @@ class ImpExRowContextTest : BasePlatformTestCase() {
     private fun cellFile(original: ImpExFile, value: String): PsiFile {
         val text = original.text
         val valueLine = checkNotNull(ImpExRowResolver.findValueLine(original, text.lastIndexOf(value) + 1))
-        val cell = checkNotNull(ImpExRowResolver.resolve(valueLine)).cells.first()
-        val synchronizer = ImpExValueRangeSynchronizer(
+        val row = checkNotNull(ImpExRowResolver.resolve(valueLine))
+        val synchronizer = ImpExRowCellSynchronizer(
             source = checkNotNull(PsiDocumentManager.getInstance(project).getDocument(original)),
-            range = cell.range,
+            rowRange = row.range,
+            cellRange = row.cells.first().range,
             parentDisposable = testRootDisposable,
-            prefix = cell.contextPrefix,
+            contextPrefix = row.contextPrefix,
             valueLine = SmartPointerManager.createPointer(valueLine),
         )
 

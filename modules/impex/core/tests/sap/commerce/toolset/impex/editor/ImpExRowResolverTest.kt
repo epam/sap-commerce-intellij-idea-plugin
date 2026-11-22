@@ -134,34 +134,42 @@ class ImpExRowResolverTest : BasePlatformTestCase() {
         assertEquals(TextRange.from(text.indexOf(";;") + 1, 0), row.cells[1].range)
     }
 
-    fun `test row cell context starts with the header line`() {
+    fun `test row context is the header line`() {
         val row = resolveRow("INSERT_UPDATE Product;code;name\n;abc;ABC", "abc")
 
-        assertEquals("INSERT_UPDATE Product;code;name\n;", row.cells[0].contextPrefix)
+        assertEquals("INSERT_UPDATE Product;code;name\n", row.contextPrefix)
     }
 
-    fun `test row cell context contains empty cells in place of the preceding ones`() {
-        val row = resolveRow("INSERT_UPDATE Product;code;name\n;abc;ABC", "abc")
-
-        assertEquals("INSERT_UPDATE Product;code;name\n;;", row.cells[1].contextPrefix)
-    }
-
-    fun `test row cell context contains the sub type`() {
-        val row = resolveRow("INSERT_UPDATE Product;code\nBaseProduct;abc", "abc")
-
-        assertEquals("INSERT_UPDATE Product;code\nBaseProduct;", row.cells[0].contextPrefix)
-    }
-
-    fun `test row cell context contains the macros declared above the row`() {
+    fun `test row context contains the macros declared above the row`() {
         val row = resolveRow("\$macro = 1\nINSERT_UPDATE Product;code\n;abc", "abc")
 
-        assertEquals("\$macro = 1\nINSERT_UPDATE Product;code\n;", row.cells[0].contextPrefix)
+        assertEquals("\$macro = 1\nINSERT_UPDATE Product;code\n", row.contextPrefix)
     }
 
-    fun `test row cell context does not contain the macros declared below the row`() {
+    fun `test row context does not contain the macros declared below the row`() {
         val row = resolveRow("INSERT_UPDATE Product;code\n;abc\n\$later = 1", "abc")
 
-        assertEquals("INSERT_UPDATE Product;code\n;", row.cells[0].contextPrefix)
+        assertEquals("INSERT_UPDATE Product;code\n", row.contextPrefix)
+    }
+
+    fun `test row range covers the whole value line`() {
+        val text = "INSERT_UPDATE Product;code;name\n;abc;ABC\n;def;DEF"
+        val row = resolveRow(text, "abc")
+        val start = text.indexOf(";abc;ABC")
+
+        assertEquals(TextRange(start, start + ";abc;ABC".length), row.range)
+    }
+
+    fun `test row cell of a unique column is unique`() {
+        val row = resolveRow("INSERT_UPDATE Product;code[unique=true];name\n;abc;ABC", "abc")
+
+        assertTrue(row.cells[0].unique)
+    }
+
+    fun `test row cell of a regular column is not unique`() {
+        val row = resolveRow("INSERT_UPDATE Product;code[unique=true];name\n;abc;ABC", "abc")
+
+        assertFalse(row.cells[1].unique)
     }
 
     fun `test row is not resolved when the value line has no header`() {
@@ -178,6 +186,13 @@ class ImpExRowResolverTest : BasePlatformTestCase() {
         assertFalse(first.hasSameLayoutAs(second))
     }
 
+    fun `test rows with different value line lengths still have the same layout`() {
+        val first = row(range = TextRange(10, 15))
+        val second = row(range = TextRange(10, 40))
+
+        assertTrue(first.hasSameLayoutAs(second))
+    }
+
     fun `test rows with different cell ranges still have the same layout`() {
         val first = row(cells = listOf(ImpExRowCell("code", TextRange(0, 1))))
         val second = row(cells = listOf(ImpExRowCell("code", TextRange(5, 9))))
@@ -186,8 +201,8 @@ class ImpExRowResolverTest : BasePlatformTestCase() {
     }
 
     fun `test rows starting at different offsets do not have the same layout`() {
-        val first = row(lineStartOffset = 10)
-        val second = row(lineStartOffset = 20)
+        val first = row(range = TextRange(10, 15))
+        val second = row(range = TextRange(20, 25))
 
         assertFalse(first.hasSameLayoutAs(second))
     }
@@ -201,9 +216,9 @@ class ImpExRowResolverTest : BasePlatformTestCase() {
     }
 
     private fun row(
-        lineStartOffset: Int = 0,
+        range: TextRange = TextRange(0, 1),
         cells: List<ImpExRowCell> = emptyList(),
-    ) = ImpExRow(lineStartOffset = lineStartOffset, headerType = "Product", subType = null, cells = cells)
+    ) = ImpExRow(range = range, headerType = "Product", subType = null, cells = cells)
 
     companion object {
         private const val TWO_ROWS = "INSERT_UPDATE Product;code[unique=true];name\n;abc;ABC\n;def;DEF"

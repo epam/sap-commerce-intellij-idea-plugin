@@ -18,18 +18,27 @@
 
 package sap.commerce.toolset.impex.editor
 
+import com.intellij.openapi.util.TextRange
+
+/**
+ * @property range text range of the whole value line
+ * @property contextPrefix macros and the header, which make the value line parse and resolve like in the source file when it is on its own
+ */
 data class ImpExRow(
-    val lineStartOffset: Int,
+    val range: TextRange,
     val headerType: String,
     val subType: String?,
     val cells: List<ImpExRowCell>,
+    val contextPrefix: String = "",
 ) {
 
     /**
-     * Cell ranges are intentionally ignored: they follow the edits, while the layout is what requires the fields to be re-created.
+     * The text of the line and the ranges of the cells are intentionally ignored: they follow the edits,
+     * while the layout is what requires the fields to be re-created.
      */
-    fun hasSameLayoutAs(other: ImpExRow) = lineStartOffset == other.lineStartOffset
+    fun hasSameLayoutAs(other: ImpExRow) = range.startOffset == other.range.startOffset
         && headerType == other.headerType
         && subType == other.subType
-        && cells.map { it.label to it.contextPrefix } == other.cells.map { it.label to it.contextPrefix }
+        && contextPrefix == other.contextPrefix
+        && cells.map { it.label } == other.cells.map { it.label }
 }

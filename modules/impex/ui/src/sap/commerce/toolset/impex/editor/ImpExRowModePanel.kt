@@ -22,8 +22,8 @@ import com.intellij.openapi.Disposable
 import com.intellij.openapi.application.EDT
 import com.intellij.openapi.application.ReadConstraint
 import com.intellij.openapi.application.constrainedReadAction
+import com.intellij.openapi.application.readAction
 import com.intellij.openapi.editor.Editor
-import com.intellij.openapi.editor.ex.EditorEx
 import com.intellij.openapi.editor.actionSystem.EditorActionManager
 import com.intellij.openapi.editor.actionSystem.ReadonlyFragmentModificationHandler
 import com.intellij.openapi.editor.event.CaretEvent
@@ -32,15 +32,18 @@ import com.intellij.openapi.editor.event.DocumentEvent
 import com.intellij.openapi.editor.event.DocumentListener
 import com.intellij.openapi.editor.event.SelectionEvent
 import com.intellij.openapi.editor.event.SelectionListener
+import com.intellij.openapi.editor.ex.EditorEx
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Disposer
 import com.intellij.psi.PsiDocumentManager
+import com.intellij.psi.PsiElement
 import com.intellij.psi.SmartPointerManager
 import com.intellij.psi.SmartPsiElementPointer
+import com.intellij.ide.util.PsiNavigationSupport
 import com.intellij.ui.EditorNotificationPanel
 import com.intellij.ui.EditorTextField
 import com.intellij.ui.dsl.builder.AlignX
-import com.intellij.ui.dsl.builder.LabelPosition
+import com.intellij.ui.dsl.builder.BottomGap
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.util.ui.JBUI
 import kotlinx.coroutines.CoroutineScope
@@ -49,6 +52,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.impex.file.ImpExFileType
 import sap.commerce.toolset.impex.psi.ImpExFile
@@ -72,6 +76,7 @@ class ImpExRowModePanel(
     private var refreshJob: Job? = null
     private var contentDisposable: Disposable? = null
     private var displayedState: State? = null
+    private var synchronizers = emptyList<ImpExRowCellSynchronizer>()
 
     init {
         editor.caretModel.addCaretListener(object : CaretListener {
@@ -106,7 +111,7 @@ class ImpExRowModePanel(
                 if (editor.isDisposed || Disposer.isDisposed(this@ImpExRowModePanel)) return@withContext
                 // the ranges are stale if the document has been changed since they were resolved
                 if (editor.document.modificationStamp != modificationStamp) return@withContext scheduleRefresh()
-                if (displayedState?.hasSameLayoutAs(state) == true) return@withContext
+                if (displayedState?.hasSameLayoutAs(state) == true && synchronizers.all { it.isConsistent }) return@withContext
 
                 render(state)
             }
@@ -159,58 +164,92 @@ class ImpExRowModePanel(
 
     private fun rowPanel(valueLine: ImpExRow, pointer: SmartPsiElementPointer<ImpExValueLine>, disposable: Disposable): JComponent {
         val writable = editor.document.isWritable && !editor.isViewer
+        val cellSynchronizers = valueLine.cells.map { cell ->
+            ImpExRowCellSynchronizer(editor.document, valueLine.range, cell.range, disposable, valueLine.contextPrefix, pointer)
+        }
+        synchronizers = cellSynchronizers
 
         return panel {
             row(i18n("hybris.impex.editor.row_mode.header_type")) {
-                label(valueLine.headerType)
+                link(valueLine.headerType) { navigate(pointer, ImpExRowNavigation::headerTypeDeclaration) }
             }
             valueLine.subType?.let {
                 row(i18n("hybris.impex.editor.row_mode.sub_type")) {
-                    label(it)
+                    link(it) { navigate(pointer, ImpExRowNavigation::subTypeDeclaration) }
                 }
             }
 
             separator()
 
-            valueLine.cells.forEach { rowCell ->
-                val synchronizer = ImpExValueRangeSynchronizer(editor.document, rowCell.range, disposable, rowCell.contextPrefix, pointer)
+            valueLine.cells.forEachIndexed { index, rowCell ->
+                row {
+                    link(rowCell.label) { navigate(pointer) { ImpExRowNavigation.columnDeclaration(it, index) } }
+                        .applyToComponent {
+                            if (rowCell.unique) {
+                                icon = HybrisIcons.ImpEx.COLUMN_UNIQUE
+                                toolTipText = i18n("hybris.impex.editor.row_mode.unique")
+                            }
+                        }
+                }.bottomGap(BottomGap.NONE)
 
                 row {
-                    cell(valueField(synchronizer, writable, disposable))
-                        .label(rowCell.label, LabelPosition.TOP)
+                    cell(valueField(cellSynchronizers[index], writable, disposable))
                         .align(AlignX.FILL)
                 }
             }
         }.apply { border = JBUI.Borders.empty(5, 16, 10, 16) }
     }
 
-    private fun valueField(synchronizer: ImpExValueRangeSynchronizer, writable: Boolean, disposable: Disposable): EditorTextField {
-        val prefixLength = synchronizer.editableOffset
+    private fun navigate(pointer: SmartPsiElementPointer<ImpExValueLine>, declaration: (ImpExValueLine) -> PsiElement?) {
+        coroutineScope.launch {
+            val navigatable = readAction {
+                pointer.element
+                    ?.let(declaration)
+                    ?.let { PsiNavigationSupport.getInstance().getDescriptor(it) }
+            }
+                ?: return@launch
 
-        // the prefix is hidden, so there is nothing to explain when an attempt to modify it is made
+            withContext(Dispatchers.EDT) {
+                if (navigatable.canNavigate()) navigatable.navigate(true)
+            }
+        }
+    }
+
+    private fun valueField(synchronizer: ImpExRowCellSynchronizer, writable: Boolean, disposable: Disposable): EditorTextField {
+        // the locked part is hidden, so there is nothing to explain when an attempt to modify it is made
         EditorActionManager.getInstance().setReadonlyFragmentModificationHandler(synchronizer.mirror, ReadonlyFragmentModificationHandler { })
 
         return object : EditorTextField(synchronizer.mirror, project, ImpExFileType, !writable, true) {
             override fun createEditor(): EditorEx = super.createEditor().apply {
                 settings.isAllowSingleLogicalLineFolding = true
+
                 // only the cell is displayed, the rest of the file provides the context for the ImpEx language features
+                val editable = synchronizer.editableRange
                 foldingModel.runBatchFoldingOperation {
-                    foldingModel.addFoldRegion(0, prefixLength, "")?.isExpanded = false
+                    if (editable.startOffset > 0) foldingModel.addFoldRegion(0, editable.startOffset, "")?.isExpanded = false
+                    if (editable.endOffset < document.textLength) foldingModel.addFoldRegion(editable.endOffset, document.textLength, "")?.isExpanded = false
                 }
-                caretModel.moveToOffset(prefixLength)
+                caretModel.moveToOffset(editable.startOffset)
 
                 caretModel.addCaretListener(object : CaretListener {
                     override fun caretPositionChanged(event: CaretEvent) {
-                        event.caret
-                            ?.takeIf { it.offset < prefixLength }
-                            ?.moveToOffset(prefixLength)
+                        val range = synchronizer.editableRange
+                        val caret = event.caret ?: return
+                        val offset = caret.offset.coerceIn(range.startOffset, range.endOffset)
+
+                        if (offset != caret.offset) caret.moveToOffset(offset)
                     }
                 })
                 selectionModel.addSelectionListener(object : SelectionListener {
                     override fun selectionChanged(e: SelectionEvent) {
-                        if (selectionModel.hasSelection() && selectionModel.selectionStart < prefixLength) {
-                            selectionModel.setSelection(prefixLength, maxOf(prefixLength, selectionModel.selectionEnd))
-                        }
+                        val range = synchronizer.editableRange
+                        if (!selectionModel.hasSelection()) return
+                        if (selectionModel.selectionStart >= range.startOffset && selectionModel.selectionEnd <= range.endOffset) return
+
+                        selectionModel.setSelection(
+                            selectionModel.selectionStart.coerceIn(range.startOffset, range.endOffset),
+                            selectionModel.selectionEnd.coerceIn(range.startOffset, range.endOffset),
+                        )
                     }
                 })
             }

@@ -21,6 +21,7 @@ package sap.commerce.toolset.impex.editor
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.PsiTreeUtil
+import sap.commerce.toolset.impex.constants.modifier.AttributeModifier
 import sap.commerce.toolset.impex.psi.ImpExMacroDeclaration
 import sap.commerce.toolset.impex.psi.ImpExValueLine
 
@@ -53,9 +54,10 @@ object ImpExRowResolver {
             .joinToString(separator = "\n", postfix = "\n")
 
         return ImpExRow(
-            lineStartOffset = valueLine.textRange.startOffset,
+            range = valueLine.textRange,
             headerType = headerType,
             subType = subType,
+            contextPrefix = context,
             cells = valueLine.valueGroupList.mapIndexed { index, group ->
                 ImpExRowCell(
                     label = group.fullHeaderParameter?.anyHeaderParameterName?.text?.trim()
@@ -63,8 +65,8 @@ object ImpExRowResolver {
                     range = group.value?.textRange
                         // the very first character of the group is always the `;` separator
                         ?: TextRange.from(group.textRange.startOffset + 1, 0),
-                    // preceding cells are left empty, the column of the cell is defined by the number of the separators
-                    contextPrefix = context + (subType ?: "") + ";".repeat(index + 1),
+                    // the modifier is read as is: resolving of its value requires the type system, which may be unavailable
+                    unique = group.fullHeaderParameter?.getAttribute(AttributeModifier.UNIQUE)?.anyAttributeValue?.text?.trim() == "true",
                 )
             }
         )
