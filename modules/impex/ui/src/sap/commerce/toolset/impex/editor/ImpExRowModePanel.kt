@@ -37,9 +37,15 @@ import com.intellij.openapi.editor.event.DocumentListener
 import com.intellij.openapi.editor.event.SelectionEvent
 import com.intellij.openapi.editor.event.SelectionListener
 import com.intellij.openapi.editor.ex.EditorEx
+import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.openapi.project.DumbAwareAction
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Disposer
+import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.openapi.vfs.VirtualFileManager
+import com.intellij.openapi.vfs.newvfs.BulkFileListener
+import com.intellij.openapi.vfs.newvfs.events.VFileEvent
+import com.intellij.openapi.vfs.newvfs.events.VFilePropertyChangeEvent
 import com.intellij.openapi.wm.IdeFocusManager
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiElement
@@ -97,6 +103,15 @@ class ImpExRowModePanel(
             override fun documentChanged(event: DocumentEvent) = scheduleRefresh()
         }, this)
 
+        // the fields are created read-only or editable depending on the file, so they have to be created again when it changes
+        project.messageBus.connect(this).subscribe(VirtualFileManager.VFS_CHANGES, object : BulkFileListener {
+            override fun after(events: List<VFileEvent>) {
+                val file = FileDocumentManager.getInstance().getFile(editor.document) ?: return
+
+                if (events.any { it is VFilePropertyChangeEvent && it.file == file && it.propertyName == VirtualFile.PROP_WRITABLE }) scheduleRefresh()
+            }
+        })
+
         scheduleRefresh(0)
     }
 
@@ -126,6 +141,8 @@ class ImpExRowModePanel(
         }
     }
 
+    private fun isEditable() = !editor.isViewer && ImpExRowEditability.isEditable(editor.document, project)
+
     private fun resolveState(): State {
         if (editor.caretModel.caretCount > 1) return State.MultipleCarets
 
@@ -136,7 +153,7 @@ class ImpExRowModePanel(
             ?: return State.NoValueLine
 
         return ImpExRowResolver.resolve(valueLine)
-            ?.let { State.Row(it, SmartPointerManager.createPointer(valueLine)) }
+            ?.let { State.Row(it, SmartPointerManager.createPointer(valueLine), isEditable()) }
             ?: State.NoHeader
     }
 
@@ -149,7 +166,7 @@ class ImpExRowModePanel(
             }
 
         val content = when (state) {
-            is State.Row -> rowPanel(state.row, state.pointer, disposable)
+            is State.Row -> rowPanel(state.row, state.pointer, state.editable, disposable)
             State.NoValueLine -> bannerPanel("hybris.impex.editor.row_mode.no_value_line")
             State.NoHeader -> bannerPanel("hybris.impex.editor.row_mode.no_header", EditorNotificationPanel.Status.Warning)
             State.MultipleCarets -> bannerPanel("hybris.impex.editor.row_mode.multiple_carets", EditorNotificationPanel.Status.Warning)
@@ -175,8 +192,7 @@ class ImpExRowModePanel(
         inlineBanner("<p style='width: 100%'>${i18n(messageKey)}</p>", status)
     }.apply { border = JBUI.Borders.empty(16) }
 
-    private fun rowPanel(valueLine: ImpExRow, pointer: SmartPsiElementPointer<ImpExValueLine>, disposable: Disposable): JComponent {
-        val writable = editor.document.isWritable && !editor.isViewer
+    private fun rowPanel(valueLine: ImpExRow, pointer: SmartPsiElementPointer<ImpExValueLine>, editable: Boolean, disposable: Disposable): JComponent {
         val cellSynchronizers = valueLine.cells.map { cell ->
             ImpExRowCellSynchronizer(editor.document, valueLine.range, cell.range, disposable, valueLine.contextPrefix, pointer)
         }
@@ -217,7 +233,7 @@ class ImpExRowModePanel(
                 }.bottomGap(BottomGap.NONE)
 
                 row {
-                    cell(valueField(cellSynchronizers[index], writable, disposable))
+                    cell(valueField(cellSynchronizers[index], editable, disposable))
                         .align(AlignX.FILL)
                         .resizableColumn()
 
@@ -258,11 +274,11 @@ class ImpExRowModePanel(
         }
     }
 
-    private fun valueField(synchronizer: ImpExRowCellSynchronizer, writable: Boolean, disposable: Disposable): EditorTextField {
+    private fun valueField(synchronizer: ImpExRowCellSynchronizer, editable: Boolean, disposable: Disposable): EditorTextField {
         // the locked part is hidden, so there is nothing to explain when an attempt to modify it is made
         EditorActionManager.getInstance().setReadonlyFragmentModificationHandler(synchronizer.mirror, ReadonlyFragmentModificationHandler { })
 
-        return object : EditorTextField(synchronizer.mirror, project, ImpExFileType, !writable, true) {
+        return object : EditorTextField(synchronizer.mirror, project, ImpExFileType, !editable, true) {
             override fun createEditor(): EditorEx = super.createEditor().apply {
                 settings.isAllowSingleLogicalLineFolding = true
 
@@ -306,9 +322,9 @@ class ImpExRowModePanel(
         data object NoValueLine : State
         data object NoHeader : State
         data object MultipleCarets : State
-        data class Row(val row: ImpExRow, val pointer: SmartPsiElementPointer<ImpExValueLine>) : State
+        data class Row(val row: ImpExRow, val pointer: SmartPsiElementPointer<ImpExValueLine>, val editable: Boolean) : State
 
-        fun hasSameLayoutAs(other: State) = if (this is Row && other is Row) row.hasSameLayoutAs(other.row) else this == other
+        fun hasSameLayoutAs(other: State) = if (this is Row && other is Row) editable == other.editable && row.hasSameLayoutAs(other.row) else this == other
     }
 
     companion object {

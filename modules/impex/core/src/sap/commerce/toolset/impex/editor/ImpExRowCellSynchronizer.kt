@@ -60,7 +60,10 @@ class ImpExRowCellSynchronizer(
         ?.let { source.createRangeMarker(it, it + 1) }
 
     val virtualFile = LightVirtualFile(MIRROR_FILE_NAME, ImpExFileType, contextPrefix + rowText())
-        .also { file -> valueLine?.let { ImpExRowContext.attach(file, it) } }
+        .also { file ->
+            valueLine?.let { ImpExRowContext.attach(file, it) }
+            FileDocumentManager.getInstance().getFile(source)?.let { ImpExRowContext.attachSource(file, it) }
+        }
 
     /**
      * The mirror is a view of the source: undo/redo operate on the source only,
@@ -153,7 +156,7 @@ class ImpExRowCellSynchronizer(
     }
 
     private fun onMirrorChanged(event: DocumentEvent) {
-        if (isUpdating || !rowMarker.isValid || !source.isWritable || event.offset < rowOffset) return
+        if (isUpdating || !rowMarker.isValid || !ImpExRowEditability.isEditable(source) || event.offset < rowOffset) return
 
         val start = rowMarker.startOffset
         val offset = start + event.offset - rowOffset

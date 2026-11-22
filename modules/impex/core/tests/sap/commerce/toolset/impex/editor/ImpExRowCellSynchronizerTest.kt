@@ -18,6 +18,7 @@
 
 package sap.commerce.toolset.impex.editor
 
+import com.intellij.openapi.application.runWriteAction
 import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.command.undo.UndoManager
 import com.intellij.openapi.editor.Document
@@ -175,6 +176,17 @@ class ImpExRowCellSynchronizerTest : BasePlatformTestCase() {
         val source = document()
         val synchronizer = synchronizer(source, "abc")
         source.setReadOnly(true)
+
+        edit { synchronizer.mirror.insertString(synchronizer.editableRange.startOffset + 1, "X") }
+
+        assertEquals(SOURCE, source.text)
+    }
+
+    fun `test mirror edit is not applied to a source of a read-only file`() {
+        myFixture.configureByText("readonly.txt", SOURCE)
+        val source = myFixture.editor.document
+        val synchronizer = synchronizer(source, "abc")
+        runWriteAction { myFixture.file.virtualFile.isWritable = false }
 
         edit { synchronizer.mirror.insertString(synchronizer.editableRange.startOffset + 1, "X") }
 
