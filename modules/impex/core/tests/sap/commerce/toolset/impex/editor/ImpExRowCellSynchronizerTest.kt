@@ -275,6 +275,52 @@ class ImpExRowCellSynchronizerTest : BasePlatformTestCase() {
         assertEquals(SOURCE + "X", source.text)
     }
 
+    fun `test source group offset is the separator right before the cell`() {
+        val source = document()
+        val synchronizer = synchronizer(source, "ABC")
+
+        assertEquals(SOURCE.indexOf(";ABC"), synchronizer.sourceGroupOffset)
+    }
+
+    fun `test source group offset of the first cell is the first separator of the row`() {
+        val source = document()
+        val synchronizer = synchronizer(source, "abc")
+
+        assertEquals(SOURCE.indexOf(";abc"), synchronizer.sourceGroupOffset)
+    }
+
+    fun `test source group offset skips the whitespaces between the separator and the value`() {
+        val source = document("INSERT_UPDATE Product;code\n;   abc")
+        val synchronizer = synchronizer(source, "abc")
+
+        assertEquals(source.text.indexOf(";   abc"), synchronizer.sourceGroupOffset)
+    }
+
+    fun `test source group offset of an empty cell is its separator`() {
+        val source = document(";abc;;def")
+        val synchronizer = synchronizer(source, TextRange.from(";abc;".length, 0))
+
+        assertEquals(";abc".length, synchronizer.sourceGroupOffset)
+    }
+
+    fun `test source group offset follows the source edits made before it`() {
+        val source = document()
+        val synchronizer = synchronizer(source, "ABC")
+
+        edit { source.insertString(0, "# comment\n") }
+
+        assertEquals("# comment\n".length + SOURCE.indexOf(";ABC"), synchronizer.sourceGroupOffset)
+    }
+
+    fun `test source group offset follows the edits of the preceding cell`() {
+        val source = document()
+        val synchronizer = synchronizer(source, "ABC")
+
+        edit { source.insertString(SOURCE.indexOf("abc") + 1, "XYZ") }
+
+        assertEquals(SOURCE.indexOf(";ABC") + "XYZ".length, synchronizer.sourceGroupOffset)
+    }
+
     fun `test synchronization stops once the parent is disposed`() {
         val source = document()
         val parent = Disposer.newDisposable()

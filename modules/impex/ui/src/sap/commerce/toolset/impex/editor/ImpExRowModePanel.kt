@@ -18,12 +18,16 @@
 
 package sap.commerce.toolset.impex.editor
 
+import com.intellij.icons.AllIcons
 import com.intellij.openapi.Disposable
+import com.intellij.openapi.actionSystem.ActionUpdateThread
+import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.application.EDT
 import com.intellij.openapi.application.ReadConstraint
 import com.intellij.openapi.application.constrainedReadAction
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.editor.ScrollType
 import com.intellij.openapi.editor.actionSystem.EditorActionManager
 import com.intellij.openapi.editor.actionSystem.ReadonlyFragmentModificationHandler
 import com.intellij.openapi.editor.event.CaretEvent
@@ -33,6 +37,7 @@ import com.intellij.openapi.editor.event.DocumentListener
 import com.intellij.openapi.editor.event.SelectionEvent
 import com.intellij.openapi.editor.event.SelectionListener
 import com.intellij.openapi.editor.ex.EditorEx
+import com.intellij.openapi.project.DumbAwareAction
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.wm.IdeFocusManager
@@ -45,6 +50,7 @@ import com.intellij.ui.EditorNotificationPanel
 import com.intellij.ui.EditorTextField
 import com.intellij.ui.dsl.builder.AlignX
 import com.intellij.ui.dsl.builder.BottomGap
+import com.intellij.ui.dsl.builder.actionButton
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.util.ui.JBUI
 import kotlinx.coroutines.CoroutineScope
@@ -213,9 +219,28 @@ class ImpExRowModePanel(
                 row {
                     cell(valueField(cellSynchronizers[index], writable, disposable))
                         .align(AlignX.FILL)
+                        .resizableColumn()
+
+                    actionButton(object : DumbAwareAction(
+                        i18n("hybris.impex.editor.row_mode.jump_to_source"),
+                        i18n("hybris.impex.editor.row_mode.jump_to_source.description"),
+                        AllIcons.Actions.EditSource
+                    ) {
+                        override fun getActionUpdateThread() = ActionUpdateThread.EDT
+
+                        override fun actionPerformed(e: AnActionEvent) = jumpToSource(cellSynchronizers[index].sourceGroupOffset)
+                    })
                 }
             }
         }.apply { border = JBUI.Borders.empty(5, 16, 10, 16) }
+    }
+
+    private fun jumpToSource(offset: Int) {
+        if (editor.isDisposed) return
+
+        editor.caretModel.moveToOffset(offset.coerceIn(0, editor.document.textLength))
+        editor.scrollingModel.scrollToCaret(ScrollType.MAKE_VISIBLE)
+        IdeFocusManager.getInstance(project).requestFocus(editor.contentComponent, true)
     }
 
     private fun navigate(pointer: SmartPsiElementPointer<ImpExValueLine>, declaration: (ImpExValueLine) -> PsiElement?) {

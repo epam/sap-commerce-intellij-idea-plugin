@@ -55,6 +55,9 @@ class ImpExRowCellSynchronizer(
 
     private val rowOffset = contextPrefix.length
 
+    // follows the edits of the source, so the position is still valid when it is requested
+    private val groupStartMarker = source.createRangeMarker(groupStartOffset(cellRange.startOffset), groupStartOffset(cellRange.startOffset))
+
     val virtualFile = LightVirtualFile(MIRROR_FILE_NAME, ImpExFileType, contextPrefix + rowText())
         .also { file -> valueLine?.let { ImpExRowContext.attach(file, it) } }
 
@@ -81,6 +84,12 @@ class ImpExRowCellSynchronizer(
             isGreedyToRight = true
         }
 
+    /**
+     * The offset of the value group of the cell in the source, which is the field separator right before the value.
+     */
+    val sourceGroupOffset: Int
+        get() = groupStartMarker.startOffset
+
     val editableRange: TextRange
         get() = TextRange(prefixGuard.endOffset, suffixGuard?.startOffset ?: mirror.textLength)
 
@@ -103,7 +112,10 @@ class ImpExRowCellSynchronizer(
             override fun documentChanged(event: DocumentEvent) = onMirrorChanged(event)
         }, parentDisposable)
 
-        Disposer.register(parentDisposable) { rowMarker.dispose() }
+        Disposer.register(parentDisposable) {
+            rowMarker.dispose()
+            groupStartMarker.dispose()
+        }
     }
 
     private fun onBeforeSourceChange(event: DocumentEvent) {
@@ -148,6 +160,16 @@ class ImpExRowCellSynchronizer(
             rowMarker.dispose()
             rowMarker = createRowMarker(start, start + mirror.textLength - rowOffset)
         }
+    }
+
+    private fun groupStartOffset(cellStartOffset: Int): Int {
+        val text = source.immutableCharSequence
+        var offset = cellStartOffset
+
+        // only the whitespaces may be between the separator and the value
+        while (offset > 0 && text[offset - 1].isWhitespace()) offset--
+
+        return if (offset > 0 && text[offset - 1] == ';') offset - 1 else cellStartOffset
     }
 
     private fun rowText(): CharSequence = rowMarker.takeIf { it.isValid }
