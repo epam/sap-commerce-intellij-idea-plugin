@@ -34,6 +34,7 @@ import sap.commerce.toolset.exec.context.DefaultExecResult
 import sap.commerce.toolset.impex.exec.context.ImpExExecContext
 import sap.commerce.toolset.impex.exec.impexExecContextSettings
 import sap.commerce.toolset.impex.psi.ImpExMacroDeclaration
+import sap.commerce.toolset.settings.yDeveloperSettings
 import sap.commerce.toolset.ui.editor.SplitEditorBase
 import java.io.Serial
 import kotlin.time.Duration
@@ -55,6 +56,9 @@ class ImpExSplitEditorBase(textEditor: TextEditor, project: Project) : SplitEdit
     }
 
     override val inEditorResultsTitle = "ImpEx Execution Results"
+
+    override val inEditorResultsByDefault: Boolean
+        get() = project.yDeveloperSettings.impexSettings.inEditor.results
 
     override var virtualParameters: Map<SmartPsiElementPointer<ImpExMacroDeclaration>, ImpExVirtualParameter>?
         get() = getUserData(KEY_PARAMETERS)
@@ -146,6 +150,8 @@ class ImpExSplitEditorBase(textEditor: TextEditor, project: Project) : SplitEdit
     init {
         horizontalSplitter.firstComponent = rowModeSplitter
         verticalSplitter.firstComponent = horizontalSplitter
+
+        if (project.yDeveloperSettings.impexSettings.inEditor.rowMode) rowMode = true
     }
 
     private fun getParametrizedText(virtualParameters: Map<SmartPsiElementPointer<ImpExMacroDeclaration>, ImpExVirtualParameter>): String {

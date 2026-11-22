@@ -63,6 +63,19 @@ class ImpExProjectSettingsConfigurableProvider(private val project: Project) : C
                         .bindSelected(mutable::groupLocalizedFiles)
                 }
 
+                group("In-Editor") {
+                    row {
+                        checkBox("Enable In-Editor Results by default")
+                            .comment("Applies to the newly opened ImpEx editors, the execution results are displayed below the editor.")
+                            .bindSelected(mutable.inEditor::results)
+                    }
+                    row {
+                        checkBox("Enable In-Editor Row Mode by default")
+                            .comment("Applies to the newly opened ImpEx editors, the value line under the caret is displayed as the list of fields next to the editor.")
+                            .bindSelected(mutable.inEditor::rowMode)
+                    }
+                }
+
                 group("Data Edit Mode") {
                     row {
                         checkBox("First row is header")
