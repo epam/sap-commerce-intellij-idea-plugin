@@ -19,6 +19,7 @@
 package sap.commerce.toolset.impex.editor.rowMode
 
 import com.intellij.icons.AllIcons
+import com.intellij.ide.setToolTipText
 import com.intellij.ide.util.PsiNavigationSupport
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionUpdateThread
@@ -38,6 +39,7 @@ import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.openapi.project.DumbAwareAction
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Disposer
+import com.intellij.openapi.util.text.HtmlChunk
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.VirtualFileManager
 import com.intellij.openapi.vfs.newvfs.BulkFileListener
@@ -365,7 +367,7 @@ class ImpExRowModePanel(
                     row {
                         columnTypes.getOrNull(index)?.let { type ->
                             icon(type.icon)
-                                .applyToComponent { toolTipText = type.name }
+                                .applyToComponent { setToolTipText(type.name?.let(HtmlChunk::text)) }
                                 .gap(RightGap.SMALL)
                         }
 
@@ -390,12 +392,12 @@ class ImpExRowModePanel(
 
     private fun JLabel.markUnique() {
         icon = HybrisIcons.ImpEx.COLUMN_UNIQUE
-        toolTipText = i18n("hybris.impex.editor.row_mode.unique")
+        setToolTipText(HtmlChunk.text(i18n("hybris.impex.editor.row_mode.unique")))
     }
 
     private fun ActionLink.markUnique() {
         icon = HybrisIcons.ImpEx.COLUMN_UNIQUE
-        toolTipText = i18n("hybris.impex.editor.row_mode.unique")
+        setToolTipText(HtmlChunk.text(i18n("hybris.impex.editor.row_mode.unique")))
     }
 
     private fun jumpToSource(offset: Int) {
