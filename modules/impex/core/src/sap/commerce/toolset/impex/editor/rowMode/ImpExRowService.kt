@@ -25,8 +25,10 @@ import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.TextRange
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiPolyVariantReference
 import com.intellij.psi.SmartPsiElementPointer
+import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.childrenOfType
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisIcons
@@ -52,6 +54,26 @@ class ImpExRowService(private val project: Project) {
     // ------------------------------------------
     //                  Row
     // ------------------------------------------
+
+    /**
+     * The value line the offset belongs to, including the end of the line and the trailing whitespaces,
+     * which are not a part of the line, but the caret is placed there after the last value of the line.
+     */
+    fun findValueLine(file: PsiFile, offset: Int): ImpExValueLine? {
+        valueLineAt(file, offset)?.let { return it }
+
+        val text = file.viewProvider.contents
+        if (offset <= 0 || offset > text.length) return null
+        if (offset < text.length && text[offset] != '\n' && text[offset] != '\r') return null
+
+        var lastLineOffset = offset
+        while (lastLineOffset > 0 && (text[lastLineOffset - 1] == ' ' || text[lastLineOffset - 1] == '\t')) lastLineOffset--
+
+        return if (lastLineOffset > 0) valueLineAt(file, lastLineOffset - 1) else null
+    }
+
+    private fun valueLineAt(file: PsiFile, offset: Int): ImpExValueLine? = file.findElementAt(offset)
+        ?.let { PsiTreeUtil.getParentOfType(it, ImpExValueLine::class.java, false) }
 
     fun resolve(valueLine: ImpExValueLine): ImpExRow? {
         val headerLine = valueLine.headerLine ?: return null

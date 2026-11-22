@@ -106,7 +106,7 @@ class ImpExRowServiceContextTest : BasePlatformTestCase() {
 
     private fun cellFile(original: ImpExFile, value: String): PsiFile {
         val text = original.text
-        val valueLine = checkNotNull(original.findValueLine(text.lastIndexOf(value) + 1))
+        val valueLine = checkNotNull(ImpExRowService.getInstance(project).findValueLine(original, text.lastIndexOf(value) + 1))
         val row = checkNotNull(ImpExRowService.getInstance(project).resolve(valueLine))
         val synchronizer = ImpExRowCellSynchronizer(
             source = checkNotNull(PsiDocumentManager.getInstance(project).getDocument(original)),

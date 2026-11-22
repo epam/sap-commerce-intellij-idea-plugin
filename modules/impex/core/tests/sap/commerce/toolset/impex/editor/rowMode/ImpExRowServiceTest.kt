@@ -46,33 +46,33 @@ class ImpExRowServiceTest : BasePlatformTestCase() {
     fun `test value line is found when the caret is inside a value`() {
         val file = file(TWO_ROWS)
 
-        assertNotNull(file.findValueLine(TWO_ROWS.indexOf("abc") + 1))
+        assertNotNull(ImpExRowService.getInstance(project).findValueLine(file, TWO_ROWS.indexOf("abc") + 1))
     }
 
     fun `test value line is found when the caret is at the end of the line`() {
         val file = file(TWO_ROWS)
 
-        assertNotNull(file.findValueLine(TWO_ROWS.indexOf(";abc;ABC") + ";abc;ABC".length))
+        assertNotNull(ImpExRowService.getInstance(project).findValueLine(file, TWO_ROWS.indexOf(";abc;ABC") + ";abc;ABC".length))
     }
 
     fun `test value line is found when the caret is after trailing whitespaces`() {
         val text = "INSERT_UPDATE Product;code\n;abc   \n"
         val file = file(text)
 
-        assertNotNull(file.findValueLine(text.indexOf("abc") + "abc   ".length))
+        assertNotNull(ImpExRowService.getInstance(project).findValueLine(file, text.indexOf("abc") + "abc   ".length))
     }
 
     fun `test value line is found when the caret is at the end of the file`() {
         val text = "INSERT_UPDATE Product;code\n;abc"
         val file = file(text)
 
-        assertNotNull(file.findValueLine(text.length))
+        assertNotNull(ImpExRowService.getInstance(project).findValueLine(file, text.length))
     }
 
     fun `test value line is found for the line under the caret`() {
         val file = file(TWO_ROWS)
 
-        val valueLine = file.findValueLine(TWO_ROWS.indexOf("def") + 1)
+        val valueLine = ImpExRowService.getInstance(project).findValueLine(file, TWO_ROWS.indexOf("def") + 1)
 
         assertEquals(TWO_ROWS.indexOf(";def"), valueLine?.textRange?.startOffset)
     }
@@ -80,14 +80,14 @@ class ImpExRowServiceTest : BasePlatformTestCase() {
     fun `test value line is not found on the header line`() {
         val file = file(TWO_ROWS)
 
-        assertNull(file.findValueLine(TWO_ROWS.indexOf("code") + 1))
+        assertNull(ImpExRowService.getInstance(project).findValueLine(file, TWO_ROWS.indexOf("code") + 1))
     }
 
     fun `test value line is not found on an empty line`() {
         val text = "INSERT_UPDATE Product;code\n;abc\n\n;def"
         val file = file(text)
 
-        assertNull(file.findValueLine(text.indexOf(";abc") + ";abc\n".length))
+        assertNull(ImpExRowService.getInstance(project).findValueLine(file, text.indexOf(";abc") + ";abc\n".length))
     }
 
     fun `test row exposes the header type`() {
@@ -323,7 +323,7 @@ class ImpExRowServiceTest : BasePlatformTestCase() {
     private fun file(text: String): ImpExFile = ImpExElementFactory.createPhysicalFile(project, text)
 
     private fun resolveRow(text: String, valueMarker: String): ImpExRow {
-        val valueLine = checkNotNull(file(text).findValueLine(text.indexOf(valueMarker) + 1))
+        val valueLine = checkNotNull(ImpExRowService.getInstance(project).findValueLine(file(text), text.indexOf(valueMarker) + 1))
 
         return checkNotNull(ImpExRowService.getInstance(project).resolve(valueLine))
     }

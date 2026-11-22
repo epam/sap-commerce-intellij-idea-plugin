@@ -104,7 +104,7 @@ class ImpExRowCellRangeTest : BasePlatformTestCase() {
     private fun resolveRow(file: ImpExFile): ImpExRow {
         PsiDocumentManager.getInstance(project).commitAllDocuments()
 
-        val valueLine = checkNotNull(file.findValueLine(file.text.lastIndexOf('\n') + 2))
+        val valueLine = checkNotNull(ImpExRowService.getInstance(project).findValueLine(file, file.text.lastIndexOf('\n') + 2))
 
         return checkNotNull(ImpExRowService.getInstance(project).resolve(valueLine))
     }

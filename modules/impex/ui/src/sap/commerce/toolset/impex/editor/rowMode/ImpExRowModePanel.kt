@@ -60,7 +60,6 @@ import com.intellij.ui.dsl.builder.actionButton
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.dsl.gridLayout.UnscaledGaps
 import com.intellij.util.application
-import com.intellij.util.asSafely
 import com.intellij.util.ui.JBUI
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -73,7 +72,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.i18n
-import sap.commerce.toolset.impex.psi.ImpExFile
 import sap.commerce.toolset.impex.psi.ImpExValueLine
 import sap.commerce.toolset.typeSystem.meta.TSGlobalMetaModel
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelStateService
@@ -213,8 +211,7 @@ class ImpExRowModePanel(
         if (snapshot.caretCount > 1) return ImpExRowModeState.MultipleCarets
 
         val valueLine = PsiDocumentManager.getInstance(project).getPsiFile(editor.document)
-            .asSafely<ImpExFile>()
-            ?.findValueLine(snapshot.caretOffset)
+            ?.let { rowService.findValueLine(it, snapshot.caretOffset) }
             ?: return ImpExRowModeState.NoValueLine
 
         // the caret has been moved within the same row and nothing has been changed since, there is no need to resolve the row again

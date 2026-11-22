@@ -28,7 +28,6 @@ import com.intellij.psi.PsiManager
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
-import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.childrenOfType
 import org.apache.commons.lang3.StringUtils
 import sap.commerce.toolset.impex.ImpExLanguage
@@ -41,26 +40,6 @@ class ImpExFile(viewProvider: FileViewProvider) : PsiFileBase(viewProvider, ImpE
     override fun getFileType() = ImpExFileType
     override fun toString() = "ImpEx File"
     override fun getIcon(flags: Int) = super.getIcon(flags)
-
-    /**
-     * The value line the offset belongs to, including the end of the line and the trailing whitespaces,
-     * the way the caret is placed after the last value of the line.
-     */
-    fun findValueLine(offset: Int): ImpExValueLine? {
-        valueLineAt(offset)?.let { return it }
-
-        val text = viewProvider.contents
-        if (offset <= 0 || offset > text.length) return null
-        if (offset < text.length && text[offset] != '\n' && text[offset] != '\r') return null
-
-        var lastLineOffset = offset
-        while (lastLineOffset > 0 && (text[lastLineOffset - 1] == ' ' || text[lastLineOffset - 1] == '\t')) lastLineOffset--
-
-        return if (lastLineOffset > 0) valueLineAt(lastLineOffset - 1) else null
-    }
-
-    private fun valueLineAt(offset: Int): ImpExValueLine? = findElementAt(offset)
-        ?.let { PsiTreeUtil.getParentOfType(it, ImpExValueLine::class.java, false) }
 
     fun getHeaderLines(): Map<ImpExHeaderLine, Collection<ImpExValueLine>> = CachedValuesManager.getManager(project).getCachedValue(this, CACHE_KEY_HEADER_LINES, {
         val headerLines = childrenOfType<ImpExHeaderLine>()
