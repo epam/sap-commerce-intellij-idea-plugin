@@ -20,7 +20,6 @@ package sap.commerce.toolset.impex.editor.rowMode
 
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
-import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.TextRange
@@ -68,7 +67,8 @@ class ImpExRowService(private val project: Project) {
             .joinToString(separator = "\n", postfix = "\n")
 
         val groups = valueLine.valueGroupList
-        val typeSystemReady = isTypeSystemReady()
+        // resolving of a header parameter requires the meta model, which cancels the read action while it is being calculated
+        val typeSystemReady = TSMetaModelStateService.getInstance(project).ready()
 
         return ImpExRow(
             range = valueLine.textRange,
@@ -97,17 +97,12 @@ class ImpExRowService(private val project: Project) {
     // ------------------------------------------
 
     /**
-     * Resolving of a header parameter requires the meta model, which cancels the read action while it is being calculated.
-     */
-    fun isTypeSystemReady() = TSMetaModelStateService.getInstance(project).initialized() && !DumbService.isDumb(project)
-
-    /**
      * The type of each column of the header: a link for a document id declaration, otherwise the type of the attribute.
      * It is unknown, if the type system is not ready or the attribute cannot be resolved.
      */
     fun resolveColumnTypes(valueLine: ImpExValueLine): List<ImpExRow.ColumnType> {
         val access = TSMetaModelAccess.getInstance(project)
-            .takeIf { isTypeSystemReady() }
+            .takeIf { TSMetaModelStateService.getInstance(project).ready() }
 
         return valueLine.headerLine?.fullHeaderParameterList.orEmpty().map { parameter ->
             if (parameter.isDocumentIdDeclaration) {

@@ -23,7 +23,6 @@ import com.intellij.openapi.application.edtWriteAction
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
-import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.util.Disposer
@@ -59,7 +58,7 @@ class FlexibleSearchInEditorParametersView(private val project: Project, private
 
             fileEditor.virtualParametersDisposable?.let { Disposer.dispose(it) }
 
-            val panel = if (!isTypeSystemInitialized()) renderTypeSystemInitializationPanel()
+            val panel = if (!TSMetaModelStateService.getInstance(project).ready()) renderTypeSystemInitializationPanel()
             else {
                 val virtualParameters = collectVirtualParameters(fileEditor)
                 renderParametersPanel(virtualParameters, fileEditor)
@@ -242,10 +241,6 @@ class FlexibleSearchInEditorParametersView(private val project: Project, private
             fileEditor.reparseTextEditor()
         }
     }
-
-    private fun isTypeSystemInitialized(): Boolean = !project.isDisposed
-        && !DumbService.isDumb(project)
-        && TSMetaModelStateService.getInstance(project).initialized()
 
     companion object {
         fun getInstance(project: Project): FlexibleSearchInEditorParametersView = project.service()
