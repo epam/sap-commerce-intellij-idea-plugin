@@ -18,9 +18,11 @@
 
 package sap.commerce.toolset.impex.actionSystem
 
+import com.intellij.ide.DataManager
 import com.intellij.openapi.actionSystem.ActionToolbar
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.actionSystem.Presentation
 import com.intellij.openapi.actionSystem.ToggleAction
 import com.intellij.openapi.actionSystem.ex.CustomComponentAction
@@ -30,6 +32,7 @@ import com.intellij.openapi.util.Disposer
 import com.intellij.ui.GotItTooltip
 import sap.commerce.toolset.GotItTooltips
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.actionSystem.triggerAction
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.impex.editor.impexSplitEditorEx
 import java.awt.event.HierarchyEvent
@@ -65,6 +68,12 @@ class ImpExToggleRowModeAction : ToggleAction(
                     <br><br>Every field edits the corresponding value of the file in place and supports ${code("code completion")}, ${code("navigation")} and ${code("validation")} as the ImpEx editor does.
                     <br>The header type, the sub type and the column names lead to their declarations in the ${code("Type System")}.
                     <br><br>Place the caret on any value line to see its values, multiple carets are not supported.
+                    <br><br>Whether the row mode is enabled for the newly opened editors can be configured in the ${
+                        link("ImpEx settings") {
+                            DataManager.getInstance().getDataContext(component).getData(CommonDataKeys.PROJECT)
+                                ?.triggerAction("hybris.impex.openSettings")
+                        }
+                    }.
                 """.trimIndent()
                 },
                 parentDisposable = disposable
