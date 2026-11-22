@@ -30,6 +30,7 @@ import com.intellij.psi.jsp.JspFile;
 import com.intellij.psi.util.CachedValue;
 import com.intellij.psi.util.CachedValueProvider;
 import com.intellij.psi.util.CachedValuesManager;
+import com.intellij.psi.util.PsiModificationTracker;
 import com.intellij.psi.xml.XmlAttribute;
 import com.intellij.psi.xml.XmlAttributeValue;
 import com.intellij.psi.xml.XmlFile;
@@ -140,7 +141,8 @@ public class JspPropertyFoldingBuilder extends FoldingBuilderEx {
             }
 
             final IProperty theChosenOne = chooseForLocale(allProperties);
-            return new CachedValueProvider.Result<>(theChosenOne, codeValue);
+            // the property belongs to another file, depending only on the code value would keep an invalid property after it is edited
+            return new CachedValueProvider.Result<>(theChosenOne, PsiModificationTracker.MODIFICATION_COUNT);
         });
     }
 
