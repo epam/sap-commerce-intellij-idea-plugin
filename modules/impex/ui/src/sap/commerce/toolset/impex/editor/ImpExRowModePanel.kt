@@ -57,6 +57,8 @@ import com.intellij.ui.EditorTextField
 import com.intellij.ui.dsl.builder.AlignX
 import com.intellij.ui.dsl.builder.BottomGap
 import com.intellij.ui.dsl.builder.RightGap
+import com.intellij.ui.dsl.builder.TopGap
+import com.intellij.ui.dsl.gridLayout.UnscaledGaps
 import com.intellij.ui.dsl.builder.actionButton
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.util.ui.JBUI
@@ -212,8 +214,20 @@ class ImpExRowModePanel(
         }
         synchronizers = cellSynchronizers
 
+        // the sections have their own gaps, so the separators between them take the whole width of the panel
         return panel {
-            group(i18n("hybris.impex.editor.row_mode.details"), indent = false) {
+            panel {
+                row {
+                    label(i18n("hybris.impex.editor.row_mode.title")).bold()
+                }.topGap(TopGap.SMALL)
+            }.customize(UnscaledGaps(0, 16, 0, 16))
+
+            separator(JBUI.CurrentTheme.Banner.INFO_BORDER_COLOR)
+
+            panel {
+                row(i18n("hybris.impex.editor.row_mode.line")) {
+                    label(valueLine.lineNumber(editor.document).toString())
+                }
                 row(i18n("hybris.impex.editor.row_mode.header_type")) {
                     link(valueLine.headerType) { navigate(pointer, ImpExRowNavigation::headerTypeDeclaration) }
                 }
@@ -222,59 +236,57 @@ class ImpExRowModePanel(
                         link(it) { navigate(pointer, ImpExRowNavigation::subTypeDeclaration) }
                     }
                 }
-
-                row(i18n("hybris.impex.editor.row_mode.line")) {
-                    label(valueLine.lineNumber(editor.document).toString())
-                }
-            }
+            }.customize(UnscaledGaps(0, 16, 8, 16))
 
             separator()
 
-            valueLine.cells.forEachIndexed { index, rowCell ->
-                row {
-                    // a document id is declared by the column itself, so there is nothing to navigate to
-                    if (rowCell.documentIdDeclaration) {
-                        label(rowCell.label)
-                            .applyToComponent {
-                                if (rowCell.unique) {
-                                    icon = HybrisIcons.ImpEx.COLUMN_UNIQUE
-                                    toolTipText = i18n("hybris.impex.editor.row_mode.unique")
+            panel {
+                valueLine.cells.forEachIndexed { index, rowCell ->
+                    row {
+                        // a document id is declared by the column itself, so there is nothing to navigate to
+                        if (rowCell.documentIdDeclaration) {
+                            label(rowCell.label)
+                                .applyToComponent {
+                                    if (rowCell.unique) {
+                                        icon = HybrisIcons.ImpEx.COLUMN_UNIQUE
+                                        toolTipText = i18n("hybris.impex.editor.row_mode.unique")
+                                    }
                                 }
-                            }
-                    } else {
-                        link(rowCell.label) { navigate(pointer) { ImpExRowNavigation.columnDeclaration(it, index) } }
-                            .applyToComponent {
-                                if (rowCell.unique) {
-                                    icon = HybrisIcons.ImpEx.COLUMN_UNIQUE
-                                    toolTipText = i18n("hybris.impex.editor.row_mode.unique")
+                        } else {
+                            link(rowCell.label) { navigate(pointer) { ImpExRowNavigation.columnDeclaration(it, index) } }
+                                .applyToComponent {
+                                    if (rowCell.unique) {
+                                        icon = HybrisIcons.ImpEx.COLUMN_UNIQUE
+                                        toolTipText = i18n("hybris.impex.editor.row_mode.unique")
+                                    }
                                 }
-                            }
+                        }
+                    }.bottomGap(BottomGap.NONE)
+
+                    row {
+                        columnTypes.getOrNull(index)?.let { type ->
+                            icon(type.icon)
+                                .applyToComponent { toolTipText = type.name }
+                                .gap(RightGap.SMALL)
+                        }
+
+                        cell(valueField(cellSynchronizers[index], editable, disposable))
+                            .align(AlignX.FILL)
+                            .resizableColumn()
+
+                        actionButton(object : DumbAwareAction(
+                            i18n("hybris.impex.editor.row_mode.jump_to_source"),
+                            i18n("hybris.impex.editor.row_mode.jump_to_source.description"),
+                            AllIcons.General.Locate
+                        ) {
+                            override fun getActionUpdateThread() = ActionUpdateThread.EDT
+
+                            override fun actionPerformed(e: AnActionEvent) = jumpToSource(cellSynchronizers[index].sourceGroupOffset)
+                        })
                     }
-                }.bottomGap(BottomGap.NONE)
-
-                row {
-                    columnTypes.getOrNull(index)?.let { type ->
-                        icon(type.icon)
-                            .applyToComponent { toolTipText = type.name }
-                            .gap(RightGap.SMALL)
-                    }
-
-                    cell(valueField(cellSynchronizers[index], editable, disposable))
-                        .align(AlignX.FILL)
-                        .resizableColumn()
-
-                    actionButton(object : DumbAwareAction(
-                        i18n("hybris.impex.editor.row_mode.jump_to_source"),
-                        i18n("hybris.impex.editor.row_mode.jump_to_source.description"),
-                        AllIcons.General.Locate
-                    ) {
-                        override fun getActionUpdateThread() = ActionUpdateThread.EDT
-
-                        override fun actionPerformed(e: AnActionEvent) = jumpToSource(cellSynchronizers[index].sourceGroupOffset)
-                    })
                 }
-            }
-        }.apply { border = JBUI.Borders.empty(5, 16, 10, 16) }
+            }.customize(UnscaledGaps(8, 16, 10, 16))
+        }
     }
 
     private fun jumpToSource(offset: Int) {
