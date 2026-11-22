@@ -115,6 +115,10 @@ class ImpExSplitEditorBase(textEditor: TextEditor, project: Project) : SplitEdit
 
     override fun getName() = "ImpEx Split Editor"
 
+    // the focus has to go to the text editor, otherwise it stays in a field of the row mode after the navigation to the same file
+    override fun getPreferredFocusedComponent() = textEditor.preferredFocusedComponent
+        ?: super.getPreferredFocusedComponent()
+
     private val rowModeSplitter = OnePixelSplitter(false, "impex.row_mode.splitter.proportion", 0.7f).apply {
         firstComponent = textEditor.component
         setHonorComponentsMinimumSize(true)

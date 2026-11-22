@@ -35,6 +35,7 @@ import com.intellij.openapi.editor.event.SelectionListener
 import com.intellij.openapi.editor.ex.EditorEx
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Disposer
+import com.intellij.openapi.wm.IdeFocusManager
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.SmartPointerManager
@@ -60,6 +61,7 @@ import sap.commerce.toolset.impex.psi.ImpExValueLine
 import sap.commerce.toolset.ui.inlineBanner
 import sap.commerce.toolset.ui.scrollPanel
 import java.awt.BorderLayout
+import java.awt.KeyboardFocusManager
 import java.io.Serial
 import javax.swing.JComponent
 import javax.swing.JPanel
@@ -147,10 +149,15 @@ class ImpExRowModePanel(
             State.MultipleCarets -> bannerPanel("hybris.impex.editor.row_mode.multiple_carets", EditorNotificationPanel.Status.Warning)
         }
 
+        val hadFocus = component.isAncestorOf(KeyboardFocusManager.getCurrentKeyboardFocusManager().focusOwner)
+
         component.removeAll()
         component.add(scrollPanel(content, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER), BorderLayout.CENTER)
         component.revalidate()
         component.repaint()
+
+        // the fields are gone, so the focus would be lost together with the caret
+        if (hadFocus && state !is State.Row) IdeFocusManager.getInstance(project).requestFocus(editor.contentComponent, true)
 
         displayedState = state
     }
