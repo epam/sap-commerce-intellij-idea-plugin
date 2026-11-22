@@ -54,6 +54,9 @@ class ImpExRowCellSynchronizer(
     private var isUpdating = false
     private var sourceChange: SourceChange? = null
 
+    // a change of the source replacing the text on both sides of the border of the cell (e.g. a rollback of the line) breaks the locked parts of the mirror
+    private var isStructureBroken = false
+
     // the separators of a missing group are only displayed, they are added to the source along with the first modification of the cell
     private var pendingSeparators = missingSeparators
 
@@ -114,9 +117,10 @@ class ImpExRowCellSynchronizer(
 
     /**
      * `false` if a change of the source could not be applied to the mirror as is, so the mirror has to be created again.
+     * The mirror may contain the same text as the source, but the cell may not be separated from the rest of the row properly.
      */
     val isConsistent: Boolean
-        get() = rowMarker.isValid && mirror.immutableCharSequence.subSequence(rowOffset, mirror.textLength - MIRROR_END.length - pendingSeparators).contentEquals(rowText())
+        get() = rowMarker.isValid && !isStructureBroken && mirror.immutableCharSequence.subSequence(rowOffset, mirror.textLength - MIRROR_END.length - pendingSeparators).contentEquals(rowText())
 
     init {
         source.addDocumentListener(object : DocumentListener {
@@ -138,9 +142,13 @@ class ImpExRowCellSynchronizer(
         sourceChange = rowMarker
             .takeIf { !isUpdating && it.isValid }
             ?.let {
+                val editable = editableRange
+
                 SourceChange(
                     rowStartOffset = it.startOffset,
-                    isInsideRow = event.offset >= it.startOffset && event.offset + event.oldLength <= it.endOffset
+                    isInsideRow = event.offset >= it.startOffset && event.offset + event.oldLength <= it.endOffset,
+                    editableStartOffset = editable.startOffset,
+                    editableEndOffset = editable.endOffset,
                 )
             }
     }
@@ -152,6 +160,9 @@ class ImpExRowCellSynchronizer(
         if (isUpdating || change == null || !change.isInsideRow || !rowMarker.isValid) return
 
         val offset = rowOffset + event.offset - change.rowStartOffset
+        val end = offset + event.oldLength
+
+        if (event.oldLength > 0 && change.isCrossingBorderOfCell(offset, end)) isStructureBroken = true
 
         // the mirror is a view of the source, so its refresh must not become a separate undo step nor require a command
         updating {
@@ -213,7 +224,15 @@ class ImpExRowCellSynchronizer(
             isGreedyToRight = true
         }
 
-    private data class SourceChange(val rowStartOffset: Int, val isInsideRow: Boolean)
+    private data class SourceChange(
+        val rowStartOffset: Int,
+        val isInsideRow: Boolean,
+        val editableStartOffset: Int,
+        val editableEndOffset: Int,
+    ) {
+        fun isCrossingBorderOfCell(startOffset: Int, endOffset: Int) = (startOffset < editableStartOffset && endOffset > editableStartOffset)
+            || (startOffset < editableEndOffset && endOffset > editableEndOffset)
+    }
 
     companion object {
         private const val MIRROR_FILE_NAME = "impexRowCell.impex"

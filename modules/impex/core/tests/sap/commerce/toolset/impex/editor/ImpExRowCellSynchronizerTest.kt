@@ -193,6 +193,57 @@ class ImpExRowCellSynchronizerTest : BasePlatformTestCase() {
         assertFalse(synchronizer.isConsistent)
     }
 
+    fun `test mirror is inconsistent when a source change replaces the whole row`() {
+        val source = document()
+        val first = synchronizer(source, "abc")
+        val last = synchronizer(source, "ABC")
+        val rowRange = rowRange(source)
+
+        edit { source.replaceString(rowRange.startOffset, rowRange.endOffset, ";xyz;XYZ") }
+
+        assertFalse(first.isConsistent)
+        assertFalse(last.isConsistent)
+    }
+
+    fun `test mirror is inconsistent when a source change replaces the cell together with its neighbour`() {
+        val source = document()
+        val first = synchronizer(source, "abc")
+
+        edit { source.replaceString(SOURCE.indexOf("abc"), SOURCE.indexOf("ABC") + 1, "xyz;Q") }
+
+        assertFalse(first.isConsistent)
+    }
+
+    fun `test mirror stays consistent when a source change replaces the text of the cell only`() {
+        val source = document()
+        val synchronizer = synchronizer(source, "abc")
+
+        edit { source.replaceString(SOURCE.indexOf("abc"), SOURCE.indexOf("abc") + 3, "xyz") }
+
+        assertTrue(synchronizer.isConsistent)
+        assertEquals("xyz", synchronizer.editableText)
+    }
+
+    fun `test mirror stays consistent when a source change replaces the text of another cell`() {
+        val source = document()
+        val first = synchronizer(source, "abc")
+
+        edit { source.replaceString(SOURCE.indexOf("ABC"), SOURCE.indexOf("ABC") + 3, "XYZ") }
+
+        assertTrue(first.isConsistent)
+        assertEquals("abc", first.editableText)
+    }
+
+    fun `test mirror stays consistent when a source change removes the text of another cell`() {
+        val source = document()
+        val last = synchronizer(source, "ABC")
+
+        edit { source.deleteString(SOURCE.indexOf("abc"), SOURCE.indexOf("abc") + 3) }
+
+        assertTrue(last.isConsistent)
+        assertEquals("ABC", last.editableText)
+    }
+
     fun `test mirror edit is not applied to a read-only source`() {
         val source = document()
         val synchronizer = synchronizer(source, "abc")
