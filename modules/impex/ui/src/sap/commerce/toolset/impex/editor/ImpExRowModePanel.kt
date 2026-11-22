@@ -183,13 +183,24 @@ class ImpExRowModePanel(
 
             valueLine.cells.forEachIndexed { index, rowCell ->
                 row {
-                    link(rowCell.label) { navigate(pointer) { ImpExRowNavigation.columnDeclaration(it, index) } }
-                        .applyToComponent {
-                            if (rowCell.unique) {
-                                icon = HybrisIcons.ImpEx.COLUMN_UNIQUE
-                                toolTipText = i18n("hybris.impex.editor.row_mode.unique")
+                    // a document id is declared by the column itself, so there is nothing to navigate to
+                    if (rowCell.documentIdDeclaration) {
+                        label(rowCell.label)
+                            .applyToComponent {
+                                if (rowCell.unique) {
+                                    icon = HybrisIcons.ImpEx.COLUMN_UNIQUE
+                                    toolTipText = i18n("hybris.impex.editor.row_mode.unique")
+                                }
                             }
-                        }
+                    } else {
+                        link(rowCell.label) { navigate(pointer) { ImpExRowNavigation.columnDeclaration(it, index) } }
+                            .applyToComponent {
+                                if (rowCell.unique) {
+                                    icon = HybrisIcons.ImpEx.COLUMN_UNIQUE
+                                    toolTipText = i18n("hybris.impex.editor.row_mode.unique")
+                                }
+                            }
+                    }
                 }.bottomGap(BottomGap.NONE)
 
                 row {

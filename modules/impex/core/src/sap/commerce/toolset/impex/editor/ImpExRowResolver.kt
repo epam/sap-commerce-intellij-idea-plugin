@@ -67,6 +67,7 @@ object ImpExRowResolver {
                         ?: TextRange.from(group.textRange.startOffset + 1, 0),
                     // the modifier is read as is: resolving of its value requires the type system, which may be unavailable
                     unique = group.fullHeaderParameter?.getAttribute(AttributeModifier.UNIQUE)?.anyAttributeValue?.text?.trim() == "true",
+                    documentIdDeclaration = group.fullHeaderParameter?.anyHeaderParameterName?.documentIdDec != null,
                 )
             }
         )

@@ -24,4 +24,5 @@ data class ImpExRowCell(
     val label: String,
     val range: TextRange,
     val unique: Boolean = false,
+    val documentIdDeclaration: Boolean = false,
 )

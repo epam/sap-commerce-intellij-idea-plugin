@@ -172,6 +172,18 @@ class ImpExRowResolverTest : BasePlatformTestCase() {
         assertFalse(row.cells[1].unique)
     }
 
+    fun `test row cell of a document id declaration column is marked as such`() {
+        val row = resolveRow("INSERT_UPDATE Product;&productId;code\n;id1;abc", "id1")
+
+        assertTrue(row.cells[0].documentIdDeclaration)
+    }
+
+    fun `test row cell of a regular column is not a document id declaration`() {
+        val row = resolveRow("INSERT_UPDATE Product;&productId;code\n;id1;abc", "id1")
+
+        assertFalse(row.cells[1].documentIdDeclaration)
+    }
+
     fun `test row is not resolved when the value line has no header`() {
         val file = file(";abc;def")
         val valueLine = checkNotNull(PsiTreeUtil.findChildOfType(file, ImpExValueLine::class.java))
