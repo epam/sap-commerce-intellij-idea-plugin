@@ -21,6 +21,7 @@ package sap.commerce.toolset.impex.editor
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.psi.util.childrenOfType
 import sap.commerce.toolset.impex.constants.modifier.AttributeModifier
 import sap.commerce.toolset.impex.psi.ImpExMacroDeclaration
 import sap.commerce.toolset.impex.psi.ImpExValueLine
@@ -46,8 +47,9 @@ object ImpExRowResolver {
         val headerType = headerLine.fullHeaderType?.headerTypeName?.text ?: return null
         val subType = valueLine.subTypeName?.text
 
-        // the lexer classifies macros based on the declarations above, so they have to be a part of the context
-        val context = PsiTreeUtil.findChildrenOfType(valueLine.containingFile, ImpExMacroDeclaration::class.java)
+        // the lexer classifies macros based on the declarations above, so they have to be a part of the context,
+        // the declarations are the direct children of the file, there is no need to walk the whole tree on each refresh
+        val context = valueLine.containingFile.childrenOfType<ImpExMacroDeclaration>()
             .filter { it.textRange.endOffset <= valueLine.textRange.startOffset }
             .map { it.text }
             .plus(headerLine.text)

@@ -22,6 +22,7 @@ import com.intellij.openapi.project.DumbService
 import com.intellij.psi.PsiPolyVariantReference
 import com.intellij.util.ui.EmptyIcon
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.impex.psi.ImpExFullHeaderParameter
 import sap.commerce.toolset.impex.psi.ImpExValueLine
 import sap.commerce.toolset.typeSystem.TSConstants
@@ -49,7 +50,7 @@ object ImpExRowColumnTypes {
 
         return valueLine.headerLine?.fullHeaderParameterList.orEmpty().map { parameter ->
             if (parameter.anyHeaderParameterName.documentIdDec != null) {
-                ImpExRowColumnType(HybrisIcons.ImpEx.DOC_ID_LINK, DOCUMENT_ID)
+                ImpExRowColumnType(HybrisIcons.ImpEx.DOC_ID_LINK, i18n("hybris.impex.editor.row_mode.type.document_id"))
             } else {
                 access?.let { resolveAttributeType(it, parameter) }
                     ?: ImpExRowColumnType(UNKNOWN_ICON, null)
@@ -90,6 +91,4 @@ object ImpExRowColumnTypes {
 
         return ImpExRowColumnType(icon, typeName)
     }
-
-    private const val DOCUMENT_ID = "Document ID"
 }

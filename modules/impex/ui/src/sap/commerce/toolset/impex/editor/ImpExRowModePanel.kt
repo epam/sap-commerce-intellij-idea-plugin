@@ -19,24 +19,21 @@
 package sap.commerce.toolset.impex.editor
 
 import com.intellij.icons.AllIcons
+import com.intellij.ide.util.PsiNavigationSupport
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.application.EDT
+import com.intellij.openapi.application.ModalityState
 import com.intellij.openapi.application.ReadConstraint
 import com.intellij.openapi.application.constrainedReadAction
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.ScrollType
-import com.intellij.openapi.editor.actionSystem.EditorActionManager
-import com.intellij.openapi.editor.actionSystem.ReadonlyFragmentModificationHandler
 import com.intellij.openapi.editor.event.CaretEvent
 import com.intellij.openapi.editor.event.CaretListener
 import com.intellij.openapi.editor.event.DocumentEvent
 import com.intellij.openapi.editor.event.DocumentListener
-import com.intellij.openapi.editor.event.SelectionEvent
-import com.intellij.openapi.editor.event.SelectionListener
-import com.intellij.openapi.editor.ex.EditorEx
 import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.openapi.project.DumbAwareAction
 import com.intellij.openapi.project.Project
@@ -51,41 +48,51 @@ import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.SmartPointerManager
 import com.intellij.psi.SmartPsiElementPointer
-import com.intellij.ide.util.PsiNavigationSupport
 import com.intellij.ui.EditorNotificationPanel
-import com.intellij.ui.EditorTextField
+import com.intellij.ui.components.ActionLink
 import com.intellij.ui.dsl.builder.AlignX
 import com.intellij.ui.dsl.builder.BottomGap
 import com.intellij.ui.dsl.builder.RightGap
 import com.intellij.ui.dsl.builder.TopGap
-import com.intellij.ui.dsl.gridLayout.UnscaledGaps
 import com.intellij.ui.dsl.builder.actionButton
 import com.intellij.ui.dsl.builder.panel
+import com.intellij.ui.dsl.gridLayout.UnscaledGaps
+import com.intellij.util.application
 import com.intellij.util.ui.JBUI
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.i18n
-import sap.commerce.toolset.impex.file.ImpExFileType
 import sap.commerce.toolset.impex.psi.ImpExFile
 import sap.commerce.toolset.impex.psi.ImpExValueLine
-import sap.commerce.toolset.typeSystem.meta.event.TSMetaModelChangeListener
 import sap.commerce.toolset.typeSystem.meta.TSGlobalMetaModel
+import sap.commerce.toolset.typeSystem.meta.TSMetaModelStateService
+import sap.commerce.toolset.typeSystem.meta.TSModificationTracker
+import sap.commerce.toolset.typeSystem.meta.event.TSMetaModelChangeListener
 import sap.commerce.toolset.ui.inlineBanner
 import sap.commerce.toolset.ui.scrollPanel
 import java.awt.BorderLayout
 import java.awt.KeyboardFocusManager
-import java.io.Serial
+import java.util.concurrent.atomic.AtomicBoolean
 import javax.swing.JComponent
+import javax.swing.JLabel
 import javax.swing.JPanel
 import javax.swing.LayoutFocusTraversalPolicy
 import javax.swing.ScrollPaneConstants
-import javax.swing.SwingUtilities
 
+/**
+ * Displays the value line under the caret of the [editor] as a list of the fields, one per column of the header.
+ *
+ * The refreshes are requested from any thread, they are debounced and resolved in the background.
+ * The displayed state and the components are accessed from the EDT only.
+ */
 class ImpExRowModePanel(
     private val project: Project,
     private val coroutineScope: CoroutineScope,
@@ -94,22 +101,28 @@ class ImpExRowModePanel(
 
     val component = JPanel(BorderLayout())
 
-    private var refreshJob: Job? = null
+    private var displayedState: ImpExRowModeState? = null
     private var contentDisposable: Disposable? = null
-    private var displayedState: State? = null
     private var synchronizers = emptyList<ImpExRowCellSynchronizer>()
-    private var fields = emptyList<EditorTextField>()
+    private var fields = emptyList<ImpExRowValueField>()
     private var restoreFocusIndex: Int? = null
+
+    private val refreshRequests = Channel<Long>(Channel.CONFLATED)
+    private val forceRefresh = AtomicBoolean()
+    private val refreshJob: Job
+
+    @Volatile
+    private var columnTypesCache: ColumnTypesCache? = null
 
     init {
         editor.caretModel.addCaretListener(object : CaretListener {
-            override fun caretPositionChanged(event: CaretEvent) = scheduleRefresh()
-            override fun caretAdded(event: CaretEvent) = scheduleRefresh()
-            override fun caretRemoved(event: CaretEvent) = scheduleRefresh()
+            override fun caretPositionChanged(event: CaretEvent) = requestRefresh()
+            override fun caretAdded(event: CaretEvent) = requestRefresh()
+            override fun caretRemoved(event: CaretEvent) = requestRefresh()
         }, this)
 
         editor.document.addDocumentListener(object : DocumentListener {
-            override fun documentChanged(event: DocumentEvent) = scheduleRefresh()
+            override fun documentChanged(event: DocumentEvent) = requestRefresh()
         }, this)
 
         // the fields are created read-only or editable depending on the file, so they have to be created again when it changes
@@ -117,64 +130,122 @@ class ImpExRowModePanel(
             override fun after(events: List<VFileEvent>) {
                 val file = FileDocumentManager.getInstance().getFile(editor.document) ?: return
 
-                if (events.any { it is VFilePropertyChangeEvent && it.file == file && it.propertyName == VirtualFile.PROP_WRITABLE }) scheduleRefresh()
+                if (events.any { it is VFilePropertyChangeEvent && it.file == file && it.propertyName == VirtualFile.PROP_WRITABLE }) requestRefresh(force = true)
             }
         })
 
         // the icons of the types are not available until the type system is calculated
         project.messageBus.connect(this).subscribe(TSMetaModelChangeListener.TOPIC, object : TSMetaModelChangeListener {
-            override fun onChanged(newState: TSGlobalMetaModel) = scheduleRefresh()
+            override fun onChanged(newState: TSGlobalMetaModel) = requestRefresh(force = true)
         })
 
-        scheduleRefresh(0)
+        refreshJob = coroutineScope.launch {
+            refreshRequests.receiveAsFlow().collectLatest { delayMs ->
+                delay(delayMs)
+                refresh()
+            }
+        }
+
+        requestRefresh(delayMs = 0)
     }
 
     override fun dispose() {
-        refreshJob?.cancel()
+        refreshJob.cancel()
+        refreshRequests.close()
     }
 
-    private fun scheduleRefresh(delayMs: Long = REFRESH_DELAY_MS) {
-        refreshJob?.cancel()
-        refreshJob = coroutineScope.launch {
-            delay(delayMs)
+    /**
+     * @param force the displayed state cannot be reused even though neither the document nor the row has been changed
+     */
+    private fun requestRefresh(delayMs: Long = REFRESH_DELAY_MS, force: Boolean = false) {
+        if (force) forceRefresh.set(true)
+        refreshRequests.trySend(delayMs)
+    }
 
-            if (project.isDisposed || editor.isDisposed) return@launch
+    private suspend fun refresh() {
+        val force = forceRefresh.getAndSet(false)
+        val snapshot = withContext(Dispatchers.EDT) { snapshot(force) } ?: return
 
-            val (state, modificationStamp) = constrainedReadAction(ReadConstraint.withDocumentsCommitted(project)) {
-                resolveState() to editor.document.modificationStamp
+        val state = constrainedReadAction(ReadConstraint.withDocumentsCommitted(project)) { resolveState(snapshot) }
+            ?: return
+
+        withContext(Dispatchers.EDT) {
+            if (editor.isDisposed || Disposer.isDisposed(this@ImpExRowModePanel)) return@withContext
+            // the ranges are stale if the document has been changed since they were resolved
+            if (editor.document.modificationStamp != snapshot.modificationStamp) return@withContext requestRefresh()
+
+            if (displayedState?.hasSameLayoutAs(state) == true && synchronizers.all { it.isConsistent }) {
+                // the layout is the same, so the fields stay, but the next refresh has to know the document they are in sync with
+                displayedState = state
+                return@withContext
             }
 
-            withContext(Dispatchers.EDT) {
-                if (editor.isDisposed || Disposer.isDisposed(this@ImpExRowModePanel)) return@withContext
-                // the ranges are stale if the document has been changed since they were resolved
-                if (editor.document.modificationStamp != modificationStamp) return@withContext scheduleRefresh()
-                if (displayedState?.hasSameLayoutAs(state) == true && synchronizers.all { it.isConsistent }) return@withContext
-
-                render(state)
-            }
+            render(state)
         }
     }
 
-    private fun isEditable() = !editor.isViewer && editor.document.isWritable
+    private fun snapshot(force: Boolean): Snapshot? {
+        if (project.isDisposed || editor.isDisposed) return null
 
-    private fun resolveState(): State {
-        if (editor.caretModel.caretCount > 1) return State.MultipleCarets
+        return Snapshot(
+            caretCount = editor.caretModel.caretCount,
+            caretOffset = editor.caretModel.offset,
+            modificationStamp = editor.document.modificationStamp,
+            editable = !editor.isViewer && editor.document.isWritable,
+            displayedState = displayedState.takeUnless { force },
+        )
+    }
+
+    /**
+     * @return `null` if the displayed state is still actual
+     */
+    private fun resolveState(snapshot: Snapshot): ImpExRowModeState? {
+        if (snapshot.caretCount > 1) return ImpExRowModeState.MultipleCarets
 
         val file = PsiDocumentManager.getInstance(project).getPsiFile(editor.document)
             ?.takeIf { it is ImpExFile }
-            ?: return State.NoValueLine
-        val valueLine = ImpExRowResolver.findValueLine(file, editor.caretModel.offset)
-            ?: return State.NoValueLine
+            ?: return ImpExRowModeState.NoValueLine
+        val valueLine = ImpExRowResolver.findValueLine(file, snapshot.caretOffset)
+            ?: return ImpExRowModeState.NoValueLine
 
-        return ImpExRowResolver.resolve(valueLine)
-            ?.let { State.Row(it, SmartPointerManager.createPointer(valueLine), isEditable(), ImpExRowColumnTypes.resolve(valueLine)) }
-            ?: State.NoHeader
+        // the caret has been moved within the same row and nothing has been changed since, there is no need to resolve the row again
+        val displayed = snapshot.displayedState
+        if (displayed is ImpExRowModeState.Row
+            && displayed.modificationStamp == snapshot.modificationStamp
+            && displayed.row.range.startOffset == valueLine.textRange.startOffset
+        ) return null
+
+        val row = ImpExRowResolver.resolve(valueLine)
+            ?: return ImpExRowModeState.NoHeader
+
+        return ImpExRowModeState.Row(
+            row = row,
+            pointer = SmartPointerManager.createPointer(valueLine),
+            editable = snapshot.editable,
+            columnTypes = columnTypes(valueLine, row),
+            modificationStamp = snapshot.modificationStamp,
+        )
     }
 
-    private fun render(state: State) {
+    // the types depend on the header only, but they are resolved against the type system for each column
+    private fun columnTypes(valueLine: ImpExValueLine, row: ImpExRow): List<ImpExRowColumnType> {
+        val key = listOf(
+            row.contextPrefix,
+            TSMetaModelStateService.getInstance(project).initialized(),
+            TSModificationTracker.getInstance(project).modificationCount,
+        )
+
+        return columnTypesCache
+            ?.takeIf { it.key == key }
+            ?.types
+            ?: ImpExRowColumnTypes.resolve(valueLine)
+                .also { columnTypesCache = ColumnTypesCache(key, it) }
+    }
+
+    private fun render(state: ImpExRowModeState) {
         // the fields are created again when the layout changes, e.g. the first modification of a cell of a missing group adds it to the line
         restoreFocusIndex = fields.indexOfFirst { it.editor?.contentComponent?.isFocusOwner == true }
-            .takeIf { it >= 0 && state is State.Row }
+            .takeIf { it >= 0 && state is ImpExRowModeState.Row }
         fields = emptyList()
         synchronizers = emptyList()
 
@@ -186,10 +257,10 @@ class ImpExRowModePanel(
             }
 
         val content = when (state) {
-            is State.Row -> rowPanel(state.row, state.pointer, state.editable, state.columnTypes, disposable)
-            State.NoValueLine -> bannerPanel("hybris.impex.editor.row_mode.no_value_line")
-            State.NoHeader -> bannerPanel("hybris.impex.editor.row_mode.no_header", EditorNotificationPanel.Status.Warning)
-            State.MultipleCarets -> bannerPanel("hybris.impex.editor.row_mode.multiple_carets", EditorNotificationPanel.Status.Warning)
+            is ImpExRowModeState.Row -> rowPanel(state.row, state.pointer, state.editable, state.columnTypes, disposable)
+            ImpExRowModeState.NoValueLine -> bannerPanel("hybris.impex.editor.row_mode.no_value_line")
+            ImpExRowModeState.NoHeader -> bannerPanel("hybris.impex.editor.row_mode.no_header", EditorNotificationPanel.Status.Warning)
+            ImpExRowModeState.MultipleCarets -> bannerPanel("hybris.impex.editor.row_mode.multiple_carets", EditorNotificationPanel.Status.Warning)
         }
 
         val hadFocus = component.isAncestorOf(KeyboardFocusManager.getCurrentKeyboardFocusManager().focusOwner)
@@ -208,11 +279,12 @@ class ImpExRowModePanel(
         component.repaint()
 
         // the fields are gone, so the focus would be lost together with the caret
-        if (hadFocus && state !is State.Row) IdeFocusManager.getInstance(project).requestFocus(editor.contentComponent, true)
+        if (hadFocus && state !is ImpExRowModeState.Row) IdeFocusManager.getInstance(project).requestFocus(editor.contentComponent, true)
 
+        // the fields are focusable once they are displayed
         restoreFocusIndex
             ?.let { fields.getOrNull(it) }
-            ?.let { field -> SwingUtilities.invokeLater { field.requestFocus() } }
+            ?.let { field -> application.invokeLater({ field.requestFocus() }, ModalityState.stateForComponent(component)) }
 
         displayedState = state
     }
@@ -225,18 +297,20 @@ class ImpExRowModePanel(
     }.apply { border = JBUI.Borders.empty(16) }
 
     private fun rowPanel(
-        valueLine: ImpExRow,
+        rowModel: ImpExRow,
         pointer: SmartPsiElementPointer<ImpExValueLine>,
         editable: Boolean,
         columnTypes: List<ImpExRowColumnType>,
         disposable: Disposable,
     ): JComponent {
-        val cellSynchronizers = valueLine.cells.map { cell ->
-            ImpExRowCellSynchronizer(editor.document, valueLine.range, cell.range, disposable, valueLine.contextPrefix, pointer, cell.missingSeparators)
+        val cellSynchronizers = rowModel.cells.map { cell ->
+            ImpExRowCellSynchronizer(editor.document, rowModel.range, cell.range, disposable, rowModel.contextPrefix, pointer, cell.missingSeparators)
         }
         synchronizers = cellSynchronizers
 
-        val cellFields = mutableListOf<EditorTextField>()
+        val cellFields = cellSynchronizers.mapIndexed { index, synchronizer ->
+            ImpExRowValueField(project, synchronizer, editable, caretAtEnd = index == restoreFocusIndex, disposable)
+        }
         fields = cellFields
 
         // the sections have their own gaps, so the separators between them take the whole width of the panel
@@ -251,12 +325,12 @@ class ImpExRowModePanel(
 
             panel {
                 row(i18n("hybris.impex.editor.row_mode.line")) {
-                    label(valueLine.lineNumber(editor.document).toString())
+                    label(rowModel.lineNumber(editor.document).toString())
                 }
                 row(i18n("hybris.impex.editor.row_mode.header_type")) {
-                    link(valueLine.headerType) { navigate(pointer, ImpExRowNavigation::headerTypeDeclaration) }
+                    link(rowModel.headerType) { navigate(pointer, ImpExRowNavigation::headerTypeDeclaration) }
                 }
-                valueLine.subType?.let {
+                rowModel.subType?.let {
                     row(i18n("hybris.impex.editor.row_mode.sub_type")) {
                         link(it) { navigate(pointer, ImpExRowNavigation::subTypeDeclaration) }
                     }
@@ -266,26 +340,18 @@ class ImpExRowModePanel(
             separator()
 
             panel {
-                valueLine.cells.forEachIndexed { index, rowCell ->
+                rowModel.cells.forEachIndexed { index, rowCell ->
                     row {
                         // a document id is declared by the column itself, so there is nothing to navigate to
                         if (rowCell.documentIdDeclaration) {
                             label(rowCell.label)
-                                .applyToComponent {
-                                    if (rowCell.unique) {
-                                        icon = HybrisIcons.ImpEx.COLUMN_UNIQUE
-                                        toolTipText = i18n("hybris.impex.editor.row_mode.unique")
-                                    }
-                                }
+                                .applyToComponent { if (rowCell.unique) markUnique() }
                         } else {
                             link(rowCell.label) { navigate(pointer) { ImpExRowNavigation.columnDeclaration(it, index) } }
                                 .applyToComponent {
                                     // Tab is for moving between the fields
                                     isFocusable = false
-                                    if (rowCell.unique) {
-                                        icon = HybrisIcons.ImpEx.COLUMN_UNIQUE
-                                        toolTipText = i18n("hybris.impex.editor.row_mode.unique")
-                                    }
+                                    if (rowCell.unique) markUnique()
                                 }
                         }
                     }.bottomGap(BottomGap.NONE)
@@ -297,7 +363,7 @@ class ImpExRowModePanel(
                                 .gap(RightGap.SMALL)
                         }
 
-                        cell(valueField(cellSynchronizers[index], editable, disposable, caretAtEnd = index == restoreFocusIndex).also { cellFields.add(it) })
+                        cell(cellFields[index])
                             .align(AlignX.FILL)
                             .resizableColumn()
 
@@ -314,6 +380,16 @@ class ImpExRowModePanel(
                 }
             }.customize(UnscaledGaps(8, 16, 10, 16))
         }
+    }
+
+    private fun JLabel.markUnique() {
+        icon = HybrisIcons.ImpEx.COLUMN_UNIQUE
+        toolTipText = i18n("hybris.impex.editor.row_mode.unique")
+    }
+
+    private fun ActionLink.markUnique() {
+        icon = HybrisIcons.ImpEx.COLUMN_UNIQUE
+        toolTipText = i18n("hybris.impex.editor.row_mode.unique")
     }
 
     private fun jumpToSource(offset: Int) {
@@ -339,72 +415,18 @@ class ImpExRowModePanel(
         }
     }
 
-    private fun valueField(synchronizer: ImpExRowCellSynchronizer, editable: Boolean, disposable: Disposable, caretAtEnd: Boolean): EditorTextField {
-        // the locked part is hidden, so there is nothing to explain when an attempt to modify it is made
-        EditorActionManager.getInstance().setReadonlyFragmentModificationHandler(synchronizer.mirror, ReadonlyFragmentModificationHandler { })
+    /**
+     * The editor state is read on the EDT, then the row is resolved in the background.
+     */
+    private class Snapshot(
+        val caretCount: Int,
+        val caretOffset: Int,
+        val modificationStamp: Long,
+        val editable: Boolean,
+        val displayedState: ImpExRowModeState?,
+    )
 
-        return object : EditorTextField(synchronizer.mirror, project, ImpExFileType, !editable, true) {
-            override fun createEditor(): EditorEx = super.createEditor().apply {
-                settings.isAllowSingleLogicalLineFolding = true
-                // the caret of a field is moved by the changes of the other fields, which highlights the identifier under it as a selection,
-                // the platform does not do it for the one line editors of the dialogs
-                isEmbeddedIntoDialogWrapper = true
-
-                // only the cell is displayed, the rest of the file provides the context for the ImpEx language features
-                val editable = synchronizer.editableRange
-                foldingModel.runBatchFoldingOperation {
-                    if (editable.startOffset > 0) foldingModel.addFoldRegion(0, editable.startOffset, "")?.isExpanded = false
-                    if (editable.endOffset < document.textLength) foldingModel.addFoldRegion(editable.endOffset, document.textLength, "")?.isExpanded = false
-                }
-                caretModel.moveToOffset(if (caretAtEnd) editable.endOffset else editable.startOffset)
-
-                caretModel.addCaretListener(object : CaretListener {
-                    override fun caretPositionChanged(event: CaretEvent) {
-                        val range = synchronizer.editableRange
-                        val caret = event.caret ?: return
-                        val offset = caret.offset.coerceIn(range.startOffset, range.endOffset)
-
-                        if (offset != caret.offset) caret.moveToOffset(offset)
-                    }
-                })
-                selectionModel.addSelectionListener(object : SelectionListener {
-                    override fun selectionChanged(e: SelectionEvent) {
-                        val range = synchronizer.editableRange
-                        if (!selectionModel.hasSelection()) return
-                        // the fields are changed by each other, which is not the reason to select their values
-                        if (!contentComponent.hasFocus()) return selectionModel.removeSelection()
-                        if (selectionModel.selectionStart >= range.startOffset && selectionModel.selectionEnd <= range.endOffset) return
-
-                        selectionModel.setSelection(
-                            selectionModel.selectionStart.coerceIn(range.startOffset, range.endOffset),
-                            selectionModel.selectionEnd.coerceIn(range.startOffset, range.endOffset),
-                        )
-                    }
-                })
-            }
-
-            @Serial
-            private val serialVersionUID: Long = 2985102871954601724L
-        }.apply { setDisposedWith(disposable) }
-    }
-
-    private sealed interface State {
-        data object NoValueLine : State
-        data object NoHeader : State
-        data object MultipleCarets : State
-        data class Row(
-            val row: ImpExRow,
-            val pointer: SmartPsiElementPointer<ImpExValueLine>,
-            val editable: Boolean,
-            val columnTypes: List<ImpExRowColumnType>,
-        ) : State
-
-        fun hasSameLayoutAs(other: State) = if (this is Row && other is Row) {
-            editable == other.editable
-                && columnTypes.map { it.name } == other.columnTypes.map { it.name }
-                && row.hasSameLayoutAs(other.row)
-        } else this == other
-    }
+    private class ColumnTypesCache(val key: List<Any>, val types: List<ImpExRowColumnType>)
 
     companion object {
         private const val REFRESH_DELAY_MS = 100L

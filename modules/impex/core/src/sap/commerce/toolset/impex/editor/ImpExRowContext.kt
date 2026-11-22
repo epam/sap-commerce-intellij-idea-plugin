@@ -41,7 +41,6 @@ object ImpExRowContext {
         file.putUserData(KEY_VALUE_LINE, valueLine)
     }
 
-
     fun isAttachedTo(file: VirtualFile): Boolean = file.getUserData(KEY_VALUE_LINE) != null || file.getUserData(HybrisConstants.Keys.ORIGINAL_FILE) != null
 
     fun valueLineOf(element: PsiElement): ImpExValueLine? = element.containingFile
