@@ -119,4 +119,8 @@ object ImpExElementFactory {
 
     fun createFile(project: Project, text: String): ImpExFile = PsiFileFactory.getInstance(project)
         .createFileFromText("dummy.impex", ImpExFileType, text) as ImpExFile
+
+    // physical file is required by inspections to anchor problems in the PSI tree
+    fun createPhysicalFile(project: Project, text: String): ImpExFile = PsiFileFactory.getInstance(project)
+        .createFileFromText("dummy.impex", ImpExFileType, text, System.currentTimeMillis(), true) as ImpExFile
 }
