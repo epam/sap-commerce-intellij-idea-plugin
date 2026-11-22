@@ -82,6 +82,7 @@ import java.awt.KeyboardFocusManager
 import java.io.Serial
 import javax.swing.JComponent
 import javax.swing.JPanel
+import javax.swing.LayoutFocusTraversalPolicy
 import javax.swing.ScrollPaneConstants
 
 class ImpExRowModePanel(
@@ -185,7 +186,15 @@ class ImpExRowModePanel(
         val hadFocus = component.isAncestorOf(KeyboardFocusManager.getCurrentKeyboardFocusManager().focusOwner)
 
         component.removeAll()
-        component.add(scrollPanel(content, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER), BorderLayout.CENTER)
+        component.add(
+            scrollPanel(content, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER)
+                // keeps the focus within the panel, so Tab moves it from a field to the next one and not to the editor
+                .apply {
+                    focusTraversalPolicy = LayoutFocusTraversalPolicy()
+                    isFocusCycleRoot = true
+                },
+            BorderLayout.CENTER
+        )
         component.revalidate()
         component.repaint()
 
@@ -255,6 +264,8 @@ class ImpExRowModePanel(
                         } else {
                             link(rowCell.label) { navigate(pointer) { ImpExRowNavigation.columnDeclaration(it, index) } }
                                 .applyToComponent {
+                                    // Tab is for moving between the fields
+                                    isFocusable = false
                                     if (rowCell.unique) {
                                         icon = HybrisIcons.ImpEx.COLUMN_UNIQUE
                                         toolTipText = i18n("hybris.impex.editor.row_mode.unique")
