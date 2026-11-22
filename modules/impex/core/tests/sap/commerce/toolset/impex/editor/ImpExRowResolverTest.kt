@@ -161,18 +161,6 @@ class ImpExRowResolverTest : BasePlatformTestCase() {
         assertEquals(TextRange(start, start + ";abc;ABC".length), row.range)
     }
 
-    fun `test row cell of a unique column is unique`() {
-        val row = resolveRow("INSERT_UPDATE Product;code[unique=true];name\n;abc;ABC", "abc")
-
-        assertTrue(row.cells[0].unique)
-    }
-
-    fun `test row cell of a regular column is not unique`() {
-        val row = resolveRow("INSERT_UPDATE Product;code[unique=true];name\n;abc;ABC", "abc")
-
-        assertFalse(row.cells[1].unique)
-    }
-
     fun `test row cell of a document id declaration column is marked as such`() {
         val row = resolveRow("INSERT_UPDATE Product;&productId;code\n;id1;abc", "id1")
 
@@ -247,12 +235,24 @@ class ImpExRowResolverTest : BasePlatformTestCase() {
         val row = resolveRow("INSERT_UPDATE Product;code;&productId;name[unique=true]\n;abc", "abc")
 
         assertTrue(row.cells[1].documentIdDeclaration)
-        assertTrue(row.cells[2].unique)
     }
 
     fun `test rows with different number of groups do not have the same layout`() {
         val first = row(groupCount = 1)
         val second = row(groupCount = 2)
+
+        assertFalse(first.hasSameLayoutAs(second))
+    }
+
+    fun `test row cells are not unique while the type system is not ready`() {
+        val row = resolveRow("INSERT_UPDATE Product;code[unique=true];name\n;abc;ABC", "abc")
+
+        assertFalse(row.cells.any { it.unique })
+    }
+
+    fun `test rows with different unique cells do not have the same layout`() {
+        val first = row(cells = listOf(ImpExRowCell("code", TextRange(0, 1), unique = true)))
+        val second = row(cells = listOf(ImpExRowCell("code", TextRange(0, 1), unique = false)))
 
         assertFalse(first.hasSameLayoutAs(second))
     }

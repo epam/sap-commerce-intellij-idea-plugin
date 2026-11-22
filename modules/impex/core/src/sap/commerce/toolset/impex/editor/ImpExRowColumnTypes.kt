@@ -18,7 +18,6 @@
 
 package sap.commerce.toolset.impex.editor
 
-import com.intellij.openapi.project.DumbService
 import com.intellij.psi.PsiPolyVariantReference
 import com.intellij.util.ui.EmptyIcon
 import sap.commerce.toolset.HybrisIcons
@@ -27,7 +26,6 @@ import sap.commerce.toolset.impex.psi.ImpExFullHeaderParameter
 import sap.commerce.toolset.impex.psi.ImpExValueLine
 import sap.commerce.toolset.typeSystem.TSConstants
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
-import sap.commerce.toolset.typeSystem.meta.TSMetaModelStateService
 import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaClassifier
 import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaItem
 import sap.commerce.toolset.typeSystem.meta.model.TSMetaRelation
@@ -43,10 +41,8 @@ object ImpExRowColumnTypes {
      */
     fun resolve(valueLine: ImpExValueLine): List<ImpExRowColumnType> {
         val project = valueLine.project
-        // resolving of the attributes requires the meta model, which cancels the read action while it is being calculated
-        val access = TSMetaModelStateService.getInstance(project)
-            .takeIf { it.initialized() && !DumbService.isDumb(project) }
-            ?.let { TSMetaModelAccess.getInstance(project) }
+        val access = TSMetaModelAccess.getInstance(project)
+            .takeIf { ImpExRowTypeSystem.isReady(project) }
 
         return valueLine.headerLine?.fullHeaderParameterList.orEmpty().map { parameter ->
             if (parameter.isDocumentIdDeclaration) {

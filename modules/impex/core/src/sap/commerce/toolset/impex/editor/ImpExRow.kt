@@ -49,5 +49,5 @@ data class ImpExRow(
         && subType == other.subType
         && contextPrefix == other.contextPrefix
         && groupCount == other.groupCount
-        && cells.map { it.label } == other.cells.map { it.label }
+        && cells.map { it.label to it.unique } == other.cells.map { it.label to it.unique }
 }

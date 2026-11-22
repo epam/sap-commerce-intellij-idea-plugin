@@ -40,6 +40,7 @@ object ImpExRowResolver {
             .joinToString(separator = "\n", postfix = "\n")
 
         val groups = valueLine.valueGroupList
+        val typeSystemReady = ImpExRowTypeSystem.isReady(valueLine.project)
 
         return ImpExRow(
             range = valueLine.textRange,
@@ -55,8 +56,7 @@ object ImpExRowResolver {
                     label = parameter.anyHeaderParameterName.text.trim().ifEmpty { "#${index + 1}" },
                     // the group may be missing, then the cell is placed at the end of the line
                     range = group?.valueRange ?: TextRange.from(valueLine.textRange.endOffset, 0),
-                    // the modifier is read as is: resolving of its value requires the type system, which may be unavailable
-                    unique = parameter.hasUniqueModifier(),
+                    unique = typeSystemReady && parameter.isUnique,
                     documentIdDeclaration = parameter.isDocumentIdDeclaration,
                     missingSeparators = if (group == null) index - groups.size + 1 else 0,
                 )

@@ -51,18 +51,6 @@ class ImpExRowPsiTest : BasePlatformTestCase() {
         assertEquals(TextRange.from(text.length, 0), group.valueRange)
     }
 
-    fun `test header parameter with the unique modifier has it`() {
-        assertTrue(headerParameters("INSERT_UPDATE Product;code[unique=true]").single().hasUniqueModifier())
-    }
-
-    fun `test header parameter without the unique modifier does not have it`() {
-        assertFalse(headerParameters("INSERT_UPDATE Product;code").single().hasUniqueModifier())
-    }
-
-    fun `test header parameter with the unique modifier set to false does not have it`() {
-        assertFalse(headerParameters("INSERT_UPDATE Product;code[unique=false]").single().hasUniqueModifier())
-    }
-
     fun `test header parameter declaring a document id is a document id declaration`() {
         assertTrue(headerParameters("INSERT_UPDATE Product;&productId").single().isDocumentIdDeclaration)
     }

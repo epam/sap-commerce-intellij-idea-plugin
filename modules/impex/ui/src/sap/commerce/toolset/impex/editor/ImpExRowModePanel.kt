@@ -74,7 +74,6 @@ import sap.commerce.toolset.i18n
 import sap.commerce.toolset.impex.psi.ImpExFile
 import sap.commerce.toolset.impex.psi.ImpExValueLine
 import sap.commerce.toolset.typeSystem.meta.TSGlobalMetaModel
-import sap.commerce.toolset.typeSystem.meta.TSMetaModelStateService
 import sap.commerce.toolset.typeSystem.meta.TSModificationTracker
 import sap.commerce.toolset.typeSystem.meta.event.TSMetaModelChangeListener
 import sap.commerce.toolset.ui.inlineBanner
@@ -231,7 +230,7 @@ class ImpExRowModePanel(
     private fun columnTypes(valueLine: ImpExValueLine, row: ImpExRow): List<ImpExRowColumnType> {
         val key = listOf(
             row.contextPrefix,
-            TSMetaModelStateService.getInstance(project).initialized(),
+            ImpExRowTypeSystem.isReady(project),
             TSModificationTracker.getInstance(project).modificationCount,
         )
 
