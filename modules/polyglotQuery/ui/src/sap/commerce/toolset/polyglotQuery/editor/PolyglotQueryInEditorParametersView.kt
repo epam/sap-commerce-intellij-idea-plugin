@@ -122,7 +122,7 @@ class PolyglotQueryInEditorParametersView(private val project: Project, private 
     ) = panel {
         virtualParameters.forEach { _, parameter ->
             // the check box has its own text
-            if (parameter.type != Boolean::class) labelAbove(parameter.displayName)
+            if (parameter.type != Boolean::class) labelAbove(parameter.name)
 
             row {
                 when (parameter.type) {
@@ -144,7 +144,7 @@ class PolyglotQueryInEditorParametersView(private val project: Project, private 
                     Double::class -> numberTextField(parameter, fileEditor, "4.9E-324", "1.8E+308", "double")
                     { it.toDoubleOrNull() == null }
 
-                    Boolean::class -> checkBox(parameter.displayName)
+                    Boolean::class -> checkBox(parameter.name)
                         .align(AlignX.FILL)
                         .selected(parameter.sqlValue == "1")
                         .onChanged { applyValue(fileEditor, parameter, it.isSelected) }

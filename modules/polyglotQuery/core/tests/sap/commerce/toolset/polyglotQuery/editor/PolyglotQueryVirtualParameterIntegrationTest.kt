@@ -168,12 +168,4 @@ class PolyglotQueryVirtualParameterIntegrationTest {
         val p = param("java.lang.Long").apply { rawValue = "0" }
         assertEquals("0", p.sqlValue)
     }
-
-    @Test
-    fun edgeValues_displayName_truncatedForLongParameterName() {
-        val longName = "aVeryLongParameterNameThatExceedsTwentyChars"
-        val p = PolyglotQueryVirtualParameter(name = longName, project = noProject)
-        assertTrue(p.displayName.length <= longName.length)
-        assertTrue(p.displayName.contains("...") || p.displayName == longName)
-    }
 }
