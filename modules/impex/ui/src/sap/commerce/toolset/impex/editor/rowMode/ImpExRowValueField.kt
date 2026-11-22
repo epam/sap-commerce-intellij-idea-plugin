@@ -27,6 +27,7 @@ import com.intellij.openapi.editor.event.SelectionEvent
 import com.intellij.openapi.editor.event.SelectionListener
 import com.intellij.openapi.editor.ex.EditorEx
 import com.intellij.openapi.project.Project
+import com.intellij.ui.ExpandableEditorSupport
 import com.intellij.ui.EditorTextField
 import sap.commerce.toolset.impex.file.ImpExFileType
 import java.io.Serial
@@ -34,33 +35,37 @@ import java.io.Serial
 /**
  * Displays and edits only the cell of the [synchronizer], the rest of its file is hidden and locked,
  * but it still provides the context for the ImpEx language features.
+ *
+ * The field of a single line is expandable as the text fields of the virtual parameters, the line breaks of the value are displayed as a placeholder,
+ * the expanded editor of several lines edits the same document.
  */
 internal class ImpExRowValueField(
     project: Project,
-    private val synchronizer: ImpExRowCellSynchronizer,
-    editable: Boolean,
+    internal val synchronizer: ImpExRowCellSynchronizer,
+    private val isCellEditable: Boolean,
     private val caretAtEnd: Boolean,
-    disposable: Disposable,
-) : EditorTextField(synchronizer.mirror, project, ImpExFileType, !editable, true) {
+    disposable: Disposable?,
+    private val multiline: Boolean = false,
+) : EditorTextField(synchronizer.mirror, project, ImpExFileType, !isCellEditable, !multiline) {
 
     init {
         // the locked part is hidden, so there is nothing to explain when an attempt to modify it is made
         EditorActionManager.getInstance().setReadonlyFragmentModificationHandler(synchronizer.mirror, ReadonlyFragmentModificationHandler { })
-        setDisposedWith(disposable)
+        disposable?.let { setDisposedWith(it) }
+
+        if (!multiline) ExpandableSupport(this)
     }
 
     override fun createEditor(): EditorEx = super.createEditor().apply {
         settings.isAllowSingleLogicalLineFolding = true
+        settings.isUseSoftWraps = multiline
         // the caret of a field is moved by the changes of the other fields, which highlights the identifier under it as a selection,
         // the platform does not do it for the one line editors of the dialogs
         isEmbeddedIntoDialogWrapper = true
 
-        val editable = synchronizer.editableRange
-        foldingModel.runBatchFoldingOperation {
-            if (editable.startOffset > 0) foldingModel.addFoldRegion(0, editable.startOffset, "")?.isExpanded = false
-            if (editable.endOffset < document.textLength) foldingModel.addFoldRegion(editable.endOffset, document.textLength, "")?.isExpanded = false
-        }
-        caretModel.moveToOffset(if (caretAtEnd) editable.endOffset else editable.startOffset)
+        hideLockedParts(this)
+        // the caret of the expanded editor is copied from the field
+        if (!multiline) caretModel.moveToOffset(if (caretAtEnd) synchronizer.editableRange.endOffset else synchronizer.editableRange.startOffset)
 
         // the hidden parts are not reachable by the caret and the selection
         caretModel.addCaretListener(object : CaretListener {
@@ -86,7 +91,50 @@ internal class ImpExRowValueField(
         })
     }
 
+    /**
+     * Only the cell is displayed, the rest of the file provides the context for the ImpEx language features.
+     * The line breaks of the value are displayed as a placeholder by the editor of a single line.
+     */
+    private fun hideLockedParts(editor: EditorEx) {
+        val range = synchronizer.editableRange
+        val model = editor.foldingModel
+        val text = editor.document.charsSequence
+
+        model.runBatchFoldingOperation {
+            model.clearFoldRegions()
+
+            if (range.startOffset > 0) model.addFoldRegion(0, range.startOffset, "")?.isExpanded = false
+            if (range.endOffset < text.length) model.addFoldRegion(range.endOffset, text.length, "")?.isExpanded = false
+
+            if (!multiline) {
+                for (offset in range.startOffset until range.endOffset) {
+                    if (text[offset] == '\n') model.createFoldRegion(offset, offset + 1, LINE_BREAK_PLACEHOLDER, null, true)
+                }
+            }
+        }
+    }
+
+    /**
+     * The same as the expandable text fields of the DSL, but the folding has to keep the locked parts hidden,
+     * and the expanded editor has to be the field of the several lines as well.
+     */
+    private class ExpandableSupport(private val valueField: ImpExRowValueField) : ExpandableEditorSupport(valueField) {
+
+        override fun updateFieldFolding(editor: EditorEx) = valueField.hideLockedParts(editor)
+
+        override fun createPopupEditor(field: EditorTextField, text: String): EditorTextField = ImpExRowValueField(
+            project = valueField.project ?: error("The project of the field is not available"),
+            synchronizer = valueField.synchronizer,
+            isCellEditable = valueField.isCellEditable,
+            caretAtEnd = false,
+            disposable = null,
+            multiline = true,
+        )
+    }
+
     companion object {
+        private const val LINE_BREAK_PLACEHOLDER = " \u23ce "
+
         @Serial
         private const val serialVersionUID: Long = 2985102871954601724L
     }
