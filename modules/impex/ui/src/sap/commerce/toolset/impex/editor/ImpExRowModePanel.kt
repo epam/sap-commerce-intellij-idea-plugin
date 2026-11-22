@@ -56,6 +56,7 @@ import com.intellij.ui.EditorNotificationPanel
 import com.intellij.ui.EditorTextField
 import com.intellij.ui.dsl.builder.AlignX
 import com.intellij.ui.dsl.builder.BottomGap
+import com.intellij.ui.dsl.builder.RightGap
 import com.intellij.ui.dsl.builder.actionButton
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.util.ui.JBUI
@@ -153,7 +154,7 @@ class ImpExRowModePanel(
             ?: return State.NoValueLine
 
         return ImpExRowResolver.resolve(valueLine)
-            ?.let { State.Row(it, SmartPointerManager.createPointer(valueLine), isEditable()) }
+            ?.let { State.Row(it, SmartPointerManager.createPointer(valueLine), isEditable(), ImpExRowColumnTypes.resolve(valueLine)) }
             ?: State.NoHeader
     }
 
@@ -166,7 +167,7 @@ class ImpExRowModePanel(
             }
 
         val content = when (state) {
-            is State.Row -> rowPanel(state.row, state.pointer, state.editable, disposable)
+            is State.Row -> rowPanel(state.row, state.pointer, state.editable, state.columnTypes, disposable)
             State.NoValueLine -> bannerPanel("hybris.impex.editor.row_mode.no_value_line")
             State.NoHeader -> bannerPanel("hybris.impex.editor.row_mode.no_header", EditorNotificationPanel.Status.Warning)
             State.MultipleCarets -> bannerPanel("hybris.impex.editor.row_mode.multiple_carets", EditorNotificationPanel.Status.Warning)
@@ -192,7 +193,13 @@ class ImpExRowModePanel(
         inlineBanner("<p style='width: 100%'>${i18n(messageKey)}</p>", status)
     }.apply { border = JBUI.Borders.empty(16) }
 
-    private fun rowPanel(valueLine: ImpExRow, pointer: SmartPsiElementPointer<ImpExValueLine>, editable: Boolean, disposable: Disposable): JComponent {
+    private fun rowPanel(
+        valueLine: ImpExRow,
+        pointer: SmartPsiElementPointer<ImpExValueLine>,
+        editable: Boolean,
+        columnTypes: List<ImpExRowColumnType>,
+        disposable: Disposable,
+    ): JComponent {
         val cellSynchronizers = valueLine.cells.map { cell ->
             ImpExRowCellSynchronizer(editor.document, valueLine.range, cell.range, disposable, valueLine.contextPrefix, pointer)
         }
@@ -233,6 +240,12 @@ class ImpExRowModePanel(
                 }.bottomGap(BottomGap.NONE)
 
                 row {
+                    columnTypes.getOrNull(index)?.let { type ->
+                        icon(type.icon)
+                            .applyToComponent { toolTipText = type.name }
+                            .gap(RightGap.SMALL)
+                    }
+
                     cell(valueField(cellSynchronizers[index], editable, disposable))
                         .align(AlignX.FILL)
                         .resizableColumn()
@@ -322,9 +335,18 @@ class ImpExRowModePanel(
         data object NoValueLine : State
         data object NoHeader : State
         data object MultipleCarets : State
-        data class Row(val row: ImpExRow, val pointer: SmartPsiElementPointer<ImpExValueLine>, val editable: Boolean) : State
+        data class Row(
+            val row: ImpExRow,
+            val pointer: SmartPsiElementPointer<ImpExValueLine>,
+            val editable: Boolean,
+            val columnTypes: List<ImpExRowColumnType>,
+        ) : State
 
-        fun hasSameLayoutAs(other: State) = if (this is Row && other is Row) editable == other.editable && row.hasSameLayoutAs(other.row) else this == other
+        fun hasSameLayoutAs(other: State) = if (this is Row && other is Row) {
+            editable == other.editable
+                && columnTypes.map { it.name } == other.columnTypes.map { it.name }
+                && row.hasSameLayoutAs(other.row)
+        } else this == other
     }
 
     companion object {
