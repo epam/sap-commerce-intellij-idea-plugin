@@ -147,9 +147,9 @@ class ImpExValidationMcpService(private val project: Project) {
                 else "File not found: $filePath. Provide an existing project file (absolute path, or relative to the project directory) or pass 'content' instead."
             )
 
-        // PsiDocumentManager does not provide documents for non-physical files, build one from the (normalized) PSI text
+        // PsiDocumentManager does not provide documents for in-memory files, build one from the (normalized) PSI text
         val (psiFile, document) = readAction {
-            val file = ImpExElementFactory.createFile(project, content)
+            val file = ImpExElementFactory.createPhysicalFile(project, content)
 
             file to EditorFactory.getInstance().createDocument(file.text)
         }
