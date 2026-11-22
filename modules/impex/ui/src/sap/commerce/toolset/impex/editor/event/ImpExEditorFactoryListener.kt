@@ -18,9 +18,11 @@
 
 package sap.commerce.toolset.impex.editor.event
 
+import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.event.EditorFactoryEvent
 import com.intellij.openapi.editor.event.EditorFactoryListener
 import com.intellij.openapi.fileEditor.FileDocumentManager
+import sap.commerce.toolset.impex.editor.rowMode.ImpExRowService
 import sap.commerce.toolset.impex.file.ImpExFileType
 import sap.commerce.toolset.isHybrisProject
 
@@ -46,9 +48,13 @@ class ImpExEditorFactoryListener : EditorFactoryListener {
     private val EditorFactoryEvent.applicableEditor
         get() = editor
             .takeIf { it.project?.isHybrisProject == true }
-            ?.takeIf {
-                FileDocumentManager.getInstance().getFile(editor.document)
-                    ?.let { it.fileType == ImpExFileType }
-                    ?: false
-            }
+            ?.takeIf { isImpExFileEditor(it) }
+
+    // the fields of the row mode are not the files to highlight the columns in
+    private fun isImpExFileEditor(editor: Editor): Boolean {
+        val project = editor.project ?: return false
+        val file = FileDocumentManager.getInstance().getFile(editor.document) ?: return false
+
+        return file.fileType == ImpExFileType && !ImpExRowService.getInstance(project).isCellFile(file)
+    }
 }

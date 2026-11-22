@@ -92,6 +92,8 @@ abstract class ImpExFullHeaderParameterMixin(node: ASTNode) : ASTWrapperPsiEleme
         .rootParameter.attributes[AttributeModifier.UNIQUE.modifierName]
         ?.resolvedValue == "true"
 
+    override fun isDocumentIdDeclaration(): Boolean = anyHeaderParameterName.documentIdDec != null
+
     override fun getAttribute(attributeModifier: AttributeModifier): ImpExAttribute? = this.modifiersList
         .flatMap { it.attributeList }
         .lastOrNull { it.anyAttributeName.textMatches(attributeModifier.modifierName) }

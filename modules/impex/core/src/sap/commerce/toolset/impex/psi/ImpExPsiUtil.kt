@@ -23,6 +23,8 @@ package sap.commerce.toolset.impex.psi
 import com.intellij.codeInsight.completion.CompletionUtilCore
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiPolyVariantReference
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.childrenOfType
@@ -31,8 +33,33 @@ import com.intellij.util.asSafely
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.impex.ImpExConstants
 import sap.commerce.toolset.impex.codeInspection.context.ImpExColumnContext
+import sap.commerce.toolset.impex.editor.rowMode.ImpExRowService
+import sap.commerce.toolset.impex.psi.util.getLineNumber
 import sap.commerce.toolset.project.PropertyService
 import sap.commerce.toolset.typeSystem.psi.reference.result.*
+
+/**
+ * The file the element belongs to as far as the ImpEx language features are concerned:
+ * the original file, if the element is a part of the file a single cell of the value line is edited in, otherwise the file of the element.
+ */
+fun PsiElement.getImpExFile(): PsiFile = ImpExRowService.getInstance(project).valueLineOf(this)
+    ?.containingFile
+    ?: containingFile
+
+/**
+ * The number of the line of the element, see [getImpExFile].
+ * A part of the file of a single cell is located at the line of the original header or the original value line.
+ */
+fun PsiElement.getImpExLineNumber(): Int {
+    val valueLine = ImpExRowService.getInstance(project).valueLineOf(this)
+        ?: return getLineNumber()
+
+    val isInHeader = PsiTreeUtil.getParentOfType(this, ImpExHeaderLine::class.java, false) != null
+
+    return (if (isInHeader) valueLine.headerLine else valueLine)
+        ?.getLineNumber()
+        ?: 0
+}
 
 fun getHeaderLine(element: ImpExFullHeaderParameter): ImpExHeaderLine? = PsiTreeUtil
     .getParentOfType(element, ImpExHeaderLine::class.java)

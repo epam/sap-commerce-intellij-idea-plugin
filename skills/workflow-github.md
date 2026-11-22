@@ -52,6 +52,7 @@ https://github.com/epam/sap-commerce-intellij-idea-plugin/compare/main...<fork-o
   - When the PR fixes an exception: after the bullets add a `---` rule, then the line `Original exception:`, then the original stack trace in a fenced code block
 - Labels — cross-cutting + feature label(s) (feature label = commit area, list in `.github/labels.md`); add impact labels if required (see below); check a recent analogous PR
 - Assignee — self; Reviewer — `mlytvyn`; Milestone — current open
+- Project — `SAP Commerce Developers Toolset`: `gh pr create ... --project "SAP Commerce Developers Toolset"` (or `gh pr edit <n> --add-project ...`); needs the `project` token scope
 - Create as ready-for-review unless WIP.
 
 ### Impact labels

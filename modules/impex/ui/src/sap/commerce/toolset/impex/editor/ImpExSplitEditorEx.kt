@@ -27,6 +27,7 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
 interface ImpExSplitEditorEx : ImpExSplitEditor, SplitEditorEx {
+    var rowMode: Boolean
     fun showLoader(context: ImpExExecContext)
     fun refreshParameters(delayMs: Duration = 500.milliseconds)
     fun renderExecutionResult(result: DefaultExecResult)

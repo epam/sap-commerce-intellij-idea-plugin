@@ -19,16 +19,12 @@
 package sap.commerce.toolset.impex.editor
 
 import com.intellij.openapi.util.ClearableLazyValue
-import com.intellij.openapi.util.text.StringUtil
 import sap.commerce.toolset.impex.ImpExConstants
 import sap.commerce.toolset.impex.psi.ImpExMacroDeclaration
 
 data class ImpExVirtualParameter(
     val name: String,
-    val displayName: String = StringUtil.shortenPathWithEllipsis(
-        name.removePrefix(ImpExConstants.MACRO_MARKER),
-        20
-    ),
+    val displayName: String = name.removePrefix(ImpExConstants.MACRO_MARKER),
 ) {
 
     private val lazyPresentationValue = ClearableLazyValue.create<String> { this.evaluatePresentationValue() }

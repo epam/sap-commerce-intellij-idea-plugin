@@ -20,7 +20,6 @@ package sap.commerce.toolset.polyglotQuery.editor
 
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.ClearableLazyValue
-import com.intellij.openapi.util.text.StringUtil
 import com.intellij.util.asSafely
 import org.apache.commons.lang3.BooleanUtils
 import sap.commerce.toolset.polyglotQuery.psi.PolyglotQueryBindParameter
@@ -34,7 +33,6 @@ data class PolyglotQueryVirtualParameter(
     val name: String,
     private val project: WeakReference<Project>,
     private val rawType: String? = null,
-    val displayName: String = StringUtil.shortenPathWithEllipsis(name, 20),
 ) {
 
     private val lazySqlValue = ClearableLazyValue.create<String> { this.evaluateSqlValue() }

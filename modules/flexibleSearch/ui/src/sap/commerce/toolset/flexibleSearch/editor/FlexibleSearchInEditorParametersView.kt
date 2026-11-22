@@ -23,7 +23,6 @@ import com.intellij.openapi.application.edtWriteAction
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
-import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.util.Disposer
@@ -36,13 +35,15 @@ import com.intellij.ui.components.JBTextArea
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.gridLayout.UnscaledGaps
 import com.intellij.util.asSafely
-import com.intellij.util.ui.JBUI
 import com.michaelbaranov.microba.calendar.DatePicker
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchBindParameter
 import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchTypes
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelStateService
+import sap.commerce.toolset.ui.header
+import sap.commerce.toolset.ui.labelAbove
 import sap.commerce.toolset.ui.scrollPanel
 import java.awt.Dimension
 import java.beans.PropertyChangeListener
@@ -59,7 +60,7 @@ class FlexibleSearchInEditorParametersView(private val project: Project, private
 
             fileEditor.virtualParametersDisposable?.let { Disposer.dispose(it) }
 
-            val panel = if (!isTypeSystemInitialized()) renderTypeSystemInitializationPanel()
+            val panel = if (!TSMetaModelStateService.getInstance(project).ready()) renderTypeSystemInitializationPanel()
             else {
                 val virtualParameters = collectVirtualParameters(fileEditor)
                 renderParametersPanel(virtualParameters, fileEditor)
@@ -89,13 +90,12 @@ class FlexibleSearchInEditorParametersView(private val project: Project, private
         }
 
         return panel {
+            header(i18n("hybris.fxs.editor.virtual_parameters.title"))
+
             if (virtualParameters.isEmpty()) notResultsPanel()
             else parametersPanel(virtualParameters, fileEditor, parentDisposable)
         }
-            .apply {
-                border = JBUI.Borders.empty(5, 16, 10, 16)
-                registerValidators(parentDisposable)
-            }
+            .apply { registerValidators(parentDisposable) }
             .let { scrollPanel(it) }
             .apply {
                 minimumSize = Dimension(minimumSize.width, 165)
@@ -122,77 +122,74 @@ class FlexibleSearchInEditorParametersView(private val project: Project, private
         fileEditor: FlexibleSearchSplitEditorEx,
         parentDisposable: Disposable
     ) = panel {
-        group("Parameters") {
-            virtualParameters.forEach { name, parameter ->
-                row {
-                    when (parameter.type) {
-                        Byte::class -> numberTextField(parameter, fileEditor, "-128", "127", "byte")
-                        { it.toByteOrNull() == null }
+        virtualParameters.forEach { _, parameter ->
+            // the check box has its own text
+            if (parameter.type != Boolean::class) labelAbove(parameter.name)
 
-                        Short::class -> numberTextField(parameter, fileEditor, "-32,768", "32,767", "short")
-                        { it.toShortOrNull() == null }
+            row {
+                when (parameter.type) {
+                    Byte::class -> numberTextField(parameter, fileEditor, "-128", "127", "byte")
+                    { it.toByteOrNull() == null }
 
-                        Int::class -> numberTextField(parameter, fileEditor, "-2,147,483,648", "2,147,483,647", "int")
-                        { it.toIntOrNull() == null }
+                    Short::class -> numberTextField(parameter, fileEditor, "-32,768", "32,767", "short")
+                    { it.toShortOrNull() == null }
 
-                        Long::class -> numberTextField(parameter, fileEditor, "-9,223,372,036,854,775,808", "9,223,372,036,854,775,807", "long")
-                        { it.toLongOrNull() == null }
+                    Int::class -> numberTextField(parameter, fileEditor, "-2,147,483,648", "2,147,483,647", "int")
+                    { it.toIntOrNull() == null }
 
-                        Float::class -> numberTextField(parameter, fileEditor, "1.4E-45F", "3.4E+38F", "float")
-                        { it.toFloatOrNull() == null }
+                    Long::class -> numberTextField(parameter, fileEditor, "-9,223,372,036,854,775,808", "9,223,372,036,854,775,807", "long")
+                    { it.toLongOrNull() == null }
 
-                        Double::class -> numberTextField(parameter, fileEditor, "4.9E-324", "1.8E+308", "double")
-                        { it.toDoubleOrNull() == null }
+                    Float::class -> numberTextField(parameter, fileEditor, "1.4E-45F", "3.4E+38F", "float")
+                    { it.toFloatOrNull() == null }
 
-                        Boolean::class -> checkBox(parameter.displayName)
-                            .align(AlignX.FILL)
-                            .selected(parameter.sqlValue == "1")
-                            .onChanged { applyValue(fileEditor, parameter, it.isSelected) }
+                    Double::class -> numberTextField(parameter, fileEditor, "4.9E-324", "1.8E+308", "double")
+                    { it.toDoubleOrNull() == null }
 
-                        Date::class -> cell(
-                            DatePicker(
-                                parameter.rawValue?.asSafely<Date>(),
-                                SimpleDateFormat(FlexibleSearchVirtualParameter.DATE_FORMAT)
-                            )
+                    Boolean::class -> checkBox(parameter.name)
+                        .align(AlignX.FILL)
+                        .selected(parameter.sqlValue == "1")
+                        .onChanged { applyValue(fileEditor, parameter, it.isSelected) }
+
+                    Date::class -> cell(
+                        DatePicker(
+                            parameter.rawValue?.asSafely<Date>(),
+                            SimpleDateFormat(FlexibleSearchVirtualParameter.DATE_FORMAT)
                         )
-                            .label("${parameter.displayName}:")
-                            .align(Align.FILL).apply {
-                                component.also { datePicker ->
-                                    val listener = PropertyChangeListener { event ->
-                                        if (event.propertyName == "date") {
-                                            applyValue(fileEditor, parameter, event.newValue?.asSafely<Date>())
-                                        }
-                                    }
-                                    datePicker.addPropertyChangeListener(listener)
-                                    Disposer.register(parentDisposable) {
-                                        datePicker.removePropertyChangeListener(listener)
+                    )
+                        .align(Align.FILL).apply {
+                            component.also { datePicker ->
+                                val listener = PropertyChangeListener { event ->
+                                    if (event.propertyName == "date") {
+                                        applyValue(fileEditor, parameter, event.newValue?.asSafely<Date>())
                                     }
                                 }
+                                datePicker.addPropertyChangeListener(listener)
+                                Disposer.register(parentDisposable) {
+                                    datePicker.removePropertyChangeListener(listener)
+                                }
                             }
-
-                        String::class -> when {
-                            parameter.operand == FlexibleSearchTypes.IN_EXPRESSION -> multivalueTextArea()
-                            else -> textField()
                         }
-                            .label("${parameter.displayName}:")
-                            .align(AlignX.FILL)
-                            .text(parameter.rawValue?.asSafely<String>() ?: "")
-                            .onChanged { applyValue(fileEditor, parameter, it.text) }
 
-                        else -> when {
-                            parameter.operand == FlexibleSearchTypes.IN_EXPRESSION -> multivalueTextArea()
-                            else -> textField()
-                        }
-                            .label("${parameter.displayName}:")
-                            .align(AlignX.FILL)
-                            .text(parameter.rawValue?.asSafely<String>() ?: "")
-                            .onChanged { applyValue(fileEditor, parameter, it.text) }
+                    String::class -> when {
+                        parameter.operand == FlexibleSearchTypes.IN_EXPRESSION -> multivalueTextArea()
+                        else -> textField()
                     }
+                        .align(AlignX.FILL)
+                        .text(parameter.rawValue?.asSafely<String>() ?: "")
+                        .onChanged { applyValue(fileEditor, parameter, it.text) }
 
-                }.layout(RowLayout.PARENT_GRID)
+                    else -> when {
+                        parameter.operand == FlexibleSearchTypes.IN_EXPRESSION -> multivalueTextArea()
+                        else -> textField()
+                    }
+                        .align(AlignX.FILL)
+                        .text(parameter.rawValue?.asSafely<String>() ?: "")
+                        .onChanged { applyValue(fileEditor, parameter, it.text) }
+                }
             }
         }
-    }
+    }.customize(UnscaledGaps(8, 16, 10, 16))
 
     private fun Row.numberTextField(
         parameter: FlexibleSearchVirtualParameter,
@@ -207,7 +204,6 @@ class FlexibleSearchInEditorParametersView(private val project: Project, private
             else null
         }
     }
-        .label("${parameter.displayName}:")
         .align(AlignX.FILL)
         .text(parameter.rawValue?.asSafely<String>() ?: "")
         .onChanged { applyValue(fileEditor, parameter, it.text) }
@@ -242,10 +238,6 @@ class FlexibleSearchInEditorParametersView(private val project: Project, private
             fileEditor.reparseTextEditor()
         }
     }
-
-    private fun isTypeSystemInitialized(): Boolean = !project.isDisposed
-        && !DumbService.isDumb(project)
-        && TSMetaModelStateService.getInstance(project).initialized()
 
     companion object {
         fun getInstance(project: Project): FlexibleSearchInEditorParametersView = project.service()

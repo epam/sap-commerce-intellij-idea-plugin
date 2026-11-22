@@ -21,6 +21,7 @@ package sap.commerce.toolset.project.vfs
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.WritingAccessProvider
+import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.ifHybrisProject
 import sap.commerce.toolset.project.settings.ProjectSettings
 import sap.commerce.toolset.project.settings.ySettings
@@ -37,7 +38,10 @@ class HybrisWritingAccessProvider(private val project: Project) : WritingAccessP
     override fun isPotentiallyWritable(file: VirtualFile) = project.ifHybrisProject { !isFileReadOnly(file, project.ySettings) }
         ?: super.isPotentiallyWritable(file)
 
-    private fun isFileReadOnly(file: VirtualFile, projectSettings: ProjectSettings): Boolean {
+    private fun isFileReadOnly(proxyFile: VirtualFile, projectSettings: ProjectSettings): Boolean {
+        // a file may stand in for a part of another file, e.g. the editor of an ImpEx value, the access to it is the access to the original file
+        val file = proxyFile.getUserData(HybrisConstants.Keys.ORIGINAL_FILE) ?: proxyFile
+
         if (!projectSettings.importOotbModulesInReadOnlyMode) return false
         if (!file.isWritable) return true
         val customDirectory = projectSettings.customDirectory

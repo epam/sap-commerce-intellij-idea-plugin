@@ -24,6 +24,7 @@ import com.intellij.util.xmlb.annotations.Tag
 @Tag("ImpExSettings")
 data class ImpExSettingsState(
     @JvmField @OptionTag val groupLocalizedFiles: Boolean = true,
+    @JvmField @OptionTag val inEditor: ImpExInEditorSettingsState = ImpExInEditorSettingsState(),
     @JvmField @OptionTag val editMode: ImpExEditModeSettingsState = ImpExEditModeSettingsState(),
     @JvmField @OptionTag val completion: ImpExCompletionSettingsState = ImpExCompletionSettingsState(),
     @JvmField @OptionTag val documentation: ImpExDocumentationSettingsState = ImpExDocumentationSettingsState(),
@@ -34,6 +35,7 @@ data class ImpExSettingsState(
 ) {
     fun mutable() = Mutable(
         groupLocalizedFiles = groupLocalizedFiles,
+        inEditor = inEditor.mutable(),
         editMode = editMode.mutable(),
         completion = completion.mutable(),
         documentation = documentation.mutable(),
@@ -48,6 +50,7 @@ data class ImpExSettingsState(
 
     data class Mutable(
         var groupLocalizedFiles: Boolean,
+        var inEditor: ImpExInEditorSettingsState.Mutable,
         var editMode: ImpExEditModeSettingsState.Mutable,
         var completion: ImpExCompletionSettingsState.Mutable,
         var documentation: ImpExDocumentationSettingsState.Mutable,
@@ -57,6 +60,7 @@ data class ImpExSettingsState(
     ) {
         fun immutable() = ImpExSettingsState(
             groupLocalizedFiles = groupLocalizedFiles,
+            inEditor = inEditor.immutable(),
             editMode = editMode.immutable(),
             completion = completion.immutable(),
             documentation = documentation.immutable(),

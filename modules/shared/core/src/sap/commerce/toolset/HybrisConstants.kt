@@ -19,6 +19,8 @@
 package sap.commerce.toolset
 
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.Key
+import com.intellij.openapi.vfs.VirtualFile
 import java.util.*
 import java.util.regex.Pattern
 
@@ -325,5 +327,10 @@ object HybrisConstants {
         // see JUnitConfigurationType
         const val JUNIT = "JUnit"
         const val SAP_CX = "SAPCX"
+    }
+
+    object Keys {
+        // a file standing in for a part of another file (e.g. the editor of an ImpEx value) holds that file, the access to it is the access to the original one
+        val ORIGINAL_FILE = Key.create<VirtualFile>("sap.commerce.toolset.vfs.original_file")
     }
 }

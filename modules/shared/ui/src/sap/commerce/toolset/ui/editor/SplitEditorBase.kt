@@ -57,8 +57,14 @@ abstract class SplitEditorBase(
         private val KEY_IN_EDITOR_RESULTS = Key.create<Boolean>("split_editor.in_editor_results.key")
     }
 
+    /**
+     * The state of the in-editor results of the newly opened editor.
+     */
+    protected open val inEditorResultsByDefault: Boolean
+        get() = true
+
     override var inEditorResults: Boolean
-        get() = getOrCreateUserData(KEY_IN_EDITOR_RESULTS) { true }
+        get() = getOrCreateUserData(KEY_IN_EDITOR_RESULTS) { inEditorResultsByDefault }
         set(state) {
             putUserData(KEY_IN_EDITOR_RESULTS, state)
             verticalSplitter.secondComponent?.isVisible = state

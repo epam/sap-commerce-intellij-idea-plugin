@@ -30,6 +30,7 @@ import com.intellij.psi.util.*
 import sap.commerce.toolset.impex.lang.refactoring.ImpExPsiElementManipulator
 import sap.commerce.toolset.impex.psi.ImpExDocumentIdDec
 import sap.commerce.toolset.impex.psi.ImpExDocumentIdUsage
+import sap.commerce.toolset.impex.psi.getImpExFile
 import sap.commerce.toolset.psi.getValidResults
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
 
@@ -56,7 +57,7 @@ class ImpExDocumentIdReference(impexDocumentId: ImpExDocumentIdUsage) : PsiRefer
             val element = ref.element
 
             val result = PsiTreeUtil
-                .collectElementsOfType(element.containingFile, ImpExDocumentIdDec::class.java)
+                .collectElementsOfType(element.getImpExFile(), ImpExDocumentIdDec::class.java)
                 .filter { element.textMatches(it.text) }
                 .takeIf { it.isNotEmpty() }
                 ?.let { PsiElementResolveResult.createResults(it) }
@@ -70,7 +71,7 @@ class ImpExDocumentIdReference(impexDocumentId: ImpExDocumentIdUsage) : PsiRefer
 
         private val PROVIDER_LOOKUP_ELEMENTS = ParameterizedCachedValueProvider<Array<LookupElementBuilder>, ImpExDocumentIdReference> { ref ->
             val lookupElements = PsiTreeUtil
-                .collectElementsOfType(ref.element.containingFile, ImpExDocumentIdDec::class.java)
+                .collectElementsOfType(ref.element.getImpExFile(), ImpExDocumentIdDec::class.java)
                 .map { idDec ->
                     val meta = idDec.headerType?.text
                         ?.let { TSMetaModelAccess.getInstance(ref.element.project).findMetaClassifierByName(it) }

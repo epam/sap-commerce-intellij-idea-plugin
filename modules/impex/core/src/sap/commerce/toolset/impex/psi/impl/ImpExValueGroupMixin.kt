@@ -22,6 +22,7 @@ import com.intellij.extapi.psi.ASTWrapperPsiElement
 import com.intellij.lang.ASTNode
 import com.intellij.openapi.util.Condition
 import com.intellij.openapi.util.Key
+import com.intellij.openapi.util.TextRange
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.util.*
 import com.intellij.util.xml.DomElement
@@ -61,6 +62,12 @@ abstract class ImpExValueGroupMixin(node: ASTNode) : ASTWrapperPsiElement(node),
             this,
         )
     }, false)
+
+    /**
+     * The range of the value or an empty range right after the field separator, which is the very first character of the group, if there is no value.
+     */
+    override fun getValueRange(): TextRange = value?.textRange
+        ?: TextRange.from(textRange.startOffset + 1, 0)
 
     override fun rawValue(): String? = CachedValuesManager.getManager(project).getCachedValue(this, CACHE_KEY_RAW_VALUE_OR_DEFAULT, {
         val rawValue = this.value?.text

@@ -1,0 +1,77 @@
+/*
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+package sap.commerce.toolset.impex.editor.rowMode
+
+import com.intellij.openapi.editor.Document
+import com.intellij.openapi.util.TextRange
+import javax.swing.Icon
+
+/**
+ * @property range text range of the whole value line
+ * @property groupCount number of the value groups of the value line, the cells are created for each column of the header
+ * @property contextPrefix macros and the header, which make the value line parse and resolve like in the source file when it is on its own
+ */
+data class ImpExRow(
+    val range: TextRange,
+    val headerType: String,
+    val subType: String?,
+    val cells: List<Cell>,
+    val contextPrefix: String = "",
+    val groupCount: Int = 0,
+) {
+
+    /**
+     * The number of the line in the source document, starting from 1.
+     */
+    fun lineNumber(document: Document) = document.getLineNumber(range.startOffset.coerceIn(0, document.textLength)) + 1
+
+    /**
+     * The text of the line and the ranges of the cells are intentionally ignored: they follow the edits,
+     * while the layout is what requires the fields to be re-created.
+     */
+    fun hasSameLayoutAs(other: ImpExRow) = range.startOffset == other.range.startOffset
+        && headerType == other.headerType
+        && subType == other.subType
+        && contextPrefix == other.contextPrefix
+        && groupCount == other.groupCount
+        && cells.map { it.label to it.unique } == other.cells.map { it.label to it.unique }
+
+    /**
+     * A cell is created for each column of the header, the value line may have fewer groups than the header has columns.
+     *
+     * @property range text range of the value, an empty range right after the field separator for an empty value
+     * or at the end of the value line when the group of the column is missing
+     * @property missingSeparators number of the field separators missing in the value line to get to the group of the column, `0` if the group exists
+     */
+    data class Cell(
+        val label: String,
+        val range: TextRange,
+        val unique: Boolean = false,
+        val documentIdDeclaration: Boolean = false,
+        val missingSeparators: Int = 0,
+    )
+
+    /**
+     * @property name presentable name of the type, `null` if it is not known
+     */
+    data class ColumnType(
+        val icon: Icon,
+        val name: String?,
+    )
+}

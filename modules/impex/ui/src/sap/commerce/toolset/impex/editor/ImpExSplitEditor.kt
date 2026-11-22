@@ -24,14 +24,19 @@ import com.intellij.openapi.actionSystem.PlatformDataKeys
 import com.intellij.openapi.application.edtWriteAction
 import com.intellij.openapi.fileEditor.TextEditor
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.util.Key
 import com.intellij.psi.SmartPsiElementPointer
+import com.intellij.ui.OnePixelSplitter
 import com.intellij.util.asSafely
 import kotlinx.coroutines.*
 import sap.commerce.toolset.exec.context.DefaultExecResult
 import sap.commerce.toolset.impex.exec.context.ImpExExecContext
+import sap.commerce.toolset.impex.editor.rowMode.ImpExRowModePanel
+import sap.commerce.toolset.impex.editor.rowMode.ImpExRowModeService
 import sap.commerce.toolset.impex.exec.impexExecContextSettings
 import sap.commerce.toolset.impex.psi.ImpExMacroDeclaration
+import sap.commerce.toolset.settings.yDeveloperSettings
 import sap.commerce.toolset.ui.editor.SplitEditorBase
 import java.io.Serial
 import kotlin.time.Duration
@@ -53,6 +58,9 @@ class ImpExSplitEditorBase(textEditor: TextEditor, project: Project) : SplitEdit
     }
 
     override val inEditorResultsTitle = "ImpEx Execution Results"
+
+    override val inEditorResultsByDefault: Boolean
+        get() = project.yDeveloperSettings.impexSettings.inEditor.results
 
     override var virtualParameters: Map<SmartPsiElementPointer<ImpExMacroDeclaration>, ImpExVirtualParameter>?
         get() = getUserData(KEY_PARAMETERS)
@@ -113,9 +121,39 @@ class ImpExSplitEditorBase(textEditor: TextEditor, project: Project) : SplitEdit
 
     override fun getName() = "ImpEx Split Editor"
 
+    // the focus has to go to the text editor, otherwise it stays in a field of the row mode after the navigation to the same file
+    override fun getPreferredFocusedComponent() = textEditor.preferredFocusedComponent
+        ?: super.getPreferredFocusedComponent()
+
+    private val rowModeSplitter = OnePixelSplitter(false, "impex.row_mode.splitter.proportion", 0.7f).apply {
+        firstComponent = textEditor.component
+        setHonorComponentsMinimumSize(true)
+    }
+
+    private var rowModePanel: ImpExRowModePanel? = null
+
+    override var rowMode: Boolean
+        get() = rowModePanel != null
+        set(value) {
+            if (value == rowMode) return
+
+            if (value) {
+                val panel = ImpExRowModeService.getInstance(project).createPanel(editor)
+                Disposer.register(textEditor, panel)
+                rowModePanel = panel
+                rowModeSplitter.secondComponent = panel.component
+            } else {
+                rowModeSplitter.secondComponent = null
+                rowModePanel?.let { Disposer.dispose(it) }
+                rowModePanel = null
+            }
+        }
+
     init {
-        horizontalSplitter.firstComponent = textEditor.component
+        horizontalSplitter.firstComponent = rowModeSplitter
         verticalSplitter.firstComponent = horizontalSplitter
+
+        if (project.yDeveloperSettings.impexSettings.inEditor.rowMode) rowMode = true
     }
 
     private fun getParametrizedText(virtualParameters: Map<SmartPsiElementPointer<ImpExMacroDeclaration>, ImpExVirtualParameter>): String {

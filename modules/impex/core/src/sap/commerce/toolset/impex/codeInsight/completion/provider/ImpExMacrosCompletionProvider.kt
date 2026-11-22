@@ -25,6 +25,7 @@ import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.util.ProcessingContext
 import sap.commerce.toolset.impex.codeInsight.lookup.ImpExLookupElementFactory
 import sap.commerce.toolset.impex.psi.ImpExMacroDeclaration
+import sap.commerce.toolset.impex.psi.getImpExFile
 import sap.commerce.toolset.impex.psi.references.ImpExMacroReference
 
 class ImpExMacrosCompletionProvider : CompletionProvider<CompletionParameters>() {
@@ -34,7 +35,7 @@ class ImpExMacrosCompletionProvider : CompletionProvider<CompletionParameters>()
         context: ProcessingContext,
         result: CompletionResultSet
     ) {
-        val originalFile = parameters.originalFile
+        val originalFile = parameters.position.getImpExFile()
 
         PsiTreeUtil.findChildrenOfType(originalFile, ImpExMacroDeclaration::class.java)
             .map { it.firstChild }

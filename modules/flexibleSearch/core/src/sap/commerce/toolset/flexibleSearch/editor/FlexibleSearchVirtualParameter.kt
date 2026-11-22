@@ -19,7 +19,6 @@
 package sap.commerce.toolset.flexibleSearch.editor
 
 import com.intellij.openapi.util.ClearableLazyValue
-import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.tree.IElementType
 import com.intellij.psi.util.elementType
 import com.intellij.util.asSafely
@@ -34,7 +33,6 @@ data class FlexibleSearchVirtualParameter(
     val name: String,
     val operand: IElementType? = null,
     private val rawType: String? = null,
-    val displayName: String = StringUtil.shortenPathWithEllipsis(name, 20),
 ) {
 
     private val lazySqlValue = ClearableLazyValue.create<String> { this.evaluateSqlValue() }

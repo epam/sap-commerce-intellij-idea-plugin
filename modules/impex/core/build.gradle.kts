@@ -43,6 +43,7 @@ idea {
 
 dependencies {
     implementation(project(":shared-core"))
+    implementation(project(":meta-core"))
     implementation(project(":typeSystem-core"))
     implementation(project(":project-core"))
 

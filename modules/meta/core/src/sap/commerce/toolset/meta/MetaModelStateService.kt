@@ -58,6 +58,14 @@ abstract class MetaModelStateService<G, M, D : DomElement>(
 
     fun initialized() = metaModelState.value.computed
 
+    /**
+     * The meta model can be used right away: the project is alive, the indices are available and the meta model is computed,
+     * otherwise [get] cancels the current operation.
+     */
+    fun ready() = !project.isDisposed
+        && !DumbService.isDumb(project)
+        && initialized()
+
     fun get(): G {
         val modifiedMetas = recomputeMetasState.value
 

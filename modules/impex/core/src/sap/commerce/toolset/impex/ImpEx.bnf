@@ -314,7 +314,7 @@ value_group ::= FIELD_VALUE_SEPARATOR value? MULTILINE_SEPARATOR?
 {
     pin=1
     mixin="sap.commerce.toolset.impex.psi.impl.ImpExValueGroupMixin"
-    methods=[getFullHeaderParameter getColumnNumber getValueLine rawValue resolveValue getValueLineMetaType]
+    methods=[getFullHeaderParameter getColumnNumber getValueLine rawValue resolveValue getValueLineMetaType getValueRange]
 }
 
 value ::= string
@@ -379,7 +379,7 @@ full_header_parameter ::= any_header_parameter_name parameters? modifiers* param
     mixin="sap.commerce.toolset.impex.psi.impl.ImpExFullHeaderParameterMixin"
     methods=[
                 getHeaderLine getColumnNumber getAttribute getAttributeValue getValueGroups
-                isUnique getTypeSystemContext getDocIdUsages
+                isUnique isDocumentIdDeclaration getTypeSystemContext getDocIdUsages
                 collectDocIdReferences collectTSReferences resolveDefaultValue getParametersContext
             ]
 }
