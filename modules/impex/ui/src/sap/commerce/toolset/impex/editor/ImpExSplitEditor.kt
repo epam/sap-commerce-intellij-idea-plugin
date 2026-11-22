@@ -24,8 +24,10 @@ import com.intellij.openapi.actionSystem.PlatformDataKeys
 import com.intellij.openapi.application.edtWriteAction
 import com.intellij.openapi.fileEditor.TextEditor
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.util.Key
 import com.intellij.psi.SmartPsiElementPointer
+import com.intellij.ui.OnePixelSplitter
 import com.intellij.util.asSafely
 import kotlinx.coroutines.*
 import sap.commerce.toolset.exec.context.DefaultExecResult
@@ -113,8 +115,32 @@ class ImpExSplitEditorBase(textEditor: TextEditor, project: Project) : SplitEdit
 
     override fun getName() = "ImpEx Split Editor"
 
+    private val rowModeSplitter = OnePixelSplitter(false, "impex.row_mode.splitter.proportion", 0.7f).apply {
+        firstComponent = textEditor.component
+        setHonorComponentsMinimumSize(true)
+    }
+
+    private var rowModePanel: ImpExRowModePanel? = null
+
+    override var rowMode: Boolean
+        get() = rowModePanel != null
+        set(value) {
+            if (value == rowMode) return
+
+            if (value) {
+                val panel = ImpExRowModeService.getInstance(project).createPanel(editor)
+                Disposer.register(textEditor, panel)
+                rowModePanel = panel
+                rowModeSplitter.secondComponent = panel.component
+            } else {
+                rowModeSplitter.secondComponent = null
+                rowModePanel?.let { Disposer.dispose(it) }
+                rowModePanel = null
+            }
+        }
+
     init {
-        horizontalSplitter.firstComponent = textEditor.component
+        horizontalSplitter.firstComponent = rowModeSplitter
         verticalSplitter.firstComponent = horizontalSplitter
     }
 

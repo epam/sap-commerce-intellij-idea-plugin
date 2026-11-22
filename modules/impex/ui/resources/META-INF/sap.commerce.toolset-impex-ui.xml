@@ -103,6 +103,7 @@
             <separator/>
             <action class="sap.commerce.toolset.impex.actionSystem.ImpExToggleInEditorResultsAction"/>
             <action class="sap.commerce.toolset.impex.actionSystem.ImpExToggleInEditorParametersAction"/>
+            <action class="sap.commerce.toolset.impex.actionSystem.ImpExToggleRowModeAction"/>
             <separator/>
             <reference ref="hybris.impex.openSettings"/>
         </group>

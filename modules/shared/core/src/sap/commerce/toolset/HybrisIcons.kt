@@ -197,6 +197,7 @@ object HybrisIcons {
 
         object Actions {
             val VALIDATE = getIcon("/icons/impex/validate.svg")
+            val ROW_MODE = getIcon("/icons/impex/rowMode.svg")
 
             val INSERT_COLUMN_LEFT = getIcon("/icons/impex/actions/columnInsertLeft.svg")
             val INSERT_COLUMN_RIGHT = getIcon("/icons/impex/actions/columnInsertRight.svg")
