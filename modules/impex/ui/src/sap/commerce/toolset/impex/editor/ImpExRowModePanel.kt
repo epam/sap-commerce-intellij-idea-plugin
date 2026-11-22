@@ -155,7 +155,7 @@ class ImpExRowModePanel(
         }
     }
 
-    private fun isEditable() = !editor.isViewer && ImpExRowEditability.isEditable(editor.document, project)
+    private fun isEditable() = !editor.isViewer && editor.document.isWritable
 
     private fun resolveState(): State {
         if (editor.caretModel.caretCount > 1) return State.MultipleCarets

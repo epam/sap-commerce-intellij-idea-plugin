@@ -174,7 +174,7 @@ class ImpExRowCellSynchronizer(
     }
 
     private fun onMirrorChanged(event: DocumentEvent) {
-        if (isUpdating || !rowMarker.isValid || !ImpExRowEditability.isEditable(source) || event.offset < rowOffset) return
+        if (isUpdating || !rowMarker.isValid || !source.isWritable || event.offset < rowOffset) return
 
         if (pendingSeparators > 0) {
             updating { source.insertString(rowMarker.endOffset, SEPARATOR.repeat(pendingSeparators)) }

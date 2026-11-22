@@ -18,11 +18,8 @@
 
 package sap.commerce.toolset.impex.editor
 
-import com.intellij.openapi.application.runWriteAction
-import com.intellij.openapi.editor.EditorFactory
 import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.openapi.util.TextRange
-import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.WritingAccessProvider
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import sap.commerce.toolset.project.vfs.HybrisWritingAccessProvider
@@ -30,7 +27,7 @@ import sap.commerce.toolset.settings.WorkspaceSettings
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-class ImpExRowEditabilityTest : BasePlatformTestCase() {
+class ImpExRowWritingAccessTest : BasePlatformTestCase() {
 
     override fun setUp() {
         super.setUp()
@@ -48,53 +45,15 @@ class ImpExRowEditabilityTest : BasePlatformTestCase() {
         }
     }
 
-    fun `test document of a writable file is editable`() {
-        myFixture.configureByText("editable.txt", "text")
-
-        assertTrue(ImpExRowEditability.isEditable(myFixture.editor.document))
-    }
-
-    fun `test document of a read-only file is not editable`() {
-        myFixture.configureByText("readonly.txt", "text")
-        val document = myFixture.editor.document
-
-        runWriteAction { myFixture.file.virtualFile.isWritable = false }
-
-        assertFalse(ImpExRowEditability.isEditable(document, project))
-    }
-
-    fun `test read-only document is not editable`() {
-        myFixture.configureByText("readonly.txt", "text")
-        val document = myFixture.editor.document
-
-        document.setReadOnly(true)
-
-        assertFalse(ImpExRowEditability.isEditable(document))
-    }
-
-    fun `test document without a file is editable`() {
-        assertTrue(ImpExRowEditability.isEditable(EditorFactory.getInstance().createDocument("text")))
-    }
-
-    fun `test document of a file the writing access provider denies is not editable`() {
-        myFixture.configureByText("denied.txt", "text")
-        val file = myFixture.file.virtualFile
-        registerWritingAccessProvider(potentiallyWritable = { it != file })
-
-        assertFalse(ImpExRowEditability.isEditable(myFixture.editor.document, project))
-    }
-
-    fun `test document of an out-of-the-box file is not editable`() {
+    fun `test mirror of an out-of-the-box file is not writable`() {
         val synchronizer = synchronizerOf(OOTB_FILE)
 
-        assertFalse(ImpExRowEditability.isEditable(source(), project))
         assertFalse(synchronizer.mirrorWritable)
     }
 
-    fun `test document of a custom file is editable`() {
+    fun `test mirror of a custom file is writable`() {
         val synchronizer = synchronizerOf(CUSTOM_FILE)
 
-        assertTrue(ImpExRowEditability.isEditable(source(), project))
         assertTrue(synchronizer.mirrorWritable)
     }
 
@@ -127,16 +86,6 @@ class ImpExRowEditabilityTest : BasePlatformTestCase() {
         myFixture.configureFromExistingVirtualFile(myFixture.addFileToProject(path, "text").virtualFile)
 
         return ImpExRowCellSynchronizer(source(), TextRange(0, 4), TextRange(0, 4), testRootDisposable)
-    }
-
-    private fun registerWritingAccessProvider(
-        potentiallyWritable: (VirtualFile) -> Boolean = { true },
-        requestWriting: (Collection<VirtualFile>) -> Collection<VirtualFile> = { emptyList() },
-    ) {
-        WritingAccessProvider.EP.getPoint(project).registerExtension(object : WritingAccessProvider() {
-            override fun requestWriting(files: Collection<VirtualFile>) = requestWriting(files)
-            override fun isPotentiallyWritable(file: VirtualFile) = potentiallyWritable(file)
-        }, testRootDisposable)
     }
 
     companion object {
