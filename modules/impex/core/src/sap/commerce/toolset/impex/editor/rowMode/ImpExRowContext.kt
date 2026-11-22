@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.impex.editor
+package sap.commerce.toolset.impex.editor.rowMode
 
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.vfs.VirtualFile

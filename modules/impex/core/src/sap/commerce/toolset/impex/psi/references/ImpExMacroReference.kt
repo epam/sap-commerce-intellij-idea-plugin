@@ -26,7 +26,7 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.util.*
-import sap.commerce.toolset.impex.editor.ImpExRowContext
+import sap.commerce.toolset.impex.editor.rowMode.ImpExRowContext
 import sap.commerce.toolset.impex.lang.refactoring.ImpExPsiElementManipulator
 import sap.commerce.toolset.impex.psi.ImpExFile
 import sap.commerce.toolset.impex.psi.ImpExMacroDeclaration

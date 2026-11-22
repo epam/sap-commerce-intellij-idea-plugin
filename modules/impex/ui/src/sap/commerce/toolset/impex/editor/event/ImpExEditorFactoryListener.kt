@@ -21,7 +21,7 @@ package sap.commerce.toolset.impex.editor.event
 import com.intellij.openapi.editor.event.EditorFactoryEvent
 import com.intellij.openapi.editor.event.EditorFactoryListener
 import com.intellij.openapi.fileEditor.FileDocumentManager
-import sap.commerce.toolset.impex.editor.ImpExRowContext
+import sap.commerce.toolset.impex.editor.rowMode.ImpExRowContext
 import sap.commerce.toolset.impex.file.ImpExFileType
 import sap.commerce.toolset.isHybrisProject
 

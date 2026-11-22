@@ -16,14 +16,16 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.impex.editor
+package sap.commerce.toolset.impex.editor.rowMode
 
-import javax.swing.Icon
+import com.intellij.openapi.project.DumbService
+import com.intellij.openapi.project.Project
+import sap.commerce.toolset.typeSystem.meta.TSMetaModelStateService
 
-/**
- * @property name presentable name of the type, `null` if it is not known
- */
-data class ImpExRowColumnType(
-    val icon: Icon,
-    val name: String?,
-)
+object ImpExRowTypeSystem {
+
+    /**
+     * Resolving of a header parameter requires the meta model, which cancels the read action while it is being calculated.
+     */
+    fun isReady(project: Project) = TSMetaModelStateService.getInstance(project).initialized() && !DumbService.isDumb(project)
+}
