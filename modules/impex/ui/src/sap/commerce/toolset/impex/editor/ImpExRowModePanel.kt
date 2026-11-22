@@ -84,6 +84,7 @@ import javax.swing.JComponent
 import javax.swing.JPanel
 import javax.swing.LayoutFocusTraversalPolicy
 import javax.swing.ScrollPaneConstants
+import javax.swing.SwingUtilities
 
 class ImpExRowModePanel(
     private val project: Project,
@@ -97,6 +98,8 @@ class ImpExRowModePanel(
     private var contentDisposable: Disposable? = null
     private var displayedState: State? = null
     private var synchronizers = emptyList<ImpExRowCellSynchronizer>()
+    private var fields = emptyList<EditorTextField>()
+    private var restoreFocusIndex: Int? = null
 
     init {
         editor.caretModel.addCaretListener(object : CaretListener {
@@ -169,6 +172,12 @@ class ImpExRowModePanel(
     }
 
     private fun render(state: State) {
+        // the fields are created again when the layout changes, e.g. the first modification of a cell of a missing group adds it to the line
+        restoreFocusIndex = fields.indexOfFirst { it.editor?.contentComponent?.isFocusOwner == true }
+            .takeIf { it >= 0 && state is State.Row }
+        fields = emptyList()
+        synchronizers = emptyList()
+
         contentDisposable?.let { Disposer.dispose(it) }
         val disposable = Disposer.newDisposable("ImpEx row mode content")
             .also {
@@ -201,6 +210,10 @@ class ImpExRowModePanel(
         // the fields are gone, so the focus would be lost together with the caret
         if (hadFocus && state !is State.Row) IdeFocusManager.getInstance(project).requestFocus(editor.contentComponent, true)
 
+        restoreFocusIndex
+            ?.let { fields.getOrNull(it) }
+            ?.let { field -> SwingUtilities.invokeLater { field.requestFocus() } }
+
         displayedState = state
     }
 
@@ -219,9 +232,12 @@ class ImpExRowModePanel(
         disposable: Disposable,
     ): JComponent {
         val cellSynchronizers = valueLine.cells.map { cell ->
-            ImpExRowCellSynchronizer(editor.document, valueLine.range, cell.range, disposable, valueLine.contextPrefix, pointer)
+            ImpExRowCellSynchronizer(editor.document, valueLine.range, cell.range, disposable, valueLine.contextPrefix, pointer, cell.missingSeparators)
         }
         synchronizers = cellSynchronizers
+
+        val cellFields = mutableListOf<EditorTextField>()
+        fields = cellFields
 
         // the sections have their own gaps, so the separators between them take the whole width of the panel
         return panel {
@@ -281,7 +297,7 @@ class ImpExRowModePanel(
                                 .gap(RightGap.SMALL)
                         }
 
-                        cell(valueField(cellSynchronizers[index], editable, disposable))
+                        cell(valueField(cellSynchronizers[index], editable, disposable, caretAtEnd = index == restoreFocusIndex).also { cellFields.add(it) })
                             .align(AlignX.FILL)
                             .resizableColumn()
 
@@ -323,7 +339,7 @@ class ImpExRowModePanel(
         }
     }
 
-    private fun valueField(synchronizer: ImpExRowCellSynchronizer, editable: Boolean, disposable: Disposable): EditorTextField {
+    private fun valueField(synchronizer: ImpExRowCellSynchronizer, editable: Boolean, disposable: Disposable, caretAtEnd: Boolean): EditorTextField {
         // the locked part is hidden, so there is nothing to explain when an attempt to modify it is made
         EditorActionManager.getInstance().setReadonlyFragmentModificationHandler(synchronizer.mirror, ReadonlyFragmentModificationHandler { })
 
@@ -337,7 +353,7 @@ class ImpExRowModePanel(
                     if (editable.startOffset > 0) foldingModel.addFoldRegion(0, editable.startOffset, "")?.isExpanded = false
                     if (editable.endOffset < document.textLength) foldingModel.addFoldRegion(editable.endOffset, document.textLength, "")?.isExpanded = false
                 }
-                caretModel.moveToOffset(editable.startOffset)
+                caretModel.moveToOffset(if (caretAtEnd) editable.endOffset else editable.startOffset)
 
                 caretModel.addCaretListener(object : CaretListener {
                     override fun caretPositionChanged(event: CaretEvent) {

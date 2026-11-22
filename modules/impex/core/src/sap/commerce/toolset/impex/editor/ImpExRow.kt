@@ -23,6 +23,7 @@ import com.intellij.openapi.util.TextRange
 
 /**
  * @property range text range of the whole value line
+ * @property groupCount number of the value groups of the value line, the cells are created for each column of the header
  * @property contextPrefix macros and the header, which make the value line parse and resolve like in the source file when it is on its own
  */
 data class ImpExRow(
@@ -31,6 +32,7 @@ data class ImpExRow(
     val subType: String?,
     val cells: List<ImpExRowCell>,
     val contextPrefix: String = "",
+    val groupCount: Int = 0,
 ) {
 
     /**
@@ -46,5 +48,6 @@ data class ImpExRow(
         && headerType == other.headerType
         && subType == other.subType
         && contextPrefix == other.contextPrefix
+        && groupCount == other.groupCount
         && cells.map { it.label } == other.cells.map { it.label }
 }

@@ -20,9 +20,17 @@ package sap.commerce.toolset.impex.editor
 
 import com.intellij.openapi.util.TextRange
 
+/**
+ * A cell is created for each column of the header, the value line may have fewer groups than the header has columns.
+ *
+ * @property range text range of the value, an empty range right after the field separator for an empty value
+ * or at the end of the value line when the group of the column is missing
+ * @property missingSeparators number of the field separators missing in the value line to get to the group of the column, `0` if the group exists
+ */
 data class ImpExRowCell(
     val label: String,
     val range: TextRange,
     val unique: Boolean = false,
     val documentIdDeclaration: Boolean = false,
+    val missingSeparators: Int = 0,
 )

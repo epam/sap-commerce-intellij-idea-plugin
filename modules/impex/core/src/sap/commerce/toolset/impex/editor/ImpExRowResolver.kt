@@ -53,21 +53,31 @@ object ImpExRowResolver {
             .plus(headerLine.text)
             .joinToString(separator = "\n", postfix = "\n")
 
+        val groups = valueLine.valueGroupList
+
         return ImpExRow(
             range = valueLine.textRange,
             headerType = headerType,
             subType = subType,
             contextPrefix = context,
-            cells = valueLine.valueGroupList.mapIndexed { index, group ->
+            groupCount = groups.size,
+            // a cell per column of the header, a group of the value line may be missing, the groups without a column are not edited
+            cells = headerLine.fullHeaderParameterList.mapIndexed { index, parameter ->
+                val group = groups.getOrNull(index)
+                val value = group?.value
+
                 ImpExRowCell(
-                    label = group.fullHeaderParameter?.anyHeaderParameterName?.text?.trim()
-                        ?: "#${index + 1}",
-                    range = group.value?.textRange
+                    label = parameter.anyHeaderParameterName.text.trim().ifEmpty { "#${index + 1}" },
+                    range = when {
+                        value != null -> value.textRange
                         // the very first character of the group is always the `;` separator
-                        ?: TextRange.from(group.textRange.startOffset + 1, 0),
+                        group != null -> TextRange.from(group.textRange.startOffset + 1, 0)
+                        else -> TextRange.from(valueLine.textRange.endOffset, 0)
+                    },
                     // the modifier is read as is: resolving of its value requires the type system, which may be unavailable
-                    unique = group.fullHeaderParameter?.getAttribute(AttributeModifier.UNIQUE)?.anyAttributeValue?.text?.trim() == "true",
-                    documentIdDeclaration = group.fullHeaderParameter?.anyHeaderParameterName?.documentIdDec != null,
+                    unique = parameter.getAttribute(AttributeModifier.UNIQUE)?.anyAttributeValue?.text?.trim() == "true",
+                    documentIdDeclaration = parameter.anyHeaderParameterName.documentIdDec != null,
+                    missingSeparators = if (group == null) index - groups.size + 1 else 0,
                 )
             }
         )

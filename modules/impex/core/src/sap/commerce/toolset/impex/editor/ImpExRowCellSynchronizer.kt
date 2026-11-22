@@ -47,19 +47,24 @@ class ImpExRowCellSynchronizer(
     parentDisposable: Disposable,
     contextPrefix: String = "",
     valueLine: SmartPsiElementPointer<ImpExValueLine>? = null,
+    missingSeparators: Int = 0,
 ) {
 
     private var rowMarker = createRowMarker(rowRange.startOffset, rowRange.endOffset)
     private var isUpdating = false
     private var sourceChange: SourceChange? = null
 
+    // the separators of a missing group are only displayed, they are added to the source along with the first modification of the cell
+    private var pendingSeparators = missingSeparators
+
     private val rowOffset = contextPrefix.length
 
     // the separator itself is tracked, an empty range does not follow the text inserted right at its offset
     private val groupSeparatorMarker: RangeMarker? = groupSeparatorOffset(cellRange.startOffset)
+        ?.takeIf { missingSeparators == 0 }
         ?.let { source.createRangeMarker(it, it + 1) }
 
-    val virtualFile = LightVirtualFile(MIRROR_FILE_NAME, ImpExFileType, contextPrefix + rowText() + MIRROR_END)
+    val virtualFile = LightVirtualFile(MIRROR_FILE_NAME, ImpExFileType, contextPrefix + rowText() + SEPARATOR.repeat(missingSeparators) + MIRROR_END)
         .also { file ->
             valueLine?.let { ImpExRowContext.attach(file, it) }
             FileDocumentManager.getInstance().getFile(source)?.let { ImpExRowContext.attachSource(file, it) }
@@ -74,13 +79,13 @@ class ImpExRowCellSynchronizer(
 
     // typing right next to the cell is allowed, so the blocks are not greedy towards it
     private val prefixGuard: RangeMarker = mirror
-        .createGuardedBlock(0, rowOffset + cellRange.startOffset - rowRange.startOffset)
+        .createGuardedBlock(0, rowOffset + cellRange.startOffset - rowRange.startOffset + missingSeparators)
         .apply {
             isGreedyToLeft = true
             isGreedyToRight = false
         }
 
-    private val suffixGuard: RangeMarker? = (rowOffset + cellRange.endOffset - rowRange.startOffset)
+    private val suffixGuard: RangeMarker? = (rowOffset + cellRange.endOffset - rowRange.startOffset + missingSeparators)
         .takeIf { it < mirror.textLength }
         ?.let { mirror.createGuardedBlock(it, mirror.textLength) }
         ?.apply {
@@ -111,7 +116,7 @@ class ImpExRowCellSynchronizer(
      * `false` if a change of the source could not be applied to the mirror as is, so the mirror has to be created again.
      */
     val isConsistent: Boolean
-        get() = rowMarker.isValid && mirror.immutableCharSequence.subSequence(rowOffset, mirror.textLength - MIRROR_END.length).contentEquals(rowText())
+        get() = rowMarker.isValid && mirror.immutableCharSequence.subSequence(rowOffset, mirror.textLength - MIRROR_END.length - pendingSeparators).contentEquals(rowText())
 
     init {
         source.addDocumentListener(object : DocumentListener {
@@ -159,6 +164,11 @@ class ImpExRowCellSynchronizer(
     private fun onMirrorChanged(event: DocumentEvent) {
         if (isUpdating || !rowMarker.isValid || !ImpExRowEditability.isEditable(source) || event.offset < rowOffset) return
 
+        if (pendingSeparators > 0) {
+            updating { source.insertString(rowMarker.endOffset, SEPARATOR.repeat(pendingSeparators)) }
+            pendingSeparators = 0
+        }
+
         val start = rowMarker.startOffset
         val offset = start + event.offset - rowOffset
 
@@ -169,7 +179,7 @@ class ImpExRowCellSynchronizer(
         // a replacement covering the whole row may invalidate the marker, the range is known, so it can be restored
         if (!rowMarker.isValid) {
             rowMarker.dispose()
-            rowMarker = createRowMarker(start, start + mirror.textLength - MIRROR_END.length - rowOffset)
+            rowMarker = createRowMarker(start, start + mirror.textLength - MIRROR_END.length - pendingSeparators - rowOffset)
         }
     }
 
@@ -207,6 +217,7 @@ class ImpExRowCellSynchronizer(
 
     companion object {
         private const val MIRROR_FILE_NAME = "impexRowCell.impex"
+        private const val SEPARATOR = ";"
 
         // the locked end of the mirror, the text added to the end of the row is placed in front of it, so it stays within the hidden part of the other cells
         private const val MIRROR_END = "\n"

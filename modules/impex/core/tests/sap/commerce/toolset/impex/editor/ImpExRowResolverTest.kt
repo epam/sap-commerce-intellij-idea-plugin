@@ -206,6 +206,57 @@ class ImpExRowResolverTest : BasePlatformTestCase() {
         assertEquals(2, row.lineNumber(EditorFactory.getInstance().createDocument(text)))
     }
 
+    fun `test row has a cell for every column of the header`() {
+        val row = resolveRow("INSERT_UPDATE Product;code;name;desc\n;abc", "abc")
+
+        assertEquals(listOf("code", "name", "desc"), row.cells.map { it.label })
+    }
+
+    fun `test row cells of the existing groups are not missing`() {
+        val row = resolveRow("INSERT_UPDATE Product;code;name;desc\n;abc;ABC", "abc")
+
+        assertEquals(listOf(0, 0, 1), row.cells.map { it.missingSeparators })
+    }
+
+    fun `test row cells of the missing groups know the number of the missing separators`() {
+        val row = resolveRow("INSERT_UPDATE Product;code;name;desc;extra\n;abc", "abc")
+
+        assertEquals(listOf(0, 1, 2, 3), row.cells.map { it.missingSeparators })
+    }
+
+    fun `test row cell range of a missing group is empty and placed at the end of the value line`() {
+        val text = "INSERT_UPDATE Product;code;name;desc\n;abc;ABC"
+        val row = resolveRow(text, "abc")
+
+        assertEquals(TextRange.from(text.length, 0), row.cells[2].range)
+    }
+
+    fun `test row has no cells for the groups without a column in the header`() {
+        val row = resolveRow("INSERT_UPDATE Product;code\n;abc;def;ghi", "abc")
+
+        assertEquals(listOf("code"), row.cells.map { it.label })
+    }
+
+    fun `test row knows the number of the groups of the value line`() {
+        val row = resolveRow("INSERT_UPDATE Product;code;name;desc\n;abc;ABC", "abc")
+
+        assertEquals(2, row.groupCount)
+    }
+
+    fun `test row cell of a missing group keeps the attributes of the column`() {
+        val row = resolveRow("INSERT_UPDATE Product;code;&productId;name[unique=true]\n;abc", "abc")
+
+        assertTrue(row.cells[1].documentIdDeclaration)
+        assertTrue(row.cells[2].unique)
+    }
+
+    fun `test rows with different number of groups do not have the same layout`() {
+        val first = row(groupCount = 1)
+        val second = row(groupCount = 2)
+
+        assertFalse(first.hasSameLayoutAs(second))
+    }
+
     fun `test row is not resolved when the value line has no header`() {
         val file = file(";abc;def")
         val valueLine = checkNotNull(PsiTreeUtil.findChildOfType(file, ImpExValueLine::class.java))
@@ -252,7 +303,8 @@ class ImpExRowResolverTest : BasePlatformTestCase() {
     private fun row(
         range: TextRange = TextRange(0, 1),
         cells: List<ImpExRowCell> = emptyList(),
-    ) = ImpExRow(range = range, headerType = "Product", subType = null, cells = cells)
+        groupCount: Int = 0,
+    ) = ImpExRow(range = range, headerType = "Product", subType = null, cells = cells, groupCount = groupCount)
 
     companion object {
         private const val TWO_ROWS = "INSERT_UPDATE Product;code[unique=true];name\n;abc;ABC\n;def;DEF"

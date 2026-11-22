@@ -32,7 +32,7 @@ object ImpExRowNavigation {
     fun subTypeDeclaration(valueLine: ImpExValueLine): PsiElement? = declarationOf(valueLine.subTypeName)
 
     fun columnDeclaration(valueLine: ImpExValueLine, columnIndex: Int): PsiElement? = declarationOf(
-        valueLine.valueGroupList.getOrNull(columnIndex)?.fullHeaderParameter?.anyHeaderParameterName
+        valueLine.headerLine?.fullHeaderParameterList?.getOrNull(columnIndex)?.anyHeaderParameterName
     )
 
     private fun declarationOf(element: PsiElement?): PsiElement? = element

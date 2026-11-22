@@ -400,6 +400,113 @@ class ImpExRowCellSynchronizerTest : BasePlatformTestCase() {
         assertEquals(source.textLength, synchronizer.sourceGroupOffset)
     }
 
+    fun `test mirror of a missing group displays the separators of the group`() {
+        val source = document(MISSING_SOURCE)
+        val synchronizer = missingCell(source, 2)
+
+        assertEquals(CONTEXT + ";abc;;" + MIRROR_END, synchronizer.mirror.text)
+        assertEquals("", synchronizer.editableText)
+    }
+
+    fun `test source is not changed by the display of a missing group`() {
+        val source = document(MISSING_SOURCE)
+
+        missingCell(source, 2)
+
+        assertEquals(MISSING_SOURCE, source.text)
+    }
+
+    fun `test first modification of a missing group adds its separators to the source`() {
+        val source = document(MISSING_SOURCE)
+        val synchronizer = missingCell(source, 2)
+
+        edit { synchronizer.mirror.insertString(synchronizer.editableRange.startOffset, "x") }
+
+        assertEquals(MISSING_SOURCE + ";;x", source.text)
+    }
+
+    fun `test next modifications of a missing group are applied as for any other cell`() {
+        val source = document(MISSING_SOURCE)
+        val synchronizer = missingCell(source, 2)
+
+        edit { synchronizer.mirror.insertString(synchronizer.editableRange.startOffset, "x") }
+        edit { synchronizer.mirror.insertString(synchronizer.editableRange.endOffset, "yz") }
+
+        assertEquals(MISSING_SOURCE + ";;xyz", source.text)
+        assertEquals("xyz", synchronizer.editableText)
+    }
+
+    fun `test first modification of a missing group is a single undo step`() {
+        myFixture.configureByText("missing.txt", MISSING_SOURCE)
+        val source = myFixture.editor.document
+        val synchronizer = missingCell(source, 2)
+
+        edit { synchronizer.mirror.insertString(synchronizer.editableRange.startOffset, "x") }
+        UndoManager.getInstance(project).undo(TextEditorProvider.getInstance().getTextEditor(myFixture.editor))
+
+        assertEquals(MISSING_SOURCE, source.text)
+    }
+
+    fun `test modification of a missing group is reflected in the mirrors of the other cells`() {
+        val source = document(MISSING_SOURCE)
+        val existing = synchronizer(source, "abc")
+        val missing = missingCell(source, 2)
+
+        edit { missing.mirror.insertString(missing.editableRange.startOffset, "x") }
+
+        assertEquals(CONTEXT + ";abc;;x" + MIRROR_END, existing.mirror.text)
+        assertTrue(existing.isConsistent)
+    }
+
+    fun `test mirror of a missing group is consistent with the source before and after the modification`() {
+        val source = document(MISSING_SOURCE)
+        val synchronizer = missingCell(source, 2)
+
+        assertTrue(synchronizer.isConsistent)
+
+        edit { synchronizer.mirror.insertString(synchronizer.editableRange.startOffset, "x") }
+
+        assertTrue(synchronizer.isConsistent)
+    }
+
+    fun `test source group offset of a missing group is the end of the value line`() {
+        val source = document(MISSING_SOURCE)
+        val synchronizer = missingCell(source, 2)
+
+        assertEquals(source.textLength, synchronizer.sourceGroupOffset)
+    }
+
+    fun `test source group offset of a missing group is not the separator of the last existing group`() {
+        val source = document(CONTEXT + ";abc;")
+        val synchronizer = missingCell(source, 1)
+
+        assertEquals(source.textLength, synchronizer.sourceGroupOffset)
+    }
+
+    fun `test displayed separators of a missing group cannot be modified by an editor`() {
+        val source = document(MISSING_SOURCE)
+        val synchronizer = missingCell(source, 2)
+
+        withGuardedBlockChecking(synchronizer) {
+            assertFailsWith<ReadOnlyFragmentModificationException> {
+                edit { synchronizer.mirror.insertString(synchronizer.editableRange.startOffset - 1, "x") }
+            }
+        }
+
+        assertEquals(MISSING_SOURCE, source.text)
+    }
+
+    fun `test text can be typed by an editor into a missing group`() {
+        val source = document(MISSING_SOURCE)
+        val synchronizer = missingCell(source, 2)
+
+        withGuardedBlockChecking(synchronizer) {
+            edit { synchronizer.mirror.insertString(synchronizer.editableRange.startOffset, "x") }
+        }
+
+        assertEquals(MISSING_SOURCE + ";;x", source.text)
+    }
+
     fun `test synchronization stops once the parent is disposed`() {
         val source = document()
         val parent = Disposer.newDisposable()
@@ -429,6 +536,15 @@ class ImpExRowCellSynchronizerTest : BasePlatformTestCase() {
         TextRange(start, start + value.length)
     }
 
+    private fun missingCell(document: Document, missingSeparators: Int) = ImpExRowCellSynchronizer(
+        source = document,
+        rowRange = rowRange(document),
+        cellRange = TextRange.from(document.textLength, 0),
+        parentDisposable = testRootDisposable,
+        contextPrefix = CONTEXT,
+        missingSeparators = missingSeparators,
+    )
+
     private fun synchronizer(document: Document, value: String) = synchronizer(document, cellRange(document, value))
 
     private fun synchronizer(document: Document, cellRange: TextRange) = ImpExRowCellSynchronizer(
@@ -446,5 +562,6 @@ class ImpExRowCellSynchronizerTest : BasePlatformTestCase() {
         private const val ROW = ";abc;ABC"
         private const val SOURCE = CONTEXT + ROW
         private const val MIRROR_END = "\n"
+        private const val MISSING_SOURCE = CONTEXT + ";abc"
     }
 }

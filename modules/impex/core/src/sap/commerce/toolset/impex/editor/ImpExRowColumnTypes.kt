@@ -37,7 +37,7 @@ object ImpExRowColumnTypes {
     private val UNKNOWN_ICON = EmptyIcon.ICON_16
 
     /**
-     * The type of each column of the value line: a link for a document id declaration, otherwise the type of the attribute.
+     * The type of each column of the header: a link for a document id declaration, otherwise the type of the attribute.
      * It is unknown, if the type system is not ready or the attribute cannot be resolved.
      */
     fun resolve(valueLine: ImpExValueLine): List<ImpExRowColumnType> {
@@ -47,10 +47,8 @@ object ImpExRowColumnTypes {
             .takeIf { it.initialized() && !DumbService.isDumb(project) }
             ?.let { TSMetaModelAccess.getInstance(project) }
 
-        return valueLine.valueGroupList.map { group ->
-            val parameter = group.fullHeaderParameter
-
-            if (parameter?.anyHeaderParameterName?.documentIdDec != null) {
+        return valueLine.headerLine?.fullHeaderParameterList.orEmpty().map { parameter ->
+            if (parameter.anyHeaderParameterName.documentIdDec != null) {
                 ImpExRowColumnType(HybrisIcons.ImpEx.DOC_ID_LINK, DOCUMENT_ID)
             } else {
                 access?.let { resolveAttributeType(it, parameter) }
@@ -59,17 +57,17 @@ object ImpExRowColumnTypes {
         }
     }
 
-    private fun resolveAttributeType(access: TSMetaModelAccess, parameter: ImpExFullHeaderParameter?): ImpExRowColumnType? {
+    private fun resolveAttributeType(access: TSMetaModelAccess, parameter: ImpExFullHeaderParameter): ImpExRowColumnType? {
         // the same resolution as for the navigation to the declaration of the attribute
         val meta = parameter
-            ?.anyHeaderParameterName
-            ?.references
-            ?.asSequence()
-            ?.filterIsInstance<PsiPolyVariantReference>()
-            ?.flatMap { it.multiResolve(false).asSequence() }
-            ?.filterIsInstance<TSResolveResult<*>>()
-            ?.map { it.meta }
-            ?.firstOrNull()
+            .anyHeaderParameterName
+            .references
+            .asSequence()
+            .filterIsInstance<PsiPolyVariantReference>()
+            .flatMap { it.multiResolve(false).asSequence() }
+            .filterIsInstance<TSResolveResult<*>>()
+            .map { it.meta }
+            .firstOrNull()
             ?: return null
 
         val typeName = when (meta) {

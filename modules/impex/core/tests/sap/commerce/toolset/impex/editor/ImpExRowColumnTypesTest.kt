@@ -58,6 +58,18 @@ class ImpExRowColumnTypesTest : BasePlatformTestCase() {
         assertEquals(3, types.size)
     }
 
+    fun `test every column of the header has a type even though the groups of the value line are missing`() {
+        val types = resolve("INSERT_UPDATE Product;&productId;code;name\n;id1")
+
+        assertEquals(3, types.size)
+    }
+
+    fun `test column of a document id declaration is a link even though the group of the value line is missing`() {
+        val types = resolve("INSERT_UPDATE Product;code;&productId\n;abc")
+
+        assertSame(HybrisIcons.ImpEx.DOC_ID_LINK, types[1].icon)
+    }
+
     private fun resolve(text: String): List<ImpExRowColumnType> {
         val file = ImpExElementFactory.createPhysicalFile(project, text)
 
