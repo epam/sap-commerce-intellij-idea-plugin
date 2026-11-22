@@ -48,7 +48,7 @@ https://github.com/epam/sap-commerce-intellij-idea-plugin/compare/main...<fork-o
 ```
 
 - Title — `<Area> | <description>` (no `#NNNN`)
-- Labels — cross-cutting + feature label(s); add impact labels if required (see below); check a recent analogous PR
+- Labels — cross-cutting + feature label(s) (feature label = commit area, list in `.github/labels.md`); add impact labels if required (see below); check a recent analogous PR
 - Assignee — self; Reviewer — `mlytvyn`; Milestone — current open
 - Create as ready-for-review unless WIP.
 
