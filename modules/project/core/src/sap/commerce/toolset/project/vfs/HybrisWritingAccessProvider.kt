@@ -31,17 +31,17 @@ class HybrisWritingAccessProvider(private val project: Project) : WritingAccessP
     override fun requestWriting(files: Collection<VirtualFile>) = project.ifHybrisProject {
         val projectSettings = project.ySettings
         files
-            .map { it.originalFile() ?: it }
             .filter { isFileReadOnly(it, projectSettings) }
             .toMutableSet()
     } ?: mutableSetOf()
 
-    override fun isPotentiallyWritable(file: VirtualFile) = project.ifHybrisProject { !isFileReadOnly(file.originalFile() ?: file, project.ySettings) }
+    override fun isPotentiallyWritable(file: VirtualFile) = project.ifHybrisProject { !isFileReadOnly(file, project.ySettings) }
         ?: super.isPotentiallyWritable(file)
 
-    private fun VirtualFile.originalFile() = getUserData(HybrisConstants.Keys.ORIGINAL_FILE)
+    private fun isFileReadOnly(proxyFile: VirtualFile, projectSettings: ProjectSettings): Boolean {
+        // a file may stand in for a part of another file, e.g. the editor of an ImpEx value, the access to it is the access to the original file
+        val file = proxyFile.getUserData(HybrisConstants.Keys.ORIGINAL_FILE) ?: proxyFile
 
-    private fun isFileReadOnly(file: VirtualFile, projectSettings: ProjectSettings): Boolean {
         if (!projectSettings.importOotbModulesInReadOnlyMode) return false
         if (!file.isWritable) return true
         val customDirectory = projectSettings.customDirectory
