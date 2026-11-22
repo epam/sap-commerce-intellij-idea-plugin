@@ -19,7 +19,6 @@
 package sap.commerce.toolset.ui.editor
 
 import com.intellij.openapi.Disposable
-import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.application.edtWriteAction
 import com.intellij.openapi.fileEditor.FileEditorState
 import com.intellij.openapi.fileEditor.TextEditor
@@ -36,7 +35,6 @@ import com.intellij.ui.dsl.gridLayout.UnscaledGaps
 import com.intellij.util.application
 import com.intellij.util.ui.JBUI
 import kotlinx.coroutines.*
-import sap.commerce.toolset.editor.SplitEditor
 import sap.commerce.toolset.ui.CollapseEdge
 import sap.commerce.toolset.ui.CollapsibleSplitter
 import sap.commerce.toolset.ui.actionButton
@@ -94,12 +92,8 @@ abstract class SplitEditorBase(
                         .bold()
                         .gap(RightGap.SMALL)
                     inEditorResultsActions().forEach { actionButton(it) }
-                    placeholder().resizableColumn()
                     collapseButton(CollapseEdge.BOTTOM, inEditorResultsTitle) { verticalSplitter.collapsed = true }
-                    actionButton(
-                        ActionManager.getInstance().getAction("sap.commerce.toolset.splitEditor.hideInEditorResults"),
-                        sinkExtender = { sink -> sink[SplitEditor.DATA_KEY_SPLIT_EDITOR] = this@SplitEditorBase }
-                    )
+                        .align(AlignX.RIGHT)
                 }
                     .topGap(TopGap.SMALL)
             }.customize(UnscaledGaps(0, 14, 0, 14))
