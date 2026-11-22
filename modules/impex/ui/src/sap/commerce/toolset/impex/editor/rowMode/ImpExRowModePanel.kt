@@ -76,6 +76,8 @@ import sap.commerce.toolset.typeSystem.meta.TSGlobalMetaModel
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelStateService
 import sap.commerce.toolset.typeSystem.meta.TSModificationTracker
 import sap.commerce.toolset.typeSystem.meta.event.TSMetaModelChangeListener
+import sap.commerce.toolset.ui.CollapseEdge
+import sap.commerce.toolset.ui.collapseButton
 import sap.commerce.toolset.ui.header
 import sap.commerce.toolset.ui.inlineBanner
 import sap.commerce.toolset.ui.scrollPanel
@@ -126,16 +128,10 @@ class ImpExRowModePanel(
         // the header is not a part of the content, so the panel can be collapsed regardless of the displayed state
         component.add(
             panel {
-                header(i18n("hybris.impex.editor.row_mode.title")) {
-                    actionButton(object : DumbAwareAction(
-                        i18n("hybris.impex.editor.row_mode.collapse"),
-                        i18n("hybris.impex.editor.row_mode.collapse.description"),
-                        AllIcons.General.ChevronRight
-                    ) {
-                        override fun getActionUpdateThread() = ActionUpdateThread.EDT
+                val title = i18n("hybris.impex.editor.row_mode.title")
 
-                        override fun actionPerformed(e: AnActionEvent) = onCollapse()
-                    }).align(AlignX.RIGHT)
+                header(title) {
+                    collapseButton(CollapseEdge.RIGHT, title, onCollapse).align(AlignX.RIGHT)
                 }
             },
             BorderLayout.NORTH

@@ -24,5 +24,6 @@ import javax.swing.JComponent
 interface ParameterizedSplitEditor : ExecutableSplitEditor {
     var inEditorParameters: Boolean
     var inEditorParametersView: JComponent?
+    var inEditorParametersCollapsed: Boolean
     var virtualParametersDisposable: Disposable?
 }

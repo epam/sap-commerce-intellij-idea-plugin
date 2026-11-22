@@ -40,6 +40,8 @@ import kotlinx.coroutines.launch
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.impex.psi.ImpExMacroDeclaration
+import sap.commerce.toolset.ui.CollapseEdge
+import sap.commerce.toolset.ui.collapseButton
 import sap.commerce.toolset.ui.header
 import sap.commerce.toolset.ui.labelAbove
 import sap.commerce.toolset.ui.scrollPanel
@@ -75,7 +77,11 @@ class ImpExInEditorParametersView(private val project: Project, private val coro
         }
 
         return panel {
-            header(i18n("hybris.impex.editor.virtual_parameters.title"))
+            val title = i18n("hybris.impex.editor.virtual_parameters.title")
+
+            header(title) {
+                collapseButton(CollapseEdge.RIGHT, title) { fileEditor.inEditorParametersCollapsed = true }.align(AlignX.RIGHT)
+            }
 
             if (virtualParameters.isEmpty()) notResultsPanel()
             else parametersPanel(virtualParameters, fileEditor)

@@ -40,6 +40,8 @@ import kotlinx.coroutines.launch
 import sap.commerce.toolset.polyglotQuery.psi.PolyglotQueryBindParameter
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelStateService
+import sap.commerce.toolset.ui.CollapseEdge
+import sap.commerce.toolset.ui.collapseButton
 import sap.commerce.toolset.ui.header
 import sap.commerce.toolset.ui.labelAbove
 import sap.commerce.toolset.ui.scrollPanel
@@ -88,7 +90,11 @@ class PolyglotQueryInEditorParametersView(private val project: Project, private 
         }
 
         return panel {
-            header(i18n("hybris.pgq.editor.virtual_parameters.title"))
+            val title = i18n("hybris.pgq.editor.virtual_parameters.title")
+
+            header(title) {
+                collapseButton(CollapseEdge.RIGHT, title) { fileEditor.inEditorParametersCollapsed = true }.align(AlignX.RIGHT)
+            }
 
             if (virtualParameters.isEmpty()) notResultsPanel()
             else parametersPanel(virtualParameters, fileEditor, parentDisposable)

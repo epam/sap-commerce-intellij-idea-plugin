@@ -16,9 +16,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.impex.editor.rowMode
+package sap.commerce.toolset.ui
 
-import com.intellij.icons.AllIcons
 import com.intellij.ide.ui.UISettings
 import com.intellij.openapi.actionSystem.ActionToolbar
 import com.intellij.openapi.actionSystem.ActionUpdateThread
@@ -26,6 +25,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.impl.ActionButton
 import com.intellij.openapi.project.DumbAwareAction
 import com.intellij.ui.JBColor
+import com.intellij.ui.components.JBLabel
 import com.intellij.util.ui.JBFont
 import com.intellij.util.ui.JBUI
 import com.intellij.util.ui.UIUtil
@@ -42,30 +42,43 @@ import javax.swing.JPanel
 import javax.swing.SwingUtilities
 
 /**
- * The collapsed [ImpExRowModePanel]: the expand button and the title written vertically, the whole strip expands the panel.
+ * The collapsed panel: the expand button and the [title], which is written vertically for the [CollapseEdge.RIGHT].
+ * The whole strip expands the panel.
  */
-class ImpExRowModeCollapsedPanel(onExpand: () -> Unit) : JPanel(BorderLayout()) {
+class CollapsedStrip(title: String, private val edge: CollapseEdge, onExpand: () -> Unit) : JPanel(BorderLayout()) {
 
     init {
-        border = JBUI.Borders.customLine(JBColor.border(), 0, 1, 0, 0)
         cursor = Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)
 
         val expandAction = object : DumbAwareAction(
-            i18n("hybris.impex.editor.row_mode.expand"),
-            i18n("hybris.impex.editor.row_mode.expand.description"),
-            AllIcons.General.ChevronLeft
+            i18n("hybris.editor.expand"),
+            i18n("hybris.editor.expand.description", title),
+            edge.expandIcon
         ) {
             override fun getActionUpdateThread() = ActionUpdateThread.EDT
 
             override fun actionPerformed(e: AnActionEvent) = onExpand()
         }
+        val expandButton = ActionButton(expandAction, expandAction.templatePresentation.clone(), "CollapsedStrip", ActionToolbar.DEFAULT_MINIMUM_BUTTON_SIZE)
 
-        add(
-            ActionButton(expandAction, expandAction.templatePresentation.clone(), "ImpExRowModeCollapsed", ActionToolbar.DEFAULT_MINIMUM_BUTTON_SIZE),
-            BorderLayout.NORTH
-        )
-        add(VerticalText(i18n("hybris.impex.editor.row_mode.title")), BorderLayout.CENTER)
+        when (edge) {
+            CollapseEdge.RIGHT -> {
+                border = JBUI.Borders.customLine(JBColor.border(), 0, 1, 0, 0)
+                add(expandButton, BorderLayout.NORTH)
+                add(VerticalText(title), BorderLayout.CENTER)
+            }
 
+            CollapseEdge.BOTTOM -> {
+                border = JBUI.Borders.customLine(JBColor.border(), 1, 0, 0, 0)
+                add(expandButton, BorderLayout.WEST)
+                add(JBLabel(title).apply {
+                    font = JBFont.label().asBold()
+                    border = JBUI.Borders.emptyLeft(4)
+                }, BorderLayout.CENTER)
+            }
+        }
+
+        // the labels have no listeners, so the clicks on them reach the strip
         addMouseListener(object : MouseAdapter() {
             override fun mouseClicked(e: MouseEvent) {
                 if (SwingUtilities.isLeftMouseButton(e)) onExpand()
@@ -73,7 +86,12 @@ class ImpExRowModeCollapsedPanel(onExpand: () -> Unit) : JPanel(BorderLayout()) 
         })
     }
 
-    override fun getPreferredSize(): Dimension = super.getPreferredSize().apply { width = JBUI.scale(28) }
+    override fun getPreferredSize(): Dimension = super.getPreferredSize().apply {
+        when (edge) {
+            CollapseEdge.RIGHT -> width = JBUI.scale(THICKNESS)
+            CollapseEdge.BOTTOM -> height = JBUI.scale(THICKNESS)
+        }
+    }
 
     /**
      * The text is rotated clockwise, so it reads from the top to the bottom as the titles of the tool windows on the right side of the IDE.
@@ -84,10 +102,6 @@ class ImpExRowModeCollapsedPanel(onExpand: () -> Unit) : JPanel(BorderLayout()) 
             font = JBFont.label().asBold()
             foreground = UIUtil.getLabelForeground()
             isOpaque = false
-            // the clicks have to reach the strip
-            addMouseListener(object : MouseAdapter() {
-                override fun mouseClicked(e: MouseEvent) = parent.dispatchEvent(SwingUtilities.convertMouseEvent(this@VerticalText, e, parent))
-            })
         }
 
         override fun getPreferredSize(): Dimension {
@@ -117,5 +131,9 @@ class ImpExRowModeCollapsedPanel(onExpand: () -> Unit) : JPanel(BorderLayout()) 
         companion object {
             private const val TOP_GAP = 8
         }
+    }
+
+    companion object {
+        private const val THICKNESS = 28
     }
 }

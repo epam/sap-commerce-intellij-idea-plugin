@@ -27,21 +27,19 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.util.Key
 import com.intellij.psi.SmartPsiElementPointer
-import com.intellij.ui.OnePixelSplitter
 import com.intellij.util.asSafely
 import kotlinx.coroutines.*
 import sap.commerce.toolset.exec.context.DefaultExecResult
 import sap.commerce.toolset.impex.exec.context.ImpExExecContext
-import sap.commerce.toolset.impex.editor.rowMode.ImpExRowModeCollapsedPanel
 import sap.commerce.toolset.impex.editor.rowMode.ImpExRowModePanel
 import sap.commerce.toolset.impex.editor.rowMode.ImpExRowModeService
 import sap.commerce.toolset.impex.exec.impexExecContextSettings
 import sap.commerce.toolset.impex.psi.ImpExMacroDeclaration
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.settings.yDeveloperSettings
+import sap.commerce.toolset.ui.CollapsibleSplitter
 import sap.commerce.toolset.ui.editor.SplitEditorBase
-import java.awt.BorderLayout
 import java.io.Serial
-import javax.swing.JPanel
 import kotlin.time.Duration
 
 fun AnActionEvent.impexSplitEditorEx() = this.getData(PlatformDataKeys.FILE_EDITOR)
@@ -61,6 +59,9 @@ class ImpExSplitEditorBase(textEditor: TextEditor, project: Project) : SplitEdit
     }
 
     override val inEditorResultsTitle = "ImpEx Execution Results"
+
+    override val inEditorParametersTitle: String
+        get() = i18n("hybris.impex.editor.virtual_parameters.title")
 
     override val inEditorResultsByDefault: Boolean
         get() = project.yDeveloperSettings.impexSettings.inEditor.results
@@ -128,20 +129,17 @@ class ImpExSplitEditorBase(textEditor: TextEditor, project: Project) : SplitEdit
     override fun getPreferredFocusedComponent() = textEditor.preferredFocusedComponent
         ?: super.getPreferredFocusedComponent()
 
-    private val rowModeSplitter = OnePixelSplitter(false, "impex.row_mode.splitter.proportion", 0.7f).apply {
+    private val rowModeSplitter = CollapsibleSplitter(
+        vertical = false,
+        proportionKey = "impex.row_mode.splitter.proportion",
+        title = { i18n("hybris.impex.editor.row_mode.title") },
+        proportion = 0.7f,
+        showDividerControls = false,
+    ).apply {
         firstComponent = textEditor.component
-        setHonorComponentsMinimumSize(true)
-    }
-
-    private val rowModeCollapsedPanel = ImpExRowModeCollapsedPanel { collapseRowMode(false) }
-
-    // the collapsed panel is next to the splitter, because it keeps the width of its own, unlike the second component of the splitter
-    private val rowModeHost = JPanel(BorderLayout()).apply {
-        add(rowModeSplitter, BorderLayout.CENTER)
     }
 
     private var rowModePanel: ImpExRowModePanel? = null
-    private var rowModeCollapsed = false
 
     override var rowMode: Boolean
         get() = rowModePanel != null
@@ -149,37 +147,19 @@ class ImpExSplitEditorBase(textEditor: TextEditor, project: Project) : SplitEdit
             if (value == rowMode) return
 
             if (value) {
-                val panel = ImpExRowModeService.getInstance(project).createPanel(editor) { collapseRowMode(true) }
+                val panel = ImpExRowModeService.getInstance(project).createPanel(editor) { rowModeSplitter.collapsed = true }
                 Disposer.register(textEditor, panel)
                 rowModePanel = panel
-                rowModeCollapsed = false
+                rowModeSplitter.secondComponent = panel.component
             } else {
+                rowModeSplitter.secondComponent = null
                 rowModePanel?.let { Disposer.dispose(it) }
                 rowModePanel = null
             }
-
-            layoutRowMode()
         }
 
-    private fun collapseRowMode(collapsed: Boolean) {
-        rowModeCollapsed = collapsed
-        layoutRowMode()
-    }
-
-    private fun layoutRowMode() {
-        val panel = rowModePanel
-
-        rowModeSplitter.secondComponent = panel?.component?.takeUnless { rowModeCollapsed }
-
-        if (panel != null && rowModeCollapsed) rowModeHost.add(rowModeCollapsedPanel, BorderLayout.EAST)
-        else rowModeHost.remove(rowModeCollapsedPanel)
-
-        rowModeHost.revalidate()
-        rowModeHost.repaint()
-    }
-
     init {
-        horizontalSplitter.firstComponent = rowModeHost
+        horizontalSplitter.firstComponent = rowModeSplitter
         verticalSplitter.firstComponent = horizontalSplitter
 
         if (project.yDeveloperSettings.impexSettings.inEditor.rowMode) rowMode = true

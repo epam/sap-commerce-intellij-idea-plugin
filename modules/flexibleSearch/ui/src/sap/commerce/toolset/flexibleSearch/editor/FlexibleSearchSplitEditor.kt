@@ -34,6 +34,7 @@ import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecResult
 import sap.commerce.toolset.flexibleSearch.exec.flexibleSearchExecContextSettings
 import sap.commerce.toolset.typeSystem.meta.TSGlobalMetaModel
 import sap.commerce.toolset.typeSystem.meta.event.TSMetaModelChangeListener
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.ui.editor.SplitEditorBase
 import java.io.Serial
 import kotlin.time.Duration
@@ -56,6 +57,9 @@ class FlexibleSearchSplitEditorBase(textEditor: TextEditor, project: Project) : 
     }
 
     override val inEditorResultsTitle = "FlexibleSearch Execution Results"
+
+    override val inEditorParametersTitle: String
+        get() = i18n("hybris.fxs.editor.virtual_parameters.title")
 
     override var virtualParameters: Map<String, FlexibleSearchVirtualParameter>?
         get() = getUserData(KEY_PARAMETERS)
