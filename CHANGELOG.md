@@ -16,7 +16,7 @@
 - Address possible NPE for the View Settings in the Project view of a non-SAP Commerce project [#2053](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2053)
 
 ### `ImpEx` enhancements
-- Edit values of the value line under the caret in a dedicated side panel with the code completion and navigation via the new In-Editor Row Mode toggle [#2059](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2059)
+- Introduce In-Editor Row Mode [#2059](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2059)
 - Address inspection problems anchored in a non-physical file during the ImpEx content validation via MCP [#2054](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2054)
 
 ### Other enhancements
