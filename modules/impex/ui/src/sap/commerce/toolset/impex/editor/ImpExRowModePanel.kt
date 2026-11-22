@@ -23,14 +23,20 @@ import com.intellij.openapi.application.EDT
 import com.intellij.openapi.application.ReadConstraint
 import com.intellij.openapi.application.constrainedReadAction
 import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.editor.ex.EditorEx
+import com.intellij.openapi.editor.actionSystem.EditorActionManager
+import com.intellij.openapi.editor.actionSystem.ReadonlyFragmentModificationHandler
 import com.intellij.openapi.editor.event.CaretEvent
 import com.intellij.openapi.editor.event.CaretListener
 import com.intellij.openapi.editor.event.DocumentEvent
 import com.intellij.openapi.editor.event.DocumentListener
-import com.intellij.openapi.fileTypes.PlainTextFileType
+import com.intellij.openapi.editor.event.SelectionEvent
+import com.intellij.openapi.editor.event.SelectionListener
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Disposer
 import com.intellij.psi.PsiDocumentManager
+import com.intellij.psi.SmartPointerManager
+import com.intellij.psi.SmartPsiElementPointer
 import com.intellij.ui.EditorNotificationPanel
 import com.intellij.ui.EditorTextField
 import com.intellij.ui.dsl.builder.AlignX
@@ -44,10 +50,13 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import sap.commerce.toolset.i18n
+import sap.commerce.toolset.impex.file.ImpExFileType
 import sap.commerce.toolset.impex.psi.ImpExFile
+import sap.commerce.toolset.impex.psi.ImpExValueLine
 import sap.commerce.toolset.ui.inlineBanner
 import sap.commerce.toolset.ui.scrollPanel
 import java.awt.BorderLayout
+import java.io.Serial
 import javax.swing.JComponent
 import javax.swing.JPanel
 import javax.swing.ScrollPaneConstants
@@ -114,7 +123,7 @@ class ImpExRowModePanel(
             ?: return State.NoValueLine
 
         return ImpExRowResolver.resolve(valueLine)
-            ?.let { State.Row(it) }
+            ?.let { State.Row(it, SmartPointerManager.createPointer(valueLine)) }
             ?: State.NoHeader
     }
 
@@ -127,7 +136,7 @@ class ImpExRowModePanel(
             }
 
         val content = when (state) {
-            is State.Row -> rowPanel(state.valueLine, disposable)
+            is State.Row -> rowPanel(state.row, state.pointer, disposable)
             State.NoValueLine -> bannerPanel("hybris.impex.editor.row_mode.no_value_line")
             State.NoHeader -> bannerPanel("hybris.impex.editor.row_mode.no_header", EditorNotificationPanel.Status.Warning)
             State.MultipleCarets -> bannerPanel("hybris.impex.editor.row_mode.multiple_carets", EditorNotificationPanel.Status.Warning)
@@ -148,7 +157,7 @@ class ImpExRowModePanel(
         inlineBanner("<p style='width: 100%'>${i18n(messageKey)}</p>", status)
     }.apply { border = JBUI.Borders.empty(16) }
 
-    private fun rowPanel(valueLine: ImpExRow, disposable: Disposable): JComponent {
+    private fun rowPanel(valueLine: ImpExRow, pointer: SmartPsiElementPointer<ImpExValueLine>, disposable: Disposable): JComponent {
         val writable = editor.document.isWritable && !editor.isViewer
 
         return panel {
@@ -164,7 +173,7 @@ class ImpExRowModePanel(
             separator()
 
             valueLine.cells.forEach { rowCell ->
-                val synchronizer = ImpExValueRangeSynchronizer(editor.document, rowCell.range, disposable)
+                val synchronizer = ImpExValueRangeSynchronizer(editor.document, rowCell.range, disposable, rowCell.contextPrefix, pointer)
 
                 row {
                     cell(valueField(synchronizer, writable, disposable))
@@ -175,17 +184,49 @@ class ImpExRowModePanel(
         }.apply { border = JBUI.Borders.empty(5, 16, 10, 16) }
     }
 
-    private fun valueField(synchronizer: ImpExValueRangeSynchronizer, writable: Boolean, disposable: Disposable) = EditorTextField(
-        synchronizer.mirror, project, PlainTextFileType.INSTANCE, !writable, true
-    ).apply { setDisposedWith(disposable) }
+    private fun valueField(synchronizer: ImpExValueRangeSynchronizer, writable: Boolean, disposable: Disposable): EditorTextField {
+        val prefixLength = synchronizer.editableOffset
+
+        // the prefix is hidden, so there is nothing to explain when an attempt to modify it is made
+        EditorActionManager.getInstance().setReadonlyFragmentModificationHandler(synchronizer.mirror, ReadonlyFragmentModificationHandler { })
+
+        return object : EditorTextField(synchronizer.mirror, project, ImpExFileType, !writable, true) {
+            override fun createEditor(): EditorEx = super.createEditor().apply {
+                settings.isAllowSingleLogicalLineFolding = true
+                // only the cell is displayed, the rest of the file provides the context for the ImpEx language features
+                foldingModel.runBatchFoldingOperation {
+                    foldingModel.addFoldRegion(0, prefixLength, "")?.isExpanded = false
+                }
+                caretModel.moveToOffset(prefixLength)
+
+                caretModel.addCaretListener(object : CaretListener {
+                    override fun caretPositionChanged(event: CaretEvent) {
+                        event.caret
+                            ?.takeIf { it.offset < prefixLength }
+                            ?.moveToOffset(prefixLength)
+                    }
+                })
+                selectionModel.addSelectionListener(object : SelectionListener {
+                    override fun selectionChanged(e: SelectionEvent) {
+                        if (selectionModel.hasSelection() && selectionModel.selectionStart < prefixLength) {
+                            selectionModel.setSelection(prefixLength, maxOf(prefixLength, selectionModel.selectionEnd))
+                        }
+                    }
+                })
+            }
+
+            @Serial
+            private val serialVersionUID: Long = 2985102871954601724L
+        }.apply { setDisposedWith(disposable) }
+    }
 
     private sealed interface State {
         data object NoValueLine : State
         data object NoHeader : State
         data object MultipleCarets : State
-        data class Row(val valueLine: ImpExRow) : State
+        data class Row(val row: ImpExRow, val pointer: SmartPsiElementPointer<ImpExValueLine>) : State
 
-        fun hasSameLayoutAs(other: State) = if (this is Row && other is Row) valueLine.hasSameLayoutAs(other.valueLine) else this == other
+        fun hasSameLayoutAs(other: State) = if (this is Row && other is Row) row.hasSameLayoutAs(other.row) else this == other
     }
 
     companion object {

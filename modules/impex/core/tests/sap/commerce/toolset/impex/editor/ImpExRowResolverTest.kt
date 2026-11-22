@@ -134,6 +134,36 @@ class ImpExRowResolverTest : BasePlatformTestCase() {
         assertEquals(TextRange.from(text.indexOf(";;") + 1, 0), row.cells[1].range)
     }
 
+    fun `test row cell context starts with the header line`() {
+        val row = resolveRow("INSERT_UPDATE Product;code;name\n;abc;ABC", "abc")
+
+        assertEquals("INSERT_UPDATE Product;code;name\n;", row.cells[0].contextPrefix)
+    }
+
+    fun `test row cell context contains empty cells in place of the preceding ones`() {
+        val row = resolveRow("INSERT_UPDATE Product;code;name\n;abc;ABC", "abc")
+
+        assertEquals("INSERT_UPDATE Product;code;name\n;;", row.cells[1].contextPrefix)
+    }
+
+    fun `test row cell context contains the sub type`() {
+        val row = resolveRow("INSERT_UPDATE Product;code\nBaseProduct;abc", "abc")
+
+        assertEquals("INSERT_UPDATE Product;code\nBaseProduct;", row.cells[0].contextPrefix)
+    }
+
+    fun `test row cell context contains the macros declared above the row`() {
+        val row = resolveRow("\$macro = 1\nINSERT_UPDATE Product;code\n;abc", "abc")
+
+        assertEquals("\$macro = 1\nINSERT_UPDATE Product;code\n;", row.cells[0].contextPrefix)
+    }
+
+    fun `test row cell context does not contain the macros declared below the row`() {
+        val row = resolveRow("INSERT_UPDATE Product;code\n;abc\n\$later = 1", "abc")
+
+        assertEquals("INSERT_UPDATE Product;code\n;", row.cells[0].contextPrefix)
+    }
+
     fun `test row is not resolved when the value line has no header`() {
         val file = file(";abc;def")
         val valueLine = checkNotNull(PsiTreeUtil.findChildOfType(file, ImpExValueLine::class.java))

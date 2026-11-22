@@ -31,5 +31,5 @@ data class ImpExRow(
     fun hasSameLayoutAs(other: ImpExRow) = lineStartOffset == other.lineStartOffset
         && headerType == other.headerType
         && subType == other.subType
-        && cells.map { it.label } == other.cells.map { it.label }
+        && cells.map { it.label to it.contextPrefix } == other.cells.map { it.label to it.contextPrefix }
 }

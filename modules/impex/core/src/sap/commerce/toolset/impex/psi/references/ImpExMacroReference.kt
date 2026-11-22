@@ -22,9 +22,11 @@ import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementResolveResult
+import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.util.*
+import sap.commerce.toolset.impex.editor.ImpExRowContext
 import sap.commerce.toolset.impex.lang.refactoring.ImpExPsiElementManipulator
 import sap.commerce.toolset.impex.psi.ImpExFile
 import sap.commerce.toolset.impex.psi.ImpExMacroDeclaration
@@ -47,18 +49,19 @@ class ImpExMacroReference(owner: PsiElement) : PsiReferenceBase.Poly<PsiElement>
 
     private fun findMacroDeclaration(): ImpExMacroDeclaration? {
         val text = element.text
-        val macroUsageLineNumber = element.getLineNumber()
+        val file = ImpExRowContext.fileOf(element)
+        val macroUsageLineNumber = ImpExRowContext.lineNumberOf(element)
 
         return PsiTreeUtil.findChildrenOfType(
-            element.containingFile,
+            file,
             ImpExMacroDeclaration::class.java
         )
             .reversed()
             .find { it.getLineNumber() < macroUsageLineNumber && text.startsWith(escapeName(it.macroNameDec.text)) }
-            ?: findExternalMacroDeclaration(text)
+            ?: findExternalMacroDeclaration(file, text)
     }
 
-    private fun findExternalMacroDeclaration(text: String) = (element.containingFile as ImpExFile).getExternalImpExFiles()
+    private fun findExternalMacroDeclaration(file: PsiFile, text: String) = (file as ImpExFile).getExternalImpExFiles()
         .map { PsiTreeUtil.findChildrenOfType(it, ImpExMacroDeclaration::class.java) }
         .flatMap { it.reversed() }
         .find { text.startsWith(escapeName(it.macroNameDec.text)) }

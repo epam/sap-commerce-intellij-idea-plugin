@@ -21,6 +21,7 @@ package sap.commerce.toolset.impex.editor
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.PsiTreeUtil
+import sap.commerce.toolset.impex.psi.ImpExMacroDeclaration
 import sap.commerce.toolset.impex.psi.ImpExValueLine
 
 object ImpExRowResolver {
@@ -42,18 +43,28 @@ object ImpExRowResolver {
     fun resolve(valueLine: ImpExValueLine): ImpExRow? {
         val headerLine = valueLine.headerLine ?: return null
         val headerType = headerLine.fullHeaderType?.headerTypeName?.text ?: return null
+        val subType = valueLine.subTypeName?.text
+
+        // the lexer classifies macros based on the declarations above, so they have to be a part of the context
+        val context = PsiTreeUtil.findChildrenOfType(valueLine.containingFile, ImpExMacroDeclaration::class.java)
+            .filter { it.textRange.endOffset <= valueLine.textRange.startOffset }
+            .map { it.text }
+            .plus(headerLine.text)
+            .joinToString(separator = "\n", postfix = "\n")
 
         return ImpExRow(
             lineStartOffset = valueLine.textRange.startOffset,
             headerType = headerType,
-            subType = valueLine.subTypeName?.text,
+            subType = subType,
             cells = valueLine.valueGroupList.mapIndexed { index, group ->
                 ImpExRowCell(
                     label = group.fullHeaderParameter?.anyHeaderParameterName?.text?.trim()
                         ?: "#${index + 1}",
                     range = group.value?.textRange
                         // the very first character of the group is always the `;` separator
-                        ?: TextRange.from(group.textRange.startOffset + 1, 0)
+                        ?: TextRange.from(group.textRange.startOffset + 1, 0),
+                    // preceding cells are left empty, the column of the cell is defined by the number of the separators
+                    contextPrefix = context + (subType ?: "") + ";".repeat(index + 1),
                 )
             }
         )

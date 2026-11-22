@@ -22,11 +22,13 @@ import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.command.undo.UndoManager
 import com.intellij.openapi.editor.Document
 import com.intellij.openapi.editor.EditorFactory
+import com.intellij.openapi.editor.ReadOnlyFragmentModificationException
 import com.intellij.openapi.fileEditor.impl.text.TextEditorProvider
 import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.util.TextRange
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 
 class ImpExValueRangeSynchronizerTest : BasePlatformTestCase() {
 
@@ -162,6 +164,75 @@ class ImpExValueRangeSynchronizerTest : BasePlatformTestCase() {
         assertEquals("abc", synchronizer.mirror.text)
     }
 
+    fun `test mirror contains the prefix followed by the text of the range`() {
+        val synchronizer = synchronizer(document(), range(document(), "abc"), PREFIX)
+
+        assertEquals(PREFIX + "abc", synchronizer.mirror.text)
+        assertEquals(PREFIX.length, synchronizer.editableOffset)
+    }
+
+    fun `test mirror edit is mapped to the source regardless of the prefix`() {
+        val source = document()
+        val synchronizer = synchronizer(source, range(source, "abc"), PREFIX)
+
+        edit { synchronizer.mirror.insertString(synchronizer.editableOffset + 1, "X") }
+
+        assertEquals(SOURCE.replace("abc", "aXbc"), source.text)
+    }
+
+    fun `test source edit refreshes only the editable part of the mirror`() {
+        val source = document()
+        val synchronizer = synchronizer(source, range(source, "abc"), PREFIX)
+
+        edit { source.insertString(SOURCE.indexOf("abc") + 1, "X") }
+
+        assertEquals(PREFIX + "aXbc", synchronizer.mirror.text)
+    }
+
+    fun `test prefix of the mirror cannot be modified by an editor`() {
+        val source = document()
+        val synchronizer = synchronizer(source, range(source, "abc"), PREFIX)
+
+        synchronizer.mirror.startGuardedBlockChecking()
+        try {
+            assertFailsWith<ReadOnlyFragmentModificationException> { edit { synchronizer.mirror.insertString(1, "X") } }
+            assertFailsWith<ReadOnlyFragmentModificationException> { edit { synchronizer.mirror.deleteString(PREFIX.length - 1, PREFIX.length) } }
+        } finally {
+            synchronizer.mirror.stopGuardedBlockChecking()
+        }
+
+        assertEquals(PREFIX + "abc", synchronizer.mirror.text)
+        assertEquals(SOURCE, source.text)
+    }
+
+    fun `test text can be typed by an editor right after the prefix of the mirror`() {
+        val source = document()
+        val synchronizer = synchronizer(source, range(source, "abc"), PREFIX)
+
+        synchronizer.mirror.startGuardedBlockChecking()
+        try {
+            edit { synchronizer.mirror.insertString(synchronizer.editableOffset, "X") }
+        } finally {
+            synchronizer.mirror.stopGuardedBlockChecking()
+        }
+
+        assertEquals(SOURCE.replace("abc", "Xabc"), source.text)
+    }
+
+    fun `test text can be typed by an editor into an empty cell right after the prefix of the mirror`() {
+        val source = document(";abc;;def")
+        val synchronizer = synchronizer(source, TextRange.from(";abc;".length, 0), PREFIX)
+
+        synchronizer.mirror.startGuardedBlockChecking()
+        try {
+            edit { synchronizer.mirror.insertString(synchronizer.editableOffset, "x") }
+        } finally {
+            synchronizer.mirror.stopGuardedBlockChecking()
+        }
+
+        assertEquals(";abc;x;def", source.text)
+    }
+
     fun `test synchronization stops once the parent is disposed`() {
         val source = document()
         val parent = Disposer.newDisposable()
@@ -179,11 +250,12 @@ class ImpExValueRangeSynchronizerTest : BasePlatformTestCase() {
 
     private fun synchronizer(document: Document, value: String) = synchronizer(document, range(document, value))
 
-    private fun synchronizer(document: Document, range: TextRange) = ImpExValueRangeSynchronizer(document, range, testRootDisposable)
+    private fun synchronizer(document: Document, range: TextRange, prefix: String = "") = ImpExValueRangeSynchronizer(document, range, testRootDisposable, prefix)
 
     private fun edit(action: () -> Unit) = WriteCommandAction.runWriteCommandAction(project) { action() }
 
     companion object {
         private const val SOURCE = "INSERT_UPDATE Product;code;name\n;abc;ABC"
+        private const val PREFIX = "INSERT_UPDATE Product;code;name\n;"
     }
 }
