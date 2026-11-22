@@ -45,6 +45,7 @@ import sap.commerce.toolset.ccv2.event.CCv2EnvironmentsListener
 import sap.commerce.toolset.ccv2.event.CCv2SettingsListener
 import sap.commerce.toolset.ccv2.settings.CCv2DeveloperSettings
 import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
+import sap.commerce.toolset.ccv2.ui.components.CCv2SubscriptionsComboBoxModel
 import sap.commerce.toolset.ccv2.ui.components.CCv2SubscriptionsComboBoxModelFactory
 import sap.commerce.toolset.ccv2.ui.view.CCv2BuildsDataView
 import sap.commerce.toolset.ccv2.ui.view.CCv2DeploymentsDataView
@@ -56,7 +57,9 @@ class CCv2ToolWindow(private val project: Project, parentDisposable: Disposable)
 
     override fun dispose() = Unit
 
-    private val ccv2SubscriptionsModel = CCv2SubscriptionsComboBoxModelFactory.create(project, allowBlank = true, disposable = this) {
+    private var subscriptionsInitialized = false
+
+    private val ccv2SubscriptionsModel = CCv2SubscriptionsComboBoxModel(allowBlank = true) {
         if (it == null) {
             CCv2DeveloperSettings.getInstance(project).activeCCv2SubscriptionID = null
         }
@@ -74,6 +77,13 @@ class CCv2ToolWindow(private val project: Project, parentDisposable: Disposable)
         add(rootPanel())
         installToolbar()
         installDataListeners()
+    }
+
+    override fun onActivated() {
+        if (subscriptionsInitialized) return
+        subscriptionsInitialized = true
+
+        CCv2SubscriptionsComboBoxModelFactory.populate(project, ccv2SubscriptionsModel, allowBlank = true, disposable = this)
     }
 
     fun getActiveTab() = CCv2ToolWindowContentTab.entries

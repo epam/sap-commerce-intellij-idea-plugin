@@ -35,20 +35,28 @@ object CCv2SubscriptionsComboBoxModelFactory {
         disposable: Disposable? = null,
         onSelectedItem: ((Any?) -> Unit)? = null
     ) = CCv2SubscriptionsComboBoxModel(allowBlank, onSelectedItem)
-        .also {
-            val currentSubscriptions = CCv2ProjectSettings.getInstance().subscriptions
-            initModel(project, it, selectedSubscription, currentSubscriptions, allowBlank)
+        .also { populate(project, it, selectedSubscription, allowBlank, disposable) }
 
-            if (disposable != null) {
-                with(project.messageBus.connect(disposable)) {
-                    subscribe(CCv2SettingsListener.TOPIC, object : CCv2SettingsListener {
-                        override fun onChange(state: CCv2ApplicationSettingsState) {
-                            initModel(project, it, selectedSubscription, state.subscriptions, allowBlank)
-                        }
-                    })
-                }
+    fun populate(
+        project: Project,
+        model: CCv2SubscriptionsComboBoxModel,
+        selectedSubscription: CCv2Subscription? = null,
+        allowBlank: Boolean = false,
+        disposable: Disposable? = null,
+    ) {
+        val currentSubscriptions = CCv2ProjectSettings.getInstance().subscriptions
+        initModel(project, model, selectedSubscription, currentSubscriptions, allowBlank)
+
+        if (disposable != null) {
+            with(project.messageBus.connect(disposable)) {
+                subscribe(CCv2SettingsListener.TOPIC, object : CCv2SettingsListener {
+                    override fun onChange(state: CCv2ApplicationSettingsState) {
+                        initModel(project, model, selectedSubscription, state.subscriptions, allowBlank)
+                    }
+                })
             }
         }
+    }
 
     private fun initModel(
         project: Project,
