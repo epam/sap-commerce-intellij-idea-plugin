@@ -21,6 +21,7 @@ package sap.commerce.toolset
 import com.intellij.icons.AllIcons
 import com.intellij.openapi.util.IconLoader
 import com.intellij.ui.AnimatedIcon
+import com.intellij.util.ui.EmptyIcon
 import icons.AngularIcons
 import icons.GradleIcons
 import icons.OpenapiIcons
@@ -194,6 +195,8 @@ object HybrisIcons {
         val DOC_ID_MODE_COUNTER = getIcon("/icons/impex/docIdCounterMode.svg")
         val DOC_ID_MODE_COLUMNS = getIcon("/icons/impex/docIdColumnsMode.svg")
         val DOC_ID_LINK = getIcon("/icons/impex/docIdLink.svg")
+        // takes the place of the icon of a column, which type is not known, so the fields stay aligned
+        val COLUMN_TYPE_UNKNOWN = EmptyIcon.ICON_16
 
         object Actions {
             val VALIDATE = getIcon("/icons/impex/validate.svg")

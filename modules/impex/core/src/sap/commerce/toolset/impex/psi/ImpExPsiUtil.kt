@@ -42,7 +42,8 @@ import sap.commerce.toolset.typeSystem.psi.reference.result.*
  * The file the element belongs to as far as the ImpEx language features are concerned:
  * the original file, if the element is a part of the file a single cell of the value line is edited in, otherwise the file of the element.
  */
-fun PsiElement.getImpExFile(): PsiFile = ImpExRowService.getInstance(project).valueLineOf(this)?.containingFile
+fun PsiElement.getImpExFile(): PsiFile = ImpExRowService.getInstance(project).valueLineOf(this)
+    ?.containingFile
     ?: containingFile
 
 /**

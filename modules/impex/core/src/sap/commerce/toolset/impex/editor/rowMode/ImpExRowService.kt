@@ -29,7 +29,6 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiPolyVariantReference
 import com.intellij.psi.SmartPsiElementPointer
 import com.intellij.psi.util.childrenOfType
-import com.intellij.util.ui.EmptyIcon
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.i18n
@@ -115,7 +114,7 @@ class ImpExRowService(private val project: Project) {
                 ImpExRow.ColumnType(HybrisIcons.ImpEx.DOC_ID_LINK, i18n("hybris.impex.editor.row_mode.type.document_id"))
             } else {
                 access?.let { resolveAttributeType(it, parameter) }
-                    ?: ImpExRow.ColumnType(UNKNOWN_TYPE_ICON, null)
+                    ?: ImpExRow.ColumnType(HybrisIcons.ImpEx.COLUMN_TYPE_UNKNOWN, null)
             }
         }
     }
@@ -188,7 +187,8 @@ class ImpExRowService(private val project: Project) {
         file.putUserData(KEY_VALUE_LINE, valueLine)
     }
 
-    fun isCellFile(file: VirtualFile): Boolean = file.getUserData(KEY_VALUE_LINE) != null || file.getUserData(HybrisConstants.Keys.ORIGINAL_FILE) != null
+    fun isCellFile(file: VirtualFile): Boolean = file.getUserData(KEY_VALUE_LINE) != null
+            || file.getUserData(HybrisConstants.Keys.ORIGINAL_FILE) != null
 
     fun valueLineOf(element: PsiElement): ImpExValueLine? = element.containingFile
         // a completion works on a copy of the file
@@ -199,7 +199,6 @@ class ImpExRowService(private val project: Project) {
         ?.element
 
     companion object {
-        private val UNKNOWN_TYPE_ICON = EmptyIcon.ICON_16
         private val KEY_VALUE_LINE = Key.create<SmartPsiElementPointer<ImpExValueLine>>("impex.row_mode.context.value_line")
 
         fun getInstance(project: Project): ImpExRowService = project.service()
