@@ -7,7 +7,7 @@
 - Address possible NPE for the View Settings in the Project view of a non-SAP Commerce project [#2053](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2053)
 
 ### `ImpEx` enhancements
-- Address inspection problems anchored in a non-physical file during the ImpEx content validation via MCP
+- Address inspection problems anchored in a non-physical file during the ImpEx content validation via MCP [#2054](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2054)
 
 ## [2026.3.1]
 
