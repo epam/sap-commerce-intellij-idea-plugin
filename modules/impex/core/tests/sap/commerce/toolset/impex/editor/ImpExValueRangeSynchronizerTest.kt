@@ -19,8 +19,10 @@
 package sap.commerce.toolset.impex.editor
 
 import com.intellij.openapi.command.WriteCommandAction
+import com.intellij.openapi.command.undo.UndoManager
 import com.intellij.openapi.editor.Document
 import com.intellij.openapi.editor.EditorFactory
+import com.intellij.openapi.fileEditor.impl.text.TextEditorProvider
 import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.util.TextRange
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
@@ -134,6 +136,30 @@ class ImpExValueRangeSynchronizerTest : BasePlatformTestCase() {
         edit { synchronizer.mirror.insertString(1, "X") }
 
         assertEquals(SOURCE, source.text)
+    }
+
+    fun `test undoing a source edit updates the mirror`() {
+        myFixture.configureByText("undo.txt", SOURCE)
+        val source = myFixture.editor.document
+        val synchronizer = synchronizer(source, "abc")
+
+        edit { source.insertString(SOURCE.indexOf("abc") + 1, "X") }
+        UndoManager.getInstance(project).undo(TextEditorProvider.getInstance().getTextEditor(myFixture.editor))
+
+        assertEquals(SOURCE, source.text)
+        assertEquals("abc", synchronizer.mirror.text)
+    }
+
+    fun `test undoing a mirror edit reverts the source and the mirror`() {
+        myFixture.configureByText("undo.txt", SOURCE)
+        val source = myFixture.editor.document
+        val synchronizer = synchronizer(source, "abc")
+
+        edit { synchronizer.mirror.insertString(1, "X") }
+        UndoManager.getInstance(project).undo(TextEditorProvider.getInstance().getTextEditor(myFixture.editor))
+
+        assertEquals(SOURCE, source.text)
+        assertEquals("abc", synchronizer.mirror.text)
     }
 
     fun `test synchronization stops once the parent is disposed`() {

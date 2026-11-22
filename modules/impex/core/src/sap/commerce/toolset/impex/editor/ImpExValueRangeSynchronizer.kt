@@ -20,6 +20,7 @@ package sap.commerce.toolset.impex.editor
 
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.command.CommandProcessor
+import com.intellij.openapi.command.undo.UndoUtil
 import com.intellij.openapi.editor.Document
 import com.intellij.openapi.editor.EditorFactory
 import com.intellij.openapi.editor.RangeMarker
@@ -41,7 +42,9 @@ class ImpExValueRangeSynchronizer(
     private var marker = createMarker(range.startOffset, range.endOffset)
     private var isUpdating = false
 
+    // the mirror is a view of the source: undo/redo operate on the source only, otherwise refreshing the mirror during undo is rejected by the platform
     val mirror: Document = EditorFactory.getInstance().createDocument(currentText())
+        .also { UndoUtil.disableUndoFor(it) }
 
     init {
         source.addDocumentListener(object : DocumentListener {
