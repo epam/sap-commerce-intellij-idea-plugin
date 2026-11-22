@@ -49,7 +49,7 @@ object ImpExRowColumnTypes {
             ?.let { TSMetaModelAccess.getInstance(project) }
 
         return valueLine.headerLine?.fullHeaderParameterList.orEmpty().map { parameter ->
-            if (parameter.anyHeaderParameterName.documentIdDec != null) {
+            if (parameter.isDocumentIdDeclaration) {
                 ImpExRowColumnType(HybrisIcons.ImpEx.DOC_ID_LINK, i18n("hybris.impex.editor.row_mode.type.document_id"))
             } else {
                 access?.let { resolveAttributeType(it, parameter) }

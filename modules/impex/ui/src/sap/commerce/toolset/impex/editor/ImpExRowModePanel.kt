@@ -58,6 +58,7 @@ import com.intellij.ui.dsl.builder.actionButton
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.dsl.gridLayout.UnscaledGaps
 import com.intellij.util.application
+import com.intellij.util.asSafely
 import com.intellij.util.ui.JBUI
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -202,10 +203,9 @@ class ImpExRowModePanel(
     private fun resolveState(snapshot: Snapshot): ImpExRowModeState? {
         if (snapshot.caretCount > 1) return ImpExRowModeState.MultipleCarets
 
-        val file = PsiDocumentManager.getInstance(project).getPsiFile(editor.document)
-            ?.takeIf { it is ImpExFile }
-            ?: return ImpExRowModeState.NoValueLine
-        val valueLine = ImpExRowResolver.findValueLine(file, snapshot.caretOffset)
+        val valueLine = PsiDocumentManager.getInstance(project).getPsiFile(editor.document)
+            .asSafely<ImpExFile>()
+            ?.findValueLine(snapshot.caretOffset)
             ?: return ImpExRowModeState.NoValueLine
 
         // the caret has been moved within the same row and nothing has been changed since, there is no need to resolve the row again
