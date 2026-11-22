@@ -1,7 +1,10 @@
 ## [2026.3.2]
 
 <cite>Release contributors</code>
-- 2 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.3.2+author%3Amlytvyn+is%3Apr)
+- 3 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.3.2+author%3Amlytvyn+is%3Apr)
+
+### `CCv2` enhancements
+- Address tool window failure when project settings cannot be loaded [#2055](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2055)
 
 ### `Project View` enhancements
 - Address possible NPE for the View Settings in the Project view of a non-SAP Commerce project [#2053](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2053)
