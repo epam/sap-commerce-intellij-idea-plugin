@@ -244,6 +244,59 @@ class ImpExRowCellSynchronizerTest : BasePlatformTestCase() {
         assertEquals("ABC", last.editableText)
     }
 
+    fun `test mirror covers the range of its own cell`() {
+        val source = document()
+        val synchronizer = synchronizer(source, "abc")
+
+        assertTrue(synchronizer.isCovering(cellRange(source, "abc")))
+    }
+
+    fun `test mirror covers the range of the cell after the text is typed into the cell`() {
+        val source = document()
+        val synchronizer = synchronizer(source, "abc")
+
+        edit { synchronizer.mirror.insertString(synchronizer.editableRange.endOffset, " d") }
+
+        val start = SOURCE.indexOf("abc")
+        assertTrue(synchronizer.isCovering(TextRange(start, start + "abc d".length)))
+    }
+
+    fun `test mirror covers a smaller range than its editable part`() {
+        val source = document()
+        val synchronizer = synchronizer(source, "abc")
+        edit { synchronizer.mirror.insertString(synchronizer.editableRange.endOffset, " d") }
+
+        val start = SOURCE.indexOf("abc")
+        assertTrue(synchronizer.isCovering(TextRange(start, start + "abc".length)))
+    }
+
+    fun `test mirror does not cover the range of the cell if the text is added after the whitespaces following the value`() {
+        val source = document(CONTEXT + ";abc  ;ABC")
+        val synchronizer = synchronizer(source, "abc")
+
+        edit { source.insertString(source.text.indexOf("  ;ABC") + 2, "d") }
+
+        val start = source.text.indexOf("abc")
+        assertFalse(synchronizer.isCovering(TextRange(start, start + "abc  d".length)))
+    }
+
+    fun `test mirror does not cover the range of the cell if the text is added before the whitespaces preceding the value`() {
+        val source = document(CONTEXT + ";  abc;ABC")
+        val synchronizer = synchronizer(source, "abc")
+
+        edit { source.insertString(source.text.indexOf(";  abc") + 1, "x") }
+
+        val start = source.text.indexOf("x  abc")
+        assertFalse(synchronizer.isCovering(TextRange(start, start + "x  abc".length)))
+    }
+
+    fun `test mirror of a missing group covers the empty range at the end of the line`() {
+        val source = document(MISSING_SOURCE)
+        val synchronizer = missingCell(source, 2)
+
+        assertTrue(synchronizer.isCovering(TextRange.from(source.textLength, 0)))
+    }
+
     fun `test mirror edit is not applied to a read-only source`() {
         val source = document()
         val synchronizer = synchronizer(source, "abc")

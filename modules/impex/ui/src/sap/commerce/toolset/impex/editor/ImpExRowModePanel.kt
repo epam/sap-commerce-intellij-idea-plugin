@@ -174,7 +174,7 @@ class ImpExRowModePanel(
             // the ranges are stale if the document has been changed since they were resolved
             if (editor.document.modificationStamp != snapshot.modificationStamp) return@withContext requestRefresh()
 
-            if (displayedState?.hasSameLayoutAs(state) == true && synchronizers.all { it.isConsistent }) {
+            if (displayedState?.hasSameLayoutAs(state) == true && synchronizers.all { it.isConsistent } && isCoveringCells(state)) {
                 // the layout is the same, so the fields stay, but the next refresh has to know the document they are in sync with
                 displayedState = state
                 return@withContext
@@ -183,6 +183,11 @@ class ImpExRowModePanel(
             render(state)
         }
     }
+
+    // the value of a cell may grow outside of the part of the field, which is editable, once the text is added to its group in the source
+    private fun isCoveringCells(state: ImpExRowModeState): Boolean = state !is ImpExRowModeState.Row
+        || state.row.cells.size != synchronizers.size
+        || state.row.cells.indices.all { synchronizers[it].isCovering(state.row.cells[it].range) }
 
     private fun snapshot(force: Boolean): Snapshot? {
         if (project.isDisposed || editor.isDisposed) return null

@@ -123,6 +123,22 @@ class ImpExRowCellSynchronizer(
     val isConsistent: Boolean
         get() = rowMarker.isValid && !isStructureBroken && mirror.immutableCharSequence.subSequence(rowOffset, mirror.textLength - MIRROR_END.length - pendingSeparators).contentEquals(rowText())
 
+    /**
+     * `false` if the value of the cell [cellRange] resolved from the source reaches outside of the editable part of the mirror,
+     * e.g. the text has been added after the whitespaces following the value, so the value is longer than it was when the mirror was created.
+     * The editable part may be larger than the value, e.g. it also includes the whitespaces typed around the value.
+     */
+    fun isCovering(cellRange: TextRange): Boolean {
+        if (!rowMarker.isValid) return false
+
+        val editable = editableRange
+        // the separators of a missing group are only displayed, they are not in the source yet
+        val start = rowMarker.startOffset + editable.startOffset - rowOffset - pendingSeparators
+        val end = rowMarker.startOffset + editable.endOffset - rowOffset - pendingSeparators
+
+        return cellRange.startOffset >= start && cellRange.endOffset <= end
+    }
+
     init {
         source.addDocumentListener(object : DocumentListener {
             override fun beforeDocumentChange(event: DocumentEvent) = onBeforeSourceChange(event)
