@@ -36,7 +36,7 @@ import sap.commerce.toolset.impex.psi.ImpExValueLine
 /**
  * Edits a single cell of a value line in a standalone [mirror] ImpEx file, while the changes land in the [source] document.
  *
- * The mirror is [contextPrefix] (macros and the header) followed by the text of the whole value line, so the ImpEx language features
+ * The mirror is [contextPrefix] (macros and the header) followed by the text of the whole value line and a line break, so the ImpEx language features
  * (completion, references, highlighting, inspections) behave as in the source file.
  * Only the cell is editable, the rest of the mirror is locked, and the changes made to the source are applied to the mirror as they are.
  */
@@ -59,7 +59,7 @@ class ImpExRowCellSynchronizer(
     private val groupSeparatorMarker: RangeMarker? = groupSeparatorOffset(cellRange.startOffset)
         ?.let { source.createRangeMarker(it, it + 1) }
 
-    val virtualFile = LightVirtualFile(MIRROR_FILE_NAME, ImpExFileType, contextPrefix + rowText())
+    val virtualFile = LightVirtualFile(MIRROR_FILE_NAME, ImpExFileType, contextPrefix + rowText() + MIRROR_END)
         .also { file ->
             valueLine?.let { ImpExRowContext.attach(file, it) }
             FileDocumentManager.getInstance().getFile(source)?.let { ImpExRowContext.attachSource(file, it) }
@@ -111,7 +111,7 @@ class ImpExRowCellSynchronizer(
      * `false` if a change of the source could not be applied to the mirror as is, so the mirror has to be created again.
      */
     val isConsistent: Boolean
-        get() = rowMarker.isValid && mirror.immutableCharSequence.subSequence(rowOffset, mirror.textLength).contentEquals(rowText())
+        get() = rowMarker.isValid && mirror.immutableCharSequence.subSequence(rowOffset, mirror.textLength - MIRROR_END.length).contentEquals(rowText())
 
     init {
         source.addDocumentListener(object : DocumentListener {
@@ -169,7 +169,7 @@ class ImpExRowCellSynchronizer(
         // a replacement covering the whole row may invalidate the marker, the range is known, so it can be restored
         if (!rowMarker.isValid) {
             rowMarker.dispose()
-            rowMarker = createRowMarker(start, start + mirror.textLength - rowOffset)
+            rowMarker = createRowMarker(start, start + mirror.textLength - MIRROR_END.length - rowOffset)
         }
     }
 
@@ -207,5 +207,8 @@ class ImpExRowCellSynchronizer(
 
     companion object {
         private const val MIRROR_FILE_NAME = "impexRowCell.impex"
+
+        // the locked end of the mirror, the text added to the end of the row is placed in front of it, so it stays within the hidden part of the other cells
+        private const val MIRROR_END = "\n"
     }
 }

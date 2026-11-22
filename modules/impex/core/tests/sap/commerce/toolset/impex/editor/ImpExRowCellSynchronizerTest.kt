@@ -38,7 +38,7 @@ class ImpExRowCellSynchronizerTest : BasePlatformTestCase() {
     fun `test mirror contains the context followed by the whole row`() {
         val synchronizer = synchronizer(document(), "abc")
 
-        assertEquals(CONTEXT + ROW, synchronizer.mirror.text)
+        assertEquals(CONTEXT + ROW + MIRROR_END, synchronizer.mirror.text)
     }
 
     fun `test editable text is the text of the cell`() {
@@ -60,7 +60,7 @@ class ImpExRowCellSynchronizerTest : BasePlatformTestCase() {
         edit { source.insertString(SOURCE.indexOf("abc") + 1, "X") }
 
         assertEquals("aXbc", synchronizer.editableText)
-        assertEquals(CONTEXT + ROW.replace("abc", "aXbc"), synchronizer.mirror.text)
+        assertEquals(CONTEXT + ROW.replace("abc", "aXbc") + MIRROR_END, synchronizer.mirror.text)
     }
 
     fun `test source edit of another cell is reflected in the locked part of the mirror`() {
@@ -70,7 +70,7 @@ class ImpExRowCellSynchronizerTest : BasePlatformTestCase() {
         edit { source.insertString(SOURCE.indexOf("ABC") + 1, "X") }
 
         assertEquals("abc", synchronizer.editableText)
-        assertEquals(CONTEXT + ROW.replace("ABC", "AXBC"), synchronizer.mirror.text)
+        assertEquals(CONTEXT + ROW.replace("ABC", "AXBC") + MIRROR_END, synchronizer.mirror.text)
     }
 
     fun `test source edit outside the row does not change the mirror`() {
@@ -79,7 +79,7 @@ class ImpExRowCellSynchronizerTest : BasePlatformTestCase() {
 
         edit { source.insertString(0, "# comment\n") }
 
-        assertEquals(CONTEXT + ROW, synchronizer.mirror.text)
+        assertEquals(CONTEXT + ROW + MIRROR_END, synchronizer.mirror.text)
     }
 
     fun `test row follows the source edits made before it`() {
@@ -149,8 +149,29 @@ class ImpExRowCellSynchronizerTest : BasePlatformTestCase() {
         edit { first.mirror.insertString(first.editableRange.endOffset, "!!") }
 
         assertEquals("ABC", second.editableText)
-        assertEquals(CONTEXT + ROW.replace("abc", "abc!!"), second.mirror.text)
+        assertEquals(CONTEXT + ROW.replace("abc", "abc!!") + MIRROR_END, second.mirror.text)
         assertEquals(SOURCE.replace("abc", "abc!!"), source.text)
+    }
+
+    fun `test text added to the end of the row is placed in front of the locked end of the mirror of another cell`() {
+        val source = document()
+        val first = synchronizer(source, "abc")
+        val last = synchronizer(source, "ABC")
+
+        edit { last.mirror.insertString(last.editableRange.endOffset, "XY") }
+
+        assertEquals("abc", first.editableText)
+        assertEquals(CONTEXT + ROW + "XY" + MIRROR_END, first.mirror.text)
+        assertTrue(first.editableRange.endOffset < first.mirror.textLength - MIRROR_END.length)
+    }
+
+    fun `test text added to the end of the row by the source is a part of the last cell`() {
+        val source = document()
+        val last = synchronizer(source, "ABC")
+
+        edit { source.insertString(source.textLength, "XY") }
+
+        assertEquals("ABCXY", last.editableText)
     }
 
     fun `test mirror stays consistent with the source after the edits`() {
@@ -227,7 +248,7 @@ class ImpExRowCellSynchronizerTest : BasePlatformTestCase() {
             }
         }
 
-        assertEquals(CONTEXT + ROW, synchronizer.mirror.text)
+        assertEquals(CONTEXT + ROW + MIRROR_END, synchronizer.mirror.text)
     }
 
     fun `test other cells of the mirror cannot be modified by an editor`() {
@@ -240,7 +261,7 @@ class ImpExRowCellSynchronizerTest : BasePlatformTestCase() {
             }
         }
 
-        assertEquals(CONTEXT + ROW, synchronizer.mirror.text)
+        assertEquals(CONTEXT + ROW + MIRROR_END, synchronizer.mirror.text)
     }
 
     fun `test text can be typed by an editor at the start of the cell`() {
@@ -281,7 +302,7 @@ class ImpExRowCellSynchronizerTest : BasePlatformTestCase() {
         val synchronizer = synchronizer(source, "ABC")
 
         withGuardedBlockChecking(synchronizer) {
-            edit { synchronizer.mirror.insertString(synchronizer.mirror.textLength, "X") }
+            edit { synchronizer.mirror.insertString(synchronizer.editableRange.endOffset, "X") }
         }
 
         assertEquals(SOURCE + "X", source.text)
@@ -424,5 +445,6 @@ class ImpExRowCellSynchronizerTest : BasePlatformTestCase() {
         private const val CONTEXT = "INSERT_UPDATE Product;code;name\n"
         private const val ROW = ";abc;ABC"
         private const val SOURCE = CONTEXT + ROW
+        private const val MIRROR_END = "\n"
     }
 }
