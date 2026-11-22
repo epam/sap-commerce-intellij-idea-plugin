@@ -32,13 +32,16 @@ import com.intellij.util.asSafely
 import kotlinx.coroutines.*
 import sap.commerce.toolset.exec.context.DefaultExecResult
 import sap.commerce.toolset.impex.exec.context.ImpExExecContext
+import sap.commerce.toolset.impex.editor.rowMode.ImpExRowModeCollapsedPanel
 import sap.commerce.toolset.impex.editor.rowMode.ImpExRowModePanel
 import sap.commerce.toolset.impex.editor.rowMode.ImpExRowModeService
 import sap.commerce.toolset.impex.exec.impexExecContextSettings
 import sap.commerce.toolset.impex.psi.ImpExMacroDeclaration
 import sap.commerce.toolset.settings.yDeveloperSettings
 import sap.commerce.toolset.ui.editor.SplitEditorBase
+import java.awt.BorderLayout
 import java.io.Serial
+import javax.swing.JPanel
 import kotlin.time.Duration
 
 fun AnActionEvent.impexSplitEditorEx() = this.getData(PlatformDataKeys.FILE_EDITOR)
@@ -130,7 +133,15 @@ class ImpExSplitEditorBase(textEditor: TextEditor, project: Project) : SplitEdit
         setHonorComponentsMinimumSize(true)
     }
 
+    private val rowModeCollapsedPanel = ImpExRowModeCollapsedPanel { collapseRowMode(false) }
+
+    // the collapsed panel is next to the splitter, because it keeps the width of its own, unlike the second component of the splitter
+    private val rowModeHost = JPanel(BorderLayout()).apply {
+        add(rowModeSplitter, BorderLayout.CENTER)
+    }
+
     private var rowModePanel: ImpExRowModePanel? = null
+    private var rowModeCollapsed = false
 
     override var rowMode: Boolean
         get() = rowModePanel != null
@@ -138,19 +149,37 @@ class ImpExSplitEditorBase(textEditor: TextEditor, project: Project) : SplitEdit
             if (value == rowMode) return
 
             if (value) {
-                val panel = ImpExRowModeService.getInstance(project).createPanel(editor)
+                val panel = ImpExRowModeService.getInstance(project).createPanel(editor) { collapseRowMode(true) }
                 Disposer.register(textEditor, panel)
                 rowModePanel = panel
-                rowModeSplitter.secondComponent = panel.component
+                rowModeCollapsed = false
             } else {
-                rowModeSplitter.secondComponent = null
                 rowModePanel?.let { Disposer.dispose(it) }
                 rowModePanel = null
             }
+
+            layoutRowMode()
         }
 
+    private fun collapseRowMode(collapsed: Boolean) {
+        rowModeCollapsed = collapsed
+        layoutRowMode()
+    }
+
+    private fun layoutRowMode() {
+        val panel = rowModePanel
+
+        rowModeSplitter.secondComponent = panel?.component?.takeUnless { rowModeCollapsed }
+
+        if (panel != null && rowModeCollapsed) rowModeHost.add(rowModeCollapsedPanel, BorderLayout.EAST)
+        else rowModeHost.remove(rowModeCollapsedPanel)
+
+        rowModeHost.revalidate()
+        rowModeHost.repaint()
+    }
+
     init {
-        horizontalSplitter.firstComponent = rowModeSplitter
+        horizontalSplitter.firstComponent = rowModeHost
         verticalSplitter.firstComponent = horizontalSplitter
 
         if (project.yDeveloperSettings.impexSettings.inEditor.rowMode) rowMode = true

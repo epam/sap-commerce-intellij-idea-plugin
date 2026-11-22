@@ -299,11 +299,14 @@ fun Panel.scrollRow(
 /**
  * The header of an in-editor panel: the title and the separator, which takes the whole width of the panel.
  * The sections of the panel are expected to have their own gaps, otherwise the border of the panel would cut the separator.
+ *
+ * @param actions the cells next to the title, e.g. the action buttons aligned to the right
  */
-fun Panel.header(title: String) {
+fun Panel.header(title: String, actions: Row.() -> Unit = {}) {
     panel {
         row {
-            label(title).bold()
+            label(title).bold().gap(RightGap.SMALL)
+            actions()
         }.topGap(TopGap.SMALL)
     }.customize(UnscaledGaps(0, 16, 0, 16))
 

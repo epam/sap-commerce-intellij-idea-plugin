@@ -93,14 +93,19 @@ import javax.swing.ScrollPaneConstants
  *
  * The refreshes are requested from any thread, they are debounced and resolved in the background.
  * The displayed state and the components are accessed from the EDT only.
+ *
+ * @param onCollapse invoked by the collapse button of the header, which is displayed for any state of the panel
  */
 class ImpExRowModePanel(
     private val project: Project,
     private val coroutineScope: CoroutineScope,
     private val editor: Editor,
+    onCollapse: () -> Unit,
 ) : Disposable {
 
     val component = JPanel(BorderLayout())
+
+    private val contentHolder = JPanel(BorderLayout())
 
     private val rowService = ImpExRowService.getInstance(project)
 
@@ -118,6 +123,25 @@ class ImpExRowModePanel(
     private var columnTypesCache: ColumnTypesCache? = null
 
     init {
+        // the header is not a part of the content, so the panel can be collapsed regardless of the displayed state
+        component.add(
+            panel {
+                header(i18n("hybris.impex.editor.row_mode.title")) {
+                    actionButton(object : DumbAwareAction(
+                        i18n("hybris.impex.editor.row_mode.collapse"),
+                        i18n("hybris.impex.editor.row_mode.collapse.description"),
+                        AllIcons.General.ChevronRight
+                    ) {
+                        override fun getActionUpdateThread() = ActionUpdateThread.EDT
+
+                        override fun actionPerformed(e: AnActionEvent) = onCollapse()
+                    }).align(AlignX.RIGHT)
+                }
+            },
+            BorderLayout.NORTH
+        )
+        component.add(contentHolder, BorderLayout.CENTER)
+
         editor.caretModel.addCaretListener(object : CaretListener {
             override fun caretPositionChanged(event: CaretEvent) = requestRefresh()
             override fun caretAdded(event: CaretEvent) = requestRefresh()
@@ -271,8 +295,8 @@ class ImpExRowModePanel(
 
         val hadFocus = component.isAncestorOf(KeyboardFocusManager.getCurrentKeyboardFocusManager().focusOwner)
 
-        component.removeAll()
-        component.add(
+        contentHolder.removeAll()
+        contentHolder.add(
             scrollPanel(content, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER)
                 // keeps the focus within the panel, so Tab moves it from a field to the next one and not to the editor
                 .apply {
@@ -281,8 +305,8 @@ class ImpExRowModePanel(
                 },
             BorderLayout.CENTER
         )
-        component.revalidate()
-        component.repaint()
+        contentHolder.revalidate()
+        contentHolder.repaint()
 
         // the fields are gone, so the focus would be lost together with the caret
         if (hadFocus && state !is ImpExRowModeState.Row) IdeFocusManager.getInstance(project).requestFocus(editor.contentComponent, true)
@@ -321,8 +345,6 @@ class ImpExRowModePanel(
 
         // the sections have their own gaps, so the separators between them take the whole width of the panel
         return panel {
-            header(i18n("hybris.impex.editor.row_mode.title"))
-
             panel {
                 row(i18n("hybris.impex.editor.row_mode.line")) {
                     label(rowModel.lineNumber(editor.document).toString())
