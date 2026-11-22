@@ -23,13 +23,17 @@ import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiFile
 import com.intellij.psi.SmartPointerManager
 import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.testFramework.LightVirtualFile
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import sap.commerce.toolset.impex.ImpExLanguage
 import sap.commerce.toolset.impex.ImpExParserDefinition
+import sap.commerce.toolset.impex.file.ImpExFileType
 import sap.commerce.toolset.impex.psi.*
 import sap.commerce.toolset.impex.psi.references.ImpExMacroReference
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertSame
+import kotlin.test.assertTrue
 
 class ImpExRowContextTest : BasePlatformTestCase() {
 
@@ -84,6 +88,20 @@ class ImpExRowContextTest : BasePlatformTestCase() {
         val header = checkNotNull(PsiTreeUtil.findChildOfType(cellFile, ImpExHeaderLine::class.java))
 
         assertEquals(2, ImpExRowContext.lineNumberOf(header))
+    }
+
+    fun `test file of the cell is recognized as a row mode file`() {
+        val original = ImpExElementFactory.createPhysicalFile(project, "INSERT_UPDATE Product;code\n;abc")
+
+        val cellFile = cellFile(original, "abc")
+
+        assertTrue(ImpExRowContext.isAttachedTo(checkNotNull(cellFile.viewProvider.virtualFile)))
+    }
+
+    fun `test regular ImpEx file is not recognized as a row mode file`() {
+        val file = LightVirtualFile("regular.impex", ImpExFileType, "INSERT_UPDATE Product;code\n;abc")
+
+        assertFalse(ImpExRowContext.isAttachedTo(file))
     }
 
     private fun cellFile(original: ImpExFile, value: String): PsiFile {

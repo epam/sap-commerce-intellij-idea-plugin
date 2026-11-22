@@ -21,6 +21,7 @@ package sap.commerce.toolset.impex.editor.event
 import com.intellij.openapi.editor.event.EditorFactoryEvent
 import com.intellij.openapi.editor.event.EditorFactoryListener
 import com.intellij.openapi.fileEditor.FileDocumentManager
+import sap.commerce.toolset.impex.editor.ImpExRowContext
 import sap.commerce.toolset.impex.file.ImpExFileType
 import sap.commerce.toolset.isHybrisProject
 
@@ -48,7 +49,8 @@ class ImpExEditorFactoryListener : EditorFactoryListener {
             .takeIf { it.project?.isHybrisProject == true }
             ?.takeIf {
                 FileDocumentManager.getInstance().getFile(editor.document)
-                    ?.let { it.fileType == ImpExFileType }
+                    // the fields of the row mode are not the files to highlight the columns in
+                    ?.let { it.fileType == ImpExFileType && !ImpExRowContext.isAttachedTo(it) }
                     ?: false
             }
 }

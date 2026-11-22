@@ -40,6 +40,8 @@ object ImpExRowContext {
         file.putUserData(KEY_VALUE_LINE, valueLine)
     }
 
+    fun isAttachedTo(file: VirtualFile): Boolean = file.getUserData(KEY_VALUE_LINE) != null
+
     fun valueLineOf(element: PsiElement): ImpExValueLine? = element.containingFile
         // a completion works on a copy of the file
         ?.originalFile
