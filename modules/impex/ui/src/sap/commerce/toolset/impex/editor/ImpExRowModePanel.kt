@@ -346,6 +346,9 @@ class ImpExRowModePanel(
         return object : EditorTextField(synchronizer.mirror, project, ImpExFileType, !editable, true) {
             override fun createEditor(): EditorEx = super.createEditor().apply {
                 settings.isAllowSingleLogicalLineFolding = true
+                // the caret of a field is moved by the changes of the other fields, which highlights the identifier under it as a selection,
+                // the platform does not do it for the one line editors of the dialogs
+                isEmbeddedIntoDialogWrapper = true
 
                 // only the cell is displayed, the rest of the file provides the context for the ImpEx language features
                 val editable = synchronizer.editableRange
@@ -368,6 +371,8 @@ class ImpExRowModePanel(
                     override fun selectionChanged(e: SelectionEvent) {
                         val range = synchronizer.editableRange
                         if (!selectionModel.hasSelection()) return
+                        // the fields are changed by each other, which is not the reason to select their values
+                        if (!contentComponent.hasFocus()) return selectionModel.removeSelection()
                         if (selectionModel.selectionStart >= range.startOffset && selectionModel.selectionEnd <= range.endOffset) return
 
                         selectionModel.setSelection(
