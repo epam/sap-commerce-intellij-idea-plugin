@@ -18,11 +18,19 @@
 
 package sap.commerce.toolset.impex.editor
 
+import com.intellij.openapi.project.DumbService
+import com.intellij.psi.PsiPolyVariantReference
 import com.intellij.util.ui.EmptyIcon
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.impex.psi.ImpExFullHeaderParameter
 import sap.commerce.toolset.impex.psi.ImpExValueLine
+import sap.commerce.toolset.typeSystem.TSConstants
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelStateService
+import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaClassifier
+import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaItem
+import sap.commerce.toolset.typeSystem.meta.model.TSMetaRelation
+import sap.commerce.toolset.typeSystem.psi.reference.result.TSResolveResult
 
 object ImpExRowColumnTypes {
 
@@ -36,21 +44,53 @@ object ImpExRowColumnTypes {
         val project = valueLine.project
         // resolving of the attributes requires the meta model, which cancels the read action while it is being calculated
         val access = TSMetaModelStateService.getInstance(project)
-            .takeIf { it.initialized() }
+            .takeIf { it.initialized() && !DumbService.isDumb(project) }
             ?.let { TSMetaModelAccess.getInstance(project) }
 
         return valueLine.valueGroupList.map { group ->
             val parameter = group.fullHeaderParameter
 
             if (parameter?.anyHeaderParameterName?.documentIdDec != null) {
-                return@map ImpExRowColumnType(HybrisIcons.ImpEx.DOC_ID_LINK, DOCUMENT_ID)
+                ImpExRowColumnType(HybrisIcons.ImpEx.DOC_ID_LINK, DOCUMENT_ID)
+            } else {
+                access?.let { resolveAttributeType(it, parameter) }
+                    ?: ImpExRowColumnType(UNKNOWN_ICON, null)
             }
-
-            val typeName = access?.let { parameter?.typeSystemContext?.attributeType }
-            val classifier = typeName?.let { access.findMetaClassifierByName(it) }
-
-            ImpExRowColumnType(classifier?.icon ?: UNKNOWN_ICON, typeName)
         }
+    }
+
+    private fun resolveAttributeType(access: TSMetaModelAccess, parameter: ImpExFullHeaderParameter?): ImpExRowColumnType? {
+        // the same resolution as for the navigation to the declaration of the attribute
+        val meta = parameter
+            ?.anyHeaderParameterName
+            ?.references
+            ?.asSequence()
+            ?.filterIsInstance<PsiPolyVariantReference>()
+            ?.flatMap { it.multiResolve(false).asSequence() }
+            ?.filterIsInstance<TSResolveResult<*>>()
+            ?.map { it.meta }
+            ?.firstOrNull()
+            ?: return null
+
+        val typeName = when (meta) {
+            is TSGlobalMetaItem.TSGlobalMetaItemAttribute -> meta.type
+            is TSMetaRelation.TSMetaRelationElement -> meta.type
+            else -> null
+        }
+        val attributeIcon = when (meta) {
+            is TSGlobalMetaClassifier<*> -> meta.icon
+            is TSMetaRelation.TSMetaRelationElement -> meta.end.icon
+            else -> null
+        }
+        // the icon of the type if it is known, otherwise the icon of the attribute itself (regular, localized, dynamic)
+        val icon = typeName
+            ?.removePrefix(TSConstants.Attribute.LOCALIZED_PREFIX)
+            ?.let { access.findMetaClassifierByName(it) }
+            ?.icon
+            ?: attributeIcon
+            ?: return null
+
+        return ImpExRowColumnType(icon, typeName)
     }
 
     private const val DOCUMENT_ID = "Document ID"

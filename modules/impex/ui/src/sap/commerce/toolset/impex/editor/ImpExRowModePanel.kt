@@ -71,6 +71,8 @@ import sap.commerce.toolset.i18n
 import sap.commerce.toolset.impex.file.ImpExFileType
 import sap.commerce.toolset.impex.psi.ImpExFile
 import sap.commerce.toolset.impex.psi.ImpExValueLine
+import sap.commerce.toolset.typeSystem.meta.event.TSMetaModelChangeListener
+import sap.commerce.toolset.typeSystem.meta.TSGlobalMetaModel
 import sap.commerce.toolset.ui.inlineBanner
 import sap.commerce.toolset.ui.scrollPanel
 import java.awt.BorderLayout
@@ -111,6 +113,11 @@ class ImpExRowModePanel(
 
                 if (events.any { it is VFilePropertyChangeEvent && it.file == file && it.propertyName == VirtualFile.PROP_WRITABLE }) scheduleRefresh()
             }
+        })
+
+        // the icons of the types are not available until the type system is calculated
+        project.messageBus.connect(this).subscribe(TSMetaModelChangeListener.TOPIC, object : TSMetaModelChangeListener {
+            override fun onChanged(newState: TSGlobalMetaModel) = scheduleRefresh()
         })
 
         scheduleRefresh(0)
