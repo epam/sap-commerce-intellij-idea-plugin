@@ -121,6 +121,34 @@ class ImpExRowResolverTest : BasePlatformTestCase() {
         assertEquals(TextRange(start, start + "abc".length), row.cells[0].range)
     }
 
+    fun `test row cell range covers all the words of the value`() {
+        val text = "INSERT_UPDATE Product;code;name\n;abc  def ghi;x"
+        val row = resolveRow(text, "abc")
+
+        assertEquals("abc  def ghi", row.cells[0].range.substring(text))
+    }
+
+    fun `test row cell range covers the words of the value with a macro`() {
+        val text = "INSERT_UPDATE Product;code;name\n;\$macro def;x"
+        val row = resolveRow(text, "macro")
+
+        assertEquals("\$macro def", row.cells[0].range.substring(text))
+    }
+
+    fun `test row cell range covers the words of the value with a quoted string`() {
+        val text = "INSERT_UPDATE Product;code;name\n;abc \"d e\";x"
+        val row = resolveRow(text, "abc")
+
+        assertEquals("abc \"d e\"", row.cells[0].range.substring(text))
+    }
+
+    fun `test row cell range does not include the whitespaces around the value`() {
+        val text = "INSERT_UPDATE Product;code;name\n;  abc  ;x"
+        val row = resolveRow(text, "abc")
+
+        assertEquals("abc", row.cells[0].range.substring(text))
+    }
+
     fun `test row cell range of an empty cell is empty and placed right after the separator`() {
         val text = "INSERT_UPDATE Product;code;name\n;abc;"
         val row = resolveRow(text, "abc")
