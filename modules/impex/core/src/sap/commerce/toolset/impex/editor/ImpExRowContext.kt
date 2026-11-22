@@ -27,6 +27,7 @@ import com.intellij.psi.util.PsiTreeUtil
 import sap.commerce.toolset.impex.psi.ImpExHeaderLine
 import sap.commerce.toolset.impex.psi.ImpExValueLine
 import sap.commerce.toolset.impex.psi.util.getLineNumber
+import sap.commerce.toolset.project.vfs.OriginalFile
 
 /**
  * A cell of the row mode is edited in a standalone ImpEx file, which contains only the header and the cell.
@@ -35,22 +36,13 @@ import sap.commerce.toolset.impex.psi.util.getLineNumber
 object ImpExRowContext {
 
     private val KEY_VALUE_LINE = Key.create<SmartPsiElementPointer<ImpExValueLine>>("impex.row_mode.context.value_line")
-    private val KEY_SOURCE_FILE = Key.create<VirtualFile>("impex.row_mode.context.source_file")
 
     fun attach(file: VirtualFile, valueLine: SmartPsiElementPointer<ImpExValueLine>) {
         file.putUserData(KEY_VALUE_LINE, valueLine)
     }
 
-    fun attachSource(file: VirtualFile, source: VirtualFile) {
-        file.putUserData(KEY_SOURCE_FILE, source)
-    }
 
-    /**
-     * The file of the cell is a copy of a part of the source file, the access to it is the access to the source file.
-     */
-    fun sourceFileOf(file: VirtualFile): VirtualFile? = file.getUserData(KEY_SOURCE_FILE)
-
-    fun isAttachedTo(file: VirtualFile): Boolean = file.getUserData(KEY_VALUE_LINE) != null || file.getUserData(KEY_SOURCE_FILE) != null
+    fun isAttachedTo(file: VirtualFile): Boolean = file.getUserData(KEY_VALUE_LINE) != null || OriginalFile.of(file) != null
 
     fun valueLineOf(element: PsiElement): ImpExValueLine? = element.containingFile
         // a completion works on a copy of the file

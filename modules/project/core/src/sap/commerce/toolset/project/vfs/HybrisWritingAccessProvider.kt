@@ -19,6 +19,7 @@
 package sap.commerce.toolset.project.vfs
 
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.vfs.ReadonlyStatusHandler
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.WritingAccessProvider
 import sap.commerce.toolset.ifHybrisProject
@@ -29,13 +30,33 @@ class HybrisWritingAccessProvider(private val project: Project) : WritingAccessP
 
     override fun requestWriting(files: Collection<VirtualFile>) = project.ifHybrisProject {
         val projectSettings = project.ySettings
-        files
+        val (proxies, regular) = files.partition { OriginalFile.of(it) != null }
+
+        val readOnly = regular
             .filter { isFileReadOnly(it, projectSettings) }
             .toMutableSet()
+
+        if (proxies.isNotEmpty()) {
+            // all the providers have to be asked about the original file, they may refuse only when the modification is requested
+            val readOnlyOriginals = ReadonlyStatusHandler.getInstance(project)
+                .ensureFilesWritable(proxies.mapNotNull { OriginalFile.of(it) }.distinct())
+                .readonlyFiles
+                .toSet()
+
+            proxies
+                .filter { OriginalFile.of(it) in readOnlyOriginals }
+                .forEach { readOnly.add(it) }
+        }
+
+        readOnly
     } ?: mutableSetOf()
 
-    override fun isPotentiallyWritable(file: VirtualFile) = project.ifHybrisProject { !isFileReadOnly(file, project.ySettings) }
-        ?: super.isPotentiallyWritable(file)
+    override fun isPotentiallyWritable(file: VirtualFile) = project.ifHybrisProject {
+        val original = OriginalFile.of(file)
+
+        if (original != null) original.isWritable && isPotentiallyWritable(original, project)
+        else !isFileReadOnly(file, project.ySettings)
+    } ?: super.isPotentiallyWritable(file)
 
     private fun isFileReadOnly(file: VirtualFile, projectSettings: ProjectSettings): Boolean {
         if (!projectSettings.importOotbModulesInReadOnlyMode) return false

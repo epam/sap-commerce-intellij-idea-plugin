@@ -32,6 +32,7 @@ import com.intellij.psi.SmartPsiElementPointer
 import com.intellij.testFramework.LightVirtualFile
 import sap.commerce.toolset.impex.file.ImpExFileType
 import sap.commerce.toolset.impex.psi.ImpExValueLine
+import sap.commerce.toolset.project.vfs.OriginalFile
 
 /**
  * Edits a single cell of a value line in a standalone [mirror] ImpEx file, while the changes land in the [source] document.
@@ -70,7 +71,7 @@ class ImpExRowCellSynchronizer(
     val virtualFile = LightVirtualFile(MIRROR_FILE_NAME, ImpExFileType, contextPrefix + rowText() + SEPARATOR.repeat(missingSeparators) + MIRROR_END)
         .also { file ->
             valueLine?.let { ImpExRowContext.attach(file, it) }
-            FileDocumentManager.getInstance().getFile(source)?.let { ImpExRowContext.attachSource(file, it) }
+            FileDocumentManager.getInstance().getFile(source)?.let { OriginalFile.attach(file, it) }
         }
 
     /**

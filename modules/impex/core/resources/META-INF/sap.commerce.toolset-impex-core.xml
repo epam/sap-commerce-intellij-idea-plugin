@@ -60,7 +60,6 @@
         <lang.foldingBuilder language="ImpEx" order="before ImpExFoldingLinesBuilder"
                              implementationClass="sap.commerce.toolset.impex.lang.folding.ImpExFoldingColumnsBuilder"/>
         <lang.refactoringSupport language="ImpEx" implementationClass="sap.commerce.toolset.impex.lang.refactoring.ImpExRefactoringSupportProvider"/>
-        <writingAccessProvider implementation="sap.commerce.toolset.impex.editor.ImpExRowWritingAccessProvider"/>
 
         <codeStyleSettingsProvider implementation="sap.commerce.toolset.impex.formatting.ImpExCodeStyleSettingsProvider"/>
         <langCodeStyleSettingsProvider implementation="sap.commerce.toolset.impex.formatting.ImpExLanguageCodeStyleSettingsProvider"/>

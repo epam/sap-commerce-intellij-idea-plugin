@@ -31,7 +31,7 @@ object ImpExRowEditability {
      * The fields of the row mode modify the document directly, so they have to check the file in advance.
      *
      * Some restrictions, like the one for the files outside of the project, are applied only once the modification is requested,
-     * see [ImpExRowWritingAccessProvider].
+     * see `HybrisWritingAccessProvider`.
      */
     fun isEditable(document: Document, project: Project? = null): Boolean {
         if (!document.isWritable) return false
