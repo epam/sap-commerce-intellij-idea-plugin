@@ -29,9 +29,6 @@ object ImpExRowEditability {
      * The document of a read-only file (the read-only attribute, a version control lock, a library) is still writable,
      * the platform checks the file itself when the modification of the document is requested.
      * The fields of the row mode modify the document directly, so they have to check the file in advance.
-     *
-     * Some restrictions, like the one for the files outside of the project, are applied only once the modification is requested,
-     * see `HybrisWritingAccessProvider`.
      */
     fun isEditable(document: Document, project: Project? = null): Boolean {
         if (!document.isWritable) return false

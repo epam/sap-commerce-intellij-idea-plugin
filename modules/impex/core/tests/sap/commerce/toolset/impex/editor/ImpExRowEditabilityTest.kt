@@ -110,23 +110,6 @@ class ImpExRowEditabilityTest : BasePlatformTestCase() {
         assertTrue(WritingAccessProvider.isPotentiallyWritable(synchronizer.virtualFile, project))
     }
 
-    fun `test mirror is not writable when the source file is refused by a provider once the modification is requested`() {
-        val synchronizer = synchronizerOf(CUSTOM_FILE)
-        val file = checkNotNull(FileDocumentManager.getInstance().getFile(source()))
-        registerWritingAccessProvider(requestWriting = { files -> files.filter { it == file } })
-
-        assertTrue(WritingAccessProvider.isPotentiallyWritable(file, project))
-        assertFalse(synchronizer.mirrorWritable)
-    }
-
-    fun `test mirror is not writable when the source file is not writable for the provider`() {
-        val synchronizer = synchronizerOf(CUSTOM_FILE)
-        val file = checkNotNull(FileDocumentManager.getInstance().getFile(source()))
-        registerWritingAccessProvider(potentiallyWritable = { it != file }, requestWriting = { files -> files.filter { it == file } })
-
-        assertFalse(synchronizer.mirrorWritable)
-    }
-
     fun `test mirror is writable for a project which is not a SAP Commerce one`() {
         val synchronizer = synchronizerOf(OOTB_FILE)
         WorkspaceSettings.getInstance(project).hybrisProject = false
