@@ -55,7 +55,6 @@ import com.intellij.ui.components.ActionLink
 import com.intellij.ui.dsl.builder.AlignX
 import com.intellij.ui.dsl.builder.BottomGap
 import com.intellij.ui.dsl.builder.RightGap
-import com.intellij.ui.dsl.builder.TopGap
 import com.intellij.ui.dsl.builder.actionButton
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.dsl.gridLayout.UnscaledGaps
@@ -77,6 +76,7 @@ import sap.commerce.toolset.typeSystem.meta.TSGlobalMetaModel
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelStateService
 import sap.commerce.toolset.typeSystem.meta.TSModificationTracker
 import sap.commerce.toolset.typeSystem.meta.event.TSMetaModelChangeListener
+import sap.commerce.toolset.ui.header
 import sap.commerce.toolset.ui.inlineBanner
 import sap.commerce.toolset.ui.scrollPanel
 import java.awt.BorderLayout
@@ -321,13 +321,7 @@ class ImpExRowModePanel(
 
         // the sections have their own gaps, so the separators between them take the whole width of the panel
         return panel {
-            panel {
-                row {
-                    label(i18n("hybris.impex.editor.row_mode.title")).bold()
-                }.topGap(TopGap.SMALL)
-            }.customize(UnscaledGaps(0, 16, 0, 16))
-
-            separator(JBUI.CurrentTheme.Banner.INFO_BORDER_COLOR)
+            header(i18n("hybris.impex.editor.row_mode.title"))
 
             panel {
                 row(i18n("hybris.impex.editor.row_mode.line")) {

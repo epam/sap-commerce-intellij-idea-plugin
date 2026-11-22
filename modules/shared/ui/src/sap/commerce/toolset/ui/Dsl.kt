@@ -41,10 +41,12 @@ import com.intellij.ui.components.JBScrollPane
 import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.builder.Cell
+import com.intellij.ui.dsl.gridLayout.UnscaledGaps
 import com.intellij.util.MathUtil
 import com.intellij.util.asSafely
 import com.intellij.util.ui.JBEmptyBorder
 import com.intellij.util.ui.JBFont
+import com.intellij.util.ui.JBUI
 import org.jetbrains.annotations.NonNls
 import sap.commerce.toolset.Notifications
 import java.awt.Color
@@ -293,6 +295,27 @@ fun Panel.scrollRow(
             }
         }
 }.resizableRow()
+
+/**
+ * The header of an in-editor panel: the title and the separator, which takes the whole width of the panel.
+ * The sections of the panel are expected to have their own gaps, otherwise the border of the panel would cut the separator.
+ */
+fun Panel.header(title: String) {
+    panel {
+        row {
+            label(title).bold()
+        }.topGap(TopGap.SMALL)
+    }.customize(UnscaledGaps(0, 16, 0, 16))
+
+    separator(JBUI.CurrentTheme.Banner.INFO_BORDER_COLOR)
+}
+
+/**
+ * The label in its own row right above the row with the input, it is not truncated by the width of the column unlike the label next to the input.
+ */
+fun Panel.labelAbove(text: String) = row {
+    label(text)
+}.bottomGap(BottomGap.NONE)
 
 fun <J : JComponent> Cell<J>.border(border: Border?): Cell<J> = this.apply { component.border = border }
 fun <J : JComponent> Cell<J>.background(background: Color?): Cell<J> = this.apply { component.background = background }

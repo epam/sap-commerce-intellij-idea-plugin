@@ -35,11 +35,13 @@ import com.intellij.ui.EditorNotificationPanel
 import com.intellij.ui.InlineBanner
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.gridLayout.UnscaledGaps
-import com.intellij.util.ui.JBUI
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.impex.psi.ImpExMacroDeclaration
+import sap.commerce.toolset.ui.header
+import sap.commerce.toolset.ui.labelAbove
 import sap.commerce.toolset.ui.scrollPanel
 import java.awt.Dimension
 import javax.swing.LayoutFocusTraversalPolicy
@@ -73,13 +75,12 @@ class ImpExInEditorParametersView(private val project: Project, private val coro
         }
 
         return panel {
+            header(i18n("hybris.impex.editor.virtual_parameters.title"))
+
             if (virtualParameters.isEmpty()) notResultsPanel()
             else parametersPanel(virtualParameters, fileEditor)
         }
-            .apply {
-                border = JBUI.Borders.empty(5, 16, 10, 16)
-                registerValidators(parentDisposable)
-            }
+            .apply { registerValidators(parentDisposable) }
             .let { scrollPanel(it) }
             .apply {
                 minimumSize = Dimension(minimumSize.width, 165)
@@ -105,29 +106,28 @@ class ImpExInEditorParametersView(private val project: Project, private val coro
         virtualParameters: Map<SmartPsiElementPointer<ImpExMacroDeclaration>, ImpExVirtualParameter>,
         fileEditor: ImpExSplitEditorEx
     ) = panel {
-        group("Macro Declarations") {
-            virtualParameters
-                .forEach { (pointer, parameter) ->
-                    row {
-                        expandableTextField(
-                            { text -> text.split("\n").toMutableList() },
-                            { strings -> strings.joinToString(" ") }
-                        )
-                            .label("${parameter.displayName}:")
-                            .align(AlignX.FILL)
-                            .text(parameter.rawValue ?: "")
-                            .resizableColumn()
-                            .onChanged { applyValue(fileEditor, parameter, it.text) }
+        virtualParameters
+            .forEach { (pointer, parameter) ->
+                labelAbove(parameter.displayName)
 
-                        actionButton(object : DumbAwareAction("Reset Macro Declaration", "", HybrisIcons.Actions.REFRESH) {
-                            override fun actionPerformed(e: AnActionEvent) {
-                                fileEditor.resetVirtualParameter(pointer)
-                            }
-                        })
-                    }.layout(RowLayout.PARENT_GRID)
+                row {
+                    expandableTextField(
+                        { text -> text.split("\n").toMutableList() },
+                        { strings -> strings.joinToString(" ") }
+                    )
+                        .align(AlignX.FILL)
+                        .text(parameter.rawValue ?: "")
+                        .resizableColumn()
+                        .onChanged { applyValue(fileEditor, parameter, it.text) }
+
+                    actionButton(object : DumbAwareAction("Reset Macro Declaration", "", HybrisIcons.Actions.REFRESH) {
+                        override fun actionPerformed(e: AnActionEvent) {
+                            fileEditor.resetVirtualParameter(pointer)
+                        }
+                    })
                 }
-        }
-    }
+            }
+    }.customize(UnscaledGaps(8, 16, 10, 16))
 
     private suspend fun collectVirtualParameters(fileEditor: ImpExSplitEditorEx): Map<SmartPsiElementPointer<ImpExMacroDeclaration>, ImpExVirtualParameter> {
         val currentVirtualParameters = fileEditor.virtualParameters
