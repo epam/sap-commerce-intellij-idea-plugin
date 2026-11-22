@@ -34,6 +34,12 @@ object GotItTooltips {
         const val SEARCH_RESTRICTIONS = OWN_PREFIX + "searchRestrictions"
     }
 
+    object ImpEx {
+        private const val OWN_PREFIX = PREFIX + "impex."
+
+        const val ROW_MODE = OWN_PREFIX + "rowMode"
+    }
+
     object Hac {
         private const val OWN_PREFIX = PREFIX + "hac."
 
