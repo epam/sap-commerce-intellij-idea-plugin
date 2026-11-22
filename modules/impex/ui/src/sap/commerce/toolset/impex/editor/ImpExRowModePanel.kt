@@ -222,6 +222,10 @@ class ImpExRowModePanel(
                 }
             }
 
+            row(i18n("hybris.impex.editor.row_mode.line")) {
+                label(valueLine.lineNumber(editor.document).toString())
+            }
+
             separator()
 
             valueLine.cells.forEachIndexed { index, rowCell ->

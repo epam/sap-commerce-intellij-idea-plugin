@@ -18,6 +18,7 @@
 
 package sap.commerce.toolset.impex.editor
 
+import com.intellij.openapi.editor.Document
 import com.intellij.openapi.util.TextRange
 
 /**
@@ -31,6 +32,11 @@ data class ImpExRow(
     val cells: List<ImpExRowCell>,
     val contextPrefix: String = "",
 ) {
+
+    /**
+     * The number of the line in the source document, starting from 1.
+     */
+    fun lineNumber(document: Document) = document.getLineNumber(range.startOffset.coerceIn(0, document.textLength)) + 1
 
     /**
      * The text of the line and the ranges of the cells are intentionally ignored: they follow the edits,

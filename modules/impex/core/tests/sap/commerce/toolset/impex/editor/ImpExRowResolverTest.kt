@@ -19,6 +19,7 @@
 package sap.commerce.toolset.impex.editor
 
 import com.intellij.lang.LanguageParserDefinitions
+import com.intellij.openapi.editor.EditorFactory
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
@@ -182,6 +183,27 @@ class ImpExRowResolverTest : BasePlatformTestCase() {
         val row = resolveRow("INSERT_UPDATE Product;&productId;code\n;id1;abc", "id1")
 
         assertFalse(row.cells[1].documentIdDeclaration)
+    }
+
+    fun `test row line number starts from one`() {
+        val text = ";abc"
+        val row = row(range = TextRange(0, text.length))
+
+        assertEquals(1, row.lineNumber(EditorFactory.getInstance().createDocument(text)))
+    }
+
+    fun `test row line number is the line of the value line in the document`() {
+        val text = "\$macro = 1\n\nINSERT_UPDATE Product;code\n;abc\n;def"
+        val row = resolveRow(text, "def")
+
+        assertEquals(5, row.lineNumber(EditorFactory.getInstance().createDocument(text)))
+    }
+
+    fun `test row line number is the first line of a multiline value line`() {
+        val text = "INSERT_UPDATE Product;code;name\n;abc;\\\nABC"
+        val row = resolveRow(text, "abc")
+
+        assertEquals(2, row.lineNumber(EditorFactory.getInstance().createDocument(text)))
     }
 
     fun `test row is not resolved when the value line has no header`() {
