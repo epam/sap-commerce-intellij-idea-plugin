@@ -63,13 +63,13 @@ class ImpExRowServiceContextTest : BasePlatformTestCase() {
 
         val cellFile = cellFile(original, "abc")
 
-        assertSame(original, ImpExRowService.getInstance(project).fileOf(checkNotNull(cellFile.firstChild)))
+        assertSame(original, checkNotNull(cellFile.firstChild).getImpExFile())
     }
 
     fun `test file of an element outside of the cell file is its own file`() {
         val original = ImpExElementFactory.createPhysicalFile(project, "INSERT_UPDATE Product;code\n;abc")
 
-        assertSame(original, ImpExRowService.getInstance(project).fileOf(checkNotNull(original.firstChild)))
+        assertSame(original, checkNotNull(original.firstChild).getImpExFile())
     }
 
     fun `test line number of a cell element is the line of the original value line`() {
@@ -78,7 +78,7 @@ class ImpExRowServiceContextTest : BasePlatformTestCase() {
         val cellFile = cellFile(original, "abc")
         val value = checkNotNull(PsiTreeUtil.findChildOfType(cellFile, ImpExValue::class.java))
 
-        assertEquals(2, ImpExRowService.getInstance(project).lineNumberOf(value))
+        assertEquals(2, value.getImpExLineNumber())
     }
 
     fun `test line number of a header element is the line of the original header`() {
@@ -87,7 +87,7 @@ class ImpExRowServiceContextTest : BasePlatformTestCase() {
         val cellFile = cellFile(original, "abc")
         val header = checkNotNull(PsiTreeUtil.findChildOfType(cellFile, ImpExHeaderLine::class.java))
 
-        assertEquals(2, ImpExRowService.getInstance(project).lineNumberOf(header))
+        assertEquals(2, header.getImpExLineNumber())
     }
 
     fun `test file of the cell is recognized as a row mode file`() {

@@ -26,10 +26,11 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.util.*
-import sap.commerce.toolset.impex.editor.rowMode.ImpExRowService
 import sap.commerce.toolset.impex.lang.refactoring.ImpExPsiElementManipulator
 import sap.commerce.toolset.impex.psi.ImpExFile
 import sap.commerce.toolset.impex.psi.ImpExMacroDeclaration
+import sap.commerce.toolset.impex.psi.getImpExFile
+import sap.commerce.toolset.impex.psi.getImpExLineNumber
 import sap.commerce.toolset.impex.psi.util.getLineNumber
 import sap.commerce.toolset.psi.getValidResults
 
@@ -49,9 +50,8 @@ class ImpExMacroReference(owner: PsiElement) : PsiReferenceBase.Poly<PsiElement>
 
     private fun findMacroDeclaration(): ImpExMacroDeclaration? {
         val text = element.text
-        val rowService = ImpExRowService.getInstance(element.project)
-        val file = rowService.fileOf(element)
-        val macroUsageLineNumber = rowService.lineNumberOf(element)
+        val file = element.getImpExFile()
+        val macroUsageLineNumber = element.getImpExLineNumber()
 
         return PsiTreeUtil.findChildrenOfType(
             file,

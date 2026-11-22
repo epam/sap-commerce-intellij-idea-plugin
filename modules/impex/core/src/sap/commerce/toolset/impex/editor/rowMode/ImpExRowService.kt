@@ -26,20 +26,16 @@ import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.TextRange
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiPolyVariantReference
 import com.intellij.psi.SmartPsiElementPointer
-import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.childrenOfType
 import com.intellij.util.ui.EmptyIcon
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.impex.psi.ImpExFullHeaderParameter
-import sap.commerce.toolset.impex.psi.ImpExHeaderLine
 import sap.commerce.toolset.impex.psi.ImpExMacroDeclaration
 import sap.commerce.toolset.impex.psi.ImpExValueLine
-import sap.commerce.toolset.impex.psi.util.getLineNumber
 import sap.commerce.toolset.typeSystem.TSConstants
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelStateService
@@ -201,20 +197,6 @@ class ImpExRowService(private val project: Project) {
         ?.virtualFile
         ?.getUserData(KEY_VALUE_LINE)
         ?.element
-
-    fun fileOf(element: PsiElement): PsiFile = valueLineOf(element)?.containingFile
-        ?: element.containingFile
-
-    fun lineNumberOf(element: PsiElement): Int {
-        val valueLine = valueLineOf(element)
-            ?: return element.getLineNumber()
-
-        val isInHeader = PsiTreeUtil.getParentOfType(element, ImpExHeaderLine::class.java, false) != null
-
-        return (if (isInHeader) valueLine.headerLine else valueLine)
-            ?.getLineNumber()
-            ?: 0
-    }
 
     companion object {
         private val UNKNOWN_TYPE_ICON = EmptyIcon.ICON_16
