@@ -1,3 +1,11 @@
+## [2026.3.2]
+
+<cite>Release contributors</code>
+- 1 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.3.2+author%3Amlytvyn+is%3Apr)
+
+### `Project View` enhancements
+- Address possible NPE for the View Settings in the Project view of a non-SAP Commerce project
+
 ## [2026.3.1]
 
 <cite>Release contributors</code>

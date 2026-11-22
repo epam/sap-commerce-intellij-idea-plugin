@@ -75,11 +75,11 @@ open class HybrisProjectView(val project: Project) : TreeStructureProvider, Dumb
     override fun modify(
         parent: AbstractTreeNode<*>,
         children: MutableCollection<AbstractTreeNode<*>>,
-        settings: ViewSettings
+        settings: ViewSettings?
     ): Collection<AbstractTreeNode<*>> {
         if (project.isNotHybrisProject) return children
 
-        if (parent is ProjectViewProjectNode) {
+        if (parent is ProjectViewProjectNode && settings != null) {
             children.clear()
             // dirty, ugly, nasty, fancy, working hack, to not migrate to Workspace Model
             children.addAll(HybrisProjectViewProjectNode(project, settings).children)
@@ -206,8 +206,8 @@ open class HybrisProjectView(val project: Project) : TreeStructureProvider, Dumb
             ?: true
     }
 
-    private fun isCompactEmptyMiddleFoldersEnabled(settings: ViewSettings) = applicationSettings.hideEmptyMiddleFolders
-            && settings.isHideEmptyMiddlePackages
+    private fun isCompactEmptyMiddleFoldersEnabled(settings: ViewSettings?) = applicationSettings.hideEmptyMiddleFolders
+            && settings?.isHideEmptyMiddlePackages == true
 
     private fun modifyExternalLibrariesNodes(
         children: Collection<AbstractTreeNode<*>>
