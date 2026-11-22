@@ -34,7 +34,7 @@ internal sealed interface ImpExRowModeState {
         val row: ImpExRow,
         val pointer: SmartPsiElementPointer<ImpExValueLine>,
         val editable: Boolean,
-        val columnTypes: List<ImpExRowColumnType>,
+        val columnTypes: List<ImpExRow.ColumnType>,
         val modificationStamp: Long,
     ) : ImpExRowModeState
 

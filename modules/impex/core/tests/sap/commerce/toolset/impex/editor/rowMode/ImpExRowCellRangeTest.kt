@@ -106,7 +106,7 @@ class ImpExRowCellRangeTest : BasePlatformTestCase() {
 
         val valueLine = checkNotNull(file.findValueLine(file.text.lastIndexOf('\n') + 2))
 
-        return checkNotNull(ImpExRowResolver.resolve(valueLine))
+        return checkNotNull(ImpExRowService.getInstance(project).resolve(valueLine))
     }
 
     private fun synchronizerOf(file: ImpExFile, document: Document): ImpExRowCellSynchronizer {

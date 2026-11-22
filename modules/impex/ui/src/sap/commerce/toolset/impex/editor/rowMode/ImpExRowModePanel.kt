@@ -101,6 +101,8 @@ class ImpExRowModePanel(
 
     val component = JPanel(BorderLayout())
 
+    private val rowService = ImpExRowService.getInstance(project)
+
     private var displayedState: ImpExRowModeState? = null
     private var contentDisposable: Disposable? = null
     private var synchronizers = emptyList<ImpExRowCellSynchronizer>()
@@ -219,7 +221,7 @@ class ImpExRowModePanel(
             && displayed.row.range.startOffset == valueLine.textRange.startOffset
         ) return null
 
-        val row = ImpExRowResolver.resolve(valueLine)
+        val row = rowService.resolve(valueLine)
             ?: return ImpExRowModeState.NoHeader
 
         return ImpExRowModeState.Row(
@@ -232,17 +234,17 @@ class ImpExRowModePanel(
     }
 
     // the types depend on the header only, but they are resolved against the type system for each column
-    private fun columnTypes(valueLine: ImpExValueLine, row: ImpExRow): List<ImpExRowColumnType> {
+    private fun columnTypes(valueLine: ImpExValueLine, row: ImpExRow): List<ImpExRow.ColumnType> {
         val key = listOf(
             row.contextPrefix,
-            ImpExRowTypeSystem.isReady(project),
+            rowService.isTypeSystemReady(),
             TSModificationTracker.getInstance(project).modificationCount,
         )
 
         return columnTypesCache
             ?.takeIf { it.key == key }
             ?.types
-            ?: ImpExRowColumnTypes.resolve(valueLine)
+            ?: rowService.resolveColumnTypes(valueLine)
                 .also { columnTypesCache = ColumnTypesCache(key, it) }
     }
 
@@ -304,7 +306,7 @@ class ImpExRowModePanel(
         rowModel: ImpExRow,
         pointer: SmartPsiElementPointer<ImpExValueLine>,
         editable: Boolean,
-        columnTypes: List<ImpExRowColumnType>,
+        columnTypes: List<ImpExRow.ColumnType>,
         disposable: Disposable,
     ): JComponent {
         val cellSynchronizers = rowModel.cells.map { cell ->
@@ -332,11 +334,11 @@ class ImpExRowModePanel(
                     label(rowModel.lineNumber(editor.document).toString())
                 }
                 row(i18n("hybris.impex.editor.row_mode.header_type")) {
-                    link(rowModel.headerType) { navigate(pointer, ImpExRowNavigation::headerTypeDeclaration) }
+                    link(rowModel.headerType) { navigate(pointer, rowService::headerTypeDeclaration) }
                 }
                 rowModel.subType?.let {
                     row(i18n("hybris.impex.editor.row_mode.sub_type")) {
-                        link(it) { navigate(pointer, ImpExRowNavigation::subTypeDeclaration) }
+                        link(it) { navigate(pointer, rowService::subTypeDeclaration) }
                     }
                 }
             }.customize(UnscaledGaps(0, 16, 8, 16))
@@ -351,7 +353,7 @@ class ImpExRowModePanel(
                             label(rowCell.label)
                                 .applyToComponent { if (rowCell.unique) markUnique() }
                         } else {
-                            link(rowCell.label) { navigate(pointer) { ImpExRowNavigation.columnDeclaration(it, index) } }
+                            link(rowCell.label) { navigate(pointer) { rowService.columnDeclaration(it, index) } }
                                 .applyToComponent {
                                     // Tab is for moving between the fields
                                     isFocusable = false
@@ -430,7 +432,7 @@ class ImpExRowModePanel(
         val displayedState: ImpExRowModeState?,
     )
 
-    private class ColumnTypesCache(val key: List<Any>, val types: List<ImpExRowColumnType>)
+    private class ColumnTypesCache(val key: List<Any>, val types: List<ImpExRow.ColumnType>)
 
     companion object {
         private const val REFRESH_DELAY_MS = 100L

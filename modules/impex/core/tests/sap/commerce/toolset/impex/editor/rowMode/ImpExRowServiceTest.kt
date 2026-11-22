@@ -34,7 +34,7 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
-class ImpExRowResolverTest : BasePlatformTestCase() {
+class ImpExRowServiceTest : BasePlatformTestCase() {
 
     override fun setUp() {
         super.setUp()
@@ -279,8 +279,8 @@ class ImpExRowResolverTest : BasePlatformTestCase() {
     }
 
     fun `test rows with different unique cells do not have the same layout`() {
-        val first = row(cells = listOf(ImpExRowCell("code", TextRange(0, 1), unique = true)))
-        val second = row(cells = listOf(ImpExRowCell("code", TextRange(0, 1), unique = false)))
+        val first = row(cells = listOf(ImpExRow.Cell("code", TextRange(0, 1), unique = true)))
+        val second = row(cells = listOf(ImpExRow.Cell("code", TextRange(0, 1), unique = false)))
 
         assertFalse(first.hasSameLayoutAs(second))
     }
@@ -289,12 +289,12 @@ class ImpExRowResolverTest : BasePlatformTestCase() {
         val file = file(";abc;def")
         val valueLine = checkNotNull(PsiTreeUtil.findChildOfType(file, ImpExValueLine::class.java))
 
-        assertNull(ImpExRowResolver.resolve(valueLine))
+        assertNull(ImpExRowService.getInstance(project).resolve(valueLine))
     }
 
     fun `test rows with different cell labels do not have the same layout`() {
-        val first = row(cells = listOf(ImpExRowCell("code", TextRange(0, 1))))
-        val second = row(cells = listOf(ImpExRowCell("name", TextRange(0, 1))))
+        val first = row(cells = listOf(ImpExRow.Cell("code", TextRange(0, 1))))
+        val second = row(cells = listOf(ImpExRow.Cell("name", TextRange(0, 1))))
 
         assertFalse(first.hasSameLayoutAs(second))
     }
@@ -307,8 +307,8 @@ class ImpExRowResolverTest : BasePlatformTestCase() {
     }
 
     fun `test rows with different cell ranges still have the same layout`() {
-        val first = row(cells = listOf(ImpExRowCell("code", TextRange(0, 1))))
-        val second = row(cells = listOf(ImpExRowCell("code", TextRange(5, 9))))
+        val first = row(cells = listOf(ImpExRow.Cell("code", TextRange(0, 1))))
+        val second = row(cells = listOf(ImpExRow.Cell("code", TextRange(5, 9))))
 
         assertTrue(first.hasSameLayoutAs(second))
     }
@@ -325,12 +325,12 @@ class ImpExRowResolverTest : BasePlatformTestCase() {
     private fun resolveRow(text: String, valueMarker: String): ImpExRow {
         val valueLine = checkNotNull(file(text).findValueLine(text.indexOf(valueMarker) + 1))
 
-        return checkNotNull(ImpExRowResolver.resolve(valueLine))
+        return checkNotNull(ImpExRowService.getInstance(project).resolve(valueLine))
     }
 
     private fun row(
         range: TextRange = TextRange(0, 1),
-        cells: List<ImpExRowCell> = emptyList(),
+        cells: List<ImpExRow.Cell> = emptyList(),
         groupCount: Int = 0,
     ) = ImpExRow(range = range, headerType = "Product", subType = null, cells = cells, groupCount = groupCount)
 

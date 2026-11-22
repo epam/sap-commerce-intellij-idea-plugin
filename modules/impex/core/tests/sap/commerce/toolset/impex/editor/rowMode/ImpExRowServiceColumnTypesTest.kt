@@ -30,7 +30,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNull
 import kotlin.test.assertSame
 
-class ImpExRowColumnTypesTest : BasePlatformTestCase() {
+class ImpExRowServiceColumnTypesTest : BasePlatformTestCase() {
 
     override fun setUp() {
         super.setUp()
@@ -70,9 +70,9 @@ class ImpExRowColumnTypesTest : BasePlatformTestCase() {
         assertSame(HybrisIcons.ImpEx.DOC_ID_LINK, types[1].icon)
     }
 
-    private fun resolve(text: String): List<ImpExRowColumnType> {
+    private fun resolve(text: String): List<ImpExRow.ColumnType> {
         val file = ImpExElementFactory.createPhysicalFile(project, text)
 
-        return ImpExRowColumnTypes.resolve(checkNotNull(PsiTreeUtil.findChildOfType(file, ImpExValueLine::class.java)))
+        return ImpExRowService.getInstance(project).resolveColumnTypes(checkNotNull(PsiTreeUtil.findChildOfType(file, ImpExValueLine::class.java)))
     }
 }

@@ -70,7 +70,7 @@ class ImpExRowCellSynchronizer(
 
     val virtualFile = LightVirtualFile(MIRROR_FILE_NAME, ImpExFileType, contextPrefix + rowText() + SEPARATOR.repeat(missingSeparators) + MIRROR_END)
         .also { file ->
-            valueLine?.let { ImpExRowContext.attach(file, it) }
+            valueLine?.let { ImpExRowService.getInstance(it.project).attachContext(file, it) }
             file.putUserData(HybrisConstants.Keys.ORIGINAL_FILE, FileDocumentManager.getInstance().getFile(source))
         }
 
