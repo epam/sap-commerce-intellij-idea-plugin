@@ -287,32 +287,32 @@ class ImpExRowCellSynchronizerTest : BasePlatformTestCase() {
         assertEquals(SOURCE + "X", source.text)
     }
 
-    fun `test source group offset is the separator right before the cell`() {
+    fun `test source group offset is right after the separator before the cell`() {
         val source = document()
         val synchronizer = synchronizer(source, "ABC")
 
-        assertEquals(SOURCE.indexOf(";ABC"), synchronizer.sourceGroupOffset)
+        assertEquals(SOURCE.indexOf(";ABC") + 1, synchronizer.sourceGroupOffset)
     }
 
-    fun `test source group offset of the first cell is the first separator of the row`() {
+    fun `test source group offset of the first cell is right after the first separator of the row`() {
         val source = document()
         val synchronizer = synchronizer(source, "abc")
 
-        assertEquals(SOURCE.indexOf(";abc"), synchronizer.sourceGroupOffset)
+        assertEquals(SOURCE.indexOf(";abc") + 1, synchronizer.sourceGroupOffset)
     }
 
-    fun `test source group offset skips the whitespaces between the separator and the value`() {
+    fun `test source group offset is before the whitespaces between the separator and the value`() {
         val source = document("INSERT_UPDATE Product;code\n;   abc")
         val synchronizer = synchronizer(source, "abc")
 
-        assertEquals(source.text.indexOf(";   abc"), synchronizer.sourceGroupOffset)
+        assertEquals(source.text.indexOf(";   abc") + 1, synchronizer.sourceGroupOffset)
     }
 
-    fun `test source group offset of an empty cell is its separator`() {
+    fun `test source group offset of an empty cell is right after its separator`() {
         val source = document(";abc;;def")
         val synchronizer = synchronizer(source, TextRange.from(";abc;".length, 0))
 
-        assertEquals(";abc".length, synchronizer.sourceGroupOffset)
+        assertEquals(";abc;".length, synchronizer.sourceGroupOffset)
     }
 
     fun `test source group offset follows the source edits made before it`() {
@@ -321,7 +321,7 @@ class ImpExRowCellSynchronizerTest : BasePlatformTestCase() {
 
         edit { source.insertString(0, "# comment\n") }
 
-        assertEquals("# comment\n".length + SOURCE.indexOf(";ABC"), synchronizer.sourceGroupOffset)
+        assertEquals("# comment\n".length + SOURCE.indexOf(";ABC") + 1, synchronizer.sourceGroupOffset)
     }
 
     fun `test source group offset follows the edits of the preceding cell`() {
@@ -330,7 +330,7 @@ class ImpExRowCellSynchronizerTest : BasePlatformTestCase() {
 
         edit { source.insertString(SOURCE.indexOf("abc") + 1, "XYZ") }
 
-        assertEquals(SOURCE.indexOf(";ABC") + "XYZ".length, synchronizer.sourceGroupOffset)
+        assertEquals(SOURCE.indexOf(";ABC") + "XYZ".length + 1, synchronizer.sourceGroupOffset)
     }
 
     fun `test source group offset follows the text appended to the preceding cell`() {
@@ -339,8 +339,8 @@ class ImpExRowCellSynchronizerTest : BasePlatformTestCase() {
 
         edit { source.insertString(SOURCE.indexOf(";ABC"), "X") }
 
-        assertEquals(SOURCE.indexOf(";ABC") + 1, synchronizer.sourceGroupOffset)
-        assertEquals(';', source.text[synchronizer.sourceGroupOffset])
+        assertEquals(SOURCE.indexOf(";ABC") + 2, synchronizer.sourceGroupOffset)
+        assertEquals(';', source.text[synchronizer.sourceGroupOffset - 1])
     }
 
     fun `test source group offset follows the text typed into the preceding field`() {
@@ -350,8 +350,8 @@ class ImpExRowCellSynchronizerTest : BasePlatformTestCase() {
 
         edit { first.mirror.insertString(first.editableRange.endOffset, "XY") }
 
-        assertEquals(';', source.text[second.sourceGroupOffset])
-        assertEquals("ABC", source.text.substring(second.sourceGroupOffset + 1, second.sourceGroupOffset + 4))
+        assertEquals(';', source.text[second.sourceGroupOffset - 1])
+        assertEquals("ABC", source.text.substring(second.sourceGroupOffset, second.sourceGroupOffset + 3))
     }
 
     fun `test source group offset does not move when the text is typed into the cell itself`() {
@@ -360,7 +360,7 @@ class ImpExRowCellSynchronizerTest : BasePlatformTestCase() {
 
         edit { synchronizer.mirror.insertString(synchronizer.editableRange.startOffset, "X") }
 
-        assertEquals(SOURCE.indexOf(";ABC"), synchronizer.sourceGroupOffset)
+        assertEquals(SOURCE.indexOf(";ABC") + 1, synchronizer.sourceGroupOffset)
     }
 
     fun `test source group offset is the end of the value line when the cell has no group`() {

@@ -89,14 +89,15 @@ class ImpExRowCellSynchronizer(
         }
 
     /**
-     * The offset of the value group of the cell in the source, which is the field separator right before the value.
+     * The beginning of the value group of the cell in the source, which is the offset right after the field separator.
+     * The caret in front of the separator is on the previous group, as it is right at the end of its text.
      * The end of the value line if there is no such group.
      */
     val sourceGroupOffset: Int
         get() = groupSeparatorMarker
             // the marker collapses when the separator is removed
             ?.takeIf { it.isValid && it.endOffset - it.startOffset == 1 }
-            ?.startOffset
+            ?.endOffset
             ?: rowMarker.takeIf { it.isValid }?.endOffset
             ?: source.textLength
 
