@@ -55,8 +55,9 @@ class ImpExRowCellSynchronizer(
 
     private val rowOffset = contextPrefix.length
 
-    // follows the edits of the source, so the position is still valid when it is requested
-    private val groupStartMarker = source.createRangeMarker(groupStartOffset(cellRange.startOffset), groupStartOffset(cellRange.startOffset))
+    // the separator itself is tracked, an empty range does not follow the text inserted right at its offset
+    private val groupSeparatorMarker: RangeMarker? = groupSeparatorOffset(cellRange.startOffset)
+        ?.let { source.createRangeMarker(it, it + 1) }
 
     val virtualFile = LightVirtualFile(MIRROR_FILE_NAME, ImpExFileType, contextPrefix + rowText())
         .also { file -> valueLine?.let { ImpExRowContext.attach(file, it) } }
@@ -86,9 +87,15 @@ class ImpExRowCellSynchronizer(
 
     /**
      * The offset of the value group of the cell in the source, which is the field separator right before the value.
+     * The end of the value line if there is no such group.
      */
     val sourceGroupOffset: Int
-        get() = groupStartMarker.startOffset
+        get() = groupSeparatorMarker
+            // the marker collapses when the separator is removed
+            ?.takeIf { it.isValid && it.endOffset - it.startOffset == 1 }
+            ?.startOffset
+            ?: rowMarker.takeIf { it.isValid }?.endOffset
+            ?: source.textLength
 
     val editableRange: TextRange
         get() = TextRange(prefixGuard.endOffset, suffixGuard?.startOffset ?: mirror.textLength)
@@ -114,7 +121,7 @@ class ImpExRowCellSynchronizer(
 
         Disposer.register(parentDisposable) {
             rowMarker.dispose()
-            groupStartMarker.dispose()
+            groupSeparatorMarker?.dispose()
         }
     }
 
@@ -162,14 +169,14 @@ class ImpExRowCellSynchronizer(
         }
     }
 
-    private fun groupStartOffset(cellStartOffset: Int): Int {
+    private fun groupSeparatorOffset(cellStartOffset: Int): Int? {
         val text = source.immutableCharSequence
         var offset = cellStartOffset
 
         // only the whitespaces may be between the separator and the value
         while (offset > 0 && text[offset - 1].isWhitespace()) offset--
 
-        return if (offset > 0 && text[offset - 1] == ';') offset - 1 else cellStartOffset
+        return (offset - 1).takeIf { it >= 0 && text[it] == ';' }
     }
 
     private fun rowText(): CharSequence = rowMarker.takeIf { it.isValid }

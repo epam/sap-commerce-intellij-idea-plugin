@@ -321,6 +321,52 @@ class ImpExRowCellSynchronizerTest : BasePlatformTestCase() {
         assertEquals(SOURCE.indexOf(";ABC") + "XYZ".length, synchronizer.sourceGroupOffset)
     }
 
+    fun `test source group offset follows the text appended to the preceding cell`() {
+        val source = document()
+        val synchronizer = synchronizer(source, "ABC")
+
+        edit { source.insertString(SOURCE.indexOf(";ABC"), "X") }
+
+        assertEquals(SOURCE.indexOf(";ABC") + 1, synchronizer.sourceGroupOffset)
+        assertEquals(';', source.text[synchronizer.sourceGroupOffset])
+    }
+
+    fun `test source group offset follows the text typed into the preceding field`() {
+        val source = document()
+        val first = synchronizer(source, "abc")
+        val second = synchronizer(source, "ABC")
+
+        edit { first.mirror.insertString(first.editableRange.endOffset, "XY") }
+
+        assertEquals(';', source.text[second.sourceGroupOffset])
+        assertEquals("ABC", source.text.substring(second.sourceGroupOffset + 1, second.sourceGroupOffset + 4))
+    }
+
+    fun `test source group offset does not move when the text is typed into the cell itself`() {
+        val source = document()
+        val synchronizer = synchronizer(source, "ABC")
+
+        edit { synchronizer.mirror.insertString(synchronizer.editableRange.startOffset, "X") }
+
+        assertEquals(SOURCE.indexOf(";ABC"), synchronizer.sourceGroupOffset)
+    }
+
+    fun `test source group offset is the end of the value line when the cell has no group`() {
+        val source = document("abc")
+        val synchronizer = ImpExRowCellSynchronizer(source, TextRange(0, 3), TextRange(0, 3), testRootDisposable)
+
+        assertEquals(3, synchronizer.sourceGroupOffset)
+    }
+
+    fun `test source group offset is the end of the value line when the separator is removed`() {
+        val source = document()
+        val synchronizer = synchronizer(source, "ABC")
+
+        edit { source.deleteString(SOURCE.indexOf(";ABC"), SOURCE.indexOf(";ABC") + 1) }
+
+        assertEquals(source.textLength, synchronizer.sourceGroupOffset)
+    }
+
     fun `test synchronization stops once the parent is disposed`() {
         val source = document()
         val parent = Disposer.newDisposable()

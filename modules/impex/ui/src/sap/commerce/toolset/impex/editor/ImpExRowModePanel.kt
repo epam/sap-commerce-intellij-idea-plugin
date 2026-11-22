@@ -224,7 +224,7 @@ class ImpExRowModePanel(
                     actionButton(object : DumbAwareAction(
                         i18n("hybris.impex.editor.row_mode.jump_to_source"),
                         i18n("hybris.impex.editor.row_mode.jump_to_source.description"),
-                        AllIcons.Actions.EditSource
+                        AllIcons.General.Locate
                     ) {
                         override fun getActionUpdateThread() = ActionUpdateThread.EDT
 
