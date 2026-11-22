@@ -48,7 +48,9 @@ https://github.com/epam/sap-commerce-intellij-idea-plugin/compare/main...<fork-o
 ```
 
 - Title — `<Area> | <description>` (no `#NNNN`)
-- Labels — cross-cutting + feature label(s); add impact labels if required (see below); check a recent analogous PR
+- Description — plain short bullets of the change, no `## Summary` heading or other section headers; no AI attribution footer (no "Generated with Claude Code" line, no `Co-Authored-By`)
+  - When the PR fixes an exception: after the bullets add a `---` rule, then the line `Original exception:`, then the original stack trace in a fenced code block
+- Labels — cross-cutting + feature label(s) (feature label = commit area, list in `.github/labels.md`); add impact labels if required (see below); check a recent analogous PR
 - Assignee — self; Reviewer — `mlytvyn`; Milestone — current open
 - Create as ready-for-review unless WIP.
 

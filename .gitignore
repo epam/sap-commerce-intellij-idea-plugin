@@ -51,6 +51,8 @@ jflex-*.jar
 resources/releaseNotes.md
 resources/prs.json
 
+docs/codemie/
+
 gradle/build-logic/.gradle
 gradle/build-logic/build
 gradle/build-logic/.kotlin
