@@ -1,7 +1,7 @@
 ## [2026.3.2]
 
 <cite>Release contributors</code>
-- 6 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.3.2+author%3Amlytvyn+is%3Apr)
+- 7 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.3.2+author%3Amlytvyn+is%3Apr)
 
 ### `JSP` enhancements
 - Address invalid property access during the code folding after the properties file was edited [#2057](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2057)
