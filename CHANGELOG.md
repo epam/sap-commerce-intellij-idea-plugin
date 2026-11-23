@@ -7,7 +7,7 @@
 - Navigate to the bind parameter in the source from the label of the Virtual Parameter [#2062](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2062)
 
 ### `Polyglot Query` enhancements
-- Navigate to the bind parameter in the source from the label of the Virtual Parameter
+- Navigate to the bind parameter in the source from the label of the Virtual Parameter [#2063](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2063)
 
 ### `ImpEx` enhancements
 - Navigate to the macro declaration in the source from the label of the Virtual Parameter [#2061](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2061)
