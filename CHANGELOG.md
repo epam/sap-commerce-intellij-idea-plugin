@@ -1,3 +1,11 @@
+## [2026.3.3]
+
+<cite>Release contributors</code>
+- 1 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.3.3+author%3Amlytvyn+is%3Apr)
+
+### `ImpEx` enhancements
+- Navigate to the macro declaration in the source from the label of the Virtual Parameter [#2061](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/2061)
+
 ## [2026.3.2]
 
 <cite>Release contributors</code>

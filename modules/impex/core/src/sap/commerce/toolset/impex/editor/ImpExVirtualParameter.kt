@@ -21,6 +21,7 @@ package sap.commerce.toolset.impex.editor
 import com.intellij.openapi.util.ClearableLazyValue
 import sap.commerce.toolset.impex.ImpExConstants
 import sap.commerce.toolset.impex.psi.ImpExMacroDeclaration
+import sap.commerce.toolset.sourceLineNumber
 
 data class ImpExVirtualParameter(
     val name: String,
@@ -33,6 +34,11 @@ data class ImpExVirtualParameter(
         get() = "$name = $rawValue"
 
     val presentationValue: String get() = lazyPresentationValue.get()
+
+    /**
+     * The line of the macro declaration in the source, `null` if it is not known.
+     */
+    var lineNumber: Int? = null
 
     var rawValue: String? = null
         set(value) {
@@ -47,6 +53,7 @@ data class ImpExVirtualParameter(
             name = macroDeclaration.macroNameDec.text,
         ).apply {
             rawValue = getInitialValue(macroDeclaration)
+            lineNumber = macroDeclaration.sourceLineNumber()
         }
 
         fun getInitialValue(macroDeclaration: ImpExMacroDeclaration) = macroDeclaration.macroNameDec.resolveValue(mutableSetOf())

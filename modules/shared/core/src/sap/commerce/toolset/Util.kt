@@ -23,6 +23,7 @@ import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.actionSystem.DataContext
 import com.intellij.openapi.components.PathMacroManager
 import com.intellij.openapi.project.Project
+import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiElement
 import org.jetbrains.annotations.PropertyKey
 import sap.commerce.toolset.settings.WorkspaceSettings
@@ -37,6 +38,15 @@ val PsiElement.isHybrisProject: Boolean
 
 val PsiElement.isNotHybrisProject: Boolean
     get() = project.isNotHybrisProject
+
+/**
+ * The one-based line of the element in its file, to be called in a read action.
+ *
+ * @return `null` if the file has no document
+ */
+fun PsiElement.sourceLineNumber(): Int? = containingFile
+    ?.let { PsiDocumentManager.getInstance(project).getDocument(it) }
+    ?.let { it.getLineNumber(textOffset.coerceIn(0, it.textLength)) + 1 }
 
 val Project.directory: String?
     get() = PathMacroManager.getInstance(this).expandPath($$"$PROJECT_DIR$")
