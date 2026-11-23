@@ -43,7 +43,7 @@ import sap.commerce.toolset.typeSystem.meta.TSMetaModelStateService
 import sap.commerce.toolset.ui.CollapseEdge
 import sap.commerce.toolset.ui.collapseButton
 import sap.commerce.toolset.ui.header
-import sap.commerce.toolset.ui.labelAbove
+import sap.commerce.toolset.ui.linkAbove
 import sap.commerce.toolset.ui.scrollPanel
 import java.awt.Dimension
 import java.beans.PropertyChangeListener
@@ -128,7 +128,7 @@ class PolyglotQueryInEditorParametersView(private val project: Project, private 
     ) = panel {
         virtualParameters.forEach { _, parameter ->
             // the check box has its own text
-            if (parameter.type != Boolean::class) labelAbove(parameter.name)
+            if (parameter.type != Boolean::class) linkAbove(parameter.name, coroutineScope, parameter.lineNumber) { parameter.bindParameterPointer?.element }
 
             row {
                 when (parameter.type) {
