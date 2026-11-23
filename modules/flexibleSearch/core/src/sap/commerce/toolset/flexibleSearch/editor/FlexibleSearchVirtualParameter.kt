@@ -19,12 +19,15 @@
 package sap.commerce.toolset.flexibleSearch.editor
 
 import com.intellij.openapi.util.ClearableLazyValue
+import com.intellij.psi.SmartPointerManager
+import com.intellij.psi.SmartPsiElementPointer
 import com.intellij.psi.tree.IElementType
 import com.intellij.psi.util.elementType
 import com.intellij.util.asSafely
 import org.apache.commons.lang3.BooleanUtils
 import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchBindParameter
 import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchTypes
+import sap.commerce.toolset.sourceLineNumber
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.reflect.KClass
@@ -51,6 +54,16 @@ data class FlexibleSearchVirtualParameter(
 
         else -> Any::class
     }
+
+    /**
+     * Points to the bind parameter in the source, `null` if the parameter is not backed by the PSI, e.g. it is seeded.
+     */
+    var bindParameterPointer: SmartPsiElementPointer<FlexibleSearchBindParameter>? = null
+
+    /**
+     * The line of the bind parameter in the source at the moment the parameter was created, `null` if it is not backed by the PSI.
+     */
+    var lineNumber: Int? = null
 
     var rawValue: Any? = null
         set(value) {
@@ -122,6 +135,8 @@ data class FlexibleSearchVirtualParameter(
             rawType = bindParameter.itemType,
         ).apply {
             this.rawValue = rawValue
+            bindParameterPointer = SmartPointerManager.createPointer(bindParameter)
+            lineNumber = bindParameter.sourceLineNumber()
         }
     }
 }
