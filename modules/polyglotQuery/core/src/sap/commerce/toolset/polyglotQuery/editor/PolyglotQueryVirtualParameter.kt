@@ -20,9 +20,12 @@ package sap.commerce.toolset.polyglotQuery.editor
 
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.ClearableLazyValue
+import com.intellij.psi.SmartPointerManager
+import com.intellij.psi.SmartPsiElementPointer
 import com.intellij.util.asSafely
 import org.apache.commons.lang3.BooleanUtils
 import sap.commerce.toolset.polyglotQuery.psi.PolyglotQueryBindParameter
+import sap.commerce.toolset.sourceLineNumber
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
 import java.lang.ref.WeakReference
 import java.text.SimpleDateFormat
@@ -55,6 +58,16 @@ data class PolyglotQueryVirtualParameter(
             ?.let { Int::class }
             ?: Any::class
     }
+
+    /**
+     * Points to the bind parameter in the source, `null` if the parameter is not backed by the PSI, e.g. it is seeded.
+     */
+    var bindParameterPointer: SmartPsiElementPointer<PolyglotQueryBindParameter>? = null
+
+    /**
+     * The line of the bind parameter in the source at the moment the parameter was created, `null` if it is not backed by the PSI.
+     */
+    var lineNumber: Int? = null
 
     var rawValue: Any? = null
         set(value) {
@@ -109,6 +122,8 @@ data class PolyglotQueryVirtualParameter(
             project = WeakReference(bindParameter.project),
         ).apply {
             rawValue = currentParameters[name]?.rawValue
+            bindParameterPointer = SmartPointerManager.createPointer(bindParameter)
+            lineNumber = bindParameter.sourceLineNumber()
         }
     }
 }
