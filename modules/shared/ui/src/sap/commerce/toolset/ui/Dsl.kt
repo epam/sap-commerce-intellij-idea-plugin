@@ -19,10 +19,13 @@ package sap.commerce.toolset.ui
 
 import com.intellij.icons.AllIcons
 import com.intellij.ide.HelpTooltip
+import com.intellij.ide.util.PsiNavigationSupport
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.actionSystem.impl.ActionButton
+import com.intellij.openapi.application.EDT
+import com.intellij.openapi.application.readAction
 import com.intellij.openapi.editor.EditorFactory
 import com.intellij.openapi.editor.ex.EditorEx
 import com.intellij.openapi.fileTypes.FileType
@@ -35,6 +38,7 @@ import com.intellij.openapi.ui.ComboBox
 import com.intellij.openapi.ui.popup.JBPopupFactory
 import com.intellij.openapi.ui.popup.util.PopupUtil
 import com.intellij.openapi.util.text.StringUtil
+import com.intellij.psi.PsiElement
 import com.intellij.ui.*
 import com.intellij.ui.components.ActionLink
 import com.intellij.ui.components.BrowserLink
@@ -48,6 +52,10 @@ import com.intellij.util.asSafely
 import com.intellij.util.ui.JBEmptyBorder
 import com.intellij.util.ui.JBFont
 import com.intellij.util.ui.JBUI
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.jetbrains.annotations.NonNls
 import sap.commerce.toolset.Notifications
 import sap.commerce.toolset.i18n
@@ -335,6 +343,29 @@ fun Row.collapseButton(edge: CollapseEdge, title: String, onCollapse: () -> Unit
  */
 fun Panel.labelAbove(text: String) = row {
     label(text)
+}.bottomGap(BottomGap.NONE)
+
+/**
+ * Same as [labelAbove], but the label navigates to the [target] in the source file.
+ *
+ * @param line the line of the target in the source file displayed before the label as `<line> - <label>`, if known
+ * @param target resolved in a read action on a click
+ */
+fun Panel.linkAbove(text: String, coroutineScope: CoroutineScope, line: Int? = null, target: () -> PsiElement?) = row {
+    line?.let { label("$it -").gap(RightGap.SMALL) }
+
+    link(text) {
+        coroutineScope.launch {
+            val navigatable = readAction { target()?.let { PsiNavigationSupport.getInstance().getDescriptor(it) } }
+                ?: return@launch
+
+            withContext(Dispatchers.EDT) {
+                if (navigatable.canNavigate()) navigatable.navigate(true)
+            }
+        }
+    }
+        // Tab is for moving between the inputs
+        .applyToComponent { isFocusable = false }
 }.bottomGap(BottomGap.NONE)
 
 fun <J : JComponent> Cell<J>.border(border: Border?): Cell<J> = this.apply { component.border = border }

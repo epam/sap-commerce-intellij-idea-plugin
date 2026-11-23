@@ -40,10 +40,11 @@ import kotlinx.coroutines.launch
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.impex.psi.ImpExMacroDeclaration
+import sap.commerce.toolset.sourceLineNumber
 import sap.commerce.toolset.ui.CollapseEdge
 import sap.commerce.toolset.ui.collapseButton
 import sap.commerce.toolset.ui.header
-import sap.commerce.toolset.ui.labelAbove
+import sap.commerce.toolset.ui.linkAbove
 import sap.commerce.toolset.ui.scrollPanel
 import java.awt.Dimension
 import javax.swing.LayoutFocusTraversalPolicy
@@ -114,7 +115,7 @@ class ImpExInEditorParametersView(private val project: Project, private val coro
     ) = panel {
         virtualParameters
             .forEach { (pointer, parameter) ->
-                labelAbove(parameter.displayName)
+                linkAbove(parameter.displayName, coroutineScope, parameter.lineNumber) { pointer.element }
 
                 row {
                     expandableTextField(
@@ -148,7 +149,9 @@ class ImpExInEditorParametersView(private val project: Project, private val coro
                         .map { (pointer, virtualParameter) -> pointer to virtualParameter }
                         .firstOrNull()
                         ?.takeIf { (_, virtualParameter) -> it.text == virtualParameter.name }
-                        ?: (SmartPointerManager.createPointer(it) to ImpExVirtualParameter.of(it))
+                        // the declaration may have been moved since the parameter was created
+                        ?.also { (_, virtualParameter) -> virtualParameter.lineNumber = it.sourceLineNumber() }
+                        ?:(SmartPointerManager.createPointer(it) to ImpExVirtualParameter.of(it))
                 }
                 ?: emptyMap()
         }
